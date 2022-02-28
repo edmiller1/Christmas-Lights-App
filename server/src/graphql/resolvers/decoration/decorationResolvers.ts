@@ -378,6 +378,15 @@ export const decorationResolvers = {
         }
 
         //create report
+        await prisma.report.create({
+          data: {
+            additional_info: input.additionalDetails,
+            resolved: false,
+            decoration_id: decoration.id,
+            user_id: user.id,
+            reasons: input.reportOptions,
+          },
+        });
 
         //Send email to CLA admin
         await resend.emails.send({
@@ -441,6 +450,15 @@ export const decorationResolvers = {
           },
           data: {
             verification_submitted: true,
+          },
+        });
+
+        await prisma.verification.create({
+          data: {
+            document: document.url,
+            decoration_id: updatedDecoration.id,
+            archived: false,
+            approved: false,
           },
         });
 

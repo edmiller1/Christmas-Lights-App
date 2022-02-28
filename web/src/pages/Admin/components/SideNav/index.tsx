@@ -12,7 +12,11 @@ import { NavLink, Outlet } from "react-router-dom";
 import logo from "../../../../assets/ChristmasLights-House-Logo.png";
 import { Button } from "@/components/ui/button";
 
-export const SideNav = () => {
+interface Props {
+  logOut: () => void;
+}
+
+export const SideNav = ({ logOut }: Props) => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   return (
@@ -151,7 +155,9 @@ export const SideNav = () => {
                         </ul>
                       </li>
                       <li className="mt-auto my-3 w-full">
-                        <Button className="w-full">Log Out</Button>
+                        <Button className="w-full" onClick={logOut}>
+                          Log Out
+                        </Button>
                       </li>
                     </ul>
                   </nav>
@@ -235,7 +241,9 @@ export const SideNav = () => {
                 </ul>
               </li>
               <li className="mx-auto mt-auto my-3 w-full">
-                <Button className="w-full">Log Out</Button>
+                <Button className="w-full" onClick={logOut}>
+                  Log Out
+                </Button>
               </li>
             </ul>
           </nav>

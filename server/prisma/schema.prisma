@@ -61,6 +61,7 @@ model Decoration {
   ratings Rating[]
   views View[] 
   reports Report[]
+  verification Verification?
 }
 
 model DecorationImage {
@@ -99,11 +100,21 @@ model Notification {
 model Report {
   id String @id @default(cuid())
   reasons String[]
-  additional_info String @db.VarChar(255)
+  additional_info String? @db.VarChar(255)
   resolved Boolean
   created_at DateTime @default(now())
   decoration Decoration @relation(fields: [decoration_id], references: [id])
   decoration_id String
   user User @relation(fields: [user_id], references: [id])
   user_id String
+}
+
+model Verification {
+  id String @id @default(cuid())
+  document String
+  approved Boolean
+  archived Boolean
+  created_At DateTime @default(now())
+  decoration Decoration @relation(fields: [decoration_id], references: [id])
+  decoration_id String @unique
 }

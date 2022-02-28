@@ -80,6 +80,14 @@ export const typeDefs = gql`
     user_id: String!
   }
 
+  type Verification {
+    id: String!
+    document: String!
+    approved: Boolean
+    archived: Boolean
+    decoration_id: String!
+  }
+
   #input
   input CreateUserInput {
     id: String!
@@ -172,6 +180,7 @@ export const typeDefs = gql`
     getUser(input: GetUserInput!): User!
     getDecoration(input: GetDecorationInput!): Decoration!
     getVerificationSubmissions: [Decoration]!
+    getVerificationRequests: [Verification]!
   }
 
   #Mutations

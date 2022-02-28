@@ -39,7 +39,7 @@ export const AppHeader = ({ user }: Props) => {
           title: "Success 🎉",
           description: "Signed out successfully!",
         });
-        return redirect("/");
+        redirect("/");
       })
       .catch((error) => {
         toast({

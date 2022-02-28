@@ -12,7 +12,8 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { CircleNotch } from "@phosphor-icons/react";
+import { ArrowLeft, CircleNotch } from "@phosphor-icons/react";
+import { Link } from "react-router-dom";
 
 interface Props {
   login: (email: string, password: string) => void;
@@ -40,65 +41,76 @@ export const Login = ({ login, loading }: Props) => {
   };
 
   return (
-    <div className="flex min-h-screen flex-1 flex-col justify-center px-6 py-12 lg:px-8">
-      <div className="sm:mx-auto sm:w-full sm:max-w-sm">
-        <img className="mx-auto h-32 w-auto" src={logo} alt="Logo" />
-        <h2 className="mt-10 text-center text-2xl font-bold leading-9 tracking-tight">
-          Sign in to your account
-        </h2>
-      </div>
-
-      <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
-        {loading ? (
-          <div className="flex items-center justify-center">
-            <CircleNotch
-              size={96}
-              weight="bold"
-              className="text-ch-dark dark:text-ch-light"
-            />
-          </div>
-        ) : (
-          <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-              <FormField
-                control={form.control}
-                name="email"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Email Address</FormLabel>
-                    <FormControl>
-                      <Input {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
+    <div className="min-h-screen">
+      <Link
+        to="/"
+        className="flex items-center space-x-3 py-5 px-5 text-ch-red hover:text-ch-red-hover"
+      >
+        <ArrowLeft size={20} weight="bold" />
+        <span>Back to Christmas Lights</span>
+      </Link>
+      <div className="flex flex-1 flex-col justify-center px-6 py-12 lg:px-8">
+        <div className="sm:mx-auto sm:w-full sm:max-w-sm">
+          <img className="mx-auto h-32 w-auto" src={logo} alt="Logo" />
+          <h2 className="mt-10 text-center text-2xl font-bold leading-9 tracking-tight">
+            Sign in to your account
+          </h2>
+        </div>
+        <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
+          {loading ? (
+            <div className="flex items-center justify-center">
+              <CircleNotch
+                size={96}
+                weight="bold"
+                className="animate-spin text-ch-dark dark:text-ch-light"
               />
+            </div>
+          ) : (
+            <Form {...form}>
+              <form
+                onSubmit={form.handleSubmit(onSubmit)}
+                className="space-y-6"
+              >
+                <FormField
+                  control={form.control}
+                  name="email"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Email Address</FormLabel>
+                      <FormControl>
+                        <Input {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
 
-              <FormField
-                control={form.control}
-                name="password"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Password</FormLabel>
-                    <FormControl>
-                      <Input {...field} type="password" />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+                <FormField
+                  control={form.control}
+                  name="password"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Password</FormLabel>
+                      <FormControl>
+                        <Input {...field} type="password" />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
 
-              <div>
-                <Button
-                  type="submit"
-                  className="flex w-full justify-center rounded-md bg-ch-red px-3 py-3 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-ch-red-hover focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ch-red"
-                >
-                  Sign in
-                </Button>
-              </div>
-            </form>
-          </Form>
-        )}
+                <div>
+                  <Button
+                    type="submit"
+                    className="flex w-full justify-center rounded-md bg-ch-red px-3 py-3 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-ch-red-hover focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ch-red"
+                  >
+                    Sign in
+                  </Button>
+                </div>
+              </form>
+            </Form>
+          )}
+        </div>
       </div>
     </div>
   );

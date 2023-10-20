@@ -1,0 +1,95 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+  previewFeatures = ["multiSchema"]
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+
+model User {
+  id String @id @default(cuid())
+  token String @unique @db.Text()
+  name String
+  image String
+  email String
+  premium Boolean
+  provider String
+  notifications_on_app_verification Boolean
+  notifications_on_app_rating Boolean
+  notifications_by_email_verification Boolean
+  notifications_by_email_rating Boolean
+  created_at DateTime @default(now())
+  decorations Decoration[] @relation("created_decorations")
+  favourites Decoration[] @relation("favourited_decorations")
+  history Decoration[] @relation("history_decorations")
+  notifications Notification[]
+  ratings Rating[]
+}
+
+model Decoration {
+  id String @id @default(cuid())
+  name String
+  address String
+  images DecorationImage[]
+  verified Boolean
+  verification_submitted Boolean
+  rating Float
+  num_ratings Int
+  latitude Float
+  longitude Float
+  country String
+  region String
+  city String
+  year String
+  num_views Int
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+  creator User @relation("created_decorations", fields: [creator_id], references: [id])
+  creator_id String
+  favourited_by User? @relation("favourited_decorations", fields: [favourited_by_id], references: [id])
+  favourited_by_id String?
+  added_to_history_by User? @relation("history_decorations", fields: [added_to_history_by_id], references: [id])
+  added_to_history_by_id String?
+  ratings Rating[]
+  views View[] 
+}
+
+model DecorationImage {
+  id String @id @default(cuid())
+  url String
+  decoration Decoration @relation(fields: [decoration_id], references: [id])
+  decoration_id String
+}
+
+model Rating {
+  id String @id @default(cuid())
+  rating Int
+  decoration Decoration @relation(fields: [decoration_id], references: [id])
+  decoration_id String
+  user User @relation(fields: [user_id], references: [id])
+  user_id String
+}
+
+model View {
+  id String @id @default(cuid())
+  created_at DateTime @default(now())
+  decoration Decoration @relation(fields: [decoration_id], references: [id])
+  decoration_id String
+}
+
+model Notification {
+  id String @id @default(cuid())
+  title String
+  body String
+  unread Boolean
+  created_at DateTime @default(now())
+  user User @relation(fields: [user_id], references: [id])
+  user_id String
+}

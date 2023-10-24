@@ -72,7 +72,7 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
     <ApolloProvider client={client}>
       <SessionContextProvider supabaseClient={supabase}>
         <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
-          <div className="dark:bg-[#202023] dark:text-white text-ch-indigo bg-[#f7f7f8]">
+          <div className="dark:bg-ch-dark dark:text-white text-ch-indigo bg-ch-light">
             <Toaster />
             <RouterProvider router={router} />
           </div>

@@ -10,11 +10,17 @@ export interface Get_Decoration {
   longitude: number;
   images: Array<{ id: string; url: string }>;
   verified: boolean;
-  verificationSubmitted: boolean;
+  verification_submitted: boolean;
   rating: number;
-  numRatings: number;
-  numViews: number;
-  ratings: Array<{ id: string; rating: number }>;
+  num_ratings: number;
+  num_views: number;
+  ratings: Array<{
+    id: string;
+    rating: number;
+    user_id: string;
+    decoration_id: string;
+  }>;
+  creator_id: string;
 }
 
 export interface GetDecoration {

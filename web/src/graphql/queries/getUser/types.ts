@@ -1,3 +1,5 @@
+import { Decoration, Rating } from "@/lib/types";
+
 export interface Get_User {
   __typename: "User";
   id: string;
@@ -6,6 +8,9 @@ export interface Get_User {
   image: string;
   provider: string;
   premium: boolean;
+  ratings: Rating[];
+  decorations: Decoration[];
+  favourites: Decoration[];
 }
 
 export interface GetUser {

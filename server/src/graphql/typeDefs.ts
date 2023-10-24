@@ -10,11 +10,11 @@ export const typeDefs = gql`
     image: String!
     premium: Boolean
     provider: String!
-    notificationsOnAppVerification: Boolean
-    notificationsOnAppRating: Boolean
-    notificationsByEmailVerification: Boolean
-    notificationsByEmailRating: Boolean
-    createdAt: String!
+    notifications_on_app_verification: Boolean
+    notifications_on_app_rating: Boolean
+    notifications_by_email_verification: Boolean
+    notifications_by_email_rating: Boolean
+    created_at: String!
     decorations: [Decoration!]
     favourites: [Decoration!]
     history: [Decoration!]
@@ -28,38 +28,39 @@ export const typeDefs = gql`
     address: String!
     images: [DecorationImage!]!
     verified: Boolean
-    verificationSubmitted: Boolean
+    verification_submitted: Boolean
     rating: Float
-    numRatings: Int
+    num_ratings: Int
     latitude: Float!
     longitude: Float!
     country: String!
     region: String!
     city: String!
-    numViews: Int
-    createdAt: String!
-    updatedAt: String
+    num_views: Int
+    created_at: String!
+    updated_at: String
     ratings: [Rating]!
     views: [View]!
+    creator_id: String!
   }
 
   type DecorationImage {
     id: String!
     url: String!
-    decorationId: String!
+    decoration_id: String!
   }
 
   type Rating {
     id: String!
     rating: Int!
-    decorationId: String!
-    userId: String!
+    decoration_id: String!
+    user_id: String!
   }
 
   type View {
     id: String!
-    createdAt: String!
-    decorationId: String!
+    created_at: String!
+    decoration_id: String!
   }
 
   type Notification {
@@ -67,8 +68,8 @@ export const typeDefs = gql`
     title: String!
     body: String!
     unread: Boolean
-    createdAt: String!
-    userId: String!
+    created_at: String!
+    user_id: String!
   }
 
   #input

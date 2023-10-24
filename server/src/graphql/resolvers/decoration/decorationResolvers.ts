@@ -2,7 +2,7 @@ import { Request, Response } from "express";
 import { prisma } from "../../../database";
 import { Decoration, DecorationImage } from "@prisma/client";
 import { CreateDecorationArgs, GetDecorationArgs } from "./types";
-import { authorise } from "../../../lib/helpers";
+import { authorise, calculateRating } from "../../../lib/helpers";
 import { Cloudinary } from "../../../lib/cloudinary";
 
 export const decorationResolvers = {
@@ -18,6 +18,7 @@ export const decorationResolvers = {
             id: input.id,
           },
           include: {
+            creator: true,
             ratings: true,
             images: true,
           },
@@ -97,6 +98,9 @@ export const decorationResolvers = {
   Decoration: {
     id: (decoration: Decoration): string => {
       return decoration.id;
+    },
+    rating: (decoration: Decoration): Promise<number> => {
+      return calculateRating(decoration.id);
     },
   },
 };

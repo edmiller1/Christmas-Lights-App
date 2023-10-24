@@ -10,3 +10,31 @@ export const authorise = async (req: Request) => {
   });
   return user;
 };
+
+export const calculateRating = async (
+  decorationId: string
+): Promise<number> => {
+  const decoration = await prisma.decoration.findFirst({
+    where: {
+      id: decorationId,
+    },
+    include: {
+      ratings: true,
+    },
+  });
+
+  if (!decoration) {
+    throw new Error("Decoration cannot be found");
+  }
+
+  let totalRatings: number = 0;
+  let ratingResult: number = 0;
+
+  decoration.ratings.forEach((rating) => {
+    totalRatings += rating.rating;
+  });
+
+  ratingResult = totalRatings / decoration.num_ratings;
+
+  return ratingResult ? ratingResult : decoration.rating;
+};

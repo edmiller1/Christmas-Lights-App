@@ -16,14 +16,17 @@ export const GET_DECORATION = gql`
       latitude
       longitude
       verified
-      verificationSubmitted
+      verification_submitted
       rating
-      numRatings
-      numViews
+      num_ratings
+      num_views
       ratings {
         id
         rating
+        user_id
+        decoration_id
       }
+      creator_id
     }
   }
 `;

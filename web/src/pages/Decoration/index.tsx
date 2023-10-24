@@ -1,23 +1,64 @@
 import { useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { useUser } from "@supabase/auth-helpers-react";
 import { useQuery } from "@apollo/client";
 import { GET_DECORATION } from "@/graphql/queries/getDecoration";
+import { GET_USER } from "@/graphql/queries";
 import {
   GetDecoration as GetDecorationData,
   GetDecorationArgs,
 } from "@/graphql/queries/getDecoration/types";
+import {
+  GetUser as GetUserData,
+  GetUserArgs,
+} from "@/graphql/queries/getUser/types";
 import { NotFound } from "..";
-import { useParams } from "react-router-dom";
-import { DecorationLoading } from "./components";
+import { Link, useParams, useNavigate } from "react-router-dom";
+import { Menu } from "@headlessui/react";
+import {
+  DecorationLoading,
+  DecorationMenu,
+  DecorationRatings,
+  DecorationUserMenu,
+  ImagesGrid,
+  ImagesOverlay,
+  ShareDecoration,
+  VerifiedPopOver,
+} from "./components";
 import {
   CaretLeft,
   CaretRight,
+  CircleWavyCheck,
   Heart,
   Share,
+  ShootingStar,
   Star,
+  WarningCircle,
 } from "@phosphor-icons/react";
+import { AppHeaderLoading } from "@/components/AppHeader/components";
+import { AppHeader } from "@/components";
+import { Button } from "@/components/ui/button";
+import { Separator } from "@/components/ui/separator";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 export const Decoration = () => {
+  const navigate = useNavigate();
   const { decorationId } = useParams();
+  const currentUser = useUser();
+
+  const { data: getUserData, loading: getUserLoading } = useQuery<
+    GetUserData,
+    GetUserArgs
+  >(GET_USER, {
+    variables: { input: { id: currentUser?.id ? currentUser.id : "" } },
+  });
+
+  const user = getUserData?.getUser ? getUserData.getUser : null;
 
   const {
     data: getDecorationData,
@@ -37,6 +78,15 @@ export const Decoration = () => {
   const [currentImage, setCurrentImage] = useState<
     { id: string; url: string } | undefined
   >();
+
+  //Mobile
+  const [showRatings, setShowRatings] = useState<boolean>(false);
+  const [showShareOptions, setShowShareOptions] = useState<boolean>(false);
+
+  //Desktop
+
+  //Both
+  const [showImageOverlay, setShowImageOverlay] = useState<boolean>(false);
 
   const getImageIndex = (id: string | undefined) => {
     const index = decoration?.images.findIndex((image) => image.id === id);
@@ -74,76 +124,357 @@ export const Decoration = () => {
   }
 
   return (
-    <div className="min-h-screen">
-      <div className="relative">
-        <div
-          role="button"
-          className="absolute left-3 top-3 px-1 py-1 bg-white rounded-full shadow-lg"
-        >
-          <CaretLeft size={24} color="#000000" weight="bold" />
+    <>
+      {/* Mobile */}
+      <div className="h-full sm:hidden">
+        {showImageOverlay ? (
+          <ImagesOverlay
+            decorationImages={decoration?.images}
+            setShowImageOverlay={setShowImageOverlay}
+          />
+        ) : null}
+        {showRatings ? (
+          <DecorationRatings
+            setShowRatings={setShowRatings}
+            rating={decoration?.rating}
+            decorationId={decorationId}
+            ratings={decoration?.ratings}
+            numRatings={decoration?.num_ratings}
+            userId={user?.id}
+          />
+        ) : null}
+
+        {showShareOptions ? (
+          <ShareDecoration
+            setShowShareOptions={setShowShareOptions}
+            decorationImage={decoration?.images[0]}
+            decorationName={decoration?.name}
+            decorationCountry={decoration?.country}
+            decorationCity={decoration?.city}
+          />
+        ) : null}
+        <div className="relative">
+          <button
+            className="absolute left-3 top-3 px-1 py-1 bg-white rounded-full shadow-lg"
+            onClick={() => navigate(-1)}
+          >
+            <CaretLeft size={24} color="#000000" weight="bold" />
+          </button>
+          <button
+            role="button"
+            className="absolute right-3 top-3 px-1 py-1 bg-white rounded-full shadow-lg"
+          >
+            <Heart size={24} color="#000000" weight="bold" />
+          </button>
+          <button
+            className="absolute right-16 top-3 px-1 py-1 bg-white rounded-full shadow-lg"
+            onClick={() => setShowShareOptions(true)}
+          >
+            <Share size={24} color="#000000" weight="bold" />
+          </button>
+          <div className="absolute right-3 bottom-3 px-3 py-1 text-xs bg-zinc-800 rounded-full">
+            {getImageIndex(currentImage?.id)} / {decoration?.images.length}
+          </div>
+          {decoration && decoration?.images.length > 1 ? (
+            <>
+              <button
+                className="animate-fade-in absolute left-5 top-[45%] cursor-pointer rounded-full bg-black p-1 opacity-80 transition-all duration-100 hover:opacity-60 sm:hidden"
+                onClick={prevImage}
+              >
+                <CaretLeft size={20} color="#FFFFFF" />
+              </button>
+              <button
+                className="animate-fade-in absolute right-5 top-[45%] cursor-pointer rounded-full bg-black p-1 opacity-80 transition-all duration-100 hover:opacity-60 sm:hidden"
+                onClick={nextImage}
+              >
+                <CaretRight size={20} color="#FFFFFF" />
+              </button>
+            </>
+          ) : null}
+          <img
+            loading="lazy"
+            src={currentImage?.url}
+            alt="decoration image"
+            className="h-64 w-full object-cover bg-ch-turquoise"
+            onClick={() => setShowImageOverlay(true)}
+          />
         </div>
-        <div
-          role="button"
-          className="absolute right-3 top-3 px-1 py-1 bg-white rounded-full shadow-lg"
-        >
-          <Heart size={24} color="#000000" weight="bold" />
-        </div>
-        <div
-          role="button"
-          className="absolute right-16 top-3 px-1 py-1 bg-white rounded-full shadow-lg"
-        >
-          <Share size={24} color="#000000" weight="bold" />
-        </div>
-        <div className="absolute right-3 bottom-3 px-3 py-1 text-xs bg-zinc-800 rounded-full">
-          {getImageIndex(currentImage?.id)} / {decoration?.images.length}
-        </div>
-        {decoration && decoration?.images.length > 1 ? (
-          <>
-            <div
+        <div className="px-5 py-3">
+          <div className="flex items-center space-x-2">
+            <h1 className="font-semibold text-3xl">{decoration?.name}</h1>
+            {decoration?.verified ? (
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <CircleWavyCheck size={24} color="#E23737" weight="fill" />
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p>Verified</p>
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
+            ) : null}
+          </div>
+          <div className="flex items-center space-x-1 mt-2">
+            <Star size={16} color="#ffffff" weight="fill" />
+            <span>
+              {decoration?.rating === 0 ? "New" : decoration?.rating.toFixed(1)}
+            </span>
+            &nbsp; &middot; &nbsp;
+            <button
               role="button"
-              className="animate-fade-in absolute left-5 top-[45%] cursor-pointer rounded-full bg-black p-1 opacity-80 transition-all duration-100 hover:opacity-60 sm:hidden"
-              onClick={prevImage}
+              className="underline"
+              onClick={() => setShowRatings(true)}
             >
-              <CaretLeft size={20} color="#FFFFFF" />
-            </div>
-            <div
-              className="animate-fade-in absolute right-5 top-[45%] cursor-pointer rounded-full bg-black p-1 opacity-80 transition-all duration-100 hover:opacity-60 sm:hidden"
-              onClick={nextImage}
-            >
-              <CaretRight size={20} color="#FFFFFF" />
-            </div>
+              {decoration?.num_ratings}{" "}
+              {decoration?.num_ratings === 1 ? "rating" : "ratings"}
+            </button>
+            &nbsp; &middot; &nbsp;
+            <span>{decoration?.num_views} views</span>
+          </div>
+          <div className="mt-2">
+            <span>
+              {decoration?.city}, {decoration?.country}
+            </span>
+          </div>
+        </div>
+        <Separator />
+        {user?.id === decoration?.creator_id ? (
+          <>
+            {!decoration?.verified && !decoration?.verification_submitted ? (
+              <div className="px-5 py-3 flex space-x-5">
+                <WarningCircle
+                  size={52}
+                  color="#E23737"
+                  weight="bold"
+                  className="w-1/3"
+                />
+                <div className="flex flex-col text-sm space-y-2">
+                  <p className="text-lg font-semibold">
+                    Your decoration is not verified.
+                  </p>
+                  <p>
+                    We make sure all decorations are verified for when users
+                    visit decorations, they can guarantee that the decoration
+                    actually exists.
+                  </p>
+                  <div className="text-xs">
+                    You can submit your decoration for verification{" "}
+                    <Link
+                      to={`/verify-decoration/${decorationId}`}
+                      className="text-ch-turquoise underline text-sm"
+                    >
+                      here
+                    </Link>
+                  </div>
+                </div>
+              </div>
+            ) : null}
           </>
         ) : null}
-        <img
-          loading="lazy"
-          src={currentImage?.url}
-          alt="decoration image"
-          className="h-64 w-full object-cover bg-ch-turquoise"
-        />
-      </div>
-      <div className="px-5 py-5">
-        <h1 className="font-semibold text-3xl">{decoration?.name}</h1>
-        <div className="flex items-center space-x-1 mt-2">
-          <Star size={16} color="#ffffff" weight="fill" />
-          <span>
-            {decoration?.rating === 0 ? "New" : decoration?.rating.toFixed(1)}
-          </span>
-          &nbsp; &middot; &nbsp;
-          <span className="underline">
-            {decoration?.numRatings === null ? "0" : decoration?.numRatings}{" "}
-            {decoration?.numRatings === 1 ? "rating" : "ratings"}
-          </span>
-          &nbsp; &middot; &nbsp;
-          <span>
-            {decoration?.numViews === null ? 0 : decoration?.numViews} views
-          </span>
+
+        <Separator />
+        <div className="px-5 py-3 pb-10 rounded-lg">
+          <img
+            src={`https://api.mapbox.com/styles/v1/mapbox/streets-v11/static/pin-l-village+bc1919(${decoration?.longitude},${decoration?.latitude})/${decoration?.longitude},${decoration?.latitude},14,0,0/600x300@2x?attribution=true&logo=true&access_token=${
+              import.meta.env.VITE_MAPBOX_API_KEY
+            }`}
+            alt={`Mapbox map of ${decoration?.longitude},${decoration?.latitude}`}
+            className="rounded-lg"
+          />
+          <span className="text-xs">{decoration?.address}</span>
         </div>
-        <div className="mt-2">
-          <span>
-            {decoration?.city}, {decoration?.country}
-          </span>
+        {/* Bottom nav */}
+        <div className="fixed shadow w-full max-w-[560px] h-18 bottom-0 left-0 right-0 px-5 py-3 flex items-center justify-between dark:bg-zinc-900 dark:border-t dark:border-black">
+          <div>
+            <Button variant="secondary">Edit</Button>
+          </div>
+          <div>
+            <Button>Delete</Button>
+          </div>
         </div>
       </div>
-    </div>
+
+      {/* Desktop */}
+      <div className="hidden sm:block">
+        {showImageOverlay ? (
+          <ImagesOverlay
+            decorationImages={decoration?.images}
+            setShowImageOverlay={setShowImageOverlay}
+          />
+        ) : null}
+        {getUserLoading ? <AppHeaderLoading /> : <AppHeader user={user} />}
+        <div className="sm:flex sm:flex-col sm:mx-96 sm:pt-10">
+          <h1 className="sm:text-3xl sm:font-semibold">{decoration?.name}</h1>
+          <div className="sm:flex sm:justify-between items-center sm:font-semibold sm:text-sm sm:my-2">
+            <div className="sm:flex">
+              <div className="sm:flex sm:items-center">
+                <Star size={16} weight="fill" className="sm:text-ch-light" />
+                &nbsp;
+                <span>{decoration?.rating.toFixed(1)}</span>
+                &nbsp; &middot; &nbsp;
+                <span
+                  className="sm:underline sm:cursor-pointer"
+                  // onClick={() => setViewRatingModalOpen(true)}
+                >
+                  {decoration?.num_ratings}{" "}
+                  {decoration?.num_ratings === 1 ? "rating" : "ratings"}
+                </span>
+              </div>
+              <span className="sm:mx-2">|</span>
+              <div className="sm:flex sm:items-center">
+                &nbsp;
+                <span>{decoration?.num_views}</span>
+                &nbsp;views
+              </div>
+              <span className="sm:mx-2">|</span>
+              <span>
+                {decoration?.city}, {decoration?.country}
+              </span>
+            </div>
+            {user?.id === decoration?.creator_id ? (
+              <div className="sm:mr-1 sm:flex">
+                {!decoration?.verified &&
+                !decoration?.verification_submitted ? (
+                  <VerifiedPopOver decorationId={decorationId} />
+                ) : null}
+                <DecorationUserMenu />
+              </div>
+            ) : (
+              <DecorationMenu />
+            )}
+          </div>
+          {decoration?.images && decoration.images.length > 0 ? (
+            <ImagesGrid
+              decorationImages={decoration?.images}
+              setShowImageOverlay={setShowImageOverlay}
+            />
+          ) : null}
+          <div className="flex justify-end mt-2">
+            {/* Check if a user is logged in */}
+            {currentUser ? (
+              <>
+                {/* Check if the logged in user created the current decoration */}
+                {user?.id === decoration?.creator_id ? (
+                  <Button variant="ghost">
+                    <Heart
+                      size={20}
+                      className="text-ch-dark dark:text-ch-light"
+                    />
+                    <span className="ml-2">Save</span>
+                  </Button>
+                ) : (
+                  <>
+                    {/* Check if user has rated decoration or not */}
+                    {user?.ratings.some((rating) =>
+                      rating.decoration_id === decorationId ? (
+                        <Button variant="ghost">
+                          <ShootingStar
+                            size={20}
+                            color="#E8A951"
+                            weight="fill"
+                          />
+                          <span className="ml-2">Rate</span>
+                        </Button>
+                      ) : (
+                        <Button variant="ghost">
+                          <ShootingStar
+                            size={20}
+                            className="text-ch-dark dark:text-ch-light"
+                          />
+                          <span className="ml-2">Rate</span>
+                        </Button>
+                      )
+                    )}
+
+                    {/* Check if user has saved decoration or not */}
+                    {user?.favourites.some(
+                      (favourite) => favourite.id === decorationId
+                    ) ? (
+                      <Button variant="ghost">
+                        <Heart size={20} color="#FF647F" weight="fill" />
+                        <span className="ml-2">Save</span>
+                      </Button>
+                    ) : (
+                      <Button variant="ghost">
+                        <Heart
+                          size={20}
+                          className="text-ch-dark dark:text-ch-light"
+                        />
+                        <span className="ml-2">Save</span>
+                      </Button>
+                    )}
+                    <Button variant="ghost">
+                      <Heart
+                        size={20}
+                        className="text-ch-dark dark:text-ch-light"
+                      />
+                      <span className="ml-2">Save</span>
+                    </Button>
+                  </>
+                )}
+              </>
+            ) : (
+              // User not logged in
+              <>
+                <Link to="/signin">
+                  <Button variant="ghost">
+                    <ShootingStar
+                      size={20}
+                      className="text-ch-dark dark:text-ch-light"
+                    />
+                    <span className="ml-2">Rate</span>
+                  </Button>
+                </Link>
+                <Link to="/signin">
+                  <Button variant="ghost">
+                    <Heart
+                      size={20}
+                      className="text-ch-dark dark:text-ch-light"
+                    />
+                    <span className="ml-2">Save</span>
+                  </Button>
+                </Link>
+              </>
+            )}
+            <Button variant="ghost">
+              <Share size={20} className="text-ch-dark dark:text-ch-light" />
+              <span className="ml-2">Share</span>
+            </Button>
+          </div>
+          <div className="mt-5 mx-2">
+            <h2 className="text-2xl font-bold">Location</h2>
+            <div className="w-2/3 flex items-center">
+              <h3 className="text-base mr-2 text-gray-600 dark:text-zinc-300">
+                {decoration?.address}
+              </h3>
+              {decoration?.verified ? (
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <CircleWavyCheck
+                        size={24}
+                        color="#E23737"
+                        weight="fill"
+                      />
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      <p>Verified</p>
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
+              ) : null}
+            </div>
+            <div className="my-5 h-[26rem] w-full bg-gray-200 rounded-lg">
+              <img
+                src={`https://api.mapbox.com/styles/v1/mapbox/streets-v11/static/pin-l-village+bc1919(${decoration?.longitude},${decoration?.latitude})/${decoration?.longitude},${decoration?.latitude},14,0/1120x416@2x?access_token=pk.eyJ1Ijoic2hhbXB1cnJzIiwiYSI6ImNsZjdhcmJweDB5cGw0M212YnplaTFkNnkifQ.RRUvcHyfO7W0Pg4vOQ4UvA`}
+                alt="static map"
+                className="rounded-lg"
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+    </>
   );
 };

@@ -7,6 +7,11 @@ export const GET_USER = gql`
       name
       email
       image
+      ratings {
+        id
+        rating
+        decoration_id
+      }
     }
   }
 `;

@@ -1,7 +1,11 @@
 import { useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
 import { useUser } from "@supabase/auth-helpers-react";
-import { useQuery } from "@apollo/client";
+import { useMutation, useQuery } from "@apollo/client";
+import { EDIT_DECORATION } from "@/graphql/mutations/editDecoration";
+import {
+  EditDecoration as EditDecorationData,
+  EditDecorationArgs,
+} from "@/graphql/mutations/editDecoration/types";
 import { GET_DECORATION } from "@/graphql/queries/getDecoration";
 import { GET_USER } from "@/graphql/queries";
 import {
@@ -14,12 +18,12 @@ import {
 } from "@/graphql/queries/getUser/types";
 import { NotFound } from "..";
 import { Link, useParams, useNavigate } from "react-router-dom";
-import { Menu } from "@headlessui/react";
 import {
   DecorationLoading,
   DecorationMenu,
   DecorationRatings,
   DecorationUserMenu,
+  EditDecorationModal,
   ImagesGrid,
   ImagesOverlay,
   ShareDecoration,
@@ -45,11 +49,36 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { useToast } from "@/components/ui/use-toast";
 
 export const Decoration = () => {
   const navigate = useNavigate();
   const { decorationId } = useParams();
   const currentUser = useUser();
+  const { toast } = useToast();
+
+  const [
+    editDecoration,
+    { data: editDecorationData, loading: editDecorationLoading },
+  ] = useMutation<EditDecorationData, EditDecorationArgs>(EDIT_DECORATION, {
+    onCompleted(data) {
+      toast({
+        variant: "success",
+        title: "Success 🎉",
+        description: "Decoration edited successfully!",
+      });
+      setCurrentImage(decoration?.images[0]);
+      setIsEditOpen(false);
+      getDecorationRefetch({ input: { id: data.editDecoration.id } });
+    },
+    onError: (error) => {
+      toast({
+        variant: "destructive",
+        title: "Oh oh!",
+        description: `Failed to edit decoration. ${error}`,
+      });
+    },
+  });
 
   const { data: getUserData, loading: getUserLoading } = useQuery<
     GetUserData,
@@ -64,6 +93,7 @@ export const Decoration = () => {
     data: getDecorationData,
     loading: getDecorationLoading,
     error: getDecorationError,
+    refetch: getDecorationRefetch,
   } = useQuery<GetDecorationData, GetDecorationArgs>(GET_DECORATION, {
     variables: { input: { id: decorationId! } },
     onCompleted: (data) => {
@@ -75,10 +105,6 @@ export const Decoration = () => {
     ? getDecorationData?.getDecoration
     : null;
 
-  const [currentImage, setCurrentImage] = useState<
-    { id: string; url: string } | undefined
-  >();
-
   //Mobile
   const [showRatings, setShowRatings] = useState<boolean>(false);
   const [showShareOptions, setShowShareOptions] = useState<boolean>(false);
@@ -87,6 +113,11 @@ export const Decoration = () => {
 
   //Both
   const [showImageOverlay, setShowImageOverlay] = useState<boolean>(false);
+  const [isEditOpen, setIsEditOpen] = useState<boolean>(false);
+  const [currentImage, setCurrentImage] = useState<
+    { id: string; url: string } | undefined
+  >();
+  const [currentStep, setCurrentStep] = useState<number>(1);
 
   const getImageIndex = (id: string | undefined) => {
     const index = decoration?.images.findIndex((image) => image.id === id);
@@ -115,6 +146,36 @@ export const Decoration = () => {
     }
   };
 
+  const updateDecoration = (
+    id: string,
+    address: string,
+    city: string,
+    country: string,
+    deletedImages: { id: string; url: string }[],
+    latitude: number,
+    longitude: number,
+    name: string,
+    newImages: string[],
+    region: string
+  ) => {
+    editDecoration({
+      variables: {
+        input: {
+          address,
+          city,
+          country,
+          id,
+          latitude,
+          longitude,
+          name,
+          region,
+          deletedImages,
+          newImages,
+        },
+      },
+    });
+  };
+
   if (getDecorationError) {
     return <NotFound />;
   }
@@ -125,8 +186,20 @@ export const Decoration = () => {
 
   return (
     <>
+      {/* Both */}
+      <EditDecorationModal
+        isEditOpen={isEditOpen}
+        setIsEditOpen={setIsEditOpen}
+        decorationImages={decoration?.images}
+        userPremium={user?.premium}
+        decoration={decoration}
+        updateDecoration={updateDecoration}
+        editDecorationLoading={editDecorationLoading}
+        currentStep={currentStep}
+        setCurrentStep={setCurrentStep}
+      />
       {/* Mobile */}
-      <div className="h-full sm:hidden">
+      <div className="min-h-screen sm:hidden">
         {showImageOverlay ? (
           <ImagesOverlay
             decorationImages={decoration?.images}
@@ -203,16 +276,7 @@ export const Decoration = () => {
           <div className="flex items-center space-x-2">
             <h1 className="font-semibold text-3xl">{decoration?.name}</h1>
             {decoration?.verified ? (
-              <TooltipProvider>
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <CircleWavyCheck size={24} color="#E23737" weight="fill" />
-                  </TooltipTrigger>
-                  <TooltipContent>
-                    <p>Verified</p>
-                  </TooltipContent>
-                </Tooltip>
-              </TooltipProvider>
+              <CircleWavyCheck size={24} color="#E23737" weight="fill" />
             ) : null}
           </div>
           <div className="flex items-center space-x-1 mt-2">
@@ -287,7 +351,9 @@ export const Decoration = () => {
         {/* Bottom nav */}
         <div className="fixed shadow w-full max-w-[560px] h-18 bottom-0 left-0 right-0 px-5 py-3 flex items-center justify-between dark:bg-zinc-900 dark:border-t dark:border-black">
           <div>
-            <Button variant="secondary">Edit</Button>
+            <Button variant="secondary" onClick={() => setIsEditOpen(true)}>
+              Edit
+            </Button>
           </div>
           <div>
             <Button>Delete</Button>

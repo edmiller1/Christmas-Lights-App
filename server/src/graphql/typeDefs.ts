@@ -102,6 +102,24 @@ export const typeDefs = gql`
     id: String!
   }
 
+  input ExistingImagesInput {
+    id: String!
+    url: String!
+  }
+
+  input EditDecorationInput {
+    id: String!
+    name: String!
+    address: String!
+    newImages: [String]
+    deletedImages: [ExistingImagesInput]
+    latitude: Float!
+    longitude: Float!
+    country: String!
+    region: String!
+    city: String!
+  }
+
   #Queries
   type Query {
     getAllUsers: [User]
@@ -113,5 +131,6 @@ export const typeDefs = gql`
   type Mutation {
     createUser(input: CreateUserInput!): User!
     createDecoration(input: CreateDecorationInput!): Decoration!
+    editDecoration(input: EditDecorationInput!): Decoration!
   }
 `;

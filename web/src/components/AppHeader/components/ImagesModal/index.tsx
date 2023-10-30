@@ -90,7 +90,11 @@ export const ImagesModal = ({
                     size="icon"
                     onClick={() => setIsCancelOpen(true)}
                   >
-                    <X size={16} color="#ffffff" weight="bold" />
+                    <X
+                      size={16}
+                      weight="bold"
+                      className="text-ch-dark dark:text-ch-light"
+                    />
                   </Button>
                 </div>
                 <div

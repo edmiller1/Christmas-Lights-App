@@ -14,6 +14,7 @@ import {
 import { AppHeader } from "./components";
 import { useEffect, useState } from "react";
 import { AppHeaderLoading } from "./components/AppHeader/components";
+import { Outlet } from "react-router-dom";
 
 function App() {
   const currentUser = useUser();
@@ -65,8 +66,9 @@ function App() {
   }, [currentUser]);
 
   return (
-    <div className="min-h-screen flex items-center justify-center">
-      Christmas Lights App 🎄
+    <div className="min-h-screen">
+      {getUserLoading ? <AppHeaderLoading /> : <AppHeader user={user} />}
+      <Outlet />
     </div>
   );
 }

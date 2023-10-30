@@ -14,21 +14,18 @@ import {
 } from "@apollo/client";
 import { setContext } from "@apollo/client/link/context";
 import { Toaster } from "./components/ui/toaster.tsx";
-import { Decoration, Home, NotFound, SignIn } from "./pages";
+import { Decoration, NotFound, SignIn } from "./pages";
 
 const router = createBrowserRouter([
   {
     path: "/",
     element: <App />,
-    children: [],
-  },
-  {
-    path: "/home",
-    element: <Home />,
-  },
-  {
-    path: "/decoration/:decorationId",
-    element: <Decoration />,
+    children: [
+      {
+        path: "/decoration/:decorationId",
+        element: <Decoration />,
+      },
+    ],
   },
   {
     path: "/signin",

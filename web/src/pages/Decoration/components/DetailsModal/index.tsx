@@ -1,43 +1,51 @@
-import { Fragment } from "react";
+import { Fragment, useEffect } from "react";
 import { Dialog, Transition } from "@headlessui/react";
 import { CircleNotch, X } from "@phosphor-icons/react";
 import { Button } from "@/components/ui/button";
 import { CancelModal } from "@/components";
-import { CreateDecorationForm } from "..";
+import { EditDecorationForm } from "..";
+import { Get_Decoration } from "@/graphql/queries/getDecoration/types";
 
 interface Props {
-  isCreateOpen: boolean;
+  isEditOpen: boolean;
+  setIsEditOpen: (isEditOpen: boolean) => void;
+  setIsCancelOpen: (iscancelOpen: boolean) => void;
   isCancelOpen: boolean;
-  setIsCancelOpen: (cancelOpen: boolean) => void;
-  discardDecoration: () => void;
+  discardEdits: () => void;
   setCurrentStep: (currentStep: number) => void;
-  images: Array<{ id: string; url: string }>;
-  files: File[];
-  createNewDecoration: (
-    name: string,
+  deletedImages: { id: string; url: string }[];
+  decoration: Get_Decoration | null;
+  updateDecoration: (
+    id: string,
     address: string,
+    city: string,
+    country: string,
+    deletedImages: { id: string; url: string }[],
     latitude: number,
     longitude: number,
-    country: string,
-    region: string,
-    city: string,
-    images: string[]
+    name: string,
+    newImages: string[],
+    region: string
   ) => void;
-  createDecorationLoading: boolean;
+  editDecorationLoading: boolean;
+  files: File[] | number[];
 }
 
 export const DetailsModal = ({
-  isCreateOpen,
-  isCancelOpen,
+  isEditOpen,
+  setIsEditOpen,
   setIsCancelOpen,
-  discardDecoration,
+  isCancelOpen,
+  discardEdits,
   setCurrentStep,
+  deletedImages,
+  decoration,
+  updateDecoration,
+  editDecorationLoading,
   files,
-  createNewDecoration,
-  createDecorationLoading,
 }: Props) => {
   return (
-    <Transition appear show={isCreateOpen} as={Fragment}>
+    <Transition appear show={isEditOpen} as={Fragment}>
       <Dialog
         as="div"
         className="relative z-10"
@@ -71,7 +79,7 @@ export const DetailsModal = ({
                     as="h3"
                     className="text-lg font-medium leading-6 text-gray-900 dark:text-gray-50"
                   >
-                    Decoration Details
+                    Edit Decoration
                   </Dialog.Title>
                   <Button
                     variant="ghost"
@@ -81,35 +89,42 @@ export const DetailsModal = ({
                     <X size={16} color="#ffffff" weight="bold" />
                   </Button>
                 </div>
+                <div className="mt-2">
+                  <p className="text-sm text-gray-500 dark:text-gray-300">
+                    Update your decoration name and address.
+                  </p>
+                </div>
+
                 <div>
-                  {createDecorationLoading ? (
-                    <div className="flex flex-col items-center justify-center py-5">
+                  {editDecorationLoading ? (
+                    <div className="flex flex-col items-center">
                       <CircleNotch
                         size={80}
-                        color="#ffffff"
                         className="animate-spin text-ch-dark dark:text-ch-light"
                       />
                       <p className="mt-2 dark:text-white">
-                        Creating Decoration...
+                        Updating Decoration...
                       </p>
                     </div>
                   ) : (
-                    <CreateDecorationForm
+                    <EditDecorationForm
                       setCurrentStep={setCurrentStep}
+                      deletedImages={deletedImages}
+                      decoration={decoration}
+                      updateDecoration={updateDecoration}
                       files={files}
-                      createNewDecoration={createNewDecoration}
                     />
                   )}
                 </div>
 
                 <CancelModal
-                  title="Discard decoration?"
-                  body="If you leave, your edits won't be saved."
+                  title="Discard edits?"
+                  body="If you leave, your edits won;t be saved."
                   cancelText="Cancel"
-                  confirmText="Discard"
-                  discardFunction={discardDecoration}
+                  discardFunction={discardEdits}
                   isCancelOpen={isCancelOpen}
                   setIsCancelOpen={setIsCancelOpen}
+                  confirmText="Discard"
                 />
               </Dialog.Panel>
             </Transition.Child>

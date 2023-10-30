@@ -17,4 +17,10 @@ export const Cloudinary = {
 
     return { id: res.public_id, url: res.secure_url };
   },
+  destroy: async (id: string) => {
+    await cloudinary.v2.uploader.destroy(id, {
+      invalidate: true,
+      resource_type: "image",
+    });
+  },
 };

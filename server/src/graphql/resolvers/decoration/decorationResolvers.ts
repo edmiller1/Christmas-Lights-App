@@ -1,7 +1,11 @@
 import { Request, Response } from "express";
 import { prisma } from "../../../database";
 import { Decoration, DecorationImage } from "@prisma/client";
-import { CreateDecorationArgs, GetDecorationArgs } from "./types";
+import {
+  CreateDecorationArgs,
+  EditDecorationArgs,
+  GetDecorationArgs,
+} from "./types";
 import { authorise, calculateRating } from "../../../lib/helpers";
 import { Cloudinary } from "../../../lib/cloudinary";
 
@@ -92,6 +96,56 @@ export const decorationResolvers = {
       } catch (error) {
         //@ts-ignore
         throw new Error(error.message);
+      }
+    },
+    editDecoration: async (
+      _root: undefined,
+      { input }: EditDecorationArgs,
+      { _, req, res }: { _: undefined; req: Request; res: Response }
+    ): Promise<Decoration> => {
+      try {
+        const user = await authorise(req);
+
+        if (!user) {
+          throw new Error("User cannot be found");
+        }
+
+        const newImages: { id: string; url: string }[] = [];
+        if (input.newImages) {
+          for (const image of input.newImages) {
+            const newImage = await Cloudinary.upload(image);
+            newImages.push(newImage);
+          }
+        }
+
+        if (input.deletedImages) {
+          for (const image of input.deletedImages) {
+            await Cloudinary.destroy(image.id);
+          }
+        }
+
+        const updatedDecoration = await prisma.decoration.update({
+          where: {
+            id: input.id,
+          },
+          data: {
+            name: input.name,
+            address: input.address,
+            latitude: input.latitude,
+            longitude: input.longitude,
+            country: input.country,
+            region: input.region,
+            city: input.city,
+            images: {
+              create: newImages ? newImages : [],
+              deleteMany: input.deletedImages ? input.deletedImages : [],
+            },
+          },
+        });
+
+        return updatedDecoration;
+      } catch (error) {
+        throw new Error(`${error}`);
       }
     },
   },

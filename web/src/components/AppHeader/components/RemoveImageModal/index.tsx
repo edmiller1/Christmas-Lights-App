@@ -61,7 +61,12 @@ export const RemoveImageModal = ({
                 </div>
 
                 <div className="mt-8 flex items-center space-x-4">
-                  <Button onClick={() => removeImage(currentImage?.id)}>
+                  <Button
+                    onClick={() => {
+                      setIsRemoveImageOpen(false);
+                      removeImage(currentImage?.id);
+                    }}
+                  >
                     Delete
                   </Button>
                   <Button

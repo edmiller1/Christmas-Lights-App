@@ -16,3 +16,18 @@ export interface GetDecorationArgs {
     id: string;
   };
 }
+
+export interface EditDecorationArgs {
+  input: {
+    id: string;
+    name: string;
+    address: string;
+    newImages?: string[];
+    deletedImages?: { id: string; url: string }[];
+    latitude: number;
+    longitude: number;
+    country: string;
+    region: string;
+    city: string;
+  };
+}

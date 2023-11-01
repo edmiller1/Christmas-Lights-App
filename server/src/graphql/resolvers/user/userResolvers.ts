@@ -17,6 +17,8 @@ export const userResolvers = {
           },
           include: {
             ratings: true,
+            favourites: true,
+            notifications: true,
           },
         });
 

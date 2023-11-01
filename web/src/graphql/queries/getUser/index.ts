@@ -12,6 +12,9 @@ export const GET_USER = gql`
         rating
         decoration_id
       }
+      favourites {
+        id
+      }
     }
   }
 `;

@@ -46,6 +46,7 @@ module.exports = {
         "ch-yelow-hover": "#eccb85",
         "ch-yellow-shade": "#f6d597",
         "ch-indigo": "#040043",
+        "ch-pink": "#FF647F",
         "ch-light": "#f7f7f8",
         "ch-dark": "#202023",
       },

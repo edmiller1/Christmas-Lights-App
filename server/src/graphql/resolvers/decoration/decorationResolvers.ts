@@ -1,10 +1,12 @@
 import { Request, Response } from "express";
 import { prisma } from "../../../database";
-import { Decoration, DecorationImage } from "@prisma/client";
+import { Decoration, DecorationImage, User } from "@prisma/client";
 import {
   CreateDecorationArgs,
   EditDecorationArgs,
+  FavouriteDecorationArgs,
   GetDecorationArgs,
+  unfavouriteDecorationArgs,
 } from "./types";
 import { authorise, calculateRating } from "../../../lib/helpers";
 import { Cloudinary } from "../../../lib/cloudinary";
@@ -144,6 +146,66 @@ export const decorationResolvers = {
         });
 
         return updatedDecoration;
+      } catch (error) {
+        throw new Error(`${error}`);
+      }
+    },
+    favouriteDecoration: async (
+      _root: undefined,
+      { input }: FavouriteDecorationArgs,
+      { _, req, res }: { _: undefined; req: Request; res: Response }
+    ): Promise<User> => {
+      try {
+        const user = await authorise(req);
+
+        if (!user) {
+          throw new Error("User cannot be found");
+        }
+
+        const updatedUser = await prisma.user.update({
+          where: {
+            id: user.id,
+          },
+          data: {
+            favourites: {
+              connect: {
+                id: input.id,
+              },
+            },
+          },
+        });
+
+        return updatedUser;
+      } catch (error) {
+        throw new Error(`${error}`);
+      }
+    },
+    unfavouriteDecoration: async (
+      _root: undefined,
+      { input }: unfavouriteDecorationArgs,
+      { _, req, res }: { _: undefined; req: Request; res: Response }
+    ): Promise<User> => {
+      try {
+        const user = await authorise(req);
+
+        if (!user) {
+          throw new Error("User cannot be found");
+        }
+
+        const updatedUser = await prisma.user.update({
+          where: {
+            id: user.id,
+          },
+          data: {
+            favourites: {
+              disconnect: {
+                id: input.id,
+              },
+            },
+          },
+        });
+
+        return updatedUser;
       } catch (error) {
         throw new Error(`${error}`);
       }

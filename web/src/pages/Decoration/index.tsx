@@ -1,13 +1,24 @@
 import { useState } from "react";
 import { useUser } from "@supabase/auth-helpers-react";
 import { useMutation, useQuery } from "@apollo/client";
-import { EDIT_DECORATION } from "@/graphql/mutations/editDecoration";
+import {
+  EDIT_DECORATION,
+  FAVOURITE_DECORATION,
+  UNFAVOURITE_DECORATION,
+} from "@/graphql/mutations";
 import {
   EditDecoration as EditDecorationData,
   EditDecorationArgs,
 } from "@/graphql/mutations/editDecoration/types";
-import { GET_DECORATION } from "@/graphql/queries/getDecoration";
-import { GET_USER } from "@/graphql/queries";
+import {
+  FavouriteDecoration as FavouriteDecorationData,
+  FavouriteDecorationArgs,
+} from "@/graphql/mutations/favouriteDecoration/types";
+import {
+  UnfavouriteDecoration as UnfavouriteDecorationData,
+  UnfavouriteDecorationArgs,
+} from "@/graphql/mutations/unfavouriteDecoration/types";
+import { GET_DECORATION, GET_USER } from "@/graphql/queries";
 import {
   GetDecoration as GetDecorationData,
   GetDecorationArgs,
@@ -26,12 +37,15 @@ import {
   EditDecorationModal,
   ImagesGrid,
   ImagesOverlay,
+  RateButton,
+  SaveButton,
   ShareDecoration,
   VerifiedPopOver,
 } from "./components";
 import {
   CaretLeft,
   CaretRight,
+  CircleNotch,
   CircleWavyCheck,
   Heart,
   Share,
@@ -57,10 +71,10 @@ export const Decoration = () => {
   const currentUser = useUser();
   const { toast } = useToast();
 
-  const [
-    editDecoration,
-    { data: editDecorationData, loading: editDecorationLoading },
-  ] = useMutation<EditDecorationData, EditDecorationArgs>(EDIT_DECORATION, {
+  const [editDecoration, { loading: editDecorationLoading }] = useMutation<
+    EditDecorationData,
+    EditDecorationArgs
+  >(EDIT_DECORATION, {
     onCompleted(data) {
       toast({
         variant: "success",
@@ -80,10 +94,41 @@ export const Decoration = () => {
     },
   });
 
-  const { data: getUserData, loading: getUserLoading } = useQuery<
-    GetUserData,
-    GetUserArgs
-  >(GET_USER, {
+  const [favouriteDecoration, { loading: favouriteDecorationLoading }] =
+    useMutation<FavouriteDecorationData, FavouriteDecorationArgs>(
+      FAVOURITE_DECORATION,
+      {
+        onCompleted: (data) => {
+          toast({
+            variant: "success",
+            title: "Success 🎉",
+            description: "Decoration saved!",
+          });
+          getUserRefetch({ input: { id: data.favouriteDecoration.id } });
+        },
+      }
+    );
+
+  const [unfavouriteDecoration, { loading: unfavouriteDecorationLoading }] =
+    useMutation<UnfavouriteDecorationData, UnfavouriteDecorationArgs>(
+      UNFAVOURITE_DECORATION,
+      {
+        onCompleted: (data) => {
+          toast({
+            variant: "success",
+            title: "Success 🎉",
+            description: "Decoration removed from favourites!",
+          });
+          getUserRefetch({ input: { id: data.unfavouriteDecoration.id } });
+        },
+      }
+    );
+
+  const {
+    data: getUserData,
+    loading: getUserLoading,
+    refetch: getUserRefetch,
+  } = useQuery<GetUserData, GetUserArgs>(GET_USER, {
     variables: { input: { id: currentUser?.id ? currentUser.id : "" } },
   });
 
@@ -176,6 +221,14 @@ export const Decoration = () => {
     });
   };
 
+  const addtoFavourites = () => {
+    favouriteDecoration({ variables: { input: { id: decorationId! } } });
+  };
+
+  const removeFromFavourites = () => {
+    unfavouriteDecoration({ variables: { input: { id: decorationId! } } });
+  };
+
   if (getDecorationError) {
     return <NotFound />;
   }
@@ -214,6 +267,7 @@ export const Decoration = () => {
             ratings={decoration?.ratings}
             numRatings={decoration?.num_ratings}
             userId={user?.id}
+            decorationUserId={decoration?.creator_id}
           />
         ) : null}
 
@@ -233,12 +287,63 @@ export const Decoration = () => {
           >
             <CaretLeft size={24} color="#000000" weight="bold" />
           </button>
-          <button
-            role="button"
-            className="absolute right-3 top-3 px-1 py-1 bg-white rounded-full shadow-lg"
-          >
-            <Heart size={24} color="#000000" weight="bold" />
-          </button>
+          {favouriteDecorationLoading || unfavouriteDecorationLoading ? (
+            <button
+              role="button"
+              className="absolute right-3 top-3 px-1 py-1 bg-white rounded-full shadow-lg"
+            >
+              <CircleNotch
+                size={24}
+                color="#000000"
+                weight="bold"
+                className="animate-spin"
+              />
+            </button>
+          ) : (
+            <>
+              {currentUser ? (
+                <>
+                  {user?.favourites.some(
+                    (favourite) => favourite.id === decorationId
+                  ) ? (
+                    <button
+                      role="button"
+                      className="absolute right-3 top-3 px-1 py-1 bg-white rounded-full shadow-lg"
+                      onClick={() =>
+                        unfavouriteDecoration({
+                          variables: { input: { id: decorationId! } },
+                        })
+                      }
+                    >
+                      <Heart size={24} weight="fill" className="text-ch-pink" />
+                    </button>
+                  ) : (
+                    <button
+                      role="button"
+                      className="absolute right-3 top-3 px-1 py-1 bg-white rounded-full shadow-lg"
+                      onClick={() =>
+                        favouriteDecoration({
+                          variables: { input: { id: decorationId! } },
+                        })
+                      }
+                    >
+                      <Heart size={24} color="#000000" weight="bold" />
+                    </button>
+                  )}
+                </>
+              ) : (
+                <Link to="/signin">
+                  <button
+                    role="button"
+                    className="absolute right-3 top-3 px-1 py-1 bg-white rounded-full shadow-lg"
+                  >
+                    <Heart size={24} color="#000000" weight="bold" />
+                  </button>
+                </Link>
+              )}
+            </>
+          )}
+
           <button
             className="absolute right-16 top-3 px-1 py-1 bg-white rounded-full shadow-lg"
             onClick={() => setShowShareOptions(true)}
@@ -322,7 +427,7 @@ export const Decoration = () => {
                     visit decorations, they can guarantee that the decoration
                     actually exists.
                   </p>
-                  <div className="text-xs">
+                  <div className="text-sm">
                     You can submit your decoration for verification{" "}
                     <Link
                       to={`/verify-decoration/${decorationId}`}
@@ -346,7 +451,7 @@ export const Decoration = () => {
             alt={`Mapbox map of ${decoration?.longitude},${decoration?.latitude}`}
             className="rounded-lg"
           />
-          <span className="text-xs">{decoration?.address}</span>
+          <span className="text-sm">{decoration?.address}</span>
         </div>
         {/* Bottom nav */}
         <div className="fixed shadow w-full max-w-[560px] h-18 bottom-0 left-0 right-0 px-5 py-3 flex items-center justify-between dark:bg-zinc-900 dark:border-t dark:border-black">
@@ -369,7 +474,6 @@ export const Decoration = () => {
             setShowImageOverlay={setShowImageOverlay}
           />
         ) : null}
-        {getUserLoading ? <AppHeaderLoading /> : <AppHeader user={user} />}
         <div className="sm:flex sm:flex-col sm:mx-96 sm:pt-10">
           <h1 className="sm:text-3xl sm:font-semibold">{decoration?.name}</h1>
           <div className="sm:flex sm:justify-between items-center sm:font-semibold sm:text-sm sm:my-2">
@@ -404,7 +508,7 @@ export const Decoration = () => {
                 !decoration?.verification_submitted ? (
                   <VerifiedPopOver decorationId={decorationId} />
                 ) : null}
-                <DecorationUserMenu />
+                <DecorationUserMenu setIsEditOpen={setIsEditOpen} />
               </div>
             ) : (
               <DecorationMenu />
@@ -417,92 +521,20 @@ export const Decoration = () => {
             />
           ) : null}
           <div className="flex justify-end mt-2">
-            {/* Check if a user is logged in */}
-            {currentUser ? (
-              <>
-                {/* Check if the logged in user created the current decoration */}
-                {user?.id === decoration?.creator_id ? (
-                  <Button variant="ghost">
-                    <Heart
-                      size={20}
-                      className="text-ch-dark dark:text-ch-light"
-                    />
-                    <span className="ml-2">Save</span>
-                  </Button>
-                ) : (
-                  <>
-                    {/* Check if user has rated decoration or not */}
-                    {user?.ratings.some((rating) =>
-                      rating.decoration_id === decorationId ? (
-                        <Button variant="ghost">
-                          <ShootingStar
-                            size={20}
-                            color="#E8A951"
-                            weight="fill"
-                          />
-                          <span className="ml-2">Rate</span>
-                        </Button>
-                      ) : (
-                        <Button variant="ghost">
-                          <ShootingStar
-                            size={20}
-                            className="text-ch-dark dark:text-ch-light"
-                          />
-                          <span className="ml-2">Rate</span>
-                        </Button>
-                      )
-                    )}
-
-                    {/* Check if user has saved decoration or not */}
-                    {user?.favourites.some(
-                      (favourite) => favourite.id === decorationId
-                    ) ? (
-                      <Button variant="ghost">
-                        <Heart size={20} color="#FF647F" weight="fill" />
-                        <span className="ml-2">Save</span>
-                      </Button>
-                    ) : (
-                      <Button variant="ghost">
-                        <Heart
-                          size={20}
-                          className="text-ch-dark dark:text-ch-light"
-                        />
-                        <span className="ml-2">Save</span>
-                      </Button>
-                    )}
-                    <Button variant="ghost">
-                      <Heart
-                        size={20}
-                        className="text-ch-dark dark:text-ch-light"
-                      />
-                      <span className="ml-2">Save</span>
-                    </Button>
-                  </>
-                )}
-              </>
-            ) : (
-              // User not logged in
-              <>
-                <Link to="/signin">
-                  <Button variant="ghost">
-                    <ShootingStar
-                      size={20}
-                      className="text-ch-dark dark:text-ch-light"
-                    />
-                    <span className="ml-2">Rate</span>
-                  </Button>
-                </Link>
-                <Link to="/signin">
-                  <Button variant="ghost">
-                    <Heart
-                      size={20}
-                      className="text-ch-dark dark:text-ch-light"
-                    />
-                    <span className="ml-2">Save</span>
-                  </Button>
-                </Link>
-              </>
-            )}
+            <RateButton
+              currentUser={currentUser}
+              user={user}
+              decorationId={decorationId}
+            />
+            <SaveButton
+              currentUser={currentUser}
+              user={user}
+              decorationId={decorationId}
+              addtoFavourites={addtoFavourites}
+              removeFromFavourites={removeFromFavourites}
+              favouriteDecorationLoading={favouriteDecorationLoading}
+              unfavouriteDecorationLoading={unfavouriteDecorationLoading}
+            />
             <Button variant="ghost">
               <Share size={20} className="text-ch-dark dark:text-ch-light" />
               <span className="ml-2">Share</span>

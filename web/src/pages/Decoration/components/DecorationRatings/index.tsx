@@ -1,6 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { Separator } from "@/components/ui/separator";
+import { Get_User } from "@/graphql/queries/getUser/types";
 import { Star, X } from "@phosphor-icons/react";
 import { motion, Variants } from "framer-motion";
 
@@ -18,6 +19,7 @@ interface Props {
     | undefined;
   numRatings: number | undefined;
   userId: string | undefined;
+  decorationUserId: string | undefined;
 }
 
 type RatingData = {
@@ -40,6 +42,7 @@ export const DecorationRatings = ({
   ratings,
   numRatings,
   userId,
+  decorationUserId,
 }: Props) => {
   const ratingLength = numRatings ?? 0;
   const counts: Counts = {
@@ -100,18 +103,22 @@ export const DecorationRatings = ({
           <span>Overall rating</span>
           <div className="mt-2">{bars}</div>
         </div>
-        {ratings?.some((rating) => rating.user_id === userId) ? (
-          <div className="flex justify-center mt-20">
-            <Button variant="secondary" className="text-lg font-semibold">
-              Edit rating
-            </Button>
-          </div>
-        ) : (
-          <div className="flex justify-center mt-20">
-            <Button variant="secondary" className="text-lg font-semibold">
-              Rate decoration
-            </Button>
-          </div>
+        {userId === decorationUserId ? null : (
+          <>
+            {ratings?.some((rating) => rating.user_id === userId) ? (
+              <div className="flex justify-center mt-20">
+                <Button variant="secondary" className="text-lg font-semibold">
+                  Edit rating
+                </Button>
+              </div>
+            ) : (
+              <div className="flex justify-center mt-20">
+                <Button variant="secondary" className="text-lg font-semibold">
+                  Rate decoration
+                </Button>
+              </div>
+            )}
+          </>
         )}
       </motion.div>
     </>

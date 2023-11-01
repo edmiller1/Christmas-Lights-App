@@ -67,7 +67,14 @@ function App() {
 
   return (
     <div className="min-h-screen">
-      {getUserLoading ? <AppHeaderLoading /> : <AppHeader user={user} />}
+      {window.location.pathname.includes("decoration") ? (
+        <div className="hidden sm:block">
+          {getUserLoading ? <AppHeaderLoading /> : <AppHeader user={user} />}
+        </div>
+      ) : (
+        <>{getUserLoading ? <AppHeaderLoading /> : <AppHeader user={user} />}</>
+      )}
+
       <Outlet />
     </div>
   );

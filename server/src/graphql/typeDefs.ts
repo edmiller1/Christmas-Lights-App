@@ -120,6 +120,14 @@ export const typeDefs = gql`
     city: String!
   }
 
+  input FavouriteDecorationInput {
+    id: String!
+  }
+
+  input UnfavouriteDecorationInput {
+    id: String!
+  }
+
   #Queries
   type Query {
     getAllUsers: [User]
@@ -132,5 +140,7 @@ export const typeDefs = gql`
     createUser(input: CreateUserInput!): User!
     createDecoration(input: CreateDecorationInput!): Decoration!
     editDecoration(input: EditDecorationInput!): Decoration!
+    favouriteDecoration(input: FavouriteDecorationInput!): User!
+    unfavouriteDecoration(input: UnfavouriteDecorationInput!): User!
   }
 `;

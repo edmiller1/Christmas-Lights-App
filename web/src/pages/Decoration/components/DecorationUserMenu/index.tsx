@@ -7,7 +7,11 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { DotsThreeVertical } from "@phosphor-icons/react";
 
-export const DecorationUserMenu = () => {
+interface Props {
+  setIsEditOpen: (isEditOpen: boolean) => void;
+}
+
+export const DecorationUserMenu = ({ setIsEditOpen }: Props) => {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -20,7 +24,9 @@ export const DecorationUserMenu = () => {
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent className="mr-24">
-        <DropdownMenuItem>Edit</DropdownMenuItem>
+        <DropdownMenuItem onClick={() => setIsEditOpen(true)}>
+          Edit
+        </DropdownMenuItem>
         <DropdownMenuItem>Delete</DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

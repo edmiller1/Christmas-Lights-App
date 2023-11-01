@@ -31,3 +31,15 @@ export interface EditDecorationArgs {
     city: string;
   };
 }
+
+export interface FavouriteDecorationArgs {
+  input: {
+    id: string;
+  };
+}
+
+export interface unfavouriteDecorationArgs {
+  input: {
+    id: string;
+  };
+}

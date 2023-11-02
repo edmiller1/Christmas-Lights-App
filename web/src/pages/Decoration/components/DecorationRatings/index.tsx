@@ -1,7 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { Separator } from "@/components/ui/separator";
-import { Get_User } from "@/graphql/queries/getUser/types";
 import { Star, X } from "@phosphor-icons/react";
 import { motion, Variants } from "framer-motion";
 
@@ -21,10 +20,6 @@ interface Props {
   userId: string | undefined;
   decorationUserId: string | undefined;
 }
-
-type RatingData = {
-  rating: number;
-};
 
 type Counts = {
   [key: number]: number;

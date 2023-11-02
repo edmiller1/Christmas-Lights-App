@@ -21,6 +21,7 @@ export interface Get_Decoration {
     decoration_id: string;
   }>;
   creator_id: string;
+  views: Array<{ id: string }>;
 }
 
 export interface GetDecoration {

@@ -13,16 +13,17 @@ import { Get_User } from "@/graphql/queries/getUser/types";
 
 interface Props {
   user: Get_User | null;
+  signOut: () => void;
 }
 
-export const MenuItems = ({ user }: Props) => {
+export const MenuItems = ({ user, signOut }: Props) => {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <Button variant="ghost" className="relative h-8 w-8 rounded-full">
           <Avatar className="h-9 w-9">
             <AvatarImage src={user?.image} alt="profile image" />
-            <AvatarFallback>BB</AvatarFallback>
+            <AvatarFallback>{user?.name[0]}</AvatarFallback>
           </Avatar>
         </Button>
       </DropdownMenuTrigger>
@@ -31,7 +32,7 @@ export const MenuItems = ({ user }: Props) => {
           <div className="flex items-center space-x-3">
             <Avatar className="h-9 w-9">
               <AvatarImage src={user?.image as string} alt="profile avatar" />
-              <AvatarFallback>BB</AvatarFallback>
+              <AvatarFallback>{user?.name[0]}</AvatarFallback>
             </Avatar>
             <div className="flex flex-col space-y-1">
               <p className="text-sm font-medium leading-none">{user?.name}</p>
@@ -49,7 +50,7 @@ export const MenuItems = ({ user }: Props) => {
           <DropdownMenuItem>Settings</DropdownMenuItem>
         </DropdownMenuGroup>
         <DropdownMenuSeparator />
-        <DropdownMenuItem>Log out</DropdownMenuItem>
+        <DropdownMenuItem onClick={signOut}>Sign Out</DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
   );

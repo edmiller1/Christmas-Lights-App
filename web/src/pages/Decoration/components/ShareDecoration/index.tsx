@@ -99,7 +99,10 @@ export const ShareDecoration = ({
             onClick={copyLink}
           >
             <p>Copy Link</p>
-            <Copy size={28} className="mr-5 ml-2 dark:text-ch-light" />
+            <Copy
+              size={28}
+              className="mr-5 ml-2 text-ch-dark dark:text-ch-light"
+            />
           </button>
 
           <div className="w-full mt-5 rounded-tr-lg rounded-tl-lg border rounded-bl-lg rounded-br-lg dark:border-zinc-700 dark:bg-zinc-800">

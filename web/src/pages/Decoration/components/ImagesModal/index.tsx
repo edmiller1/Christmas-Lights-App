@@ -92,7 +92,7 @@ export const ImagesModal = ({
                   </div>
                   <div className="mt-2">
                     <p className="text-sm text-gray-500 dark:text-gray-300">
-                      Update your decoration.
+                      Update your decoration
                     </p>
                   </div>
                   {images?.length === 0 ? (

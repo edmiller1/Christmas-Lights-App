@@ -1,6 +1,5 @@
 import {
   Bell,
-  ClockClockwise,
   Heart,
   House,
   HouseLine,
@@ -10,7 +9,7 @@ import {
 } from "@phosphor-icons/react";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
-import { Link } from "react-router-dom";
+import { Link, redirect } from "react-router-dom";
 import logo from "../../assets/ChristmasLights-House-Logo.png";
 import {
   CreateDecorationModal,
@@ -19,13 +18,37 @@ import {
 } from "./components";
 import { Get_User } from "@/graphql/queries/getUser/types";
 import { useState } from "react";
+import { supabase } from "@/lib/supabaseClient";
+import { useToast } from "../ui/use-toast";
 
 interface Props {
   user: Get_User | null;
 }
 
 export const AppHeader = ({ user }: Props) => {
+  const { toast } = useToast();
   const [isCreateOpen, setIsCreateOpen] = useState<boolean>(false);
+
+  const signOut = async () => {
+    await supabase.auth
+      .signOut()
+      .then(() => {
+        sessionStorage.removeItem("token");
+        toast({
+          variant: "success",
+          title: "Success 🎉",
+          description: "Signed out successfully!",
+        });
+        return redirect("/");
+      })
+      .catch((error) => {
+        toast({
+          variant: "destructive",
+          title: "Error 😬",
+          description: `${error}`,
+        });
+      });
+  };
 
   return (
     <>
@@ -62,7 +85,11 @@ export const AppHeader = ({ user }: Props) => {
                   </Button>
                 </>
               ) : null}
-              {user ? <MenuItems user={user} /> : <LoggedOutMenuItems />}
+              {user ? (
+                <MenuItems user={user} signOut={signOut} />
+              ) : (
+                <LoggedOutMenuItems />
+              )}
             </div>
           </div>
         </div>

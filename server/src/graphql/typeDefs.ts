@@ -128,6 +128,11 @@ export const typeDefs = gql`
     id: String!
   }
 
+  input AddViewInput {
+    id: String!
+    numViews: Int!
+  }
+
   #Queries
   type Query {
     getAllUsers: [User]
@@ -142,5 +147,6 @@ export const typeDefs = gql`
     editDecoration(input: EditDecorationInput!): Decoration!
     favouriteDecoration(input: FavouriteDecorationInput!): User!
     unfavouriteDecoration(input: UnfavouriteDecorationInput!): User!
+    addView(input: AddViewInput!): Decoration!
   }
 `;

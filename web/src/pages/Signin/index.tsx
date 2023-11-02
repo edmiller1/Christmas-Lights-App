@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import logo from "../../assets/ChristmasLights-House-Logo.png";
 import { Button } from "@/components/ui/button";
 import {
@@ -9,26 +9,55 @@ import {
   FaMicrosoft,
   FaDiscord,
 } from "react-icons/fa";
-import { useSupabaseClient } from "@supabase/auth-helpers-react";
+import { useSupabaseClient, useUser } from "@supabase/auth-helpers-react";
+import { useToast } from "@/components/ui/use-toast";
 
 export const SignIn = () => {
+  const currentUser = useUser();
+  const navigate = useNavigate();
+  const { toast } = useToast();
   const supabase = useSupabaseClient();
 
   const signInWithDiscord = async () => {
     const { error } = await supabase.auth.signInWithOAuth({
       provider: "discord",
       options: {
-        redirectTo: "http://localhost:3000/home",
+        redirectTo: "http://localhost:3000/",
       },
     });
     if (error) {
-      alert(error.message);
+      toast({
+        variant: "destructive",
+        title: "Error 😬",
+        description: "Failed to log in. Please try again.",
+      });
     }
   };
+
+  const signInWithGoogle = async () => {
+    const { error } = await supabase.auth.signInWithOAuth({
+      provider: "google",
+      options: {
+        redirectTo: "http://localhost:3000/",
+      },
+    });
+    if (error) {
+      toast({
+        variant: "destructive",
+        title: "Error 😬",
+        description: "Failed to log in. Please try again.",
+      });
+    }
+  };
+
+  if (currentUser) {
+    navigate("/");
+  }
+
   return (
     <div className="flex flex-col min-h-screen items-center justify-center space-y-8 py-12">
       <div>
-        <Link to="/home">
+        <Link to="/">
           <img src={logo} alt="logo" className="h-52" />
         </Link>
       </div>
@@ -45,6 +74,7 @@ export const SignIn = () => {
               <Button
                 variant="outline"
                 className="inline-flex items-center py-6 text-base"
+                onClick={signInWithGoogle}
               >
                 <FaGoogle className="mr-2 text-lg" />
                 Google

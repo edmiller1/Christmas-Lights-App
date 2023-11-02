@@ -1,16 +1,67 @@
 import { Fragment, useState } from "react";
 import { Dialog, Transition } from "@headlessui/react";
-import { Star } from "@phosphor-icons/react";
+import { Star, X } from "@phosphor-icons/react";
+import { Button } from "@/components/ui/button";
+import { Progress } from "@/components/ui/progress";
 
 interface Props {
   isRatingModalOpen: boolean;
   setIsRatingModalOpen: (isRatingModalOpen: boolean) => void;
+  rating: number | undefined;
+  decorationId: string | undefined;
+  ratings:
+    | {
+        id: string;
+        rating: number;
+        user_id: string;
+        decoration_id: string;
+      }[]
+    | undefined;
+  numRatings: number | undefined;
+  userId: string | undefined;
+  decorationUserId: string | undefined;
 }
+
+type Counts = {
+  [key: number]: number;
+};
 
 export const RateDecorationModal = ({
   isRatingModalOpen,
   setIsRatingModalOpen,
+  rating,
+  decorationId,
+  ratings,
+  numRatings,
+  userId,
+  decorationUserId,
 }: Props) => {
+  const ratingLength = numRatings ?? 0;
+  const counts: Counts = {
+    1: 0,
+    2: 0,
+    3: 0,
+    4: 0,
+    5: 0,
+  };
+
+  ratings?.forEach((item) => {
+    counts[item.rating]++;
+  });
+
+  const bars = [];
+  for (let i = 5; i >= 1; i--) {
+    bars.push(
+      <div className="flex items-center space-x-5 mb-3" key={i}>
+        <span className="text-sm font-medium">{i}</span>
+        <Progress value={(counts[i] / ratingLength) * 100} className="w-full" />
+        {/* <span className="text-sm font-medium">
+          {counts[i] === 0 ? 0 : ((counts[i] / ratingLength) * 100).toFixed(0)}%
+        </span> */}
+      </div>
+    );
+  }
+
   return (
     <Transition appear show={isRatingModalOpen} as={Fragment}>
       <Dialog
@@ -18,7 +69,6 @@ export const RateDecorationModal = ({
         className="relative z-10"
         onClose={() => setIsRatingModalOpen(false)}
       >
-        {" "}
         <Transition.Child
           as={Fragment}
           enter="ease-out duration-300"
@@ -41,7 +91,63 @@ export const RateDecorationModal = ({
               leaveFrom="opacity-100 scale-100"
               leaveTo="opacity-0 scale-95"
             >
-              <Dialog.Panel className="w-full max-w-md transform overflow-hidden rounded-2xl bg-white p-6 text-left align-middle shadow-xl transition-all dark:bg-zinc-900"></Dialog.Panel>
+              <Dialog.Panel className="w-full max-w-md transform overflow-hidden rounded-2xl bg-white p-6 text-left align-middle shadow-xl transition-all dark:bg-zinc-900">
+                <div className="flex items-center justify-between">
+                  <Dialog.Title
+                    as="h3"
+                    className="text-lg font-medium leading-6 text-gray-900 dark:text-gray-50"
+                  >
+                    Ratings
+                  </Dialog.Title>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    onClick={() => setIsRatingModalOpen(false)}
+                  >
+                    <X
+                      size={16}
+                      weight="bold"
+                      className="text-ch-dark dark:text-ch-light"
+                    />
+                  </Button>
+                </div>
+                <div className="mt-2">
+                  <p className="text-sm text-gray-500 dark:text-gray-300">
+                    Create/edit or view ratings for this decoration
+                  </p>
+                </div>
+                <div className="px-5 py-5 flex items-center space-x-3 text-ch-dark dark:text-ch-light">
+                  <Star size={28} weight="fill" className="text-ch-yellow" />
+                  <h1 className="text-2xl font-bold">{rating?.toFixed(1)}</h1>
+                </div>
+                <div className="px-5 w-3/4 text-ch-dark dark:text-ch-light">
+                  <span>Overall rating</span>
+                  <div className="mt-2">{bars}</div>
+                </div>
+                {userId === decorationUserId ? null : (
+                  <>
+                    {ratings?.some((rating) => rating.user_id === userId) ? (
+                      <div className="flex justify-center mt-20">
+                        <Button
+                          variant="secondary"
+                          className="text-lg font-semibold"
+                        >
+                          Edit rating
+                        </Button>
+                      </div>
+                    ) : (
+                      <div className="flex justify-center mt-20">
+                        <Button
+                          variant="secondary"
+                          className="text-lg font-semibold"
+                        >
+                          Rate decoration
+                        </Button>
+                      </div>
+                    )}
+                  </>
+                )}
+              </Dialog.Panel>
             </Transition.Child>
           </div>
         </div>

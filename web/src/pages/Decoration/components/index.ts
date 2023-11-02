@@ -12,4 +12,5 @@ export * from "./RateButton";
 export * from "./RateDecorationModal";
 export * from "./SaveButton";
 export * from "./ShareDecoration";
+export * from "./ShareDecorationModal";
 export * from "./VerifiedPopOver";

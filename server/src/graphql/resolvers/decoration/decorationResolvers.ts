@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import { prisma } from "../../../database";
 import { Decoration, DecorationImage, User } from "@prisma/client";
 import {
+  AddViewArgs,
   CreateDecorationArgs,
   EditDecorationArgs,
   FavouriteDecorationArgs,
@@ -27,6 +28,7 @@ export const decorationResolvers = {
             creator: true,
             ratings: true,
             images: true,
+            views: true,
           },
         });
 
@@ -206,6 +208,29 @@ export const decorationResolvers = {
         });
 
         return updatedUser;
+      } catch (error) {
+        throw new Error(`${error}`);
+      }
+    },
+    addView: async (
+      _root: undefined,
+      { input }: AddViewArgs,
+      { _, req, res }: { _: undefined; req: Request; res: Response }
+    ): Promise<Decoration> => {
+      try {
+        const updatedDecoration = await prisma.decoration.update({
+          where: {
+            id: input.id,
+          },
+          data: {
+            num_views: input.numViews + 1,
+            views: {
+              create: {},
+            },
+          },
+        });
+
+        return updatedDecoration;
       } catch (error) {
         throw new Error(`${error}`);
       }

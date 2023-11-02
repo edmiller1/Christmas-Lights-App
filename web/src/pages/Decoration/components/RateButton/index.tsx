@@ -8,15 +8,21 @@ interface Props {
   currentUser: User | null;
   user: Get_User | null;
   decorationId: string | undefined;
+  setIsRatingModalOpen: (isRatingModalOpen: boolean) => void;
 }
 
-export const RateButton = ({ user, decorationId, currentUser }: Props) => {
+export const RateButton = ({
+  user,
+  decorationId,
+  currentUser,
+  setIsRatingModalOpen,
+}: Props) => {
   return (
     <>
       {currentUser ? (
         <>
           {user?.ratings.some((rating) => rating.id === decorationId) ? (
-            <Button variant="ghost">
+            <Button variant="ghost" onClick={() => setIsRatingModalOpen(true)}>
               <ShootingStar
                 size={20}
                 weight="fill"
@@ -25,7 +31,7 @@ export const RateButton = ({ user, decorationId, currentUser }: Props) => {
               <span className="ml-2">Rate</span>
             </Button>
           ) : (
-            <Button variant="ghost">
+            <Button variant="ghost" onClick={() => setIsRatingModalOpen(true)}>
               <ShootingStar
                 size={20}
                 className="text-ch-dark dark:text-ch-light"

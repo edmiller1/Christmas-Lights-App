@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useUser } from "@supabase/auth-helpers-react";
 import { useMutation, useQuery } from "@apollo/client";
 import {
@@ -18,6 +18,10 @@ import {
   UnfavouriteDecoration as UnfavouriteDecorationData,
   UnfavouriteDecorationArgs,
 } from "@/graphql/mutations/unfavouriteDecoration/types";
+import {
+  AddView as AddViewData,
+  AddViewArgs,
+} from "@/graphql/mutations/addView/types";
 import { GET_DECORATION, GET_USER } from "@/graphql/queries";
 import {
   GetDecoration as GetDecorationData,
@@ -38,8 +42,10 @@ import {
   ImagesGrid,
   ImagesOverlay,
   RateButton,
+  RateDecorationModal,
   SaveButton,
   ShareDecoration,
+  ShareDecorationModal,
   VerifiedPopOver,
 } from "./components";
 import {
@@ -49,12 +55,9 @@ import {
   CircleWavyCheck,
   Heart,
   Share,
-  ShootingStar,
   Star,
   WarningCircle,
 } from "@phosphor-icons/react";
-import { AppHeaderLoading } from "@/components/AppHeader/components";
-import { AppHeader } from "@/components";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import {
@@ -64,12 +67,57 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { useToast } from "@/components/ui/use-toast";
+import { ADD_VIEW } from "@/graphql/mutations/addView";
 
 export const Decoration = () => {
   const navigate = useNavigate();
   const { decorationId } = useParams();
   const currentUser = useUser();
   const { toast } = useToast();
+
+  // QUERIES
+  const {
+    data: getUserData,
+    loading: getUserLoading,
+    refetch: getUserRefetch,
+  } = useQuery<GetUserData, GetUserArgs>(GET_USER, {
+    variables: { input: { id: currentUser?.id ? currentUser.id : "" } },
+  });
+
+  const user = getUserData?.getUser ? getUserData.getUser : null;
+
+  const {
+    data: getDecorationData,
+    loading: getDecorationLoading,
+    error: getDecorationError,
+    refetch: getDecorationRefetch,
+  } = useQuery<GetDecorationData, GetDecorationArgs>(GET_DECORATION, {
+    variables: { input: { id: decorationId! } },
+    onCompleted: (data) => {
+      setCurrentImage(data.getDecoration.images[0]);
+    },
+  });
+
+  const decoration = getDecorationData?.getDecoration
+    ? getDecorationData?.getDecoration
+    : null;
+
+  // MUTATIONS
+  const [addView] = useMutation<AddViewData, AddViewArgs>(ADD_VIEW, {
+    update(cache, { data }) {
+      if (data?.addView) {
+        cache.modify({
+          //@ts-ignore
+          id: cache.identify(decoration),
+          fields: {
+            numViews(numViews = 0) {
+              return numViews + 1;
+            },
+          },
+        });
+      }
+    },
+  });
 
   const [editDecoration, { loading: editDecorationLoading }] = useMutation<
     EditDecorationData,
@@ -124,37 +172,13 @@ export const Decoration = () => {
       }
     );
 
-  const {
-    data: getUserData,
-    loading: getUserLoading,
-    refetch: getUserRefetch,
-  } = useQuery<GetUserData, GetUserArgs>(GET_USER, {
-    variables: { input: { id: currentUser?.id ? currentUser.id : "" } },
-  });
-
-  const user = getUserData?.getUser ? getUserData.getUser : null;
-
-  const {
-    data: getDecorationData,
-    loading: getDecorationLoading,
-    error: getDecorationError,
-    refetch: getDecorationRefetch,
-  } = useQuery<GetDecorationData, GetDecorationArgs>(GET_DECORATION, {
-    variables: { input: { id: decorationId! } },
-    onCompleted: (data) => {
-      setCurrentImage(data.getDecoration.images[0]);
-    },
-  });
-
-  const decoration = getDecorationData?.getDecoration
-    ? getDecorationData?.getDecoration
-    : null;
-
   //Mobile
   const [showRatings, setShowRatings] = useState<boolean>(false);
   const [showShareOptions, setShowShareOptions] = useState<boolean>(false);
 
   //Desktop
+  const [isRatingModalOpen, setIsRatingModalOpen] = useState<boolean>(false);
+  const [isShareModalOpen, setIsShareModalOpen] = useState<boolean>(false);
 
   //Both
   const [showImageOverlay, setShowImageOverlay] = useState<boolean>(false);
@@ -229,6 +253,16 @@ export const Decoration = () => {
     unfavouriteDecoration({ variables: { input: { id: decorationId! } } });
   };
 
+  useEffect(() => {
+    if (decoration !== null) {
+      addView({
+        variables: {
+          input: { id: decorationId, numViews: decoration?.num_views },
+        },
+      });
+    }
+  }, [decoration]);
+
   if (getDecorationError) {
     return <NotFound />;
   }
@@ -251,6 +285,28 @@ export const Decoration = () => {
         currentStep={currentStep}
         setCurrentStep={setCurrentStep}
       />
+      {/* Desktop */}
+      <div className="hidden sm:block">
+        <RateDecorationModal
+          isRatingModalOpen={isRatingModalOpen}
+          setIsRatingModalOpen={setIsRatingModalOpen}
+          rating={decoration?.rating}
+          decorationId={decorationId}
+          ratings={decoration?.ratings}
+          numRatings={decoration?.num_ratings}
+          userId={user?.id}
+          decorationUserId={decoration?.creator_id}
+        />
+        <ShareDecorationModal
+          decorationCity={decoration?.city}
+          decorationCountry={decoration?.country}
+          decorationImage={decoration?.images[0]}
+          decorationName={decoration?.name}
+          isShareModalOpen={isShareModalOpen}
+          setIsShareModalOpen={setIsShareModalOpen}
+        />
+      </div>
+
       {/* Mobile */}
       <div className="min-h-screen sm:hidden">
         {showImageOverlay ? (
@@ -444,6 +500,8 @@ export const Decoration = () => {
 
         <Separator />
         <div className="px-5 py-3 pb-10 rounded-lg">
+          <h3 className="text-lg">Location</h3>
+          <span className="text-sm">{decoration?.address}</span>
           <img
             src={`https://api.mapbox.com/styles/v1/mapbox/streets-v11/static/pin-l-village+bc1919(${decoration?.longitude},${decoration?.latitude})/${decoration?.longitude},${decoration?.latitude},14,0,0/600x300@2x?attribution=true&logo=true&access_token=${
               import.meta.env.VITE_MAPBOX_API_KEY
@@ -451,7 +509,6 @@ export const Decoration = () => {
             alt={`Mapbox map of ${decoration?.longitude},${decoration?.latitude}`}
             className="rounded-lg"
           />
-          <span className="text-sm">{decoration?.address}</span>
         </div>
         {/* Bottom nav */}
         <div className="fixed shadow w-full max-w-[560px] h-18 bottom-0 left-0 right-0 px-5 py-3 flex items-center justify-between dark:bg-zinc-900 dark:border-t dark:border-black">
@@ -485,7 +542,7 @@ export const Decoration = () => {
                 &nbsp; &middot; &nbsp;
                 <span
                   className="sm:underline sm:cursor-pointer"
-                  // onClick={() => setViewRatingModalOpen(true)}
+                  onClick={() => setIsRatingModalOpen(true)}
                 >
                   {decoration?.num_ratings}{" "}
                   {decoration?.num_ratings === 1 ? "rating" : "ratings"}
@@ -525,6 +582,7 @@ export const Decoration = () => {
               currentUser={currentUser}
               user={user}
               decorationId={decorationId}
+              setIsRatingModalOpen={setIsRatingModalOpen}
             />
             <SaveButton
               currentUser={currentUser}
@@ -535,7 +593,7 @@ export const Decoration = () => {
               favouriteDecorationLoading={favouriteDecorationLoading}
               unfavouriteDecorationLoading={unfavouriteDecorationLoading}
             />
-            <Button variant="ghost">
+            <Button variant="ghost" onClick={() => setIsShareModalOpen(true)}>
               <Share size={20} className="text-ch-dark dark:text-ch-light" />
               <span className="ml-2">Share</span>
             </Button>

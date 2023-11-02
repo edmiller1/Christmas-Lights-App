@@ -43,3 +43,10 @@ export interface unfavouriteDecorationArgs {
     id: string;
   };
 }
+
+export interface AddViewArgs {
+  input: {
+    id: string;
+    numViews: number;
+  };
+}

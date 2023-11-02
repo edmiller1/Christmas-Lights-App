@@ -27,6 +27,9 @@ export const GET_DECORATION = gql`
         decoration_id
       }
       creator_id
+      views {
+        id
+      }
     }
   }
 `;

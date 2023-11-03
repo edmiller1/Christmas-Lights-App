@@ -133,6 +133,11 @@ export const typeDefs = gql`
     numViews: Int!
   }
 
+  input RateDecorationInput {
+    id: String!
+    rating: Int!
+  }
+
   #Queries
   type Query {
     getAllUsers: [User]
@@ -148,5 +153,6 @@ export const typeDefs = gql`
     favouriteDecoration(input: FavouriteDecorationInput!): User!
     unfavouriteDecoration(input: UnfavouriteDecorationInput!): User!
     addView(input: AddViewInput!): Decoration!
+    rateDecoration(input: RateDecorationInput!): Decoration!
   }
 `;

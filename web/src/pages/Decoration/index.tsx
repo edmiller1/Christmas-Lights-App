@@ -22,6 +22,10 @@ import {
   AddView as AddViewData,
   AddViewArgs,
 } from "@/graphql/mutations/addView/types";
+import {
+  RateDecoration as RateDecorationData,
+  RateDecorationArgs,
+} from "@/graphql/mutations/rateDecoration/types";
 import { GET_DECORATION, GET_USER } from "@/graphql/queries";
 import {
   GetDecoration as GetDecorationData,
@@ -34,6 +38,7 @@ import {
 import { NotFound } from "..";
 import { Link, useParams, useNavigate } from "react-router-dom";
 import {
+  AddRatingModal,
   DecorationLoading,
   DecorationMenu,
   DecorationRatings,
@@ -68,6 +73,7 @@ import {
 } from "@/components/ui/tooltip";
 import { useToast } from "@/components/ui/use-toast";
 import { ADD_VIEW } from "@/graphql/mutations/addView";
+import { RATE_DECORATION } from "@/graphql/mutations/rateDecoration";
 
 export const Decoration = () => {
   const navigate = useNavigate();
@@ -103,19 +109,18 @@ export const Decoration = () => {
     : null;
 
   // MUTATIONS
-  const [addView] = useMutation<AddViewData, AddViewArgs>(ADD_VIEW, {
-    update(cache, { data }) {
-      if (data?.addView) {
-        cache.modify({
-          //@ts-ignore
-          id: cache.identify(decoration),
-          fields: {
-            numViews(numViews = 0) {
-              return numViews + 1;
-            },
-          },
-        });
-      }
+  const [addView] = useMutation<AddViewData, AddViewArgs>(ADD_VIEW);
+
+  const [rateDecoration, { loading: rateDecorationLoading }] = useMutation<
+    RateDecorationData,
+    RateDecorationArgs
+  >(RATE_DECORATION, {
+    onCompleted(data) {
+      toast({
+        variant: "success",
+        title: "Success 🎉",
+        description: "Rating created successfully!",
+      });
     },
   });
 
@@ -127,7 +132,7 @@ export const Decoration = () => {
       toast({
         variant: "success",
         title: "Success 🎉",
-        description: "Decoration edited successfully!",
+        description: "Decoration updated successfully!",
       });
       setCurrentImage(decoration?.images[0]);
       setIsEditOpen(false);
@@ -187,6 +192,7 @@ export const Decoration = () => {
     { id: string; url: string } | undefined
   >();
   const [currentStep, setCurrentStep] = useState<number>(1);
+  const [isAddRatingOpen, setIsAddRatingOpen] = useState<boolean>(false);
 
   const getImageIndex = (id: string | undefined) => {
     const index = decoration?.images.findIndex((image) => image.id === id);
@@ -253,6 +259,12 @@ export const Decoration = () => {
     unfavouriteDecoration({ variables: { input: { id: decorationId! } } });
   };
 
+  const addRating = (rating: number) => {
+    rateDecoration({
+      variables: { input: { id: decorationId, rating: rating } },
+    });
+  };
+
   useEffect(() => {
     if (decoration !== null) {
       addView({
@@ -261,7 +273,7 @@ export const Decoration = () => {
         },
       });
     }
-  }, [decoration]);
+  }, []);
 
   if (getDecorationError) {
     return <NotFound />;
@@ -296,6 +308,8 @@ export const Decoration = () => {
           numRatings={decoration?.num_ratings}
           userId={user?.id}
           decorationUserId={decoration?.creator_id}
+          isAddRatingOpen={isAddRatingOpen}
+          setIsAddRatingOpen={setIsAddRatingOpen}
         />
         <ShareDecorationModal
           decorationCity={decoration?.city}
@@ -324,6 +338,8 @@ export const Decoration = () => {
             numRatings={decoration?.num_ratings}
             userId={user?.id}
             decorationUserId={decoration?.creator_id}
+            isAddRatingOpen={isAddRatingOpen}
+            setIsAddRatingOpen={setIsAddRatingOpen}
           />
         ) : null}
 
@@ -455,7 +471,7 @@ export const Decoration = () => {
               {decoration?.num_ratings === 1 ? "rating" : "ratings"}
             </button>
             &nbsp; &middot; &nbsp;
-            <span>{decoration?.num_views} views</span>
+            <span>{decoration?.views.length} views</span>
           </div>
           <div className="mt-2">
             <span>

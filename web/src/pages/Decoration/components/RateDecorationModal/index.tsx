@@ -1,8 +1,9 @@
-import { Fragment, useState } from "react";
+import { Fragment } from "react";
 import { Dialog, Transition } from "@headlessui/react";
 import { Star, X } from "@phosphor-icons/react";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
+import { AddRatingModal } from "..";
 
 interface Props {
   isRatingModalOpen: boolean;
@@ -20,6 +21,8 @@ interface Props {
   numRatings: number | undefined;
   userId: string | undefined;
   decorationUserId: string | undefined;
+  isAddRatingOpen: boolean;
+  setIsAddRatingOpen: (isAddRatingOpen: boolean) => void;
 }
 
 type Counts = {
@@ -35,6 +38,8 @@ export const RateDecorationModal = ({
   numRatings,
   userId,
   decorationUserId,
+  isAddRatingOpen,
+  setIsAddRatingOpen,
 }: Props) => {
   const ratingLength = numRatings ?? 0;
   const counts: Counts = {
@@ -140,6 +145,7 @@ export const RateDecorationModal = ({
                         <Button
                           variant="secondary"
                           className="text-lg font-semibold"
+                          onClick={() => setIsAddRatingOpen(true)}
                         >
                           Rate decoration
                         </Button>
@@ -147,6 +153,10 @@ export const RateDecorationModal = ({
                     )}
                   </>
                 )}
+                <AddRatingModal
+                  isAddRatingOpen={isAddRatingOpen}
+                  setIsAddRatingOpen={setIsAddRatingOpen}
+                />
               </Dialog.Panel>
             </Transition.Child>
           </div>

@@ -7,6 +7,7 @@ import {
   EditDecorationArgs,
   FavouriteDecorationArgs,
   GetDecorationArgs,
+  RateDecorationArgs,
   unfavouriteDecorationArgs,
 } from "./types";
 import { authorise, calculateRating } from "../../../lib/helpers";
@@ -98,8 +99,7 @@ export const decorationResolvers = {
 
         return newDecoration;
       } catch (error) {
-        //@ts-ignore
-        throw new Error(error.message);
+        throw new Error(`${error}`);
       }
     },
     editDecoration: async (
@@ -231,6 +231,41 @@ export const decorationResolvers = {
         });
 
         return updatedDecoration;
+      } catch (error) {
+        throw new Error(`${error}`);
+      }
+    },
+    rateDecoration: async (
+      _root: undefined,
+      { input }: RateDecorationArgs,
+      { _, req, res }: { _: undefined; req: Request; res: Response }
+    ): Promise<Decoration> => {
+      try {
+        const user = await authorise(req);
+
+        if (!user) {
+          throw new Error("User cannot be found");
+        }
+
+        const decoration = await prisma.decoration.findFirst({
+          where: {
+            id: input.id,
+          },
+        });
+
+        if (!decoration) {
+          throw new Error("Decoration doesn't exist");
+        }
+
+        await prisma.rating.create({
+          data: {
+            rating: input.rating,
+            decoration_id: input.id,
+            user_id: user.id,
+          },
+        });
+
+        return decoration;
       } catch (error) {
         throw new Error(`${error}`);
       }

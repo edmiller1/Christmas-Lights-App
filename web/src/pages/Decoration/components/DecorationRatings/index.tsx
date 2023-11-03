@@ -3,6 +3,7 @@ import { Progress } from "@/components/ui/progress";
 import { Separator } from "@/components/ui/separator";
 import { Star, X } from "@phosphor-icons/react";
 import { motion, Variants } from "framer-motion";
+import { AddRatingModal } from "..";
 
 interface Props {
   setShowRatings: (showRatings: boolean) => void;
@@ -19,6 +20,8 @@ interface Props {
   numRatings: number | undefined;
   userId: string | undefined;
   decorationUserId: string | undefined;
+  isAddRatingOpen: boolean;
+  setIsAddRatingOpen: (isAddRatingOpen: boolean) => void;
 }
 
 type Counts = {
@@ -38,6 +41,8 @@ export const DecorationRatings = ({
   numRatings,
   userId,
   decorationUserId,
+  isAddRatingOpen,
+  setIsAddRatingOpen,
 }: Props) => {
   const ratingLength = numRatings ?? 0;
   const counts: Counts = {
@@ -108,7 +113,11 @@ export const DecorationRatings = ({
               </div>
             ) : (
               <div className="flex justify-center mt-20">
-                <Button variant="secondary" className="text-lg font-semibold">
+                <Button
+                  variant="secondary"
+                  className="text-lg font-semibold"
+                  onClick={() => setIsAddRatingOpen(true)}
+                >
                   Rate decoration
                 </Button>
               </div>
@@ -116,6 +125,10 @@ export const DecorationRatings = ({
           </>
         )}
       </motion.div>
+      <AddRatingModal
+        isAddRatingOpen={isAddRatingOpen}
+        setIsAddRatingOpen={setIsAddRatingOpen}
+      />
     </>
   );
 };

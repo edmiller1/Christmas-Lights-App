@@ -50,3 +50,10 @@ export interface AddViewArgs {
     numViews: number;
   };
 }
+
+export interface RateDecorationArgs {
+  input: {
+    id: string;
+    rating: number;
+  };
+}

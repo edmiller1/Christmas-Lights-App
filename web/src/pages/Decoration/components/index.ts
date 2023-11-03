@@ -1,3 +1,4 @@
+export * from "./AddRatingModal";
 export * from "./DecorationLoading";
 export * from "./DecorationMenu";
 export * from "./DecorationRatings";

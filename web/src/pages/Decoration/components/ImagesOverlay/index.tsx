@@ -1,21 +1,34 @@
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { CaretLeft, Heart, Share } from "@phosphor-icons/react";
 import { motion, Variants } from "framer-motion";
+import { FullImagesOverlay } from "..";
 
 interface Props {
   setShowImageOverlay: (showImageOverlay: boolean) => void;
   decorationImages: { id: string; url: string }[] | undefined;
+  setCurrentOverlayImage: (
+    currentOverlyaImage: { id: string; url: string } | undefined
+  ) => void;
+  setShowFullImageOverlay: (showFullImageOverlay: boolean) => void;
 }
 
 export const ImagesOverlay = ({
   decorationImages,
   setShowImageOverlay,
+  setCurrentOverlayImage,
+  setShowFullImageOverlay,
 }: Props) => {
+  const selectImage = (image: { id: string; url: string }) => {
+    setShowImageOverlay(false);
+    setCurrentOverlayImage(image);
+    setShowFullImageOverlay(true);
+  };
   return (
     <>
       {/* Mobile */}
       <motion.div
-        className="sticky top-0 overflow-y-auto w-full h-screen z-50 bg-ch-light dark:bg-ch-dark sm:hidden"
+        className="sticky top-0 overflow-y-auto w-full h-screen z-40 bg-ch-light dark:bg-ch-dark sm:hidden"
         initial={{ y: 1000 }}
         animate={{ y: 0 }}
         transition={{
@@ -34,7 +47,10 @@ export const ImagesOverlay = ({
             />
           </div>
           {decorationImages ? (
-            <div className="px-3">
+            <div
+              className="px-3"
+              onClick={() => selectImage(decorationImages[0])}
+            >
               <img
                 src={decorationImages[0].url}
                 alt="Christmas Decoration"
@@ -57,6 +73,7 @@ export const ImagesOverlay = ({
                       ? "h-auto object-cover rounded-xl max-w-full"
                       : "aspect-video w-full object-cover rounded-xl"
                   }`}
+                  onClick={() => selectImage(image)}
                 />
               ))}
           </div>
@@ -65,7 +82,7 @@ export const ImagesOverlay = ({
 
       {/* Desktop */}
       <motion.div
-        className="hidden sm:block sm:overflow-y-auto sm:fixed sm:bottom-0 sm:left-0 sm:right-0 sm:top-0 sm:w-full sm:h-screen sm:z-50 bg-ch-light dark:bg-ch-dark"
+        className="sm:block sm:overflow-y-auto sm:fixed sm:bottom-0 sm:left-0 sm:right-0 sm:top-0 sm:w-full sm:h-screen sm:z-50 bg-ch-light dark:bg-ch-dark"
         initial={{ y: 1000 }}
         animate={{ y: 0 }}
         transition={{
@@ -105,12 +122,13 @@ export const ImagesOverlay = ({
               </Button>
             </div>
           </div>
-          <div className="mx-[34rem]">
+          <div className="mx-72 mt-10 2xl:mx-[34rem]">
             {decorationImages ? (
               <img
                 src={decorationImages[0].url}
                 alt="Christmas Decoration"
-                className="h-96 w-full rounded-xl object-cover"
+                className="h-96 w-full rounded-xl object-cover cursor-pointer"
+                onClick={() => selectImage(decorationImages[0])}
               />
             ) : null}
             <div className="mt-5 gap-5 columns-2 mb-8">
@@ -123,11 +141,12 @@ export const ImagesOverlay = ({
                     alt="Christmas Decoration"
                     className={`${
                       i % 2 === 0
-                        ? "aspect-square w-full object-cover rounded-xl mb-5"
+                        ? "aspect-square w-full object-cover rounded-xl mb-5 cursor-pointer"
                         : i % 4 === 0
-                        ? "h-auto object-cover rounded-xl max-w-full mb-5"
-                        : "aspect-video w-full object-cover rounded-xl mb-5"
+                        ? "h-auto object-cover rounded-xl max-w-full mb-5 cursor-pointer"
+                        : "aspect-video w-full object-cover rounded-xl mb-5 cursor-pointer"
                     }`}
+                    onClick={() => selectImage(image)}
                   />
                 ))}
             </div>

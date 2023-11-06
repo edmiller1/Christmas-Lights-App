@@ -3,7 +3,7 @@ import { Dialog, Transition } from "@headlessui/react";
 import { Star, X } from "@phosphor-icons/react";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
-import { AddRatingModal } from "..";
+import { AddRatingModal, EditRatingModal } from "..";
 
 interface Props {
   isRatingModalOpen: boolean;
@@ -23,6 +23,14 @@ interface Props {
   decorationUserId: string | undefined;
   isAddRatingOpen: boolean;
   setIsAddRatingOpen: (isAddRatingOpen: boolean) => void;
+  addRating: (rating: number) => void;
+  rateDecorationLoading: boolean;
+  isEditRatingOpen: boolean;
+  setIsEditRatingOpen: (isEditRatingOpen: boolean) => void;
+  editRatingLoading: boolean;
+  initialRating: number | undefined;
+  setInitialRating: (initialRating: number | undefined) => void;
+  updateRating: (rating: number | undefined) => void;
 }
 
 type Counts = {
@@ -40,6 +48,14 @@ export const RateDecorationModal = ({
   decorationUserId,
   isAddRatingOpen,
   setIsAddRatingOpen,
+  addRating,
+  rateDecorationLoading,
+  isEditRatingOpen,
+  setIsEditRatingOpen,
+  editRatingLoading,
+  initialRating,
+  setInitialRating,
+  updateRating,
 }: Props) => {
   const ratingLength = numRatings ?? 0;
   const counts: Counts = {
@@ -136,6 +152,7 @@ export const RateDecorationModal = ({
                         <Button
                           variant="secondary"
                           className="text-lg font-semibold"
+                          onClick={() => setIsEditRatingOpen(true)}
                         >
                           Edit rating
                         </Button>
@@ -156,6 +173,16 @@ export const RateDecorationModal = ({
                 <AddRatingModal
                   isAddRatingOpen={isAddRatingOpen}
                   setIsAddRatingOpen={setIsAddRatingOpen}
+                  addRating={addRating}
+                  rateDecorationLoading={rateDecorationLoading}
+                />
+                <EditRatingModal
+                  editRatingLoading={editRatingLoading}
+                  initialRating={initialRating}
+                  setInitialRating={setInitialRating}
+                  isEditRatingOpen={isEditRatingOpen}
+                  setIsEditRatingOpen={setIsEditRatingOpen}
+                  updateRating={updateRating}
                 />
               </Dialog.Panel>
             </Transition.Child>

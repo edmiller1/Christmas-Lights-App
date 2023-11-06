@@ -26,6 +26,10 @@ import {
   RateDecoration as RateDecorationData,
   RateDecorationArgs,
 } from "@/graphql/mutations/rateDecoration/types";
+import {
+  EditRating as EditRatingData,
+  EditRatingArgs,
+} from "@/graphql/mutations/editRating/types";
 import { GET_DECORATION, GET_USER } from "@/graphql/queries";
 import {
   GetDecoration as GetDecorationData,
@@ -44,6 +48,7 @@ import {
   DecorationRatings,
   DecorationUserMenu,
   EditDecorationModal,
+  FullImagesOverlay,
   ImagesGrid,
   ImagesOverlay,
   RateButton,
@@ -74,6 +79,8 @@ import {
 import { useToast } from "@/components/ui/use-toast";
 import { ADD_VIEW } from "@/graphql/mutations/addView";
 import { RATE_DECORATION } from "@/graphql/mutations/rateDecoration";
+import { EDIT_RATING } from "@/graphql/mutations/editRating";
+import { error } from "console";
 
 export const Decoration = () => {
   const navigate = useNavigate();
@@ -120,6 +127,30 @@ export const Decoration = () => {
         variant: "success",
         title: "Success 🎉",
         description: "Rating created successfully!",
+      });
+    },
+  });
+
+  const [editRating, { loading: editRatingLoading }] = useMutation<
+    EditRatingData,
+    EditRatingArgs
+  >(EDIT_RATING, {
+    onCompleted: (data) => {
+      toast({
+        variant: "success",
+        title: "Success 🎉",
+        description: "Rating updated successfully!",
+      });
+      setIsEditRatingOpen(false);
+      setIsRatingModalOpen(false);
+      getUserRefetch();
+      getDecorationRefetch();
+    },
+    onError: (error) => {
+      toast({
+        variant: "destructive",
+        title: "Oh oh!",
+        description: `Failed to update rating. ${error}`,
       });
     },
   });
@@ -193,6 +224,14 @@ export const Decoration = () => {
   >();
   const [currentStep, setCurrentStep] = useState<number>(1);
   const [isAddRatingOpen, setIsAddRatingOpen] = useState<boolean>(false);
+  const [showFullImageOverlay, setShowFullImageOverlay] =
+    useState<boolean>(false);
+  const [currentOverlayImage, setCurrentOverlayImage] = useState<
+    { id: string; url: string } | undefined
+  >();
+  const [isEditRatingOpen, setIsEditRatingOpen] = useState<boolean>(false);
+  const [initialRating, setInitialRating] = useState<number | undefined>();
+  const [initialRatingId, setInitialRatingId] = useState<string | undefined>();
 
   const getImageIndex = (id: string | undefined) => {
     const index = decoration?.images.findIndex((image) => image.id === id);
@@ -265,6 +304,12 @@ export const Decoration = () => {
     });
   };
 
+  const updateRating = (rating: number | undefined) => {
+    editRating({
+      variables: { input: { id: initialRatingId!, rating: rating! } },
+    });
+  };
+
   useEffect(() => {
     if (decoration !== null) {
       addView({
@@ -274,6 +319,16 @@ export const Decoration = () => {
       });
     }
   }, []);
+
+  useEffect(() => {
+    if (decoration?.creator_id !== user?.id) {
+      const rating = user?.ratings.find(
+        (rating) => rating.decoration_id === decorationId
+      );
+      setInitialRating(rating?.rating);
+      setInitialRatingId(rating?.id);
+    }
+  }, [getUserData]);
 
   if (getDecorationError) {
     return <NotFound />;
@@ -297,6 +352,16 @@ export const Decoration = () => {
         currentStep={currentStep}
         setCurrentStep={setCurrentStep}
       />
+      {showFullImageOverlay ? (
+        <FullImagesOverlay
+          currentImage={currentOverlayImage}
+          setCurrentImage={setCurrentOverlayImage}
+          decorationImages={decoration?.images}
+          getImageIndex={getImageIndex}
+          setShowImageOverlay={setShowImageOverlay}
+          setShowFullImageOverlay={setShowFullImageOverlay}
+        />
+      ) : null}
       {/* Desktop */}
       <div className="hidden sm:block">
         <RateDecorationModal
@@ -310,6 +375,14 @@ export const Decoration = () => {
           decorationUserId={decoration?.creator_id}
           isAddRatingOpen={isAddRatingOpen}
           setIsAddRatingOpen={setIsAddRatingOpen}
+          addRating={addRating}
+          rateDecorationLoading={rateDecorationLoading}
+          isEditRatingOpen={isEditRatingOpen}
+          setIsEditRatingOpen={setIsEditRatingOpen}
+          editRatingLoading={editRatingLoading}
+          initialRating={initialRating}
+          setInitialRating={setInitialRating}
+          updateRating={updateRating}
         />
         <ShareDecorationModal
           decorationCity={decoration?.city}
@@ -327,6 +400,8 @@ export const Decoration = () => {
           <ImagesOverlay
             decorationImages={decoration?.images}
             setShowImageOverlay={setShowImageOverlay}
+            setCurrentOverlayImage={setCurrentOverlayImage}
+            setShowFullImageOverlay={setShowFullImageOverlay}
           />
         ) : null}
         {showRatings ? (
@@ -335,11 +410,19 @@ export const Decoration = () => {
             rating={decoration?.rating}
             decorationId={decorationId}
             ratings={decoration?.ratings}
-            numRatings={decoration?.num_ratings}
+            numRatings={decoration?.ratings.length}
             userId={user?.id}
             decorationUserId={decoration?.creator_id}
             isAddRatingOpen={isAddRatingOpen}
             setIsAddRatingOpen={setIsAddRatingOpen}
+            addRating={addRating}
+            rateDecorationLoading={rateDecorationLoading}
+            editRatingLoading={editRatingLoading}
+            initialRating={initialRating}
+            isEditRatingOpen={isEditRatingOpen}
+            setInitialrating={setInitialRating}
+            setIsEditRatingOpen={setIsEditRatingOpen}
+            updateRating={updateRating}
           />
         ) : null}
 
@@ -455,6 +538,9 @@ export const Decoration = () => {
             {decoration?.verified ? (
               <CircleWavyCheck size={24} color="#E23737" weight="fill" />
             ) : null}
+            <div className="flex justify-end">
+              <DecorationMenu />
+            </div>
           </div>
           <div className="flex items-center space-x-1 mt-2">
             <Star size={16} color="#ffffff" weight="fill" />
@@ -467,8 +553,8 @@ export const Decoration = () => {
               className="underline"
               onClick={() => setShowRatings(true)}
             >
-              {decoration?.num_ratings}{" "}
-              {decoration?.num_ratings === 1 ? "rating" : "ratings"}
+              {decoration?.ratings.length}{" "}
+              {decoration?.ratings.length === 1 ? "rating" : "ratings"}
             </button>
             &nbsp; &middot; &nbsp;
             <span>{decoration?.views.length} views</span>
@@ -545,9 +631,11 @@ export const Decoration = () => {
           <ImagesOverlay
             decorationImages={decoration?.images}
             setShowImageOverlay={setShowImageOverlay}
+            setCurrentOverlayImage={setCurrentOverlayImage}
+            setShowFullImageOverlay={setShowFullImageOverlay}
           />
         ) : null}
-        <div className="sm:flex sm:flex-col sm:mx-96 sm:pt-10">
+        <div className="sm:flex sm:flex-col sm:mx-72 sm:pt-10 2xl:mx-96">
           <h1 className="sm:text-3xl sm:font-semibold">{decoration?.name}</h1>
           <div className="sm:flex sm:justify-between items-center sm:font-semibold sm:text-sm sm:my-2">
             <div className="sm:flex">
@@ -560,14 +648,14 @@ export const Decoration = () => {
                   className="sm:underline sm:cursor-pointer"
                   onClick={() => setIsRatingModalOpen(true)}
                 >
-                  {decoration?.num_ratings}{" "}
-                  {decoration?.num_ratings === 1 ? "rating" : "ratings"}
+                  {decoration?.ratings.length}{" "}
+                  {decoration?.ratings.length === 1 ? "rating" : "ratings"}
                 </span>
               </div>
               <span className="sm:mx-2">|</span>
               <div className="sm:flex sm:items-center">
                 &nbsp;
-                <span>{decoration?.num_views}</span>
+                <span>{decoration?.views.length}</span>
                 &nbsp;views
               </div>
               <span className="sm:mx-2">|</span>

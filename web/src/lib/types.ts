@@ -29,7 +29,7 @@ export interface DecorationImage {
 
 export interface Rating {
   id: string;
-  rating: string;
+  rating: number;
   decoration_id: string;
   user_id: string;
 }

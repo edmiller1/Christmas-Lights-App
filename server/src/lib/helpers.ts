@@ -34,7 +34,7 @@ export const calculateRating = async (
     totalRatings += rating.rating;
   });
 
-  ratingResult = totalRatings / decoration.num_ratings;
+  ratingResult = totalRatings / decoration.ratings.length;
 
   return ratingResult ? ratingResult : decoration.rating;
 };

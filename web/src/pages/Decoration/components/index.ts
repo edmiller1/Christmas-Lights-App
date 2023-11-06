@@ -6,6 +6,8 @@ export * from "./DecorationUserMenu";
 export * from "./DetailsModal";
 export * from "./EditDecorationForm";
 export * from "./EditDecorationModal";
+export * from "./EditRatingModal";
+export * from "./FullImagesOverlay";
 export * from "./ImagesGrid";
 export * from "./ImagesModal";
 export * from "./ImagesOverlay";

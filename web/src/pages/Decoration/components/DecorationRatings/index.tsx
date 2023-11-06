@@ -3,7 +3,7 @@ import { Progress } from "@/components/ui/progress";
 import { Separator } from "@/components/ui/separator";
 import { Star, X } from "@phosphor-icons/react";
 import { motion, Variants } from "framer-motion";
-import { AddRatingModal } from "..";
+import { AddRatingModal, EditRatingModal } from "..";
 
 interface Props {
   setShowRatings: (showRatings: boolean) => void;
@@ -22,6 +22,14 @@ interface Props {
   decorationUserId: string | undefined;
   isAddRatingOpen: boolean;
   setIsAddRatingOpen: (isAddRatingOpen: boolean) => void;
+  addRating: (rating: number) => void;
+  rateDecorationLoading: boolean;
+  editRatingLoading: boolean;
+  initialRating: number | undefined;
+  setInitialrating: (initialRating: number | undefined) => void;
+  isEditRatingOpen: boolean;
+  setIsEditRatingOpen: (isEditRatingOpen: boolean) => void;
+  updateRating: (rating: number | undefined) => void;
 }
 
 type Counts = {
@@ -43,6 +51,14 @@ export const DecorationRatings = ({
   decorationUserId,
   isAddRatingOpen,
   setIsAddRatingOpen,
+  addRating,
+  rateDecorationLoading,
+  editRatingLoading,
+  isEditRatingOpen,
+  setIsEditRatingOpen,
+  initialRating,
+  setInitialrating,
+  updateRating,
 }: Props) => {
   const ratingLength = numRatings ?? 0;
   const counts: Counts = {
@@ -107,7 +123,11 @@ export const DecorationRatings = ({
           <>
             {ratings?.some((rating) => rating.user_id === userId) ? (
               <div className="flex justify-center mt-20">
-                <Button variant="secondary" className="text-lg font-semibold">
+                <Button
+                  variant="secondary"
+                  className="text-lg font-semibold"
+                  onClick={() => setIsEditRatingOpen(true)}
+                >
                   Edit rating
                 </Button>
               </div>
@@ -128,6 +148,16 @@ export const DecorationRatings = ({
       <AddRatingModal
         isAddRatingOpen={isAddRatingOpen}
         setIsAddRatingOpen={setIsAddRatingOpen}
+        addRating={addRating}
+        rateDecorationLoading={rateDecorationLoading}
+      />
+      <EditRatingModal
+        editRatingLoading={editRatingLoading}
+        initialRating={initialRating}
+        isEditRatingOpen={isEditRatingOpen}
+        setInitialRating={setInitialrating}
+        setIsEditRatingOpen={setIsEditRatingOpen}
+        updateRating={updateRating}
       />
     </>
   );

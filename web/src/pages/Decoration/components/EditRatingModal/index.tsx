@@ -1,42 +1,51 @@
-import { Fragment, useState } from "react";
+import { Fragment, useEffect, useState } from "react";
 import { Dialog, Transition } from "@headlessui/react";
 import { CircleNotch, Star, X } from "@phosphor-icons/react";
 import { Button } from "@/components/ui/button";
 import { CancelModal } from "@/components";
 
 interface Props {
-  isAddRatingOpen: boolean;
-  setIsAddRatingOpen: (isAddRatingOpen: boolean) => void;
-  addRating: (rating: number) => void;
-  rateDecorationLoading: boolean;
+  isEditRatingOpen: boolean;
+  setIsEditRatingOpen: (isEditRatingOpen: boolean) => void;
+  editRatingLoading: boolean;
+  initialRating: number | undefined;
+  setInitialRating: (initialRating: number | undefined) => void;
+  updateRating: (rating: number | undefined) => void;
 }
 
-export const AddRatingModal = ({
-  isAddRatingOpen,
-  setIsAddRatingOpen,
-  addRating,
-  rateDecorationLoading,
+export const EditRatingModal = ({
+  isEditRatingOpen,
+  setIsEditRatingOpen,
+  editRatingLoading,
+  initialRating,
+  setInitialRating,
+  updateRating,
 }: Props) => {
-  const [rating, setRating] = useState<number>(0);
+  const [rating, setRating] = useState<number | undefined>(initialRating);
   const [cancelRatingModalOpen, setCancelRatingModalOpen] =
     useState<boolean>(false);
 
   const handleRating = (value: number) => {
     setRating(value);
+    setInitialRating(value);
   };
 
   const discardRating = () => {
-    setRating(0);
+    setRating(initialRating);
     setCancelRatingModalOpen(false);
-    setIsAddRatingOpen(false);
+    setIsEditRatingOpen(false);
   };
 
+  useEffect(() => {
+    setRating(initialRating);
+  }, [initialRating]);
+
   return (
-    <Transition appear show={isAddRatingOpen} as={Fragment}>
+    <Transition appear show={isEditRatingOpen} as={Fragment}>
       <Dialog
         as="div"
         className="relative z-50"
-        onClose={() => setCancelRatingModalOpen(false)}
+        onClose={() => setCancelRatingModalOpen(true)}
       >
         <Transition.Child
           as={Fragment}
@@ -66,7 +75,7 @@ export const AddRatingModal = ({
                     as="h3"
                     className="text-lg font-medium leading-6 text-gray-900 dark:text-gray-50"
                   >
-                    Rate Decoration
+                    Edit Decoration
                   </Dialog.Title>
                   <Button
                     variant="ghost"
@@ -80,14 +89,14 @@ export const AddRatingModal = ({
                     />
                   </Button>
                 </div>
-                {rateDecorationLoading ? (
+                {editRatingLoading ? (
                   <div className="flex flex-col justify-start items-center mt-3 p-4 text-ch-dark dark:text-ch-light">
                     <CircleNotch
                       size={54}
                       weight="bold"
                       className="animate-spin text-ch-dark dark:text-ch-light"
                     />
-                    <span className="text-lg">Creating rating...</span>
+                    <span className="text-lg">Updating rating...</span>
                   </div>
                 ) : (
                   <>
@@ -99,12 +108,13 @@ export const AddRatingModal = ({
                             <input
                               type="radio"
                               name="rating"
-                              value={ratingValue}
+                              value={rating}
                               onClick={() => handleRating(ratingValue)}
+                              checked={ratingValue === rating}
                               readOnly
                               hidden
                             />
-                            {ratingValue <= rating ? (
+                            {rating && ratingValue <= rating ? (
                               <Star
                                 size={54}
                                 color="#E8A951"
@@ -121,28 +131,20 @@ export const AddRatingModal = ({
                         );
                       })}
                     </div>
-                    <div className="pt-2 pb-4 px-10 text-sm text-center text-ch-indigo dark:text-ch-light">
-                      <span>
-                        Click on the stars above to rate the decoration. The
-                        more stars the greater you think the decoration looks.
-                        Ratings on a decoration can be updated at anytime.
-                      </span>
-                    </div>
                     <div className="flex justify-center py-4">
                       <Button
                         variant="secondary"
                         className="text-lg font-semibold"
                         disabled={rating === 0}
-                        onClick={() => addRating(rating)}
+                        onClick={() => updateRating(rating)}
                       >
                         Save
                       </Button>
                     </div>
                   </>
                 )}
-
                 <CancelModal
-                  body="Your rating won't be saved"
+                  body="Your updated rating won't be saved"
                   cancelText="Cancel"
                   confirmText="Discard"
                   isCancelOpen={cancelRatingModalOpen}

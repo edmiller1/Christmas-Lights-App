@@ -5,6 +5,7 @@ import {
   AddViewArgs,
   CreateDecorationArgs,
   EditDecorationArgs,
+  EditRatingArgs,
   FavouriteDecorationArgs,
   GetDecorationArgs,
   RateDecorationArgs,
@@ -266,6 +267,32 @@ export const decorationResolvers = {
         });
 
         return decoration;
+      } catch (error) {
+        throw new Error(`${error}`);
+      }
+    },
+    editRating: async (
+      _root: undefined,
+      { input }: EditRatingArgs,
+      { _, req, res }: { _: undefined; req: Request; res: Response }
+    ): Promise<User> => {
+      try {
+        const user = await authorise(req);
+
+        if (!user) {
+          throw new Error("User cannot be found");
+        }
+
+        await prisma.rating.update({
+          where: {
+            id: input.id,
+          },
+          data: {
+            rating: input.rating,
+          },
+        });
+
+        return user;
       } catch (error) {
         throw new Error(`${error}`);
       }

@@ -21,7 +21,9 @@ export const RateButton = ({
     <>
       {currentUser ? (
         <>
-          {user?.ratings.some((rating) => rating.id === decorationId) ? (
+          {user?.ratings.some(
+            (rating) => rating.decoration_id === decorationId
+          ) ? (
             <Button variant="ghost" onClick={() => setIsRatingModalOpen(true)}>
               <ShootingStar
                 size={20}

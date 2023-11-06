@@ -57,3 +57,10 @@ export interface RateDecorationArgs {
     rating: number;
   };
 }
+
+export interface EditRatingArgs {
+  input: {
+    id: string;
+    rating: number;
+  };
+}

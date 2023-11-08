@@ -143,6 +143,10 @@ export const typeDefs = gql`
     rating: Int!
   }
 
+  input DeleteRatingInput {
+    id: String!
+  }
+
   #Queries
   type Query {
     getAllUsers: [User]
@@ -160,5 +164,6 @@ export const typeDefs = gql`
     addView(input: AddViewInput!): Decoration!
     rateDecoration(input: RateDecorationInput!): Decoration!
     editRating(input: EditRatingInput!): User!
+    deleteRating(input: DeleteRatingInput!): User!
   }
 `;

@@ -64,3 +64,9 @@ export interface EditRatingArgs {
     rating: number;
   };
 }
+
+export interface DeleteRatingArgs {
+  input: {
+    id: string;
+  };
+}

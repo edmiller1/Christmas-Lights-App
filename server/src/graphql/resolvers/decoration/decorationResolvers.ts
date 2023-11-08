@@ -4,6 +4,7 @@ import { Decoration, DecorationImage, User } from "@prisma/client";
 import {
   AddViewArgs,
   CreateDecorationArgs,
+  DeleteRatingArgs,
   EditDecorationArgs,
   EditRatingArgs,
   FavouriteDecorationArgs,
@@ -289,6 +290,29 @@ export const decorationResolvers = {
           },
           data: {
             rating: input.rating,
+          },
+        });
+
+        return user;
+      } catch (error) {
+        throw new Error(`${error}`);
+      }
+    },
+    deleteRating: async (
+      _root: undefined,
+      { input }: DeleteRatingArgs,
+      { _, req, res }: { _: undefined; req: Request; res: Response }
+    ): Promise<User> => {
+      try {
+        const user = await authorise(req);
+
+        if (!user) {
+          throw new Error("User cannot be found");
+        }
+
+        await prisma.rating.delete({
+          where: {
+            id: input.id,
           },
         });
 

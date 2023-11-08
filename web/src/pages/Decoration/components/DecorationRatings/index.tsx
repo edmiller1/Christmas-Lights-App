@@ -3,7 +3,8 @@ import { Progress } from "@/components/ui/progress";
 import { Separator } from "@/components/ui/separator";
 import { Star, X } from "@phosphor-icons/react";
 import { motion, Variants } from "framer-motion";
-import { AddRatingModal, EditRatingModal } from "..";
+import { AddRatingModal, DeleteRatingModal, EditRatingModal } from "..";
+import { CancelModal } from "@/components";
 
 interface Props {
   setShowRatings: (showRatings: boolean) => void;
@@ -30,6 +31,10 @@ interface Props {
   isEditRatingOpen: boolean;
   setIsEditRatingOpen: (isEditRatingOpen: boolean) => void;
   updateRating: (rating: number | undefined) => void;
+  isDeleteRatingOpen: boolean;
+  setIsDeleteRatingOpen: (isDeleteRatingOpen: boolean) => void;
+  removeRating: () => void;
+  deleteRatingLoading: boolean;
 }
 
 type Counts = {
@@ -59,6 +64,10 @@ export const DecorationRatings = ({
   initialRating,
   setInitialrating,
   updateRating,
+  isDeleteRatingOpen,
+  removeRating,
+  setIsDeleteRatingOpen,
+  deleteRatingLoading,
 }: Props) => {
   const ratingLength = numRatings ?? 0;
   const counts: Counts = {
@@ -122,14 +131,28 @@ export const DecorationRatings = ({
         {userId === decorationUserId ? null : (
           <>
             {ratings?.some((rating) => rating.user_id === userId) ? (
-              <div className="flex justify-center mt-20">
-                <Button
-                  variant="secondary"
-                  className="text-lg font-semibold"
-                  onClick={() => setIsEditRatingOpen(true)}
-                >
-                  Edit rating
-                </Button>
+              <div className="flex flex-col justify-center items-center mt-20">
+                <div className="flex flex-col justify-center items-center mb-10">
+                  <Star size={54} weight="fill" className="text-ch-yellow" />
+                  <span className="text-lg">
+                    Your Rating: {initialRating}.0
+                  </span>
+                </div>
+                <div className="flex justify-center items-center space-x-5">
+                  <Button
+                    variant="secondary"
+                    className="text-lg font-semibold"
+                    onClick={() => setIsEditRatingOpen(true)}
+                  >
+                    Edit rating
+                  </Button>
+                  <Button
+                    className="text-lg font-semibold"
+                    onClick={() => setIsDeleteRatingOpen(true)}
+                  >
+                    Delete rating
+                  </Button>
+                </div>
               </div>
             ) : (
               <div className="flex justify-center mt-20">
@@ -158,6 +181,12 @@ export const DecorationRatings = ({
         setInitialRating={setInitialrating}
         setIsEditRatingOpen={setIsEditRatingOpen}
         updateRating={updateRating}
+      />
+      <DeleteRatingModal
+        deleteRatingLoading={deleteRatingLoading}
+        isDeleteRatingOpen={isDeleteRatingOpen}
+        removeRating={removeRating}
+        setIsDeleteRatingOpen={setIsDeleteRatingOpen}
       />
     </>
   );

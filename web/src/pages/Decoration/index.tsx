@@ -2,8 +2,12 @@ import { useEffect, useState } from "react";
 import { useUser } from "@supabase/auth-helpers-react";
 import { useMutation, useQuery } from "@apollo/client";
 import {
+  ADD_VIEW,
+  DELETE_RATING,
   EDIT_DECORATION,
+  EDIT_RATING,
   FAVOURITE_DECORATION,
+  RATE_DECORATION,
   UNFAVOURITE_DECORATION,
 } from "@/graphql/mutations";
 import {
@@ -30,6 +34,10 @@ import {
   EditRating as EditRatingData,
   EditRatingArgs,
 } from "@/graphql/mutations/editRating/types";
+import {
+  DeleteRating as DeleteRatingData,
+  DeleteRatingArgs,
+} from "@/graphql/mutations/deleteRating/types";
 import { GET_DECORATION, GET_USER } from "@/graphql/queries";
 import {
   GetDecoration as GetDecorationData,
@@ -77,10 +85,6 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { useToast } from "@/components/ui/use-toast";
-import { ADD_VIEW } from "@/graphql/mutations/addView";
-import { RATE_DECORATION } from "@/graphql/mutations/rateDecoration";
-import { EDIT_RATING } from "@/graphql/mutations/editRating";
-import { error } from "console";
 
 export const Decoration = () => {
   const navigate = useNavigate();
@@ -128,6 +132,11 @@ export const Decoration = () => {
         title: "Success 🎉",
         description: "Rating created successfully!",
       });
+      setIsAddRatingOpen(false);
+      setIsRatingModalOpen(false);
+      setShowRatings(false);
+      getUserRefetch({ input: { id: user!.id } });
+      getDecorationRefetch({ input: { id: decorationId! } });
     },
   });
 
@@ -143,14 +152,39 @@ export const Decoration = () => {
       });
       setIsEditRatingOpen(false);
       setIsRatingModalOpen(false);
-      getUserRefetch();
-      getDecorationRefetch();
+      getUserRefetch({ input: { id: data.editRating.id } });
+      getDecorationRefetch({ input: { id: decorationId! } });
     },
     onError: (error) => {
       toast({
         variant: "destructive",
         title: "Oh oh!",
         description: `Failed to update rating. ${error}`,
+      });
+    },
+  });
+
+  const [deleteRating, { loading: deleteRatingLoading }] = useMutation<
+    DeleteRatingData,
+    DeleteRatingArgs
+  >(DELETE_RATING, {
+    onCompleted(data) {
+      toast({
+        variant: "success",
+        title: "Success 🎉",
+        description: "Rating deleted successfully!",
+      });
+      setIsDeleteRatingOpen(false);
+      setShowRatings(false);
+      setIsRatingModalOpen(false);
+      getUserRefetch({ input: { id: data.deleteRating.id } });
+      getDecorationRefetch({ input: { id: decorationId! } });
+    },
+    onError(error) {
+      toast({
+        variant: "destructive",
+        title: "Oh oh!",
+        description: `Failed to delete rating. ${error}`,
       });
     },
   });
@@ -232,6 +266,7 @@ export const Decoration = () => {
   const [isEditRatingOpen, setIsEditRatingOpen] = useState<boolean>(false);
   const [initialRating, setInitialRating] = useState<number | undefined>();
   const [initialRatingId, setInitialRatingId] = useState<string | undefined>();
+  const [isDeleteRatingOpen, setIsDeleteRatingOpen] = useState<boolean>(false);
 
   const getImageIndex = (id: string | undefined) => {
     const index = decoration?.images.findIndex((image) => image.id === id);
@@ -308,6 +343,10 @@ export const Decoration = () => {
     editRating({
       variables: { input: { id: initialRatingId!, rating: rating! } },
     });
+  };
+
+  const removeRating = () => {
+    deleteRating({ variables: { input: { id: initialRatingId! } } });
   };
 
   useEffect(() => {
@@ -423,6 +462,10 @@ export const Decoration = () => {
             setInitialrating={setInitialRating}
             setIsEditRatingOpen={setIsEditRatingOpen}
             updateRating={updateRating}
+            isDeleteRatingOpen={isDeleteRatingOpen}
+            setIsDeleteRatingOpen={setIsDeleteRatingOpen}
+            removeRating={removeRating}
+            deleteRatingLoading={deleteRatingLoading}
           />
         ) : null}
 

@@ -8,6 +8,7 @@ import {
   EDIT_RATING,
   FAVOURITE_DECORATION,
   RATE_DECORATION,
+  REPORT_DECORATION,
   UNFAVOURITE_DECORATION,
 } from "@/graphql/mutations";
 import {
@@ -38,6 +39,10 @@ import {
   DeleteRating as DeleteRatingData,
   DeleteRatingArgs,
 } from "@/graphql/mutations/deleteRating/types";
+import {
+  ReportDecoration as ReportDecorationData,
+  ReportDecorationArgs,
+} from "@/graphql/mutations/reportDecoration/types";
 import { GET_DECORATION, GET_USER } from "@/graphql/queries";
 import {
   GetDecoration as GetDecorationData,
@@ -61,6 +66,7 @@ import {
   ImagesOverlay,
   RateButton,
   RateDecorationModal,
+  ReportDecorationModal,
   SaveButton,
   ShareDecoration,
   ShareDecorationModal,
@@ -93,11 +99,10 @@ export const Decoration = () => {
   const { toast } = useToast();
 
   // QUERIES
-  const {
-    data: getUserData,
-    loading: getUserLoading,
-    refetch: getUserRefetch,
-  } = useQuery<GetUserData, GetUserArgs>(GET_USER, {
+  const { data: getUserData, refetch: getUserRefetch } = useQuery<
+    GetUserData,
+    GetUserArgs
+  >(GET_USER, {
     variables: { input: { id: currentUser?.id ? currentUser.id : "" } },
   });
 
@@ -126,7 +131,7 @@ export const Decoration = () => {
     RateDecorationData,
     RateDecorationArgs
   >(RATE_DECORATION, {
-    onCompleted(data) {
+    onCompleted() {
       toast({
         variant: "success",
         title: "Success 🎉",
@@ -137,6 +142,13 @@ export const Decoration = () => {
       setShowRatings(false);
       getUserRefetch({ input: { id: user!.id } });
       getDecorationRefetch({ input: { id: decorationId! } });
+    },
+    onError: (error) => {
+      toast({
+        variant: "destructive",
+        title: "Uh oh!",
+        description: `Failed to rate decoration. ${error}`,
+      });
     },
   });
 
@@ -158,7 +170,7 @@ export const Decoration = () => {
     onError: (error) => {
       toast({
         variant: "destructive",
-        title: "Oh oh!",
+        title: "Uh oh!",
         description: `Failed to update rating. ${error}`,
       });
     },
@@ -183,7 +195,7 @@ export const Decoration = () => {
     onError(error) {
       toast({
         variant: "destructive",
-        title: "Oh oh!",
+        title: "Uh oh!",
         description: `Failed to delete rating. ${error}`,
       });
     },
@@ -206,7 +218,7 @@ export const Decoration = () => {
     onError: (error) => {
       toast({
         variant: "destructive",
-        title: "Oh oh!",
+        title: "Uh oh!",
         description: `Failed to edit decoration. ${error}`,
       });
     },
@@ -224,6 +236,13 @@ export const Decoration = () => {
           });
           getUserRefetch({ input: { id: data.favouriteDecoration.id } });
         },
+        onError: (error) => {
+          toast({
+            variant: "destructive",
+            title: "Uh oh!",
+            description: `Failed to save decoration. ${error}`,
+          });
+        },
       }
     );
 
@@ -239,8 +258,36 @@ export const Decoration = () => {
           });
           getUserRefetch({ input: { id: data.unfavouriteDecoration.id } });
         },
+        onError: (error) => {
+          toast({
+            variant: "destructive",
+            title: "Uh oh!",
+            description: `Failed to unsave decoration. ${error}`,
+          });
+        },
       }
     );
+
+  const [reportDecoration, { loading: reportDecorationLoading }] = useMutation<
+    ReportDecorationData,
+    ReportDecorationArgs
+  >(REPORT_DECORATION, {
+    onCompleted: () => {
+      toast({
+        variant: "success",
+        title: "Success 🎉",
+        description: "Thank you for your feedback!",
+      });
+      setIsReportDecorationOpen(false);
+    },
+    onError: (error) => {
+      toast({
+        variant: "destructive",
+        title: "Uh oh!",
+        description: `Failed to rate decoration. ${error}`,
+      });
+    },
+  });
 
   //Mobile
   const [showRatings, setShowRatings] = useState<boolean>(false);
@@ -267,6 +314,8 @@ export const Decoration = () => {
   const [initialRating, setInitialRating] = useState<number | undefined>();
   const [initialRatingId, setInitialRatingId] = useState<string | undefined>();
   const [isDeleteRatingOpen, setIsDeleteRatingOpen] = useState<boolean>(false);
+  const [isReportDecorationOpen, setIsReportDecorationOpen] =
+    useState<boolean>(false);
 
   const getImageIndex = (id: string | undefined) => {
     const index = decoration?.images.findIndex((image) => image.id === id);
@@ -349,6 +398,21 @@ export const Decoration = () => {
     deleteRating({ variables: { input: { id: initialRatingId! } } });
   };
 
+  const reportCurrentDecoration = (
+    reportOptions: string[],
+    additionalDetails: string | undefined
+  ) => {
+    reportDecoration({
+      variables: {
+        input: {
+          id: decorationId!,
+          reportOptions: reportOptions,
+          additionalDetails: additionalDetails,
+        },
+      },
+    });
+  };
+
   useEffect(() => {
     if (decoration !== null) {
       addView({
@@ -380,6 +444,12 @@ export const Decoration = () => {
   return (
     <>
       {/* Both */}
+      <ReportDecorationModal
+        isReportDecorationOpen={isReportDecorationOpen}
+        reportDecorationLoading={reportDecorationLoading}
+        setIsReportDecorationOpen={setIsReportDecorationOpen}
+        reportCurrentDecoration={reportCurrentDecoration}
+      />
       <EditDecorationModal
         isEditOpen={isEditOpen}
         setIsEditOpen={setIsEditOpen}
@@ -582,7 +652,9 @@ export const Decoration = () => {
               <CircleWavyCheck size={24} color="#E23737" weight="fill" />
             ) : null}
             <div className="flex justify-end">
-              <DecorationMenu />
+              <DecorationMenu
+                setIsReportDecorationOpen={setIsReportDecorationOpen}
+              />
             </div>
           </div>
           <div className="flex items-center space-x-1 mt-2">
@@ -715,7 +787,9 @@ export const Decoration = () => {
                 <DecorationUserMenu setIsEditOpen={setIsEditOpen} />
               </div>
             ) : (
-              <DecorationMenu />
+              <DecorationMenu
+                setIsReportDecorationOpen={setIsReportDecorationOpen}
+              />
             )}
           </div>
           {decoration?.images && decoration.images.length > 0 ? (

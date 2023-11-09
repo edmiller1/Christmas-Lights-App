@@ -147,6 +147,12 @@ export const typeDefs = gql`
     id: String!
   }
 
+  input ReportDecorationInput {
+    id: String!
+    reportOptions: [String!]!
+    additionalDetails: String
+  }
+
   #Queries
   type Query {
     getAllUsers: [User]
@@ -165,5 +171,6 @@ export const typeDefs = gql`
     rateDecoration(input: RateDecorationInput!): Decoration!
     editRating(input: EditRatingInput!): User!
     deleteRating(input: DeleteRatingInput!): User!
+    reportDecoration(input: ReportDecorationInput!): Decoration!
   }
 `;

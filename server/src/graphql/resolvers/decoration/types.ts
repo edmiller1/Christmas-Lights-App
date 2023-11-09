@@ -70,3 +70,11 @@ export interface DeleteRatingArgs {
     id: string;
   };
 }
+
+export interface ReportDecorationArgs {
+  input: {
+    id: string;
+    reportOptions: string[];
+    additionalDetails?: string;
+  };
+}

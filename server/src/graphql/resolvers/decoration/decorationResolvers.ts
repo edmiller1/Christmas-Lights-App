@@ -10,10 +10,14 @@ import {
   FavouriteDecorationArgs,
   GetDecorationArgs,
   RateDecorationArgs,
+  ReportDecorationArgs,
   unfavouriteDecorationArgs,
 } from "./types";
 import { authorise, calculateRating } from "../../../lib/helpers";
 import { Cloudinary } from "../../../lib/cloudinary";
+import { Resend } from "resend";
+
+const resend = new Resend("re_H1GDoBf9_Kwqwhasy8MZsLo6Tn3ej8bBc");
 
 export const decorationResolvers = {
   Query: {
@@ -317,6 +321,69 @@ export const decorationResolvers = {
         });
 
         return user;
+      } catch (error) {
+        throw new Error(`${error}`);
+      }
+    },
+    reportDecoration: async (
+      _root: undefined,
+      { input }: ReportDecorationArgs,
+      { _, req, res }: { _: undefined; req: Request; res: Response }
+    ): Promise<Decoration> => {
+      try {
+        const user = await authorise(req);
+
+        if (!user) {
+          throw new Error("User canot be found");
+        }
+
+        const decoration = await prisma.decoration.findFirst({
+          where: {
+            id: input.id,
+          },
+        });
+
+        if (!decoration) {
+          throw new Error("Decoration cannot be found");
+        }
+
+        //Send email to CLA admin
+        await resend.emails.send({
+          from: "Acme <onboarding@resend.dev>",
+          to: "edmiller.me@gmail.com",
+          subject: "New Decoration Report",
+          html: `<p>New Decoration Report</p>
+          <p>Reported by: ${user.name}</p>
+          <ul>
+            <li>ID: ${user.id}</li>
+            <li>Email: ${user.email}</li>
+          </ul>
+          <p>Reported Decoration:</p>
+          <ul>
+          <li>ID: ${decoration.id}</li>
+          <li>Name: ${decoration.name}</li>
+          <li>Address: ${decoration.address}</li>
+          <li>ChristmasLightsApp link: http://localhost:3000/decoration/${
+            decoration.id
+          }/</li>
+          </ul>
+          <span>Reasons for Report</span>
+          <ul>
+          <li>${input.reportOptions.map((ro) => ro)}</li>
+          </ul>
+          <p>Additional Details:</p>
+          <p>${input.additionalDetails}</p>
+          `,
+          text: "It Worked!!!",
+          tags: [
+            {
+              name: "decoration_report",
+              value: "decoration_report",
+            },
+          ],
+        });
+
+        return decoration;
       } catch (error) {
         throw new Error(`${error}`);
       }

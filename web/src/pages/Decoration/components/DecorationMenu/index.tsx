@@ -7,7 +7,11 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { DotsThreeVertical } from "@phosphor-icons/react";
 
-export const DecorationMenu = () => {
+interface Props {
+  setIsReportDecorationOpen: (isReportDecorationOpen: boolean) => void;
+}
+
+export const DecorationMenu = ({ setIsReportDecorationOpen }: Props) => {
   return (
     <>
       <div className="sm:hidden">
@@ -26,7 +30,9 @@ export const DecorationMenu = () => {
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent className="mr-8">
-            <DropdownMenuItem>Report</DropdownMenuItem>
+            <DropdownMenuItem onClick={() => setIsReportDecorationOpen(true)}>
+              Report
+            </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       </div>
@@ -47,7 +53,9 @@ export const DecorationMenu = () => {
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent className="mr-24">
-            <DropdownMenuItem>Report</DropdownMenuItem>
+            <DropdownMenuItem onClick={() => setIsReportDecorationOpen(true)}>
+              Report
+            </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       </div>

@@ -6,4 +6,5 @@ export * from "./editDecoration";
 export * from "./editRating";
 export * from "./favouriteDecoration";
 export * from "./rateDecoration";
+export * from "./reportDecoration";
 export * from "./unfavouriteDecoration";

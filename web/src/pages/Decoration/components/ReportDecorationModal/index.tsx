@@ -41,9 +41,14 @@ export const ReportDecorationModal = ({
   reportCurrentDecoration,
 }: Props) => {
   const [submitError, setSubmitError] = useState<boolean>(false);
+  const [moreDetails, setMoreDetails] = useState<string | undefined>("");
+  const [inappropriateName, setInappropriateName] = useState<boolean>(false);
+  const [inappropriateImages, setInappropriateImages] =
+    useState<boolean>(false);
 
   useEffect(() => {
     setSubmitError(false);
+    setMoreDetails("");
   }, [isReportDecorationOpen]);
 
   const form = useForm<z.infer<typeof FormSchema>>({
@@ -57,8 +62,8 @@ export const ReportDecorationModal = ({
 
   const onSubmit = (data: z.infer<typeof FormSchema>) => {
     const options: string[] = [];
-    const name = data.inappropriateName;
-    const images = data.inappropriateImages;
+    const name = inappropriateName;
+    const images = inappropriateImages;
 
     if (!name && !images) {
       setSubmitError(true);
@@ -144,8 +149,10 @@ export const ReportDecorationModal = ({
                           <FormItem className="flex flex-row items-start space-x-3 space-y-0 p-4">
                             <FormControl>
                               <Checkbox
-                                checked={field.value}
-                                onCheckedChange={field.onChange}
+                                checked={inappropriateName}
+                                onCheckedChange={(checked) => {
+                                  setInappropriateName(checked as boolean);
+                                }}
                               />
                             </FormControl>
                             <div className="space-y-1 leading-none text-ch-dark dark:text-ch-light">
@@ -165,8 +172,10 @@ export const ReportDecorationModal = ({
                           <FormItem className="flex flex-row items-start space-x-3 space-y-0 p-4">
                             <FormControl>
                               <Checkbox
-                                checked={field.value}
-                                onCheckedChange={field.onChange}
+                                checked={inappropriateImages}
+                                onCheckedChange={(checked) => {
+                                  setInappropriateImages(checked as boolean);
+                                }}
                               />
                             </FormControl>
                             <div className="space-y-1 leading-none text-ch-dark dark:text-ch-light">
@@ -207,6 +216,11 @@ export const ReportDecorationModal = ({
                                 placeholder="Provide more details..."
                                 className="resize-none"
                                 {...field}
+                                onChange={(e) => {
+                                  field.onChange(e.target.value);
+                                  setMoreDetails(e.target.value);
+                                }}
+                                value={moreDetails}
                               />
                             </FormControl>
                             <FormDescription>

@@ -14,7 +14,7 @@ import {
 } from "@apollo/client";
 import { setContext } from "@apollo/client/link/context";
 import { Toaster } from "./components/ui/toaster.tsx";
-import { Decoration, NotFound, SignIn } from "./pages";
+import { Decoration, NotFound, SignIn, VerifyDecoration } from "./pages";
 
 const router = createBrowserRouter([
   {
@@ -25,8 +25,13 @@ const router = createBrowserRouter([
         path: "/decoration/:decorationId",
         element: <Decoration />,
       },
+      {
+        path: "/verify-decoration/:decorationId",
+        element: <VerifyDecoration />,
+      },
     ],
   },
+
   {
     path: "/signin",
     element: <SignIn />,

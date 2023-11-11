@@ -63,7 +63,7 @@ export const AppHeader = ({ user }: Props) => {
             <Link to="/" className="hidden sm:block">
               <img src={logo} alt="logo" className="h-12" />
             </Link>
-            <div className="flex w-full max-w-sm items-center justify-center ml-72 space-x-2">
+            <div className="flex w-full max-w-sm items-center justify-center space-x-2">
               <Input type="text" placeholder="Search" />
               <Button variant="outline" size="icon" type="submit">
                 <MagnifyingGlass size={16} color="#ffffff" weight="bold" />

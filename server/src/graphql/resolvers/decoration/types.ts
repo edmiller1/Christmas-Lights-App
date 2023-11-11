@@ -78,3 +78,10 @@ export interface ReportDecorationArgs {
     additionalDetails?: string;
   };
 }
+
+export interface SubmitDecorationForVerificationArgs {
+  input: {
+    id: string;
+    document: string;
+  };
+}

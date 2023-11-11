@@ -11,6 +11,7 @@ import {
   GetDecorationArgs,
   RateDecorationArgs,
   ReportDecorationArgs,
+  SubmitDecorationForVerificationArgs,
   unfavouriteDecorationArgs,
 } from "./types";
 import { authorise, calculateRating } from "../../../lib/helpers";
@@ -27,6 +28,8 @@ export const decorationResolvers = {
       { _, req, res }: { _: undefined; req: Request; res: Response }
     ): Promise<Decoration> => {
       try {
+        const user = await authorise(req);
+
         const decoration = await prisma.decoration.findFirst({
           where: {
             id: input.id,
@@ -41,6 +44,16 @@ export const decorationResolvers = {
 
         if (!decoration) {
           throw new Error("Decoration cannot be found");
+        }
+
+        if (user) {
+          if (!decoration.verified && decoration.creator_id === user.id) {
+            return decoration;
+          } else {
+            throw new Error("Decoration is not verified");
+          }
+        } else if (!user && !decoration.verified) {
+          throw new Error("Decoration is not verified");
         }
 
         return decoration;
@@ -384,6 +397,67 @@ export const decorationResolvers = {
         });
 
         return decoration;
+      } catch (error) {
+        throw new Error(`${error}`);
+      }
+    },
+    submitDecorationForVerification: async (
+      _root: undefined,
+      { input }: SubmitDecorationForVerificationArgs,
+      { _, req, res }: { _: undefined; req: Request; res: Response }
+    ): Promise<Decoration> => {
+      try {
+        const user = await authorise(req);
+
+        if (!user) {
+          throw new Error("User cannot be found");
+        }
+
+        //upload image to Cloudinary
+        const document = await Cloudinary.uploadVerification(input.document);
+
+        const updatedDecoration = await prisma.decoration.update({
+          where: {
+            id: input.id,
+          },
+          data: {
+            verification_submitted: true,
+          },
+        });
+
+        //email admin about new verification_submitted
+        await resend.emails.send({
+          from: "Acme <onboarding@resend.dev>",
+          to: "edmiller.me@gmail.com",
+          subject: "New Verification Request",
+          html: `<h1>New Verification Request<h1>
+                  <p>User:</p>
+                  <ul>
+                  <li>ID: ${user.id}</li>
+                  <li>Email: ${user.email}</li>
+                  <li>Name: ${user.name}</li>
+                </ul>
+        
+                <p>Decoration to be verified:</p>
+                <ul>
+                <li>URL: http://localhost:3000/decoration/${updatedDecoration.id}</li>
+                <li>ID: ${updatedDecoration.id}</li>
+                <li>Name: ${updatedDecoration.name}</li>
+                <li>Address: ${updatedDecoration.address}</li>
+                <li>Verification Image: ${document.url}</li>
+                </ul>
+                `,
+        });
+
+        //email user if they have allowed emails through notification settings
+        if (user.notifications_by_email_verification) {
+        }
+
+        //create a notification for the user if they have allowed in app notifications
+        if (user.notifications_on_app_verification) {
+        }
+
+        return updatedDecoration;
       } catch (error) {
         throw new Error(`${error}`);
       }

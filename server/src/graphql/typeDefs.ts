@@ -153,6 +153,11 @@ export const typeDefs = gql`
     additionalDetails: String
   }
 
+  input SubmitDecorationForVerificationInput {
+    id: String!
+    document: String!
+  }
+
   #Queries
   type Query {
     getAllUsers: [User]
@@ -172,5 +177,8 @@ export const typeDefs = gql`
     editRating(input: EditRatingInput!): User!
     deleteRating(input: DeleteRatingInput!): User!
     reportDecoration(input: ReportDecorationInput!): Decoration!
+    submitDecorationForVerification(
+      input: SubmitDecorationForVerificationInput!
+    ): Decoration!
   }
 `;

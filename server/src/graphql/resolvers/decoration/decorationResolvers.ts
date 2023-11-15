@@ -61,6 +61,23 @@ export const decorationResolvers = {
         throw new Error(`${error}`);
       }
     },
+    getVerificationSubmissions: async (
+      _root: undefined,
+      {},
+      { _, req, res }: { _: undefined; req: Request; res: Response }
+    ): Promise<Decoration[]> => {
+      try {
+        const decorations = await prisma.decoration.findMany({
+          where: {
+            verification_submitted: true,
+          },
+        });
+
+        return decorations;
+      } catch (error) {
+        throw new Error(`${error}`);
+      }
+    },
   },
   Mutation: {
     createDecoration: async (
@@ -455,6 +472,15 @@ export const decorationResolvers = {
 
         //create a notification for the user if they have allowed in app notifications
         if (user.notifications_on_app_verification) {
+          await prisma.notification.create({
+            data: {
+              body: `Your verification submission for decoration: ${updatedDecoration.name} was successful. 
+              We will notify you on whether your decoration is verified or not.`,
+              title: "Verification Submission",
+              unread: true,
+              user_id: user.id,
+            },
+          });
         }
 
         return updatedDecoration;

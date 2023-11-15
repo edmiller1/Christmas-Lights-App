@@ -163,6 +163,7 @@ export const typeDefs = gql`
     getAllUsers: [User]
     getUser(input: GetUserInput!): User!
     getDecoration(input: GetDecorationInput!): Decoration!
+    getVerificationSubmissions: [Decoration]!
   }
 
   #Mutations

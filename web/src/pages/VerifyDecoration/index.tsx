@@ -1,24 +1,32 @@
-import { useQuery } from "@apollo/client";
+import { useMutation, useQuery } from "@apollo/client";
 import { GET_DECORATION } from "@/graphql/queries/";
-import { Link, useNavigate, useParams } from "react-router-dom";
-import logo from "../../assets/ChristmasLights-House-Logo.png";
+import { SUBMIT_DECORATION_FOR_VERIFICATION } from "@/graphql/mutations";
+import {
+  SubmitDecorationForVerification as SubmitDecorationForVerificationData,
+  SubmitDecorationForVerificationArgs,
+} from "@/graphql/mutations/submitDecorationForVerification/types";
+
 import {
   GetDecoration as GetDecorationData,
   GetDecorationArgs,
 } from "@/graphql/queries/getDecoration/types";
+import { Link, useNavigate, useParams } from "react-router-dom";
+import logo from "../../assets/ChristmasLights-House-Logo.png";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
-import { Files } from "@phosphor-icons/react";
+import { CircleNotch, Files } from "@phosphor-icons/react";
 import { useUser } from "@supabase/auth-helpers-react";
 import { useState } from "react";
 import { NotFound } from "..";
 import { getBase64Value } from "@/lib/helpers";
-import { Card, CardFooter } from "@/components/ui/card";
 import { AlreadySubmittedModal, VerifyDecorationLoading } from "./components";
+import { useToast } from "@/components/ui/use-toast";
 
 export const VerifyDecoration = () => {
   const { decorationId } = useParams();
   const currentUser = useUser();
+  const { toast } = useToast();
+  const navigate = useNavigate();
 
   const [alreadySubmitted, setAlreadySubmitted] = useState<boolean>(false);
   const [file, setFile] = useState<string>("");
@@ -30,7 +38,6 @@ export const VerifyDecoration = () => {
     data: getDecorationData,
     loading: getDecorationLoading,
     error: getDecorationError,
-    refetch: getDecorationRefetch,
   } = useQuery<GetDecorationData, GetDecorationArgs>(GET_DECORATION, {
     variables: { input: { id: decorationId! } },
     onCompleted: (data) => {
@@ -44,12 +51,44 @@ export const VerifyDecoration = () => {
     ? getDecorationData?.getDecoration
     : null;
 
+  const [
+    submitDecorationForVerification,
+    { loading: submitDecorationForVerificationLoading },
+  ] = useMutation<
+    SubmitDecorationForVerificationData,
+    SubmitDecorationForVerificationArgs
+  >(SUBMIT_DECORATION_FOR_VERIFICATION, {
+    onCompleted: (data) => {
+      toast({
+        variant: "success",
+        title: "Success 🎉",
+        description: "Verification request sent successfully!",
+      });
+      setTimeout(() => {
+        navigate(`/decoration/${decorationId}`);
+      }, 1500);
+    },
+    onError(error, clientOptions) {
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: "Failed to send verification request. Please try again.",
+      });
+    },
+  });
+
   const uploadFile = (e: any) => {
     setFileName(e.target.files[0].name);
     setFilePreview(URL.createObjectURL(e.target.files[0]));
     setFile(e.target.files[0]);
     getBase64Value(e.target.files[0], (imageBase64Value) => {
       setBase64Value(imageBase64Value);
+    });
+  };
+
+  const submitDecoration = () => {
+    submitDecorationForVerification({
+      variables: { input: { document: base64Value, id: decorationId! } },
     });
   };
 
@@ -64,6 +103,14 @@ export const VerifyDecoration = () => {
     return <VerifyDecorationLoading />;
   }
 
+  if (submitDecorationForVerificationLoading) {
+    return (
+      <div className="min-h-screen flex flex-col justify-center items-center">
+        <CircleNotch size={80} color="#5AC18A" className="animate-spin" />
+        <span className="text-lg">Sending Verification Request...</span>
+      </div>
+    );
+  }
   return (
     <>
       <AlreadySubmittedModal
@@ -135,6 +182,7 @@ export const VerifyDecoration = () => {
           <Button
             className="w-full mx-5 my-5 py-8 rounded-xl text-lg"
             disabled={!file}
+            onClick={submitDecoration}
           >
             Submit
           </Button>
@@ -198,7 +246,7 @@ export const VerifyDecoration = () => {
           </div>
         </div>
         <div className="flex justify-end items-center w-full px-96 border-t">
-          <Button disabled={!file} className="mt-4">
+          <Button disabled={!file} className="mt-4" onClick={submitDecoration}>
             Submit
           </Button>
         </div>

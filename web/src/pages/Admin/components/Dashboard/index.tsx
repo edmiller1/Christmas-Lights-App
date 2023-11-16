@@ -3,7 +3,7 @@ import { ChevronRight } from "lucide-react";
 
 export const Dashboard = () => {
   return (
-    <main className="min-h-screen py-10 lg:pl-72">
+    <main className="py-10 lg:pl-72">
       <div className="px-4 sm:px-6 lg:px-8">
         <div className="mt-8">
           <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">

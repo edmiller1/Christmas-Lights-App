@@ -72,6 +72,14 @@ export const typeDefs = gql`
     user_id: String!
   }
 
+  type Report {
+    id: String!
+    reasons: [String!]!
+    additionalInfo: String
+    decoration_id: String!
+    user_id: String!
+  }
+
   #input
   input CreateUserInput {
     id: String!

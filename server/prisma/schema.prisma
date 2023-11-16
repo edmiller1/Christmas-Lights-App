@@ -31,6 +31,7 @@ model User {
   history Decoration[] @relation("history_decorations")
   notifications Notification[]
   ratings Rating[]
+  reports Report[]
 }
 
 model Decoration {
@@ -59,6 +60,7 @@ model Decoration {
   added_to_history_by_id String?
   ratings Rating[]
   views View[] 
+  reports Report[]
 }
 
 model DecorationImage {
@@ -90,6 +92,18 @@ model Notification {
   body String
   unread Boolean
   created_at DateTime @default(now())
+  user User @relation(fields: [user_id], references: [id])
+  user_id String
+}
+
+model Report {
+  id String @id @default(cuid())
+  reasons String[]
+  additional_info String @db.VarChar(255)
+  resolved Boolean
+  created_at DateTime @default(now())
+  decoration Decoration @relation(fields: [decoration_id], references: [id])
+  decoration_id String
   user User @relation(fields: [user_id], references: [id])
   user_id String
 }

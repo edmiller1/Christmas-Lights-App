@@ -377,6 +377,8 @@ export const decorationResolvers = {
           throw new Error("Decoration cannot be found");
         }
 
+        //create report
+
         //Send email to CLA admin
         await resend.emails.send({
           from: "Acme <onboarding@resend.dev>",

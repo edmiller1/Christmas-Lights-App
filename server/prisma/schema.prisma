@@ -101,7 +101,7 @@ model Report {
   id String @id @default(cuid())
   reasons String[]
   additional_info String? @db.VarChar(255)
-  resolved Boolean
+  unresolved Boolean
   created_at DateTime @default(now())
   decoration Decoration @relation(fields: [decoration_id], references: [id])
   decoration_id String
@@ -112,7 +112,10 @@ model Report {
 model Verification {
   id String @id @default(cuid())
   document String
+  new Boolean
   approved Boolean
+  rejected Boolean
+  rejected_reason String
   archived Boolean
   created_At DateTime @default(now())
   decoration Decoration @relation(fields: [decoration_id], references: [id])

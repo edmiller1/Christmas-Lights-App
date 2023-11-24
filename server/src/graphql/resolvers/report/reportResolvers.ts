@@ -1,53 +1,55 @@
 import { Request, Response } from "express";
 import { prisma } from "../../../database";
-import { Verification } from "@prisma/client";
-import { GetVerificationRequestsArgs } from "./types";
+import { Report } from "@prisma/client";
 
-export const verificationResolvers = {
+export const reportResolvers = {
   Query: {
-    getVerificationRequests: async (
+    getRecentReports: async (
       _root: undefined,
       {},
       { _, req, res }: { _: undefined; req: Request; res: Response }
-    ): Promise<Verification[]> => {
+    ): Promise<Report[]> => {
       try {
-        const verifications = await prisma.verification.findMany({
+        const reports = await prisma.report.findMany({
+          where: {
+            unresolved: true,
+          },
           skip: 0,
           take: 10,
           orderBy: {
-            created_At: "desc",
+            created_at: "desc",
           },
           include: {
             decoration: true,
           },
         });
 
-        return verifications;
+        return reports;
       } catch (error) {
         throw new Error(`${error}`);
       }
     },
-    getVerificationRequestsCount: async (
+    getUnresolvedReportsCount: async (
       _root: undefined,
       {},
       { _, req, res }: { _: undefined; req: Request; res: Response }
     ): Promise<number> => {
       try {
-        const count = await prisma.verification.count({
+        const count = await prisma.report.count({
           select: {
-            new: true,
+            unresolved: true,
           },
         });
 
-        return count.new;
+        return count.unresolved;
       } catch (error) {
         throw new Error(`${error}`);
       }
     },
   },
-  Verification: {
-    id: (verification: Verification): string => {
-      return verification.id;
+  Report: {
+    id: (report: Report): string => {
+      return report.id;
     },
   },
 };

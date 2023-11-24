@@ -381,7 +381,7 @@ export const decorationResolvers = {
         await prisma.report.create({
           data: {
             additional_info: input.additionalDetails,
-            resolved: false,
+            unresolved: true,
             decoration_id: decoration.id,
             user_id: user.id,
             reasons: input.reportOptions,
@@ -457,8 +457,11 @@ export const decorationResolvers = {
           data: {
             document: document.url,
             decoration_id: updatedDecoration.id,
+            new: true,
             archived: false,
             approved: false,
+            rejected: false,
+            rejected_reason: "",
           },
         });
 

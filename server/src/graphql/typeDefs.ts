@@ -41,6 +41,8 @@ export const typeDefs = gql`
     updated_at: String
     ratings: [Rating]!
     views: [View]!
+    reports: [Report]
+    verification: Verification
     creator_id: String!
   }
 
@@ -76,6 +78,9 @@ export const typeDefs = gql`
     id: String!
     reasons: [String!]!
     additionalInfo: String
+    unresolved: Boolean
+    created_at: String!
+    decoration: Decoration!
     decoration_id: String!
     user_id: String!
   }
@@ -83,8 +88,12 @@ export const typeDefs = gql`
   type Verification {
     id: String!
     document: String!
+    new: Boolean
     approved: Boolean
+    rejected: Boolean
+    rejected_reason: String
     archived: Boolean
+    decoration: Decoration!
     decoration_id: String!
   }
 
@@ -174,6 +183,11 @@ export const typeDefs = gql`
     document: String!
   }
 
+  input GetVerificationRequestsInput {
+    skip: Int!
+    take: Int!
+  }
+
   #Queries
   type Query {
     getAllUsers: [User]
@@ -181,6 +195,9 @@ export const typeDefs = gql`
     getDecoration(input: GetDecorationInput!): Decoration!
     getVerificationSubmissions: [Decoration]!
     getVerificationRequests: [Verification]!
+    getRecentReports: [Report]!
+    getVerificationRequestsCount: Int!
+    getUnresolvedReportsCount: Int!
   }
 
   #Mutations

@@ -6,4 +6,5 @@ export * from "./ImagesModal";
 export * from "./LoggedOutMenuItems";
 export * from "./MenuItems";
 export * from "./RemoveImageModal";
+export * from "./ThemeToggle";
 export * from "./UploadModal";

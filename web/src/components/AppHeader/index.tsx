@@ -15,6 +15,7 @@ import {
   CreateDecorationModal,
   LoggedOutMenuItems,
   MenuItems,
+  ThemeToggle,
 } from "./components";
 import { Get_User } from "@/graphql/queries/getUser/types";
 import { useState } from "react";
@@ -66,7 +67,11 @@ export const AppHeader = ({ user }: Props) => {
             <div className="flex w-full max-w-sm items-center justify-center space-x-2">
               <Input type="text" placeholder="Search" />
               <Button variant="outline" size="icon" type="submit">
-                <MagnifyingGlass size={16} color="#ffffff" weight="bold" />
+                <MagnifyingGlass
+                  size={16}
+                  weight="bold"
+                  className="text-ch-dark dark:text-ch-light"
+                />
               </Button>
             </div>
             <div className="hidden sm:flex mx-6  items-center space-x-4">
@@ -77,11 +82,19 @@ export const AppHeader = ({ user }: Props) => {
                     className="rounded-lg"
                     onClick={() => setIsCreateOpen(true)}
                   >
-                    <HouseLine size={20} color="#ffffff" weight="bold" />
+                    <HouseLine
+                      size={20}
+                      weight="bold"
+                      className="text-ch-dark dark:text-ch-light"
+                    />
                     <span className="ml-1">Create</span>
                   </Button>
                   <Button variant="ghost" size="icon" className="rounded-full">
-                    <Bell size={20} color="#ffffff" weight="bold" />
+                    <Bell
+                      size={20}
+                      weight="bold"
+                      className="text-ch-dark dark:text-ch-light"
+                    />
                   </Button>
                 </>
               ) : null}

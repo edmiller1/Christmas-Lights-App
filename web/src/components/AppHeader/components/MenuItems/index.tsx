@@ -10,6 +10,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Get_User } from "@/graphql/queries/getUser/types";
+import { ThemeToggle } from "..";
 
 interface Props {
   user: Get_User | null;
@@ -48,6 +49,7 @@ export const MenuItems = ({ user, signOut }: Props) => {
           <DropdownMenuItem>Favourites</DropdownMenuItem>
           <DropdownMenuItem>History</DropdownMenuItem>
           <DropdownMenuItem>Settings</DropdownMenuItem>
+          <ThemeToggle />
         </DropdownMenuGroup>
         <DropdownMenuSeparator />
         <DropdownMenuItem onClick={signOut}>Sign Out</DropdownMenuItem>

@@ -188,11 +188,19 @@ export const typeDefs = gql`
     take: Int!
   }
 
+  input MutateNotificationInput {
+    id: String!
+  }
+
   #Queries
   type Query {
-    getAllUsers: [User]
+    # App Queries
     getUser(input: GetUserInput!): User!
     getDecoration(input: GetDecorationInput!): Decoration!
+    getUserNotifications: [Notification]!
+    getUnreadNotifications: Int!
+
+    # Admin Queries
     getVerificationSubmissions: [Decoration]!
     getVerificationRequests: [Verification]!
     getRecentReports: [Report]!
@@ -215,5 +223,10 @@ export const typeDefs = gql`
     submitDecorationForVerification(
       input: SubmitDecorationForVerificationInput!
     ): Decoration!
+    markNotificationAsRead(input: MutateNotificationInput!): User!
+    markNotificationAsUnread(input: MutateNotificationInput!): User!
+    markAllNotificationsAsRead: User!
+    deleteAllNotifications: User!
+    deleteNotification(input: MutateNotificationInput!): User!
   }
 `;

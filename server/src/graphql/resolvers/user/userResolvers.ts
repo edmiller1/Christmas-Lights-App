@@ -1,7 +1,8 @@
 import { Request, Response } from "express";
 import { prisma } from "../../../database";
 import { CreateUserArgs, GetUserArgs } from "./types";
-import { User } from "@prisma/client";
+import { Notification, User } from "@prisma/client";
+import { authorise } from "../../../lib/helpers";
 
 export const userResolvers = {
   Query: {
@@ -31,16 +32,54 @@ export const userResolvers = {
         throw new Error(`Failed to get user - ${error}`);
       }
     },
-    getAllUsers: async () => {
+    getUserNotifications: async (
+      _root: undefined,
+      {},
+      { _, req, res }: { _: undefined; req: Request; res: Response }
+    ): Promise<Notification[]> => {
       try {
-        const users = await prisma.user.findMany();
+        const user = await authorise(req);
 
-        if (!users) {
-          throw new Error("UH OH!");
+        if (!user) {
+          throw new Error("User cannot be found");
         }
-        return users;
+
+        const userNotifications = await prisma.notification.findMany({
+          where: {
+            user_id: user.id,
+          },
+          orderBy: {
+            created_at: "desc",
+          },
+        });
+
+        return userNotifications;
       } catch (error) {
-        throw new Error(`failed - ${error}`);
+        throw new Error(`${error}`);
+      }
+    },
+    getUnreadNotifications: async (
+      _root: undefined,
+      {},
+      { _, req, res }: { _: undefined; req: Request; res: Response }
+    ): Promise<number> => {
+      try {
+        const user = await authorise(req);
+
+        if (!user) {
+          throw new Error("User cannot be found");
+        }
+
+        const userNotificationsCount = await prisma.notification.count({
+          where: {
+            user_id: user.id,
+            unread: true,
+          },
+        });
+
+        return userNotificationsCount;
+      } catch (error) {
+        throw new Error(`${error}`);
       }
     },
   },

@@ -1,5 +1,5 @@
 import { useUser } from "@supabase/auth-helpers-react";
-import { useLazyQuery, useMutation, useQuery } from "@apollo/client";
+import { useLazyQuery, useMutation } from "@apollo/client";
 import { CREATE_USER } from "./graphql/mutations";
 import { GET_USER } from "./graphql/queries";
 import {

@@ -74,7 +74,6 @@ export const SideNav = ({ logOut }: Props) => {
                     </button>
                   </div>
                 </Transition.Child>
-                {/* Sidebar component, swap this element with another sidebar if you like */}
                 <div className="flex grow flex-col gap-y-5 overflow-y-auto px-6 pb-2 bg-zinc-900">
                   <div className="flex h-16 shrink-0 items-center">
                     <img

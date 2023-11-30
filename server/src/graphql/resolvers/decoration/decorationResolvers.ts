@@ -293,6 +293,22 @@ export const decorationResolvers = {
           throw new Error("Decoration doesn't exist");
         }
 
+        if (user.id === decoration.creator_id) {
+          throw new Error("Owner cannot rate their own decoration.");
+        }
+
+        const alreadyRated = await prisma.rating.findFirst({
+          where: {
+            user_id: user.id,
+          },
+        });
+
+        if (alreadyRated) {
+          throw new Error(
+            "Decoration has already been rated by user. Please edit your rating."
+          );
+        }
+
         await prisma.rating.create({
           data: {
             rating: input.rating,
@@ -300,6 +316,41 @@ export const decorationResolvers = {
             user_id: user.id,
           },
         });
+
+        const owner = await prisma.user.findFirst({
+          where: {
+            id: decoration.creator_id,
+          },
+        });
+
+        if (!owner) {
+          throw new Error("Decoration must have an owner");
+        }
+
+        if (owner.notifications_by_email_rating) {
+          //send email to owner
+          await resend.emails.send({
+            from: "Acme <onboarding@resend.dev>",
+            to: "edmiller.me@gmail.com",
+            subject: "New Decoration Rating",
+            html: `<p>New Decoration Rating</p>
+            <p>Your decoration ${decoration.name} has recieved a new rating</p>
+            &nbsp;
+            <p>${decoration.name} recieved a rating of ${input.rating}</p>
+            `,
+          });
+        }
+        if (owner.notifications_on_app_rating) {
+          //create notification
+          await prisma.notification.create({
+            data: {
+              body: `⭐️ A new rating of ${input.rating} was recieved for your decoration: ${decoration.name}. ⭐️`,
+              title: "New Decoration Rating ⭐️",
+              unread: true,
+              user_id: owner.id,
+            },
+          });
+        }
 
         return decoration;
       } catch (error) {
@@ -439,6 +490,18 @@ export const decorationResolvers = {
 
         if (!user) {
           throw new Error("User cannot be found");
+        }
+
+        const decoration = await prisma.decoration.findFirst({
+          where: {
+            id: input.id,
+          },
+        });
+
+        if (decoration?.verification_submitted || decoration?.verified) {
+          throw new Error(
+            "Decoration has already submitted a request for verification or is already verified"
+          );
         }
 
         //upload image to Cloudinary

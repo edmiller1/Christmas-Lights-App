@@ -1,16 +1,22 @@
-import { Decoration, Rating } from "@/lib/types";
+import { Decoration, Notification, Rating } from "@/lib/types";
 
 export interface Get_User {
   __typename: "User";
   id: string;
   name: string;
   email: string;
+  imageId: string | null;
   image: string;
   provider: string;
   premium: boolean;
   ratings: Rating[];
   decorations: Decoration[];
   favourites: Decoration[];
+  history: Decoration[];
+  notifications_on_app_verification: boolean;
+  notifications_on_app_rating: boolean;
+  notifications_by_email_verification: boolean;
+  notifications_by_email_rating: boolean;
 }
 
 export interface GetUser {

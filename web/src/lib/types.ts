@@ -39,3 +39,12 @@ export interface View {
   created_at: string;
   decoration_id: string;
 }
+
+export interface Notification {
+  id: string;
+  title: string;
+  body: string;
+  unread: boolean;
+  created_at: string;
+  user_id: string;
+}

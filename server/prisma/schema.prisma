@@ -17,6 +17,7 @@ model User {
   id String @id @default(cuid())
   token String @unique @db.Text()
   name String
+  imageId String?
   image String
   email String
   premium Boolean

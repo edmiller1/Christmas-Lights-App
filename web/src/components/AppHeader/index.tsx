@@ -87,7 +87,7 @@ export const AppHeader = ({ user }: Props) => {
         user={user}
       />
 
-      <div className="flex-col md:flex dark:bg-zinc-900">
+      <div className="flex-col border-b dark:border-none md:flex dark:bg-zinc-900">
         <div
           className={`${
             window.location.pathname.includes("notification") ||
@@ -194,7 +194,7 @@ export const AppHeader = ({ user }: Props) => {
             </Link>
           ) : (
             <Link
-              to="/"
+              to="/profile/favourites"
               type="button"
               className={`${
                 location.pathname === "/favourites"
@@ -294,7 +294,7 @@ export const AppHeader = ({ user }: Props) => {
               to="/profile"
               type="button"
               className={`${
-                location.pathname === "/profile"
+                location.pathname.includes("/profile")
                   ? "relative flex flex-col flex-1 items-center p-4 text-center text-ch-red"
                   : "relative flex flex-col flex-1 items-center p-4 text-center"
               }`}
@@ -302,7 +302,7 @@ export const AppHeader = ({ user }: Props) => {
               <UserCircle
                 size={24}
                 className={`${
-                  location.pathname === "/profile"
+                  location.pathname.includes("/profile")
                     ? "text-ch-red"
                     : "text-ch-dark dark:text-ch-light"
                 }`}

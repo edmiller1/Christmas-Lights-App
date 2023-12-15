@@ -43,7 +43,11 @@ import {
   ReportDecoration as ReportDecorationData,
   ReportDecorationArgs,
 } from "@/graphql/mutations/reportDecoration/types";
-import { GET_DECORATION, GET_USER } from "@/graphql/queries";
+import {
+  GET_DECORATION,
+  GET_RECOMMENDED_DECORATIONS,
+  GET_USER,
+} from "@/graphql/queries";
 import {
   GetDecoration as GetDecorationData,
   GetDecorationArgs,
@@ -52,6 +56,10 @@ import {
   GetUser as GetUserData,
   GetUserArgs,
 } from "@/graphql/queries/getUser/types";
+import {
+  GetRecommendedDecorations as GetRecommendedDecorationsData,
+  GetRecommendedDecorationsArgs,
+} from "@/graphql/queries/getRecommendedDecorations/types";
 import { NotFound } from "..";
 import { Link, useParams, useNavigate } from "react-router-dom";
 import {
@@ -124,6 +132,19 @@ export const Decoration = () => {
   const decoration = getDecorationData?.getDecoration
     ? getDecorationData?.getDecoration
     : null;
+
+  const {
+    data: getRecommendedDecorationsData,
+    loading: getRecommendedDecorationsLoading,
+    error: getRecommendedDecorationsError,
+  } = useQuery<GetRecommendedDecorationsData, GetRecommendedDecorationsArgs>(
+    GET_RECOMMENDED_DECORATIONS
+  );
+
+  const recommendedDecorations =
+    getRecommendedDecorationsData?.getRecommendedDecorations
+      ? getRecommendedDecorationsData.getRecommendedDecorations
+      : null;
 
   // MUTATIONS
   const [addView] = useMutation<AddViewData, AddViewArgs>(ADD_VIEW);
@@ -647,16 +668,18 @@ export const Decoration = () => {
           />
         </div>
         <div className="px-5 py-3">
-          <div className="flex items-center space-x-2">
+          <div className="flex items-center justify-between space-x-2">
             <h1 className="font-semibold text-3xl">{decoration?.name}</h1>
             {decoration?.verified ? (
               <CircleWavyCheck size={24} color="#E23737" weight="fill" />
             ) : null}
-            <div className="flex justify-end">
-              <DecorationMenu
-                setIsReportDecorationOpen={setIsReportDecorationOpen}
-              />
-            </div>
+            {currentUser?.id !== decoration?.creator_id ? (
+              <div className="flex justify-end">
+                <DecorationMenu
+                  setIsReportDecorationOpen={setIsReportDecorationOpen}
+                />
+              </div>
+            ) : null}
           </div>
           <div className="flex items-center space-x-1 mt-2">
             <Star size={16} color="#ffffff" weight="fill" />

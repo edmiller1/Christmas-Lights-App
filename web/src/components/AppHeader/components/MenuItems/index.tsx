@@ -11,6 +11,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Get_User } from "@/graphql/queries/getUser/types";
 import { ThemeToggle } from "..";
+import { useNavigate } from "react-router-dom";
 
 interface Props {
   user: Get_User | null;
@@ -18,6 +19,7 @@ interface Props {
 }
 
 export const MenuItems = ({ user, signOut }: Props) => {
+  const navigate = useNavigate();
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -45,10 +47,18 @@ export const MenuItems = ({ user, signOut }: Props) => {
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
         <DropdownMenuGroup>
-          <DropdownMenuItem>Dashboard</DropdownMenuItem>
-          <DropdownMenuItem>Favourites</DropdownMenuItem>
-          <DropdownMenuItem>History</DropdownMenuItem>
-          <DropdownMenuItem>Settings</DropdownMenuItem>
+          <DropdownMenuItem onClick={() => navigate("/profile")}>
+            Profile
+          </DropdownMenuItem>
+          <DropdownMenuItem onClick={() => navigate("/profile/decorations")}>
+            Decorations
+          </DropdownMenuItem>
+          <DropdownMenuItem onClick={() => navigate("/profile/history")}>
+            History
+          </DropdownMenuItem>
+          <DropdownMenuItem onClick={() => navigate("/profile/favourites")}>
+            Favourites
+          </DropdownMenuItem>
           <ThemeToggle />
         </DropdownMenuGroup>
         <DropdownMenuSeparator />

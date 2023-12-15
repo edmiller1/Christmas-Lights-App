@@ -24,6 +24,13 @@ import {
   VerifyDecoration,
 } from "./pages";
 import { Dashboard, Login } from "./pages/Admin/components/index.ts";
+import {
+  Favourites,
+  History,
+  NotificationSettings,
+  PersonalInfo,
+  YourDecorations,
+} from "./pages/Profile/pages/index.ts";
 
 const router = createBrowserRouter([
   {
@@ -46,6 +53,23 @@ const router = createBrowserRouter([
         path: "/profile",
         element: <Profile />,
       },
+      {
+        path: "/profile/personal-info",
+        element: <PersonalInfo />,
+      },
+      {
+        path: "/profile/notification-settings",
+        element: <NotificationSettings />,
+      },
+      {
+        path: "/profile/decorations",
+        element: <YourDecorations />,
+      },
+      {
+        path: "/profile/history",
+        element: <History />,
+      },
+      { path: "/profile/favourites", element: <Favourites /> },
     ],
   },
   {
@@ -104,7 +128,7 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
     <ApolloProvider client={client}>
       <SessionContextProvider supabaseClient={supabase}>
         <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
-          <div className="dark:bg-ch-dark dark:text-white text-ch-indigo bg-ch-light">
+          <div className="h-full dark:bg-ch-dark dark:text-white bg-ch-light">
             <Toaster />
             <RouterProvider router={router} />
           </div>

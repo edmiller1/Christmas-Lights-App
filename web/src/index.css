@@ -179,3 +179,7 @@ input[type="file"] {
   filter: brightness(80%);
   -webkit-filter: brightness(80%);
 }
+
+.profile-card {
+  box-shadow: rgba(0, 0, 0, 0.12) 0px 6px 16px !important;
+}

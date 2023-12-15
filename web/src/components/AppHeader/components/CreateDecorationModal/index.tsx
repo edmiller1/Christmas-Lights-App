@@ -17,6 +17,8 @@ interface Props {
   user: Get_User | null;
 }
 
+const mbApiKey = import.meta.env.VITE_MAPBOX_API_KEY;
+
 export const CreateDecorationModal = ({
   isCreateOpen,
   setIsCreateOpen,
@@ -24,6 +26,7 @@ export const CreateDecorationModal = ({
 }: Props) => {
   const navigate = useNavigate();
   const { toast } = useToast();
+  const [countryAbbrev, setCountryAbbrev] = useState<string>("");
   const [currentStep, setCurrentStep] = useState<number>(1);
   const [count, setCount] = useState<number>(0);
 
@@ -41,11 +44,7 @@ export const CreateDecorationModal = ({
 
   const [
     createDecoration,
-    {
-      data: createDecorationData,
-      loading: createDecorationLoading,
-      reset: createDecorationReset,
-    },
+    { loading: createDecorationLoading, reset: createDecorationReset },
   ] = useMutation<CreateDecorationData, CreateDecorationArgs>(
     CREATE_DECORATION,
     {
@@ -55,6 +54,7 @@ export const CreateDecorationModal = ({
           title: "Success 🎉",
           description: "Decoration created successfully!",
         });
+        setIsCreateOpen(false);
         setTimeout(() => {
           navigate(`/decoration/${data?.createDecoration.id}`);
         }, 2000);
@@ -379,6 +379,29 @@ export const CreateDecorationModal = ({
     });
   };
 
+  const getCountryAbbrev = async (latitude: string, longitude: string) => {
+    const response = await fetch(
+      `https://api.mapbox.com/geocoding/v5/mapbox.places/${longitude},${latitude}.json?access_token=${mbApiKey}`
+    );
+    const jsonData = await response.json();
+    const country = jsonData.features.find((item: any) =>
+      item.id.includes("country")
+    );
+    setCountryAbbrev(country.properties.short_code);
+  };
+
+  useEffect(() => {
+    if (
+      localStorage.getItem("latitude") !== null &&
+      localStorage.getItem("longitude") !== null
+    ) {
+      getCountryAbbrev(
+        localStorage.getItem("latitude")!,
+        localStorage.getItem("longitude")!
+      );
+    }
+  }, []);
+
   if (currentStep === 2 && images.length > 0) {
     return (
       <ImagesModal
@@ -414,6 +437,7 @@ export const CreateDecorationModal = ({
         setIsCancelOpen={setIsCancelOpen}
         createNewDecoration={createNewDecoration}
         createDecorationLoading={createDecorationLoading}
+        countryAbbrev={countryAbbrev}
       />
     );
   }

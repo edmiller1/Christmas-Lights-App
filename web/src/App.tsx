@@ -38,6 +38,23 @@ function App() {
     },
   });
 
+  const getCoords = async () => {
+    if (navigator.geolocation) {
+      await navigator.geolocation.getCurrentPosition((position) => {
+        localStorage.setItem(
+          "latitude",
+          JSON.stringify(position.coords.latitude)
+        );
+        localStorage.setItem(
+          "longitude",
+          JSON.stringify(position.coords.longitude)
+        );
+      });
+    } else {
+      return;
+    }
+  };
+
   useEffect(() => {
     if (
       currentUser &&
@@ -64,6 +81,10 @@ function App() {
       });
     }
   }, [currentUser]);
+
+  useEffect(() => {
+    getCoords();
+  }, []);
 
   return (
     <div className="min-h-screen">

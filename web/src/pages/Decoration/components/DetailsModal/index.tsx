@@ -29,6 +29,7 @@ interface Props {
   ) => void;
   editDecorationLoading: boolean;
   files: File[] | number[];
+  countryAbbrev: string;
 }
 
 export const DetailsModal = ({
@@ -43,6 +44,7 @@ export const DetailsModal = ({
   updateDecoration,
   editDecorationLoading,
   files,
+  countryAbbrev,
 }: Props) => {
   return (
     <Transition appear show={isEditOpen} as={Fragment}>
@@ -81,19 +83,23 @@ export const DetailsModal = ({
                   >
                     Edit Decoration
                   </Dialog.Title>
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    onClick={() => setIsCancelOpen(true)}
-                  >
-                    <X size={16} color="#ffffff" weight="bold" />
-                  </Button>
+                  {editDecorationLoading ? null : (
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      onClick={() => setIsCancelOpen(true)}
+                    >
+                      <X size={16} color="#ffffff" weight="bold" />
+                    </Button>
+                  )}
                 </div>
-                <div className="mt-2">
-                  <p className="text-sm text-gray-500 dark:text-gray-300">
-                    Update your decoration name and address.
-                  </p>
-                </div>
+                {editDecorationLoading ? null : (
+                  <div className="mt-2">
+                    <p className="text-sm text-gray-500 dark:text-gray-300">
+                      Update your decoration name and address.
+                    </p>
+                  </div>
+                )}
 
                 <div>
                   {editDecorationLoading ? (
@@ -113,6 +119,7 @@ export const DetailsModal = ({
                       decoration={decoration}
                       updateDecoration={updateDecoration}
                       files={files}
+                      countryAbbrev={countryAbbrev}
                     />
                   )}
                 </div>

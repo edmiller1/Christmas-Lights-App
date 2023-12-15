@@ -24,6 +24,7 @@ interface Props {
     images: string[]
   ) => void;
   createDecorationLoading: boolean;
+  countryAbbrev: string;
 }
 
 export const DetailsModal = ({
@@ -35,6 +36,7 @@ export const DetailsModal = ({
   files,
   createNewDecoration,
   createDecorationLoading,
+  countryAbbrev,
 }: Props) => {
   return (
     <Transition appear show={isCreateOpen} as={Fragment}>
@@ -73,13 +75,15 @@ export const DetailsModal = ({
                   >
                     Decoration Details
                   </Dialog.Title>
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    onClick={() => setIsCancelOpen(true)}
-                  >
-                    <X size={16} color="#ffffff" weight="bold" />
-                  </Button>
+                  {createDecorationLoading ? null : (
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      onClick={() => setIsCancelOpen(true)}
+                    >
+                      <X size={16} color="#ffffff" weight="bold" />
+                    </Button>
+                  )}
                 </div>
                 <div>
                   {createDecorationLoading ? (
@@ -98,6 +102,7 @@ export const DetailsModal = ({
                       setCurrentStep={setCurrentStep}
                       files={files}
                       createNewDecoration={createNewDecoration}
+                      countryAbbrev={countryAbbrev}
                     />
                   )}
                 </div>

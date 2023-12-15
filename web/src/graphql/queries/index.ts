@@ -1,5 +1,6 @@
 export * from "./getDecoration";
 export * from "./getRecentReports";
+export * from "./getRecommendedDecorations";
 export * from "./getUser";
 export * from "./getUnreadNotifications";
 export * from "./getUnresolvedReportsCount";

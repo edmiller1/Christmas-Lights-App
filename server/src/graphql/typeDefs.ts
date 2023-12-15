@@ -7,6 +7,7 @@ export const typeDefs = gql`
     token: String!
     name: String!
     email: String!
+    imageId: String
     image: String!
     premium: Boolean
     provider: String!
@@ -192,6 +193,24 @@ export const typeDefs = gql`
     id: String!
   }
 
+  input EditAvatarInput {
+    image: String!
+    imageId: String
+  }
+
+  input EditNameInput {
+    name: String!
+  }
+
+  input MutateNotificationSettingsInput {
+    setting: Boolean!
+    name: String!
+  }
+
+  input GetRecommendedDecorationsInput {
+    city: String!
+  }
+
   #Queries
   type Query {
     # App Queries
@@ -199,6 +218,9 @@ export const typeDefs = gql`
     getDecoration(input: GetDecorationInput!): Decoration!
     getUserNotifications: [Notification]!
     getUnreadNotifications: Int!
+    getRecommendedDecorations(
+      input: GetRecommendedDecorationsInput!
+    ): [Decoration!]!
 
     # Admin Queries
     getVerificationSubmissions: [Decoration]!
@@ -210,7 +232,12 @@ export const typeDefs = gql`
 
   #Mutations
   type Mutation {
+    # User
     createUser(input: CreateUserInput!): User!
+    editAvatar(input: EditAvatarInput!): User!
+    editName(input: EditNameInput!): User!
+    mutateNotficationSettings(input: MutateNotificationSettingsInput!): User!
+    # Decoration
     createDecoration(input: CreateDecorationInput!): Decoration!
     editDecoration(input: EditDecorationInput!): Decoration!
     favouriteDecoration(input: FavouriteDecorationInput!): User!
@@ -223,6 +250,7 @@ export const typeDefs = gql`
     submitDecorationForVerification(
       input: SubmitDecorationForVerificationInput!
     ): Decoration!
+    # Notification
     markNotificationAsRead(input: MutateNotificationInput!): User!
     markNotificationAsUnread(input: MutateNotificationInput!): User!
     markAllNotificationsAsRead: User!

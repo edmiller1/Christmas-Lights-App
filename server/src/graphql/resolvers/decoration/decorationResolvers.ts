@@ -9,6 +9,7 @@ import {
   EditRatingArgs,
   FavouriteDecorationArgs,
   GetDecorationArgs,
+  GetRecommendedDecorationsArgs,
   RateDecorationArgs,
   ReportDecorationArgs,
   SubmitDecorationForVerificationArgs,
@@ -57,6 +58,32 @@ export const decorationResolvers = {
         }
 
         return decoration;
+      } catch (error) {
+        throw new Error(`${error}`);
+      }
+    },
+    getRecommendedDecorations: async (
+      _root: undefined,
+      { input }: GetRecommendedDecorationsArgs,
+      { _, req, res }: { _: undefined; req: Request; res: Response }
+    ): Promise<Decoration[]> => {
+      try {
+        const decorations = await prisma.decoration.findMany({
+          where: {
+            city: input.city,
+          },
+          skip: 0,
+          take: 10,
+          include: {
+            images: true,
+          },
+        });
+
+        if (!decorations) {
+          throw new Error("Decorations cannot be found!");
+        }
+
+        return decorations;
       } catch (error) {
         throw new Error(`${error}`);
       }

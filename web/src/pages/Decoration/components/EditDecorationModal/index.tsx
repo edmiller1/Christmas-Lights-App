@@ -27,6 +27,8 @@ interface Props {
   setCurrentStep: (currentStep: number) => void;
 }
 
+const mbApiKey = import.meta.env.VITE_MAPBOX_API_KEY;
+
 export const EditDecorationModal = ({
   isEditOpen,
   setIsEditOpen,
@@ -39,6 +41,7 @@ export const EditDecorationModal = ({
   setCurrentStep,
 }: Props) => {
   const { toast } = useToast();
+  const [countryAbbrev, setCountryAbbrev] = useState<string>("");
   const [currentImage, setCurrentImage] = useState<{
     id: string;
     url: string;
@@ -200,6 +203,29 @@ export const EditDecorationModal = ({
     }
   };
 
+  const getCountryAbbrev = async (latitude: string, longitude: string) => {
+    const response = await fetch(
+      `https://api.mapbox.com/geocoding/v5/mapbox.places/${longitude},${latitude}.json?access_token=${mbApiKey}`
+    );
+    const jsonData = await response.json();
+    const country = jsonData.features.find((item: any) =>
+      item.id.includes("country")
+    );
+    setCountryAbbrev(country.properties.short_code);
+  };
+
+  useEffect(() => {
+    if (
+      localStorage.getItem("latitude") !== null &&
+      localStorage.getItem("longitude") !== null
+    ) {
+      getCountryAbbrev(
+        localStorage.getItem("latitude")!,
+        localStorage.getItem("longitude")!
+      );
+    }
+  }, []);
+
   const discardEdits = () => {
     setImages(decorationImages);
     setFiles([]);
@@ -224,6 +250,7 @@ export const EditDecorationModal = ({
         updateDecoration={updateDecoration}
         editDecorationLoading={editDecorationLoading}
         files={files}
+        countryAbbrev={countryAbbrev}
       />
     );
   }

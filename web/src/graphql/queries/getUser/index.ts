@@ -6,7 +6,19 @@ export const GET_USER = gql`
       id
       name
       email
+      imageId
       image
+      decorations {
+        id
+        name
+        city
+        country
+        rating
+        images {
+          id
+          url
+        }
+      }
       ratings {
         id
         rating
@@ -14,7 +26,30 @@ export const GET_USER = gql`
       }
       favourites {
         id
+        name
+        city
+        country
+        rating
+        images {
+          id
+          url
+        }
       }
+      history {
+        id
+        name
+        city
+        country
+        rating
+        images {
+          id
+          url
+        }
+      }
+      notifications_on_app_verification
+      notifications_on_app_rating
+      notifications_by_email_verification
+      notifications_by_email_rating
     }
   }
 `;

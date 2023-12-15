@@ -85,3 +85,9 @@ export interface SubmitDecorationForVerificationArgs {
     document: string;
   };
 }
+
+export interface GetRecommendedDecorationsArgs {
+  input: {
+    city: string;
+  };
+}

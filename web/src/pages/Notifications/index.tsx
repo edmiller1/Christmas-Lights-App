@@ -161,14 +161,8 @@ export const Notifications = () => {
       </div>
       <div className="py-5 sm:hidden">
         <div className="flex justify-between items-center px-2">
-          <div className="flex items-center mt-6">
-            <button onClick={() => navigate(-1)}>
-              <CaretLeft
-                size={32}
-                className="text-ch-dark dark:text-ch-light"
-              />
-            </button>
-            <h1 className="ml-4 font-bold text-2xl">Notifications</h1>
+          <div className="flex items-center mt-5">
+            <h1 className="ml-5 font-bold text-3xl">Notifications</h1>
           </div>
           {userNotifications && userNotifications.length > 0 ? (
             <AllNotificationsMenu

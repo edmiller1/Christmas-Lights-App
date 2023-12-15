@@ -32,6 +32,7 @@ interface Props {
     region: string
   ) => void;
   files: File[] | number[];
+  countryAbbrev: string;
 }
 
 const mbApiKey = import.meta.env.VITE_MAPBOX_API_KEY;
@@ -47,6 +48,7 @@ export const EditDecorationForm = ({
   decoration,
   updateDecoration,
   files,
+  countryAbbrev,
 }: Props) => {
   const [images, setImages] = useState<string[]>([]);
   const [name, setName] = useState<string>("");
@@ -100,9 +102,16 @@ export const EditDecorationForm = ({
   useEffect(() => {
     if (searchQuery.length > 0 && searchQuery.length < 25) {
       const getAddressData = setTimeout(async () => {
-        const response = await fetch(
-          `https://api.mapbox.com/search/searchbox/v1/suggest?q=${searchQuery}&access_token=${mbApiKey}&session_token=0f6c0283-69eb-41d1-88af-83b6da40a6a0&language=en&limit=10&country=nz,au&types=region%2Cdistrict%2Cpostcode%2Clocality%2Cplace%2Cneighborhood%2Caddress%2Cpoi%2Cstreet%2Ccategory%2Ccountry&proximity=-98%2C%2040`
-        );
+        let response = null;
+        if (countryAbbrev !== "") {
+          response = await fetch(
+            `https://api.mapbox.com/search/searchbox/v1/suggest?q=${searchQuery}&access_token=${mbApiKey}&session_token=0f6c0283-69eb-41d1-88af-83b6da40a6a0&language=en&limit=10&country=${countryAbbrev}&types=region%2Cdistrict%2Cpostcode%2Clocality%2Cplace%2Cneighborhood%2Caddress%2Cpoi%2Cstreet%2Ccategory%2Ccountry&proximity=-98%2C%2040`
+          );
+        } else {
+          response = await fetch(
+            `https://api.mapbox.com/search/searchbox/v1/suggest?q=${searchQuery}&access_token=${mbApiKey}&session_token=0f6c0283-69eb-41d1-88af-83b6da40a6a0&language=en&limit=10&country=nz,au&types=region%2Cdistrict%2Cpostcode%2Clocality%2Cplace%2Cneighborhood%2Caddress%2Cpoi%2Cstreet%2Ccategory%2Ccountry&proximity=-98%2C%2040`
+          );
+        }
         const jsonData = await response.json();
         console.log(jsonData.suggestions);
         setSuggestions(jsonData.suggestions);

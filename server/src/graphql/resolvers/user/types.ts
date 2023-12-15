@@ -15,3 +15,23 @@ export interface GetUserArgs {
     id: string;
   };
 }
+
+export interface EditAvatarArgs {
+  input: {
+    image: string;
+    imageId: string;
+  };
+}
+
+export interface EditNameArgs {
+  input: {
+    name: string;
+  };
+}
+
+export interface mutateNotficationSettingsArgs {
+  input: {
+    setting: boolean;
+    name: string;
+  };
+}

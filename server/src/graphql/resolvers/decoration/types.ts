@@ -88,6 +88,7 @@ export interface SubmitDecorationForVerificationArgs {
 
 export interface GetRecommendedDecorationsArgs {
   input: {
+    id: string;
     city: string;
   };
 }

@@ -35,10 +35,7 @@ const mbApiKey = import.meta.env.VITE_MAPBOX_API_KEY;
 
 const formSchema = z.object({
   name: z.string().min(1, { message: "Decoration name is required" }),
-  address: z
-    .string()
-    .min(1, { message: "Decoration address is required" })
-    .includes(",", { message: "Address must be valid" }),
+  address: z.string().min(1, { message: "Decoration address is required" }),
 });
 
 export const CreateDecorationForm = ({

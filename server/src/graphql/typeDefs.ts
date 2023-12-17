@@ -208,6 +208,7 @@ export const typeDefs = gql`
   }
 
   input GetRecommendedDecorationsInput {
+    id: String!
     city: String!
   }
 

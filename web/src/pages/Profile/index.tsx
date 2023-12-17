@@ -58,7 +58,7 @@ export const Profile = () => {
         });
         setTimeout(() => {
           setLogoutLoading(false);
-          redirect("/");
+          navigate("/");
         }, 2000);
       })
       .catch((error) => {

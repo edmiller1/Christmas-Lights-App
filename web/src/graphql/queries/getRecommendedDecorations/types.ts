@@ -1,3 +1,5 @@
+import { DecorationImage } from "@/lib/types";
+
 export interface Get_Recommended_Decorations {
   __typename: "Decoration";
   id: string;
@@ -5,17 +7,15 @@ export interface Get_Recommended_Decorations {
   city: string;
   country: string;
   rating: string;
-  images: {
-    id: string;
-    url: string;
-  };
+  images: DecorationImage[];
 }
 
 export interface GetRecommendedDecorations {
-  getRecommendedDecorations: Get_Recommended_Decorations;
+  getRecommendedDecorations: Get_Recommended_Decorations[];
 }
 
 export interface GetRecommendedDecorationsInput {
+  id: string;
   city: string;
 }
 

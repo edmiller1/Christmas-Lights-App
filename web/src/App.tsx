@@ -84,6 +84,9 @@ function App() {
 
   useEffect(() => {
     getCoords();
+    if (!currentUser) {
+      setUser(null);
+    }
   }, []);
 
   return (

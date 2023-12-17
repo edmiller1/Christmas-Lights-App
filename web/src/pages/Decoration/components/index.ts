@@ -14,6 +14,8 @@ export * from "./ImagesModal";
 export * from "./ImagesOverlay";
 export * from "./RateButton";
 export * from "./RateDecorationModal";
+export * from "./RecommendedDecorations";
+export * from "./RecommendedDecorationsLoading";
 export * from "./ReportDecorationModal";
 export * from "./SaveButton";
 export * from "./ShareDecoration";

@@ -71,6 +71,10 @@ export const decorationResolvers = {
         const decorations = await prisma.decoration.findMany({
           where: {
             city: input.city,
+            verified: true,
+            NOT: {
+              id: input.id,
+            },
           },
           skip: 0,
           take: 10,

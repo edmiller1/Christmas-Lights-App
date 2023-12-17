@@ -48,7 +48,7 @@ export const YourDecorations = () => {
           <div className="grid grid-cols-1 gap-x-6 gap-y-10 my-8">
             {user?.decorations.map((decoration) => (
               <Link to={`/decoration/${decoration.id}`}>
-                <div key={decoration.id} className="group">
+                <div className="group">
                   <div className="w-full h-3/5 overflow-hidden rounded-lg bg-gray-200">
                     <img
                       src={decoration.images[0].url}
@@ -88,7 +88,7 @@ export const YourDecorations = () => {
           <div className="grid grid-cols-4 gap-x-6 gap-y-10 my-8">
             {user.decorations.map((decoration) => (
               <Link to={`/decoration/${decoration.id}`} key={decoration.id}>
-                <div key={decoration.id} className="group">
+                <div className="group">
                   <div className="w-full h-3/5 overflow-hidden rounded-lg bg-gray-200">
                     <img
                       src={decoration.images[0].url}

@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useUser } from "@supabase/auth-helpers-react";
-import { useMutation, useQuery } from "@apollo/client";
+import { useMutation, useQuery, useLazyQuery } from "@apollo/client";
 import {
   ADD_VIEW,
   DELETE_RATING,
@@ -59,6 +59,7 @@ import {
 import {
   GetRecommendedDecorations as GetRecommendedDecorationsData,
   GetRecommendedDecorationsArgs,
+  Get_Recommended_Decorations,
 } from "@/graphql/queries/getRecommendedDecorations/types";
 import { NotFound } from "..";
 import { Link, useParams, useNavigate } from "react-router-dom";
@@ -74,6 +75,7 @@ import {
   ImagesOverlay,
   RateButton,
   RateDecorationModal,
+  RecommendedDecorations,
   ReportDecorationModal,
   SaveButton,
   ShareDecoration,
@@ -106,6 +108,8 @@ export const Decoration = () => {
   const { decorationId } = useParams();
   const currentUser = useUser();
   const { toast } = useToast();
+  const [recommendedDecorations, setRecommendedDecorations] =
+    useState<Get_Recommended_Decorations[]>();
 
   // QUERIES
   const { data: getUserData, refetch: getUserRefetch } = useQuery<
@@ -133,18 +137,17 @@ export const Decoration = () => {
     ? getDecorationData?.getDecoration
     : null;
 
-  const {
-    data: getRecommendedDecorationsData,
-    loading: getRecommendedDecorationsLoading,
-    error: getRecommendedDecorationsError,
-  } = useQuery<GetRecommendedDecorationsData, GetRecommendedDecorationsArgs>(
-    GET_RECOMMENDED_DECORATIONS
-  );
-
-  const recommendedDecorations =
-    getRecommendedDecorationsData?.getRecommendedDecorations
-      ? getRecommendedDecorationsData.getRecommendedDecorations
-      : null;
+  const [
+    getRecommendedDecorations,
+    { loading: getRecommendedDecorationsLoading },
+  ] = useLazyQuery<
+    GetRecommendedDecorationsData,
+    GetRecommendedDecorationsArgs
+  >(GET_RECOMMENDED_DECORATIONS, {
+    onCompleted: (data) => {
+      setRecommendedDecorations(data.getRecommendedDecorations);
+    },
+  });
 
   // MUTATIONS
   const [addView] = useMutation<AddViewData, AddViewArgs>(ADD_VIEW);
@@ -455,6 +458,14 @@ export const Decoration = () => {
     }
   }, [getUserData]);
 
+  useEffect(() => {
+    if (decoration) {
+      getRecommendedDecorations({
+        variables: { input: { city: decoration.city, id: decoration.id } },
+      });
+    }
+  }, [decoration?.id]);
+
   if (getDecorationError) {
     return <NotFound />;
   }
@@ -526,7 +537,7 @@ export const Decoration = () => {
       </div>
 
       {/* Mobile */}
-      <div className="min-h-screen sm:hidden">
+      <div className="overflow-y-auto sm:hidden">
         {showImageOverlay ? (
           <ImagesOverlay
             decorationImages={decoration?.images}
@@ -716,7 +727,7 @@ export const Decoration = () => {
         ) : null}
 
         <Separator />
-        <div className="px-5 py-3 pb-10 rounded-lg">
+        <div className="px-5 py-3 rounded-lg">
           <h3 className="text-lg">Location</h3>
           <span className="text-sm">{decoration?.address}</span>
           <img
@@ -727,6 +738,10 @@ export const Decoration = () => {
             className="rounded-lg"
           />
         </div>
+        <RecommendedDecorations
+          recommendedDecorations={recommendedDecorations}
+          getRecommendeddecorationsLoading={getRecommendedDecorationsLoading}
+        />
         {/* Bottom nav */}
         <div className="fixed shadow w-full max-w-[560px] h-18 bottom-0 left-0 right-0 px-5 py-3 flex items-center justify-between dark:bg-zinc-900 dark:border-t dark:border-black">
           <div>
@@ -849,6 +864,12 @@ export const Decoration = () => {
                 className="rounded-lg"
               />
             </div>
+            <RecommendedDecorations
+              recommendedDecorations={recommendedDecorations}
+              getRecommendeddecorationsLoading={
+                getRecommendedDecorationsLoading
+              }
+            />
           </div>
         </div>
       </div>

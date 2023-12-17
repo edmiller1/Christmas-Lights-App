@@ -52,8 +52,8 @@ export const RecommendedDecorations = ({
             ))}
           </div>
         ) : (
-          <div className="mt-2 flex flex-col items-center justify-center">
-            <Warning size={32} className="text-ch-dark dark:text-ch-light" />
+          <div className="mt-5 p-3 rounded-lg flex flex-col items-center justify-center text-center bg-red-50 dark:bg-[#202023] dark:border-2 dark:border-red-700 text-red-700">
+            <Warning size={32} className="text-red-700" />
             <p>An error occurred when retrieving recommended decorations</p>
           </div>
         )}
@@ -91,8 +91,8 @@ export const RecommendedDecorations = ({
             ))}
           </div>
         ) : (
-          <div className="mt-10 flex flex-col items-center justify-center text-red-700 mx-72 p-5 rounded-lg text-lg text-center">
-            <Warning size={40} className="text-ch-dark dark:text-red-700" />
+          <div className="mt-10 flex flex-col items-center justify-center bg-red-50 dark:bg-[#202023] dark:border-2 dark:border-red-700 text-red-700 mx-72 p-5 rounded-lg text-lg text-center">
+            <Warning size={40} className="text-red-700" />
             <p>An error occurred when retrieving recommended decorations</p>
           </div>
         )}

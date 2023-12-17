@@ -102,6 +102,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { useToast } from "@/components/ui/use-toast";
+import { Footer } from "@/components";
 
 export const Decoration = () => {
   const navigate = useNavigate();
@@ -872,6 +873,7 @@ export const Decoration = () => {
             />
           </div>
         </div>
+        <Footer />
       </div>
     </>
   );

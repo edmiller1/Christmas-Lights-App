@@ -5,10 +5,9 @@ import {
   List,
   SealCheck,
   Warning,
-  X,
 } from "@phosphor-icons/react";
 import { Fragment, useState } from "react";
-import { NavLink, Outlet } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 import logo from "../../../../assets/ChristmasLights-House-Logo.png";
 import { Button } from "@/components/ui/button";
 

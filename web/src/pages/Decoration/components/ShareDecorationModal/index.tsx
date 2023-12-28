@@ -12,7 +12,6 @@ import {
   EmailShareButton,
   FacebookShareButton,
   FacebookMessengerShareButton,
-  TwitterIcon,
   TwitterShareButton,
 } from "react-share";
 import { Button } from "@/components/ui/button";

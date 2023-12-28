@@ -1,3 +1,4 @@
+export * from "./addDecorationToHistory";
 export * from "./addView";
 export * from "./createDecoration";
 export * from "./createUser";

@@ -99,6 +99,20 @@ export const typeDefs = gql`
   }
 
   #input
+  input FirebaseAuthResult {
+    uid: String!
+    accessToken: String!
+    isNewUser: Boolean!
+    displayName: String!
+    email: String!
+    photoURL: String!
+    providerId: String!
+  }
+
+  input SignInInput {
+    result: FirebaseAuthResult!
+  }
+
   input CreateUserInput {
     id: String!
     token: String!
@@ -212,6 +226,10 @@ export const typeDefs = gql`
     city: String!
   }
 
+  input AddDecorationToHistoryInput {
+    id: String!
+  }
+
   #Queries
   type Query {
     # App Queries
@@ -222,6 +240,8 @@ export const typeDefs = gql`
     getRecommendedDecorations(
       input: GetRecommendedDecorationsInput!
     ): [Decoration!]!
+    getDecorationsByCity: [Decoration!]!
+    getDecorationsByRating: [Decoration!]!
 
     # Admin Queries
     getVerificationSubmissions: [Decoration]!
@@ -234,6 +254,7 @@ export const typeDefs = gql`
   #Mutations
   type Mutation {
     # User
+    signIn(input: SignInInput!): User!
     createUser(input: CreateUserInput!): User!
     editAvatar(input: EditAvatarInput!): User!
     editName(input: EditNameInput!): User!
@@ -251,6 +272,7 @@ export const typeDefs = gql`
     submitDecorationForVerification(
       input: SubmitDecorationForVerificationInput!
     ): Decoration!
+    addDecorationToHistory(input: AddDecorationToHistoryInput!): User!
     # Notification
     markNotificationAsRead(input: MutateNotificationInput!): User!
     markNotificationAsUnread(input: MutateNotificationInput!): User!

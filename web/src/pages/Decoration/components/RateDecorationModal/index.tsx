@@ -41,7 +41,6 @@ export const RateDecorationModal = ({
   isRatingModalOpen,
   setIsRatingModalOpen,
   rating,
-  decorationId,
   ratings,
   numRatings,
   userId,

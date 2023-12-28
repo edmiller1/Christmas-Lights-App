@@ -1,3 +1,17 @@
+export interface FirebaseAuthResult {
+  uid: string;
+  accessToken: string;
+  isNewUser: boolean;
+  displayName: string;
+  email: string;
+  photoURL: string;
+  providerId: string;
+}
+
+export interface SignInArgs {
+  input: { result: FirebaseAuthResult };
+}
+
 export interface CreateUserArgs {
   input: {
     id: string;
@@ -6,7 +20,6 @@ export interface CreateUserArgs {
     image: string;
     name: string;
     provider: string;
-    createdAt: string;
   };
 }
 

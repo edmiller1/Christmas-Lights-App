@@ -1,27 +1,25 @@
 import { useEffect, useState } from "react";
-import { supabase } from "@/lib/supabaseClient";
-import { Dashboard, Login, SideNav } from "./components";
-import { useUser } from "@supabase/auth-helpers-react";
+import { auth } from "../../lib/firebase";
+import { Login, SideNav } from "./components";
 import { useToast } from "@/components/ui/use-toast";
 import { Link, Outlet, redirect } from "react-router-dom";
 import { CircleNotch, User } from "@phosphor-icons/react";
+import { useUserData } from "@/lib/hooks";
 
 export const Admin = () => {
-  const currentUser = useUser();
+  const currentUser = useUserData();
   const { toast } = useToast();
-  const [loginLoading, setLoginLoading] = useState<boolean>(false);
   const [logoutLoading, setLogoutLoading] = useState<boolean>(false);
 
   useEffect(() => {
-    if (currentUser && currentUser?.app_metadata.provider !== "email") {
-      console.log(currentUser);
+    if (currentUser && currentUser?.providerData[0].providerId !== "password") {
       logOut();
     }
   }, []);
 
   const logOut = async () => {
     setLogoutLoading(true);
-    await supabase.auth
+    await auth
       .signOut()
       .then(() => {
         sessionStorage.removeItem("token");
@@ -47,7 +45,7 @@ export const Admin = () => {
       });
   };
 
-  if (!currentUser || currentUser.app_metadata.provider !== "email") {
+  if (currentUser && currentUser.providerData[0].providerId !== "password") {
     return (
       <div className="min-h-screen flex flex-col justify-center items-center">
         <User
@@ -79,6 +77,10 @@ export const Admin = () => {
     );
   }
 
+  if (!currentUser) {
+    return <Login />;
+  }
+
   if (logoutLoading) {
     return (
       <div className="min-h-screen flex flex-col items-center justify-center">
@@ -94,7 +96,9 @@ export const Admin = () => {
 
   return (
     <div className="min-h-screen">
-      <SideNav logOut={logOut} />
+      {window.location.pathname.includes("login") ? null : (
+        <SideNav logOut={logOut} />
+      )}
       <Outlet />
     </div>
   );

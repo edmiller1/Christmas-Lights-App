@@ -11,8 +11,10 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import { YourDecorationsLoading } from "../YourDecorations/components";
 import { NoFavourites } from "./components";
 import { Breadcrumbs } from "@/components";
+import { useUserData } from "@/lib/hooks";
 
 export const Favourites = () => {
+  const currentUser = useUserData();
   const navigate = useNavigate();
   const { state } = useLocation();
   const [user, setUser] = useState<Get_User | null>(null);
@@ -20,7 +22,7 @@ export const Favourites = () => {
   const { loading: getUserLoading } = useQuery<GetUserData, GetUserArgs>(
     GET_USER,
     {
-      variables: { input: { id: state } },
+      variables: { input: { id: state ? state : currentUser?.uid } },
       notifyOnNetworkStatusChange: true,
       onCompleted: (data) => {
         if (data) {
@@ -44,7 +46,7 @@ export const Favourites = () => {
             className="text-ch-dark dark:text-ch-light"
           />
         </div>
-        <h2 className="text-2xl font-bold">History</h2>
+        <h2 className="text-2xl font-bold">Favourites</h2>
         {user?.favourites && user?.favourites.length > 0 ? (
           <div className="grid grid-cols-1 gap-x-6 gap-y-10 my-8">
             {user?.favourites.map((decoration) => (
@@ -82,7 +84,7 @@ export const Favourites = () => {
       </div>
 
       {/* Desktop */}
-      <div className="hidden sm:block sm:mx-96 sm:my-16 sm:h-full">
+      <div className="hidden sm:block sm:mx-96 sm:py-24 sm:h-full">
         <Breadcrumbs firstWord="Profile" secondWord="History" />
         <h1 className="mt-7 font-bold text-4xl">Favourites</h1>
         {user?.history && user.history.length > 0 ? (

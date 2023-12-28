@@ -1,5 +1,4 @@
 import { Get_Recommended_Decorations } from "@/graphql/queries/getRecommendedDecorations/types";
-import { ApolloError } from "@apollo/client";
 import { Star, Warning } from "@phosphor-icons/react";
 import { Link } from "react-router-dom";
 import { RecommendedDecorationsLoading } from "..";

@@ -1,7 +1,6 @@
-import { Fragment, useState } from "react";
+import { Fragment } from "react";
 import { useNavigate } from "react-router-dom";
 import { Dialog, Transition } from "@headlessui/react";
-import { CircleNotch, Star, X } from "@phosphor-icons/react";
 import { Button } from "@/components/ui/button";
 
 interface Props {

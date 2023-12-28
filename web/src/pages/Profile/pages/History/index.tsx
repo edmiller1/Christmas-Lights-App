@@ -11,8 +11,10 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import { YourDecorationsLoading } from "../YourDecorations/components";
 import { NoHistory } from "./components";
 import { Breadcrumbs } from "@/components";
+import { useUserData } from "@/lib/hooks";
 
 export const History = () => {
+  const currentUser = useUserData();
   const navigate = useNavigate();
   const { state } = useLocation();
   const [user, setUser] = useState<Get_User | null>(null);
@@ -20,7 +22,7 @@ export const History = () => {
   const { loading: getUserLoading } = useQuery<GetUserData, GetUserArgs>(
     GET_USER,
     {
-      variables: { input: { id: state } },
+      variables: { input: { id: state ? state : currentUser?.uid } },
       notifyOnNetworkStatusChange: true,
       onCompleted: (data) => {
         if (data) {
@@ -82,7 +84,7 @@ export const History = () => {
       </div>
 
       {/* Desktop */}
-      <div className="hidden sm:block sm:mx-96 sm:my-16 sm:h-full">
+      <div className="hidden sm:block sm:mx-96 sm:py-24 sm:h-full">
         <Breadcrumbs firstWord="Profile" secondWord="History" />
         <h1 className="mt-7 font-bold text-4xl">History</h1>
         {user?.history && user.history.length > 0 ? (

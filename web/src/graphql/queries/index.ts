@@ -1,4 +1,6 @@
 export * from "./getDecoration";
+export * from "./getDecorationsByCity";
+export * from "./getDecorationsByRating";
 export * from "./getRecentReports";
 export * from "./getRecommendedDecorations";
 export * from "./getUser";

@@ -42,6 +42,7 @@ module.exports = {
         "ch-turquoise": "#9de2c1",
         "ch-turquoise-hover": "#7fd6b1",
         "ch-turquoise-shade": "#b6e8d0",
+        "ch-teal": "#5AC18A",
         "ch-yellow": "#e7b667",
         "ch-yelow-hover": "#eccb85",
         "ch-yellow-shade": "#f6d597",

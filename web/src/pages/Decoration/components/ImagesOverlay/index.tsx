@@ -1,8 +1,6 @@
-import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { CaretLeft, Heart, Share } from "@phosphor-icons/react";
-import { motion, Variants } from "framer-motion";
-import { FullImagesOverlay } from "..";
+import { motion } from "framer-motion";
 
 interface Props {
   setShowImageOverlay: (showImageOverlay: boolean) => void;

@@ -25,8 +25,10 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { getBase64Value } from "@/lib/helpers";
 import { Breadcrumbs } from "@/components";
+import { useUserData } from "@/lib/hooks";
 
 export const PersonalInfo = () => {
+  const currentUser = useUserData();
   const { state } = useLocation();
   const navigate = useNavigate();
   const [user, setUser] = useState<Get_User | null>(null);
@@ -41,7 +43,7 @@ export const PersonalInfo = () => {
     refetch: refetchUser,
     networkStatus: getUserNetworkStatus,
   } = useQuery<GetUserData, GetUserArgs>(GET_USER, {
-    variables: { input: { id: state } },
+    variables: { input: { id: state ? state : currentUser?.uid } },
     notifyOnNetworkStatusChange: true,
     onCompleted: (data) => {
       if (data) {
@@ -62,7 +64,7 @@ export const PersonalInfo = () => {
       });
       refetchUser();
     },
-    onError: (error) => {
+    onError: () => {
       toast({
         variant: "destructive",
         title: "Error 😬",
@@ -83,7 +85,7 @@ export const PersonalInfo = () => {
       });
       refetchUser();
     },
-    onError: (error) => {
+    onError: () => {
       toast({
         variant: "destructive",
         title: "Error 😬",
@@ -289,7 +291,7 @@ export const PersonalInfo = () => {
       </div>
 
       {/* Desktop */}
-      <div className="hidden sm:block sm:mx-96 sm:my-16">
+      <div className="hidden sm:block sm:mx-96 sm:py-24">
         <Breadcrumbs firstWord="Profile" secondWord="Personal Info" />
         <h1 className="my-7 font-bold text-4xl">Personal Info</h1>
         <div className="w-1/2 my-8 ml-1">

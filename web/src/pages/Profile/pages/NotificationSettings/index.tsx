@@ -11,14 +11,16 @@ import {
   MutateNotificationSettingsArgs,
 } from "@/graphql/mutations/mutateNotificationSettings/types";
 import { useLocation, useNavigate } from "react-router-dom";
-import { CaretLeft, CircleNotch } from "@phosphor-icons/react";
+import { CaretLeft } from "@phosphor-icons/react";
 import { Switch } from "@/components/ui/switch";
 import { Separator } from "@/components/ui/separator";
 import { useState } from "react";
 import { PersonalInfoLoading } from "../PersonalInfo/components";
 import { Breadcrumbs } from "@/components";
+import { useUserData } from "@/lib/hooks";
 
 export const NotificationSettings = () => {
+  const currentUser = useUserData();
   const { state } = useLocation();
   const navigate = useNavigate();
   const [user, setUser] = useState<Get_User | null>(null);
@@ -28,7 +30,7 @@ export const NotificationSettings = () => {
     refetch: refetchUser,
     networkStatus: getUserNetworkStatus,
   } = useQuery<GetUserData, GetUserArgs>(GET_USER, {
-    variables: { input: { id: state } },
+    variables: { input: { id: state ? state : currentUser?.uid } },
     notifyOnNetworkStatusChange: true,
     onCompleted: (data) => {
       if (data) {
@@ -37,10 +39,7 @@ export const NotificationSettings = () => {
     },
   });
 
-  const [
-    mutateNotificationSettings,
-    { loading: mutateNotificationSettingsLoading },
-  ] = useMutation<
+  const [mutateNotificationSettings] = useMutation<
     MutateNotificationSettingsData,
     MutateNotificationSettingsArgs
   >(MUTATE_NOTIFICATION_SETTINGS, {
@@ -133,7 +132,7 @@ export const NotificationSettings = () => {
       </div>
 
       {/* Desktop */}
-      <div className="hidden sm:block sm:mx-96 sm:my-16">
+      <div className="hidden sm:block sm:mx-96 sm:py-24">
         <Breadcrumbs firstWord="Profile" secondWord="Notification Settings" />
         <h1 className="mt-7 font-bold text-4xl">Notification Settings</h1>
         <span className="text-sm mb-7">

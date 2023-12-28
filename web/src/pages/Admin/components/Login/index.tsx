@@ -1,8 +1,8 @@
 import * as z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { redirect } from "react-router-dom";
-import { supabase } from "@/lib/supabaseClient";
+import { redirect, useNavigate } from "react-router-dom";
+import { auth } from "../../../../lib/firebase";
 import logo from "../../../../assets/ChristmasLights-House-Logo.png";
 import {
   Form,
@@ -27,9 +27,9 @@ const formSchema = z.object({
 });
 
 export const Login = () => {
+  const navigate = useNavigate();
   const { toast } = useToast();
   const [loginLoading, setLoginLoading] = useState<boolean>(false);
-  const [logoutLoading, setLogoutLoading] = useState<boolean>(false);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -41,57 +41,27 @@ export const Login = () => {
 
   const login = async (email: string, password: string) => {
     setLoginLoading(true);
-    const { data, error } = await supabase.auth.signInWithPassword({
-      email: email,
-      password: password,
-    });
-    if (error) {
-      toast({
-        variant: "destructive",
-        title: "Error 😬",
-        description: `${error}`,
-      });
-      setTimeout(() => {
-        setLoginLoading(false);
-      }, 2000);
-      redirect("/admin");
-    } else {
-      console.log(data);
-      toast({
-        variant: "success",
-        title: "Success 🎉",
-        description: "Logged in successfully!",
-      });
-      setTimeout(() => {
-        setLoginLoading(false);
-      }, 2000);
-    }
-  };
-
-  const logOut = async () => {
-    setLogoutLoading(true);
-    await supabase.auth
-      .signOut()
+    await auth
+      .signInWithEmailAndPassword(email, password)
       .then(() => {
-        sessionStorage.removeItem("token");
         toast({
           variant: "success",
           title: "Success 🎉",
-          description: "Signed out successfully!",
+          description: "Logged in successfully!",
         });
         setTimeout(() => {
-          setLogoutLoading(false);
-          redirect("/admin");
+          setLoginLoading(false);
+          navigate("/admin");
         }, 2000);
       })
-      .catch((error) => {
+      .catch(() => {
         toast({
           variant: "destructive",
           title: "Error 😬",
-          description: `${error}`,
+          description: "Failed to login. Please try again.",
         });
         setTimeout(() => {
-          setLogoutLoading(false);
+          setLoginLoading(false);
         }, 2000);
       });
   };
@@ -100,10 +70,23 @@ export const Login = () => {
     login(values.email, values.password);
   };
 
+  if (loginLoading) {
+    return (
+      <div className="min-h screen flex flex-col items-center justify-center">
+        <CircleNotch
+          size={96}
+          weight="bold"
+          className="animate-spin text-ch-dark dark:text-ch-light"
+        />
+        <span className="text-xl">Logging In...</span>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen">
       <Link
-        to="/"
+        to="/home"
         className="flex items-center space-x-3 py-5 px-5 text-ch-red hover:text-ch-red-hover"
       >
         <ArrowLeft size={20} weight="bold" />
@@ -117,59 +100,46 @@ export const Login = () => {
           </h2>
         </div>
         <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
-          {loginLoading ? (
-            <div className="flex items-center justify-center">
-              <CircleNotch
-                size={96}
-                weight="bold"
-                className="animate-spin text-ch-dark dark:text-ch-light"
+          <Form {...form}>
+            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+              <FormField
+                control={form.control}
+                name="email"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Email Address</FormLabel>
+                    <FormControl>
+                      <Input {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
               />
-            </div>
-          ) : (
-            <Form {...form}>
-              <form
-                onSubmit={form.handleSubmit(onSubmit)}
-                className="space-y-6"
-              >
-                <FormField
-                  control={form.control}
-                  name="email"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Email Address</FormLabel>
-                      <FormControl>
-                        <Input {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
 
-                <FormField
-                  control={form.control}
-                  name="password"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Password</FormLabel>
-                      <FormControl>
-                        <Input {...field} type="password" />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
+              <FormField
+                control={form.control}
+                name="password"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Password</FormLabel>
+                    <FormControl>
+                      <Input {...field} type="password" />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
 
-                <div>
-                  <Button
-                    type="submit"
-                    className="flex w-full justify-center rounded-md bg-ch-red px-3 py-3 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-ch-red-hover focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ch-red"
-                  >
-                    Sign in
-                  </Button>
-                </div>
-              </form>
-            </Form>
-          )}
+              <div>
+                <Button
+                  type="submit"
+                  className="flex w-full justify-center rounded-md bg-ch-red px-3 py-3 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-ch-red-hover focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ch-red"
+                >
+                  Sign in
+                </Button>
+              </div>
+            </form>
+          </Form>
         </div>
       </div>
     </div>

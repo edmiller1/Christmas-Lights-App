@@ -19,5 +19,6 @@ module.exports = {
     "@typescript-eslint/no-explicit-any": "off",
     "react-hooks/exhaustive-deps": "off",
     "no-prototype-builtins": "off",
+    "@typescript-eslint/ban-ts-comment": "off",
   },
 };

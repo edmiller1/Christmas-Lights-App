@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
-import { useUser } from "@supabase/auth-helpers-react";
 import { useMutation, useQuery, useLazyQuery } from "@apollo/client";
 import {
+  ADD_DECORATION_TO_HISTORY,
   ADD_VIEW,
   DELETE_RATING,
   EDIT_DECORATION,
@@ -11,6 +11,10 @@ import {
   REPORT_DECORATION,
   UNFAVOURITE_DECORATION,
 } from "@/graphql/mutations";
+import {
+  AddDecorationToHistory as AddDecorationToHistoryData,
+  AddDecorationToHistoryArgs,
+} from "@/graphql/mutations/addDecorationToHistory/types";
 import {
   EditDecoration as EditDecorationData,
   EditDecorationArgs,
@@ -64,7 +68,6 @@ import {
 import { NotFound } from "..";
 import { Link, useParams, useNavigate } from "react-router-dom";
 import {
-  AddRatingModal,
   DecorationLoading,
   DecorationMenu,
   DecorationRatings,
@@ -91,7 +94,6 @@ import {
   Heart,
   Share,
   Star,
-  WarningCircle,
 } from "@phosphor-icons/react";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
@@ -103,11 +105,12 @@ import {
 } from "@/components/ui/tooltip";
 import { useToast } from "@/components/ui/use-toast";
 import { Footer } from "@/components";
+import { useUserData } from "@/lib/hooks";
 
 export const Decoration = () => {
   const navigate = useNavigate();
   const { decorationId } = useParams();
-  const currentUser = useUser();
+  const currentUser = useUserData();
   const { toast } = useToast();
   const [recommendedDecorations, setRecommendedDecorations] =
     useState<Get_Recommended_Decorations[]>();
@@ -117,7 +120,7 @@ export const Decoration = () => {
     GetUserData,
     GetUserArgs
   >(GET_USER, {
-    variables: { input: { id: currentUser?.id ? currentUser.id : "" } },
+    variables: { input: { id: currentUser?.uid ? currentUser.uid : "" } },
   });
 
   const user = getUserData?.getUser ? getUserData.getUser : null;
@@ -151,6 +154,11 @@ export const Decoration = () => {
   });
 
   // MUTATIONS
+  const [addDecorationToHistory] = useMutation<
+    AddDecorationToHistoryData,
+    AddDecorationToHistoryArgs
+  >(ADD_DECORATION_TO_HISTORY);
+
   const [addView] = useMutation<AddViewData, AddViewArgs>(ADD_VIEW);
 
   const [rateDecoration, { loading: rateDecorationLoading }] = useMutation<
@@ -446,6 +454,7 @@ export const Decoration = () => {
           input: { id: decorationId, numViews: decoration?.num_views },
         },
       });
+      addDecorationToHistory({ variables: { input: { id: decoration.id } } });
     }
   }, []);
 
@@ -685,7 +694,7 @@ export const Decoration = () => {
             {decoration?.verified ? (
               <CircleWavyCheck size={24} color="#E23737" weight="fill" />
             ) : null}
-            {currentUser?.id !== decoration?.creator_id ? (
+            {currentUser?.uid !== decoration?.creator_id ? (
               <div className="flex justify-end">
                 <DecorationMenu
                   setIsReportDecorationOpen={setIsReportDecorationOpen}

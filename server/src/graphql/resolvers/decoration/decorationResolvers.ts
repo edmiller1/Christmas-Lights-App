@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import { prisma } from "../../../database";
 import { Decoration, DecorationImage, User } from "@prisma/client";
 import {
+  AddDecorationToHistoryArgs,
   AddViewArgs,
   CreateDecorationArgs,
   DeleteRatingArgs,
@@ -18,6 +19,7 @@ import {
 import { authorise, calculateRating } from "../../../lib/helpers";
 import { Cloudinary } from "../../../lib/cloudinary";
 import { Resend } from "resend";
+import fetch from "node-fetch";
 
 const resend = new Resend("re_H1GDoBf9_Kwqwhasy8MZsLo6Tn3ej8bBc");
 
@@ -47,14 +49,12 @@ export const decorationResolvers = {
           throw new Error("Decoration cannot be found");
         }
 
-        if (user) {
-          if (!decoration.verified && decoration.creator_id === user.id) {
-            return decoration;
-          } else {
-            throw new Error("Decoration is not verified");
+        //rethink verified logic
+        if (!decoration.verified) {
+          if (user && decoration.creator_id !== user.id) {
+            throw new Error("decoration is not verified");
           }
-        } else if (!user && !decoration.verified) {
-          throw new Error("Decoration is not verified");
+          throw new Error("decoration is not verified");
         }
 
         return decoration;
@@ -102,6 +102,89 @@ export const decorationResolvers = {
           where: {
             verification_submitted: true,
           },
+        });
+
+        return decorations;
+      } catch (error) {
+        throw new Error(`${error}`);
+      }
+    },
+    getDecorationsByCity: async (
+      _root: undefined,
+      {},
+      { _, req, res }: { _: undefined; req: Request; res: Response }
+    ): Promise<Decoration[]> => {
+      try {
+        let city: { text: string } | null = null;
+        let decorations: Decoration[] | null = null;
+        const latitude = req.get("latitude");
+        const longitude = req.get("longitude");
+
+        if (latitude && longitude) {
+          const response = await fetch(
+            `https://api.mapbox.com/geocoding/v5/mapbox.places/${longitude},${latitude}.json?access_token=${process.env.MAPBOX_API_KEY}`
+          );
+          const jsonData: any = await response.json();
+          if (jsonData.features) {
+            city = jsonData.features.find((item: any) => {
+              item.place_type.includes("place");
+            });
+          }
+          decorations = await prisma.decoration.findMany({
+            where: {
+              city: city?.text,
+              verified: true,
+            },
+            include: {
+              images: true,
+            },
+            skip: 0,
+            take: 18,
+          });
+        } else {
+          decorations = await prisma.decoration.findMany({
+            where: {
+              OR: [
+                {
+                  country: "New Zealand",
+                },
+                {
+                  country: "Australia",
+                },
+              ],
+              verified: true,
+            },
+            include: {
+              images: true,
+            },
+            skip: 0,
+            take: 18,
+          });
+        }
+
+        return decorations;
+      } catch (error) {
+        throw new Error(`${error}`);
+      }
+    },
+    getDecorationsByRating: async (
+      _root: undefined,
+      {},
+      { _, req, res }: { _: undefined; req: Request; res: Response }
+    ): Promise<Decoration[]> => {
+      try {
+        const decorations = await prisma.decoration.findMany({
+          where: {
+            rating: {
+              gt: 3.5,
+            },
+            verified: true,
+          },
+          include: {
+            images: true,
+          },
+          skip: 0,
+          take: 18,
         });
 
         return decorations;
@@ -601,6 +684,99 @@ export const decorationResolvers = {
         }
 
         return updatedDecoration;
+      } catch (error) {
+        throw new Error(`${error}`);
+      }
+    },
+    addDecorationToHistory: async (
+      _root: undefined,
+      { input }: AddDecorationToHistoryArgs,
+      { _, req, res }: { _: undefined; req: Request; res: Response }
+    ): Promise<User> => {
+      try {
+        const user = await authorise(req);
+
+        if (!user) {
+          throw new Error("User cannot be found");
+        }
+
+        const firstDecoration = user.history[0];
+        const userHistoryCount = user.history.length;
+
+        const exists = user.history.some(
+          (item: Decoration) => item.id === input.id
+        );
+
+        //decoration already exists in user history
+        if (exists) {
+          return user;
+        }
+
+        if (user.premium && !exists) {
+          if (userHistoryCount < 24) {
+            await prisma.user.update({
+              where: {
+                id: user.id,
+              },
+              data: {
+                history: {
+                  connect: {
+                    id: input.id,
+                  },
+                },
+              },
+            });
+          } else if (userHistoryCount === 24) {
+            await prisma.user.update({
+              where: {
+                id: user.id,
+              },
+              data: {
+                history: {
+                  disconnect: {
+                    id: firstDecoration.id,
+                  },
+                  connect: {
+                    id: input.id,
+                  },
+                },
+              },
+            });
+          }
+        } else if (!user.premium && !exists) {
+          if (userHistoryCount < 12) {
+            await prisma.user.update({
+              where: {
+                id: user.id,
+              },
+              data: {
+                history: {
+                  connect: {
+                    id: input.id,
+                  },
+                },
+              },
+            });
+          } else {
+            await prisma.user.update({
+              where: {
+                id: user.id,
+              },
+              data: {
+                history: {
+                  disconnect: {
+                    id: firstDecoration.id,
+                  },
+                  connect: {
+                    id: input.id,
+                  },
+                },
+              },
+            });
+          }
+        }
+
+        return user;
       } catch (error) {
         throw new Error(`${error}`);
       }

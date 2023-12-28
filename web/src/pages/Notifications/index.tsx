@@ -22,9 +22,8 @@ import {
   MarkNotificationAsUnread as MarkNotificationAsUnreadData,
   MarkNotificationAUnreadArgs,
 } from "@/graphql/mutations/markNotificationAsUnread/types";
-import { useNavigate } from "react-router-dom";
 import { NotFound } from "..";
-import { CaretLeft, CircleNotch, Notification } from "@phosphor-icons/react";
+import { CircleNotch, Notification } from "@phosphor-icons/react";
 import { Separator } from "@/components/ui/separator";
 import { NotificationsLoading } from "./components";
 import { useToast } from "@/components/ui/use-toast";
@@ -34,7 +33,6 @@ import {
 } from "@/components/AppHeader/components/NotificationsMenu/components";
 
 export const Notifications = () => {
-  const navigate = useNavigate();
   const { toast } = useToast();
 
   const [deleteAllNotifications, { loading: deleteAllNotificationsLoading }] =

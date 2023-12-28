@@ -145,7 +145,7 @@ export const ReportDecorationModal = ({
                       <FormField
                         control={form.control}
                         name="inappropriateName"
-                        render={({ field }) => (
+                        render={() => (
                           <FormItem className="flex flex-row items-start space-x-3 space-y-0 p-4">
                             <FormControl>
                               <Checkbox
@@ -168,7 +168,7 @@ export const ReportDecorationModal = ({
                       <FormField
                         control={form.control}
                         name="inappropriateImages"
-                        render={({ field }) => (
+                        render={() => (
                           <FormItem className="flex flex-row items-start space-x-3 space-y-0 p-4">
                             <FormControl>
                               <Checkbox

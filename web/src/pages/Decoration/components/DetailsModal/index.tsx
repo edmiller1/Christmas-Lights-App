@@ -1,4 +1,4 @@
-import { Fragment, useEffect } from "react";
+import { Fragment } from "react";
 import { Dialog, Transition } from "@headlessui/react";
 import { CircleNotch, X } from "@phosphor-icons/react";
 import { Button } from "@/components/ui/button";
@@ -34,7 +34,6 @@ interface Props {
 
 export const DetailsModal = ({
   isEditOpen,
-  setIsEditOpen,
   setIsCancelOpen,
   isCancelOpen,
   discardEdits,

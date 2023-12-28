@@ -5,8 +5,6 @@ import {
   GetUserArgs,
   Get_User,
 } from "@/graphql/queries/getUser/types";
-import { useUser } from "@supabase/auth-helpers-react";
-import svg from "../../assets/christmas-decoration-icon.png";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useState } from "react";
 import {
@@ -16,38 +14,56 @@ import {
   ClockCounterClockwise,
   Heart,
   HouseLine,
+  Moon,
   UserCircle,
 } from "@phosphor-icons/react";
 import { Separator } from "@/components/ui/separator";
 import { Button } from "@/components/ui/button";
-import { Link, redirect, useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { ProfileLoading } from "./components";
 import { NotFound } from "..";
 import { useToast } from "@/components/ui/use-toast";
-import { supabase } from "@/lib/supabaseClient";
+import { useTheme } from "@/components/ui/theme-provider";
+import { Switch } from "@/components/ui/switch";
+import { useUserData } from "@/lib/hooks";
+import { auth } from "@/lib/firebase";
 
 export const Profile = () => {
   const navigate = useNavigate();
-  const currentUser = useUser();
+  const currentUser = useUserData();
   const { toast } = useToast();
+  const { setTheme } = useTheme();
+  const [currentTheme, setCurrentTheme] = useState<string | null>(
+    localStorage.getItem("vite-ui-theme")
+  );
   const [user, setUser] = useState<Get_User | null>(null);
   const [logoutLoading, setLogoutLoading] = useState<boolean>(false);
 
-  const { loading: getUserLoading, refetch: refetchUser } = useQuery<
-    GetUserData,
-    GetUserArgs
-  >(GET_USER, {
-    variables: { input: { id: currentUser ? currentUser.id : "" } },
-    onCompleted: (data) => {
-      if (data) {
-        setUser(data.getUser);
-      }
-    },
-  });
+  const { loading: getUserLoading } = useQuery<GetUserData, GetUserArgs>(
+    GET_USER,
+    {
+      variables: { input: { id: currentUser ? currentUser.uid : "" } },
+      onCompleted: (data) => {
+        if (data) {
+          setUser(data.getUser);
+        }
+      },
+    }
+  );
+
+  const changeTheme = () => {
+    if (currentTheme === "dark") {
+      setCurrentTheme("light");
+      setTheme("light");
+    } else {
+      setCurrentTheme("dark");
+      setTheme("dark");
+    }
+  };
 
   const logOut = async () => {
     setLogoutLoading(true);
-    await supabase.auth
+    await auth
       .signOut()
       .then(() => {
         sessionStorage.removeItem("token");
@@ -208,6 +224,22 @@ export const Profile = () => {
           </div>
           <Separator />
         </div>
+        <div className="my-10 ml-1">
+          <div className="my-7 flex items-center justify-between">
+            <div className="flex items-center space-x-5">
+              <Moon
+                size={32}
+                weight="thin"
+                className="text-ch-dark dark:text-ch-light"
+              />
+              <span>Dark Mode</span>
+            </div>
+            <Switch
+              checked={currentTheme === "dark"}
+              onCheckedChange={changeTheme}
+            />
+          </div>
+        </div>
         {/* Footer */}
         <div className="mt-10 mb-20 flex flex-col justify-center items-center">
           <Button variant="outline" className="w-full" onClick={logOut}>
@@ -232,7 +264,7 @@ export const Profile = () => {
       </div>
 
       {/* Desktop */}
-      <div className="hidden sm:block sm:mx-96 sm:my-20">
+      <div className="hidden sm:block sm:mx-96 sm:py-24">
         <h1 className="text-4xl font-bold tracking-wide">Profile</h1>
         <h3 className="mt-2 text-lg">
           {user?.name} - {user?.email}
@@ -302,9 +334,9 @@ export const Profile = () => {
           >
             <Heart size={36} className="text-ch-dark dark:text-ch-light" />
             <div>
-              <h4 className="text-lg">History</h4>
+              <h4 className="text-lg">Favourites</h4>
               <p className="text-sm text-gray-500 dark:text-zinc-400">
-                View your recently visited decorations.
+                Decorations you think are really awesome.
               </p>
             </div>
           </div>

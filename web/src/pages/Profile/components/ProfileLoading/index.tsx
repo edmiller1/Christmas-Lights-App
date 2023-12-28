@@ -16,7 +16,7 @@ export const ProfileLoading = () => {
         </div>
       </div>
 
-      <div className="hidden sm:block sm:mx-96 sm:my-20">
+      <div className="hidden sm:block sm:mx-96 sm:pt-32">
         <div className="h-10 w-1/3 rounded-lg animate-pulse bg-gray-200 dark:bg-zinc-700"></div>
         <div className="mt-5 h-5 w-1/2 rounded-lg animate-pulse bg-gray-200 dark:bg-zinc-700"></div>
         <div className="mt-10 grid grid-cols-2 gap-x-6 gap-y-10">

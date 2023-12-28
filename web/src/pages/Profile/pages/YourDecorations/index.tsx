@@ -10,8 +10,10 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { NoDecorations, YourDecorationsLoading } from "./components";
 import { Breadcrumbs } from "@/components";
+import { useUserData } from "@/lib/hooks";
 
 export const YourDecorations = () => {
+  const currentUser = useUserData();
   const { state } = useLocation();
   const navigate = useNavigate();
   const [user, setUser] = useState<Get_User | null>(null);
@@ -19,7 +21,7 @@ export const YourDecorations = () => {
   const { loading: getUserLoading } = useQuery<GetUserData, GetUserArgs>(
     GET_USER,
     {
-      variables: { input: { id: state } },
+      variables: { input: { id: state ? state : currentUser?.uid } },
       notifyOnNetworkStatusChange: true,
       onCompleted: (data) => {
         if (data) {
@@ -81,7 +83,7 @@ export const YourDecorations = () => {
       </div>
 
       {/* Desktop */}
-      <div className="hidden sm:block sm:mx-96 sm:my-16">
+      <div className="hidden sm:block sm:mx-96 sm:py-24">
         <Breadcrumbs firstWord="Profile" secondWord="Decorations" />
         <h1 className="mt-7 font-bold text-4xl">Your Decorations</h1>
         {user?.decorations && user.decorations.length > 0 ? (

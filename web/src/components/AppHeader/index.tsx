@@ -1,8 +1,5 @@
 import { useQuery } from "@apollo/client";
-import {
-  GET_UNREAD_NOTIFICATIONS,
-  GET_USER_NOTIFICATIONS,
-} from "@/graphql/queries/";
+import { GET_USER_NOTIFICATIONS } from "@/graphql/queries/";
 import { GetUserNotifications as GetUserNotificationsData } from "@/graphql/queries/getUserNotifications/types";
 import {
   Bell,
@@ -15,11 +12,7 @@ import {
 } from "@phosphor-icons/react";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
+import { Popover, PopoverTrigger } from "@/components/ui/popover";
 import { Link, redirect, useLocation } from "react-router-dom";
 import logo from "../../assets/ChristmasLights-House-Logo.png";
 import {
@@ -30,9 +23,8 @@ import {
 } from "./components";
 import { Get_User } from "@/graphql/queries/getUser/types";
 import { useState } from "react";
-import { supabase } from "@/lib/supabaseClient";
 import { useToast } from "../ui/use-toast";
-import { Menu } from "@headlessui/react";
+import { auth } from "@/lib/firebase";
 
 interface Props {
   user: Get_User | null;
@@ -46,7 +38,6 @@ export const AppHeader = ({ user }: Props) => {
   const {
     data: getUserNotificationsData,
     loading: getUserNotificationsLoading,
-    error: getUserNotificationsError,
     refetch: getUserNotificationsRefetch,
   } = useQuery<GetUserNotificationsData>(GET_USER_NOTIFICATIONS);
 
@@ -55,7 +46,7 @@ export const AppHeader = ({ user }: Props) => {
   };
 
   const signOut = async () => {
-    await supabase.auth
+    await auth
       .signOut()
       .then(() => {
         sessionStorage.removeItem("token");
@@ -66,11 +57,11 @@ export const AppHeader = ({ user }: Props) => {
         });
         redirect("/");
       })
-      .catch((error) => {
+      .catch(() => {
         toast({
           variant: "destructive",
           title: "Error 😬",
-          description: `${error}`,
+          description: "Failed to sign out. Please try again.",
         });
       });
   };
@@ -87,7 +78,7 @@ export const AppHeader = ({ user }: Props) => {
         user={user}
       />
 
-      <div className="flex-col border-b dark:border-none md:flex dark:bg-zinc-900">
+      <div className="fixed z-50 w-full bg-white flex-col border-b dark:border-none md:flex dark:bg-zinc-900">
         <div
           className={`${
             window.location.pathname.includes("notification") ||
@@ -96,7 +87,7 @@ export const AppHeader = ({ user }: Props) => {
               : "shadow-md dark:border-b dark:border-b-black"
           }`}
         >
-          <div className="flex h-16 items-center justify-between px-4">
+          <div className="flex h-16 items-center justify-between pl-6">
             <Link to="/" className="hidden sm:block">
               <img src={logo} alt="logo" className="h-12" />
             </Link>
@@ -110,7 +101,7 @@ export const AppHeader = ({ user }: Props) => {
                 />
               </Button>
             </div>
-            <div className="hidden sm:flex mx-6  items-center space-x-4">
+            <div className="hidden sm:flex mx-6 items-center space-x-4">
               {user ? (
                 <>
                   <Button
@@ -161,13 +152,13 @@ export const AppHeader = ({ user }: Props) => {
           </div>
         </div>
       </div>
-      <nav className="fixed shadow w-full max-w-[560px] h-18 bottom-0 left-0 right-0 z-10 flex items-center dark:bg-zinc-900 dark:border-t dark:border-black sm:hidden">
+      <nav className="fixed shadow w-full max-w-[560px] h-18 bottom-0 left-0 right-0 z-10 flex items-center bg-slate-50 dark:bg-zinc-900 border-t dark:border-black sm:hidden">
         <div className="flex flex-auto items-start justify-center">
           <Link
-            to="/"
+            to="/home"
             type="button"
             className={`${
-              location.pathname === "/"
+              location.pathname === "/home"
                 ? "flex flex-col flex-1 items-center p-4 text-center text-ch-red"
                 : "flex flex-col flex-1 items-center p-4 text-center"
             }`}
@@ -175,7 +166,7 @@ export const AppHeader = ({ user }: Props) => {
             <House
               size={24}
               className={`${
-                location.pathname === "/"
+                location.pathname === "/home"
                   ? "text-ch-red"
                   : "text-ch-dark dark:text-ch-light"
               }`}

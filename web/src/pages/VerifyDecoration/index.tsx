@@ -15,16 +15,16 @@ import logo from "../../assets/ChristmasLights-House-Logo.png";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { CircleNotch, Files } from "@phosphor-icons/react";
-import { useUser } from "@supabase/auth-helpers-react";
 import { useState } from "react";
 import { NotFound } from "..";
 import { getBase64Value } from "@/lib/helpers";
 import { AlreadySubmittedModal, VerifyDecorationLoading } from "./components";
 import { useToast } from "@/components/ui/use-toast";
+import { useUserData } from "@/lib/hooks";
 
 export const VerifyDecoration = () => {
   const { decorationId } = useParams();
-  const currentUser = useUser();
+  const currentUser = useUserData();
   const { toast } = useToast();
   const navigate = useNavigate();
 
@@ -58,7 +58,7 @@ export const VerifyDecoration = () => {
     SubmitDecorationForVerificationData,
     SubmitDecorationForVerificationArgs
   >(SUBMIT_DECORATION_FOR_VERIFICATION, {
-    onCompleted: (data) => {
+    onCompleted: () => {
       toast({
         variant: "success",
         title: "Success 🎉",
@@ -68,7 +68,7 @@ export const VerifyDecoration = () => {
         navigate(`/decoration/${decorationId}`);
       }, 1500);
     },
-    onError(error, clientOptions) {
+    onError() {
       toast({
         variant: "destructive",
         title: "Error",
@@ -93,7 +93,7 @@ export const VerifyDecoration = () => {
   };
 
   if (
-    (decoration && currentUser && decoration.creator_id !== currentUser.id) ||
+    (decoration && currentUser && decoration.creator_id !== currentUser.uid) ||
     getDecorationError
   ) {
     return <NotFound />;

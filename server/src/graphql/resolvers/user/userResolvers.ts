@@ -5,6 +5,7 @@ import {
   EditAvatarArgs,
   EditNameArgs,
   GetUserArgs,
+  SignInArgs,
   mutateNotficationSettingsArgs,
 } from "./types";
 import { Notification, User } from "@prisma/client";
@@ -25,7 +26,11 @@ export const userResolvers = {
           },
           include: {
             ratings: true,
-            favourites: true,
+            favourites: {
+              include: {
+                images: true,
+              },
+            },
             notifications: true,
             decorations: {
               include: {
@@ -101,6 +106,47 @@ export const userResolvers = {
     },
   },
   Mutation: {
+    signIn: async (
+      _root: undefined,
+      { input }: SignInArgs,
+      { _, req, res }: { _: undefined; req: Request; res: Response }
+    ): Promise<User> => {
+      try {
+        let user: User | null = null;
+        const isNewUser = input.result.isNewUser;
+
+        if (isNewUser) {
+          user = await prisma.user.create({
+            data: {
+              id: input.result.uid,
+              email: input.result.email,
+              image: input.result.photoURL,
+              name: input.result.displayName,
+              token: input.result.accessToken,
+              provider: input.result.providerId,
+              notifications_by_email_rating: true,
+              notifications_by_email_verification: true,
+              notifications_on_app_rating: true,
+              notifications_on_app_verification: true,
+              premium: false,
+            },
+          });
+        } else {
+          user = await prisma.user.update({
+            where: {
+              id: input.result.uid,
+            },
+            data: {
+              token: input.result.accessToken,
+            },
+          });
+        }
+
+        return user;
+      } catch (error) {
+        throw new Error(`${error}`);
+      }
+    },
     createUser: async (
       _root: undefined,
       { input }: CreateUserArgs,
@@ -137,7 +183,6 @@ export const userResolvers = {
               premium: false,
               provider: input.provider,
               token: input.token,
-              created_at: input.createdAt,
             },
           });
         }

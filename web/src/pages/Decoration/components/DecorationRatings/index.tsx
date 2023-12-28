@@ -4,7 +4,6 @@ import { Separator } from "@/components/ui/separator";
 import { Star, X } from "@phosphor-icons/react";
 import { motion, Variants } from "framer-motion";
 import { AddRatingModal, DeleteRatingModal, EditRatingModal } from "..";
-import { CancelModal } from "@/components";
 
 interface Props {
   setShowRatings: (showRatings: boolean) => void;
@@ -49,7 +48,6 @@ const overlayVariants: Variants = {
 export const DecorationRatings = ({
   setShowRatings,
   rating,
-  decorationId,
   ratings,
   numRatings,
   userId,

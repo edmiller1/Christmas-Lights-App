@@ -92,3 +92,9 @@ export interface GetRecommendedDecorationsArgs {
     city: string;
   };
 }
+
+export interface AddDecorationToHistoryArgs {
+  input: {
+    id: string;
+  };
+}

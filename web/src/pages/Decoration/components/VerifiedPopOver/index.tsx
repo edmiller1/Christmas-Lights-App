@@ -11,7 +11,7 @@ interface Props {
 export const VerifiedPopOver = ({ decorationId }: Props) => {
   return (
     <Popover className="relative">
-      {({ open }) => (
+      {() => (
         <>
           <Popover.Button className="outline-none mr-2">
             <Info

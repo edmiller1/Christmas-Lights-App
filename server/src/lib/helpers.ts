@@ -7,6 +7,9 @@ export const authorise = async (req: Request) => {
     where: {
       token,
     },
+    include: {
+      history: true,
+    },
   });
   return user;
 };

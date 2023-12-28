@@ -1,42 +1,29 @@
-import { useUser } from "@supabase/auth-helpers-react";
-import { useLazyQuery, useMutation } from "@apollo/client";
-import { CREATE_USER } from "./graphql/mutations";
+import { useQuery } from "@apollo/client";
 import { GET_USER } from "./graphql/queries";
-import {
-  CreateUser as CreateUserData,
-  CreateUserArgs,
-} from "./graphql/mutations/createUser/types";
 import {
   GetUser as GetUserData,
   GetUserArgs,
-  Get_User,
 } from "./graphql/queries/getUser/types";
 import { AppHeader } from "./components";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { AppHeaderLoading } from "./components/AppHeader/components";
 import { Outlet } from "react-router-dom";
+import "mapbox-gl/dist/mapbox-gl.css";
+import { useUserData } from "./lib/hooks";
+import { UserContext } from "./lib/context";
 
 function App() {
-  const currentUser = useUser();
-  const [user, setUser] = useState<Get_User | null>(null);
+  const currentUser = useUserData();
 
-  const [createUser] = useMutation<CreateUserData, CreateUserArgs>(
-    CREATE_USER,
-    {
-      onCompleted(data) {
-        getUser({ variables: { input: { id: data.createUser.id } } });
-      },
-    }
-  );
-
-  const [getUser, { loading: getUserLoading }] = useLazyQuery<
+  const { data: getUserData, loading: getUserLoading } = useQuery<
     GetUserData,
     GetUserArgs
   >(GET_USER, {
-    onCompleted: (data) => {
-      setUser(data.getUser);
-    },
+    variables: { input: { id: currentUser ? currentUser.uid : "" } },
+    skip: !currentUser,
   });
+
+  const user = getUserData?.getUser ? getUserData.getUser : null;
 
   const getCoords = async () => {
     if (navigator.geolocation) {
@@ -56,51 +43,25 @@ function App() {
   };
 
   useEffect(() => {
-    if (
-      currentUser &&
-      localStorage.getItem(import.meta.env.VITE_USER_TOKEN_ID)!
-    ) {
-      const token: any = localStorage.getItem(
-        import.meta.env.VITE_USER_TOKEN_ID
-      )!;
-      const tmpToken = JSON.parse(token);
-      sessionStorage.setItem("token", tmpToken.access_token);
-
-      createUser({
-        variables: {
-          input: {
-            id: currentUser.id,
-            createdAt: currentUser.created_at,
-            email: currentUser.user_metadata.email,
-            image: currentUser.user_metadata.picture,
-            name: currentUser.user_metadata.full_name,
-            provider: currentUser.app_metadata.provider,
-            token: tmpToken.access_token,
-          },
-        },
-      });
-    }
-  }, [currentUser]);
-
-  useEffect(() => {
     getCoords();
-    if (!currentUser) {
-      setUser(null);
-    }
   }, []);
 
   return (
-    <div className="min-h-screen">
-      {window.location.pathname.includes("decoration") ? (
-        <div className="hidden sm:block">
-          {getUserLoading ? <AppHeaderLoading /> : <AppHeader user={user} />}
-        </div>
-      ) : (
-        <>{getUserLoading ? <AppHeaderLoading /> : <AppHeader user={user} />}</>
-      )}
+    <UserContext.Provider value={currentUser}>
+      <div className="min-h-screen">
+        {window.location.pathname.includes("decoration") ? (
+          <div className="hidden sm:block">
+            {getUserLoading ? <AppHeaderLoading /> : <AppHeader user={user} />}
+          </div>
+        ) : (
+          <>
+            {getUserLoading ? <AppHeaderLoading /> : <AppHeader user={user} />}
+          </>
+        )}
 
-      <Outlet />
-    </div>
+        <Outlet />
+      </div>
+    </UserContext.Provider>
   );
 }
 

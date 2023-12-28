@@ -1,11 +1,11 @@
 import { Button } from "@/components/ui/button";
 import { Get_User } from "@/graphql/queries/getUser/types";
 import { ShootingStar } from "@phosphor-icons/react";
-import { User } from "@supabase/supabase-js";
+import { User } from "firebase/auth";
 import { Link } from "react-router-dom";
 
 interface Props {
-  currentUser: User | null;
+  currentUser: User | null | undefined;
   user: Get_User | null;
   decorationId: string | undefined;
   setIsRatingModalOpen: (isRatingModalOpen: boolean) => void;

@@ -1,5 +1,5 @@
-import { useEffect, useState } from "react";
-import { useQuery, useLazyQuery } from "@apollo/client";
+import { useState } from "react";
+import { useQuery } from "@apollo/client";
 import {
   GET_RECENT_REPORTS,
   GET_UNRESOLVED_REPORTS_COUNT,
@@ -8,7 +8,6 @@ import {
 } from "@/graphql/queries";
 import { GetVerificationRequests as GetVerificationRequestsData } from "@/graphql/queries/getVerificatonRequests/types";
 import { GetRecentReports as GetRecentReportsData } from "@/graphql/queries/getRecentReports/types";
-import { CaretRight, House, SealCheck, Warning } from "@phosphor-icons/react";
 import {
   RecentReportsTable,
   RecentVerificationsTable,

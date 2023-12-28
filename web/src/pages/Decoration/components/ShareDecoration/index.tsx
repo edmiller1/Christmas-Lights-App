@@ -2,7 +2,6 @@ import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { useToast } from "@/components/ui/use-toast";
 import {
-  Code,
   Copy,
   Envelope,
   FacebookLogo,
@@ -14,7 +13,6 @@ import {
   EmailShareButton,
   FacebookShareButton,
   FacebookMessengerShareButton,
-  TwitterIcon,
   TwitterShareButton,
 } from "react-share";
 import { motion, Variants } from "framer-motion";

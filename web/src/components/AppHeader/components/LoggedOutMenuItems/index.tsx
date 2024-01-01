@@ -14,15 +14,14 @@ export const LoggedOutMenuItems = () => {
       <DropdownMenuTrigger asChild>
         <UserCircle
           size={40}
-          color="#ffffff"
           weight="thin"
-          className="cursor-pointer"
+          className="cursor-pointer text-ch-dark dark:text-ch-light"
         />
       </DropdownMenuTrigger>
-      <DropdownMenuContent className="mt-2 w-56" align="end" forceMount>
+      <DropdownMenuContent className="mt-1 w-56" align="end" forceMount>
         <ThemeToggle />
         <Link to="/signin">
-          <DropdownMenuItem>Log in/Sign up</DropdownMenuItem>
+          <DropdownMenuItem>Log in / Sign up</DropdownMenuItem>
         </Link>
       </DropdownMenuContent>
     </DropdownMenu>

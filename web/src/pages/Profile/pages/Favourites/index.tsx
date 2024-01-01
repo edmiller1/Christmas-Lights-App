@@ -85,9 +85,9 @@ export const Favourites = () => {
 
       {/* Desktop */}
       <div className="hidden sm:block sm:mx-96 sm:py-24 sm:h-full">
-        <Breadcrumbs firstWord="Profile" secondWord="History" />
+        <Breadcrumbs firstWord="Profile" secondWord="Favourites" />
         <h1 className="mt-7 font-bold text-4xl">Favourites</h1>
-        {user?.history && user.history.length > 0 ? (
+        {user?.favourites && user.favourites.length > 0 ? (
           <div className="grid grid-cols-4 gap-x-6 gap-y-8 my-8">
             {user.history.map((decoration) => (
               <Link to={`/decoration/${decoration.id}`} key={decoration.id}>

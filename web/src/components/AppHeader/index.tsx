@@ -3,10 +3,10 @@ import { GET_USER_NOTIFICATIONS } from "@/graphql/queries/";
 import { GetUserNotifications as GetUserNotificationsData } from "@/graphql/queries/getUserNotifications/types";
 import {
   Bell,
-  Heart,
   House,
   HouseLine,
   MagnifyingGlass,
+  Path,
   PlusSquare,
   UserCircle,
 } from "@phosphor-icons/react";
@@ -55,7 +55,7 @@ export const AppHeader = ({ user }: Props) => {
           title: "Success 🎉",
           description: "Signed out successfully!",
         });
-        redirect("/");
+        redirect("/home");
       })
       .catch(() => {
         toast({
@@ -87,8 +87,8 @@ export const AppHeader = ({ user }: Props) => {
               : "shadow-md dark:border-b dark:border-b-black"
           }`}
         >
-          <div className="flex h-16 items-center justify-between pl-6">
-            <Link to="/" className="hidden sm:block">
+          <div className="flex h-16 items-center justify-between px-10">
+            <Link to="/home" className="hidden sm:block">
               <img src={logo} alt="logo" className="h-12" />
             </Link>
             <div className="flex w-full max-w-sm items-center justify-center space-x-2">
@@ -174,36 +174,25 @@ export const AppHeader = ({ user }: Props) => {
             <span className="text-xs mt-1">Home</span>
           </Link>
 
-          {!user ? (
-            <Link
-              to="/signin"
-              type="button"
-              className="flex flex-col flex-1 items-center p-4 text-center"
-            >
-              <Heart size={24} color="#ffffff" />
-              <span className="text-xs mt-1">Favourites</span>
-            </Link>
-          ) : (
-            <Link
-              to="/profile/favourites"
-              type="button"
+          <Link
+            to="/profile/route-planning"
+            type="button"
+            className={`${
+              location.pathname === "/route-planning"
+                ? "flex flex-col flex-1 items-center p-4 text-center text-ch-red"
+                : "flex flex-col flex-1 items-center p-4 text-center"
+            }`}
+          >
+            <Path
+              size={24}
               className={`${
-                location.pathname === "/favourites"
-                  ? "flex flex-col flex-1 items-center p-4 text-center text-ch-red"
-                  : "flex flex-col flex-1 items-center p-4 text-center"
+                location.pathname === "/route-planning"
+                  ? "text-ch-red"
+                  : "text-ch-dark dark:text-ch-light"
               }`}
-            >
-              <Heart
-                size={24}
-                className={`${
-                  location.pathname === "/favourites"
-                    ? "text-ch-red"
-                    : "text-ch-dark dark:text-ch-light"
-                }`}
-              />
-              <span className="text-xs mt-1">Favourites</span>
-            </Link>
-          )}
+            />
+            <span className="text-xs mt-1">Route</span>
+          </Link>
 
           {user ? (
             <div

@@ -74,7 +74,7 @@ export const Profile = () => {
         });
         setTimeout(() => {
           setLogoutLoading(false);
-          navigate("/");
+          navigate("/home");
         }, 2000);
       })
       .catch((error) => {
@@ -330,7 +330,7 @@ export const Profile = () => {
           </div>
           <div
             className="profile-card flex flex-col rounded-lg p-2 space-y-3 shadow-lg cursor-pointer dark:bg-zinc-800"
-            onClick={() => navigate("/profile/history", { state: user?.id })}
+            onClick={() => navigate("/profile/favourites", { state: user?.id })}
           >
             <Heart size={36} className="text-ch-dark dark:text-ch-light" />
             <div>

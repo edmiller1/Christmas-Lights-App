@@ -23,7 +23,7 @@ import {
   UnfavouriteDecorationArgs,
 } from "@/graphql/mutations/unfavouriteDecoration/types";
 import { DecorationCard } from "@/components";
-import { DecorationsLoading } from "./components";
+import { DecorationsLoading, HomeFooter } from "./components";
 import { useToast } from "@/components/ui/use-toast";
 import { useState } from "react";
 import { ListBullets, MapTrifold } from "@phosphor-icons/react";
@@ -227,7 +227,34 @@ export const Home = () => {
             </div>
           ) : null}
         </>
+        {!showMap ? (
+          <div className="fixed bottom-24 left-[46.5%] z-20">
+            <button
+              onClick={() => setShowMap(true)}
+              className="flex items-center text-sm py-2 px-3 font-semibold rounded-full shadow-lg text-white bg-ch-teal hover:scale-110 transition-all"
+            >
+              Map
+              <MapTrifold
+                size={24}
+                weight="fill"
+                color="#ffffff"
+                className="ml-2"
+              />
+            </button>
+          </div>
+        ) : (
+          <div className="fixed bottom-24 left-[46.5%] z-20">
+            <button
+              onClick={() => setShowMap(false)}
+              className="flex items-center text-sm py-2 px-3 font-semibold rounded-full shadow-lg text-white bg-ch-teal hover:scale-110 transition-all"
+            >
+              List
+              <ListBullets size={24} color="#ffffff" className="ml-2" />
+            </button>
+          </div>
+        )}
       </div>
+      <HomeFooter />
     </>
   );
 };

@@ -50,10 +50,7 @@ export const decorationResolvers = {
         }
 
         //rethink verified logic
-        if (!decoration.verified) {
-          if (user && decoration.creator_id !== user.id) {
-            throw new Error("decoration is not verified");
-          }
+        if (user && decoration.creator_id !== user.id && !decoration.verified) {
           throw new Error("decoration is not verified");
         }
 

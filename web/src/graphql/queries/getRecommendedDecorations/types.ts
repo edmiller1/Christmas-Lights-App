@@ -6,7 +6,7 @@ export interface Get_Recommended_Decorations {
   name: string;
   city: string;
   country: string;
-  rating: string;
+  rating: number;
   images: DecorationImage[];
 }
 

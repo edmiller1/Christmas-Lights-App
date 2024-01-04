@@ -98,3 +98,10 @@ export interface AddDecorationToHistoryArgs {
     id: string;
   };
 }
+
+export interface DecorationsViaMapArgs {
+  input: {
+    latitude: string;
+    longitude: string;
+  };
+}

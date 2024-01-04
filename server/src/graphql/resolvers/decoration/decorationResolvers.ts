@@ -5,6 +5,7 @@ import {
   AddDecorationToHistoryArgs,
   AddViewArgs,
   CreateDecorationArgs,
+  DecorationsViaMapArgs,
   DeleteRatingArgs,
   EditDecorationArgs,
   EditRatingArgs,
@@ -74,7 +75,7 @@ export const decorationResolvers = {
             },
           },
           skip: 0,
-          take: 10,
+          take: 8,
           include: {
             images: true,
           },
@@ -183,6 +184,117 @@ export const decorationResolvers = {
           skip: 0,
           take: 18,
         });
+
+        return decorations;
+      } catch (error) {
+        throw new Error(`${error}`);
+      }
+    },
+    getDecorationsViaCountry: async (
+      _root: undefined,
+      { input }: DecorationsViaMapArgs,
+      { _, req, res }: { _: undefined; req: Request; res: Response }
+    ): Promise<Decoration[]> => {
+      try {
+        let country: { text: string } | null = null;
+        let decorations: Decoration[] | null = null;
+
+        if (input.latitude && input.longitude) {
+          const response = await fetch(
+            `https://api.mapbox.com/geocoding/v5/mapbox.places/${input.longitude},${input.latitude}.json?types=country&access_token=${process.env.MAPBOX_API_KEY}&proximity=${input.longitude},${input.latitude}`
+          );
+          const jsonData = await response.json();
+          if (jsonData.features) {
+            country = jsonData.features[0];
+          }
+          decorations = await prisma.decoration.findMany({
+            where: {
+              country: country?.text,
+              verified: true,
+            },
+            include: {
+              images: true,
+            },
+            skip: 0,
+            take: 24,
+          });
+        } else {
+          throw new Error("Latitude and Longitude not provided.");
+        }
+
+        return decorations;
+      } catch (error) {
+        throw new Error(`${error}`);
+      }
+    },
+    getDecorationsViaRegion: async (
+      _root: undefined,
+      { input }: DecorationsViaMapArgs,
+      { _, req, res }: { _: undefined; req: Request; res: Response }
+    ): Promise<Decoration[]> => {
+      try {
+        let region: { text: string } | null = null;
+        let decorations: Decoration[] | null = null;
+
+        if (input.latitude && input.longitude) {
+          const response = await fetch(
+            `https://api.mapbox.com/geocoding/v5/mapbox.places/${input.longitude},${input.latitude}.json?types=region&access_token=${process.env.MAPBOX_API_KEY}&proximity=${input.longitude},${input.latitude}`
+          );
+          const jsonData = await response.json();
+          if (jsonData.features) {
+            region = jsonData.features[0];
+          }
+          decorations = await prisma.decoration.findMany({
+            where: {
+              region: region?.text,
+              verified: true,
+            },
+            include: {
+              images: true,
+            },
+            skip: 0,
+            take: 24,
+          });
+        } else {
+          throw new Error("Latitude and Longitude not provided.");
+        }
+
+        return decorations;
+      } catch (error) {
+        throw new Error(`${error}`);
+      }
+    },
+    getDecorationsViaCity: async (
+      _root: undefined,
+      { input }: DecorationsViaMapArgs,
+      { _, req, res }: { _: undefined; req: Request; res: Response }
+    ): Promise<Decoration[]> => {
+      try {
+        let city: { text: string } | null = null;
+        let decorations: Decoration[] | null = null;
+
+        if (input.latitude && input.longitude) {
+          const response = await fetch(
+            `https://api.mapbox.com/geocoding/v5/mapbox.places/${input.longitude},${input.latitude}.json?types=place&access_token=${process.env.MAPBOX_API_KEY}&proximity=${input.longitude},${input.latitude}`
+          );
+          const jsonData = await response.json();
+          if (jsonData.features) {
+            city = jsonData.features[0];
+          }
+          decorations = await prisma.decoration.findMany({
+            where: {
+              city: city?.text,
+              verified: true,
+            },
+            include: {
+              images: true,
+            },
+            skip: 0,
+            take: 24,
+          });
+        } else {
+          throw new Error("Latitude and Longitude not provided.");
+        }
 
         return decorations;
       } catch (error) {

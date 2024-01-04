@@ -667,16 +667,16 @@ export const Decoration = () => {
           {decoration && decoration?.images.length > 1 ? (
             <>
               <button
-                className="animate-fade-in absolute left-5 top-[45%] cursor-pointer rounded-full bg-black p-1 opacity-80 transition-all duration-100 hover:opacity-60 sm:hidden"
+                className="animate-fade-in absolute left-5 top-[45%] cursor-pointer rounded-full bg-white p-1 opacity-80 transition-all duration-100 hover:opacity-60 sm:hidden"
                 onClick={prevImage}
               >
-                <CaretLeft size={20} color="#FFFFFF" />
+                <CaretLeft size={20} color="#000000" />
               </button>
               <button
-                className="animate-fade-in absolute right-5 top-[45%] cursor-pointer rounded-full bg-black p-1 opacity-80 transition-all duration-100 hover:opacity-60 sm:hidden"
+                className="animate-fade-in absolute right-5 top-[45%] cursor-pointer rounded-full bg-white p-1 opacity-80 transition-all duration-100 hover:opacity-60 sm:hidden"
                 onClick={nextImage}
               >
-                <CaretRight size={20} color="#FFFFFF" />
+                <CaretRight size={20} color="#000000" />
               </button>
             </>
           ) : null}
@@ -690,10 +690,12 @@ export const Decoration = () => {
         </div>
         <div className="px-5 py-3">
           <div className="flex items-center justify-between space-x-2">
-            <h1 className="font-semibold text-3xl">{decoration?.name}</h1>
-            {decoration?.verified ? (
-              <CircleWavyCheck size={24} color="#E23737" weight="fill" />
-            ) : null}
+            <div className="flex items-center space-x-2">
+              <h1 className="font-semibold text-3xl">{decoration?.name}</h1>
+              {decoration?.verified ? (
+                <CircleWavyCheck size={24} color="#E23737" weight="fill" />
+              ) : null}
+            </div>
             {currentUser?.uid !== decoration?.creator_id ? (
               <div className="flex justify-end">
                 <DecorationMenu
@@ -741,7 +743,7 @@ export const Decoration = () => {
           <h3 className="text-lg">Location</h3>
           <span className="text-sm">{decoration?.address}</span>
           <img
-            src={`https://api.mapbox.com/styles/v1/mapbox/streets-v11/static/pin-l-village+bc1919(${decoration?.longitude},${decoration?.latitude})/${decoration?.longitude},${decoration?.latitude},14,0,0/600x300@2x?attribution=true&logo=true&access_token=${
+            src={`https://api.mapbox.com/styles/v1/mapbox/streets-v11/static/pin-l-village+bc1919(${decoration?.longitude},${decoration?.latitude})/${decoration?.longitude},${decoration?.latitude},15,0,0/600x350@2x?attribution=false&logo=false&access_token=${
               import.meta.env.VITE_MAPBOX_API_KEY
             }`}
             alt={`Mapbox map of ${decoration?.longitude},${decoration?.latitude}`}
@@ -775,7 +777,7 @@ export const Decoration = () => {
             setShowFullImageOverlay={setShowFullImageOverlay}
           />
         ) : null}
-        <div className="sm:flex sm:flex-col sm:mx-72 sm:pt-10 2xl:mx-96">
+        <div className="sm:flex sm:flex-col sm:mx-72 sm:pt-24 2xl:mx-96">
           <h1 className="sm:text-3xl sm:font-semibold">{decoration?.name}</h1>
           <div className="sm:flex sm:justify-between items-center sm:font-semibold sm:text-sm sm:my-2">
             <div className="sm:flex">
@@ -869,7 +871,7 @@ export const Decoration = () => {
             </div>
             <div className="my-5 h-[26rem] w-full bg-gray-200 rounded-lg">
               <img
-                src={`https://api.mapbox.com/styles/v1/mapbox/streets-v11/static/pin-l-village+bc1919(${decoration?.longitude},${decoration?.latitude})/${decoration?.longitude},${decoration?.latitude},14,0/1120x416@2x?access_token=pk.eyJ1Ijoic2hhbXB1cnJzIiwiYSI6ImNsZjdhcmJweDB5cGw0M212YnplaTFkNnkifQ.RRUvcHyfO7W0Pg4vOQ4UvA`}
+                src={`https://api.mapbox.com/styles/v1/mapbox/streets-v11/static/pin-l-village+bc1919(${decoration?.longitude},${decoration?.latitude})/${decoration?.longitude},${decoration?.latitude},15,0/1120x500@2x?attribution=false&logo=false&access_token=pk.eyJ1Ijoic2hhbXB1cnJzIiwiYSI6ImNsZjdhcmJweDB5cGw0M212YnplaTFkNnkifQ.RRUvcHyfO7W0Pg4vOQ4UvA`}
                 alt="static map"
                 className="rounded-lg"
               />

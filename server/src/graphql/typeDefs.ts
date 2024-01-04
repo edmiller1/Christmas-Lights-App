@@ -230,6 +230,11 @@ export const typeDefs = gql`
     id: String!
   }
 
+  input DecorationsViaMapInput {
+    latitude: String!
+    longitude: String!
+  }
+
   #Queries
   type Query {
     # App Queries
@@ -242,6 +247,9 @@ export const typeDefs = gql`
     ): [Decoration!]!
     getDecorationsByCity: [Decoration!]!
     getDecorationsByRating: [Decoration!]!
+    getDecorationsViaCountry(input: DecorationsViaMapInput!): [Decoration!]!
+    getDecorationsViaRegion(input: DecorationsViaMapInput!): [Decoration!]!
+    getDecorationsViaCity(input: DecorationsViaMapInput!): [Decoration!]!
 
     # Admin Queries
     getVerificationSubmissions: [Decoration]!

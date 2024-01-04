@@ -19,31 +19,34 @@ export const RecommendedDecorations = ({
   return (
     <>
       {/* Mobile */}
-      <div className="sm:hidden px-5 mt-8 h-96">
+      <div className="sm:hidden px-5 mt-5 mb-24">
         <h2 className="text-xl">Other decorations you might like</h2>
         {recommendedDecorations && recommendedDecorations.length > 0 ? (
-          <div className="mt-2 flex items-center overflow-y-auto">
+          <div className="my-3 grid grid-cols-1 gap-y-6">
             {recommendedDecorations.map((decoration) => (
               <Link to={`/decoration/${decoration.id}`}>
                 <div className="group">
-                  <div className="w-full h-1/5 rounded-lg">
+                  <div className="w-full h-1/5 rounded-xl">
                     <img
                       src={decoration.images[0].url}
                       alt="decoration image"
-                      className="h-52 rounded-lg w-full object-cover object-center group-hover:opacity-90 transition-all"
+                      className="h-72 w-full rounded-lg object-cover object-center group-hover:opacity-90 transition-all"
                     />
                   </div>
                   <div className="mt-2 flex items-center justify-between">
-                    <p className="text-xs font-bold">{decoration.name}</p>
+                    <p className="text-sm font-bold">{decoration.name}</p>
                     <div className="flex items-center space-x-1">
                       <Star
                         size={16}
+                        weight="fill"
                         className="text-ch-dark dark:text-ch-light"
                       />
-                      <span className="text-xs">{decoration.rating}</span>
+                      <span className="text-sm">
+                        {decoration.rating.toFixed(1)}
+                      </span>
                     </div>
                   </div>
-                  <p className="mt-1 text-xs">
+                  <p className="mt-1 text-xs text-gray-400 dark:text-zinc-400">
                     {decoration.city}, {decoration.country}
                   </p>
                 </div>
@@ -57,8 +60,9 @@ export const RecommendedDecorations = ({
           </div>
         )}
       </div>
+
       {/* Desktop */}
-      <div className="hidden sm:block sm:my-10">
+      <div className="hidden sm:block sm:mt-32 mb-24">
         <h3 className="text-2xl font-bold">Other decorations you might like</h3>
         {recommendedDecorations && recommendedDecorations.length > 0 ? (
           <div className="grid grid-cols-4 gap-x-6 gap-y-10 mt-5">

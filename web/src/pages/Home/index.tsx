@@ -23,7 +23,7 @@ import {
   UnfavouriteDecorationArgs,
 } from "@/graphql/mutations/unfavouriteDecoration/types";
 import { DecorationCard } from "@/components";
-import { DecorationsLoading, HomeFooter } from "./components";
+import { DecorationsLoading, HomeFooter, HomeMap } from "./components";
 import { useToast } from "@/components/ui/use-toast";
 import { useState } from "react";
 import { ListBullets, MapTrifold } from "@phosphor-icons/react";
@@ -34,6 +34,7 @@ export const Home = () => {
   const { toast } = useToast();
 
   const [showMap, setShowMap] = useState<boolean>(false);
+  const [mapLoading, setMapLoading] = useState<boolean>(false);
 
   const {
     data: getUserData,
@@ -121,45 +122,59 @@ export const Home = () => {
 
   return (
     <>
-      <div className="px-6 overflow-y-auto py-16 sm:hidden">
-        {decorationsByCity && decorationsByCity.length > 0 ? (
-          <div className="grid grid-cols-1 gap-x-6 gap-y-8 my-8">
-            {decorationsByCity.map((decoration) => (
-              <DecorationCard
-                decoration={decoration}
-                userFavourites={user?.favourites.map(
-                  (favourite) => favourite.id
-                )}
-                addDecorationToFavourites={addDecorationsToFavourites}
-                removeDecorationFromFavourites={removeDecorationFromFavourites}
-                unFavouriteDecorationLoading={unFavouriteDecorationLoading}
-                favouriteDecorationLoading={favouriteDecorationLoading}
-                getUserNetworkStatus={getUserNetworkStatus}
-              />
-            ))}
+      <div className="sm:hidden">
+        {showMap ? (
+          <HomeMap
+            setMapLoading={setMapLoading}
+            userFavourites={user?.favourites}
+          />
+        ) : (
+          <div className="px-6 overflow-y-auto py-16">
+            {decorationsByCity && decorationsByCity.length > 0 ? (
+              <div className="grid grid-cols-1 gap-x-6 gap-y-8 my-8">
+                {decorationsByCity.map((decoration) => (
+                  <DecorationCard
+                    key={decoration.id}
+                    decoration={decoration}
+                    userFavourites={user?.favourites.map(
+                      (favourite) => favourite.id
+                    )}
+                    addDecorationToFavourites={addDecorationsToFavourites}
+                    removeDecorationFromFavourites={
+                      removeDecorationFromFavourites
+                    }
+                    unFavouriteDecorationLoading={unFavouriteDecorationLoading}
+                    favouriteDecorationLoading={favouriteDecorationLoading}
+                  />
+                ))}
+              </div>
+            ) : null}
+            <>
+              {decorationsByRating && decorationsByRating.length > 0 ? (
+                <div className="grid grid-cols-1 gap-x-6 gap-y-8 my-8">
+                  {decorationsByRating.map((decoration) => (
+                    <DecorationCard
+                      key={decoration.id}
+                      decoration={decoration}
+                      userFavourites={user?.favourites.map(
+                        (favourite) => favourite.id
+                      )}
+                      addDecorationToFavourites={addDecorationsToFavourites}
+                      removeDecorationFromFavourites={
+                        removeDecorationFromFavourites
+                      }
+                      unFavouriteDecorationLoading={
+                        unFavouriteDecorationLoading
+                      }
+                      favouriteDecorationLoading={favouriteDecorationLoading}
+                    />
+                  ))}
+                </div>
+              ) : null}
+            </>
           </div>
-        ) : null}
-        <>
-          {decorationsByRating && decorationsByRating.length > 0 ? (
-            <div className="grid grid-cols-1 gap-x-6 gap-y-8 my-8">
-              {decorationsByRating.map((decoration) => (
-                <DecorationCard
-                  decoration={decoration}
-                  userFavourites={user?.favourites.map(
-                    (favourite) => favourite.id
-                  )}
-                  addDecorationToFavourites={addDecorationsToFavourites}
-                  removeDecorationFromFavourites={
-                    removeDecorationFromFavourites
-                  }
-                  unFavouriteDecorationLoading={unFavouriteDecorationLoading}
-                  favouriteDecorationLoading={favouriteDecorationLoading}
-                  getUserNetworkStatus={getUserNetworkStatus}
-                />
-              ))}
-            </div>
-          ) : null}
-        </>
+        )}
+
         {!showMap ? (
           <div className="fixed bottom-24 left-[41%] z-20">
             <button
@@ -178,6 +193,7 @@ export const Home = () => {
         ) : (
           <div className="fixed bottom-24 left-[41%] z-20">
             <button
+              disabled={mapLoading}
               onClick={() => setShowMap(false)}
               className="flex items-center text-sm py-2 px-3 font-semibold rounded-full shadow-lg text-white bg-ch-teal hover:scale-110 transition-all"
             >
@@ -188,47 +204,61 @@ export const Home = () => {
         )}
       </div>
 
-      <div className="hidden sm:px-32 sm:overflow-y-auto sm:py-24 sm:block">
-        {decorationsByCity && decorationsByCity.length > 0 ? (
-          <div className="grid grid-cols-6 gap-x-6 gap-y-10 my-8">
-            {decorationsByCity.map((decoration) => (
-              <DecorationCard
-                decoration={decoration}
-                userFavourites={user?.favourites.map(
-                  (favourite) => favourite.id
-                )}
-                addDecorationToFavourites={addDecorationsToFavourites}
-                removeDecorationFromFavourites={removeDecorationFromFavourites}
-                unFavouriteDecorationLoading={unFavouriteDecorationLoading}
-                favouriteDecorationLoading={favouriteDecorationLoading}
-                getUserNetworkStatus={getUserNetworkStatus}
-              />
-            ))}
+      <div className="hidden sm:block">
+        {showMap ? (
+          <HomeMap
+            setMapLoading={setMapLoading}
+            userFavourites={user?.favourites}
+          />
+        ) : (
+          <div className="px-32 overflow-y-auto py-24">
+            {decorationsByCity && decorationsByCity.length > 0 ? (
+              <div className="grid grid-cols-6 gap-x-10 gap-y-10 my-8">
+                {decorationsByCity.map((decoration) => (
+                  <DecorationCard
+                    key={decoration.id}
+                    decoration={decoration}
+                    userFavourites={user?.favourites.map(
+                      (favourite) => favourite.id
+                    )}
+                    addDecorationToFavourites={addDecorationsToFavourites}
+                    removeDecorationFromFavourites={
+                      removeDecorationFromFavourites
+                    }
+                    unFavouriteDecorationLoading={unFavouriteDecorationLoading}
+                    favouriteDecorationLoading={favouriteDecorationLoading}
+                  />
+                ))}
+              </div>
+            ) : null}
+            <>
+              {decorationsByRating && decorationsByRating.length > 0 ? (
+                <div className="grid grid-cols-6 gap-x-6 gap-y-10 my-8">
+                  {decorationsByRating.map((decoration) => (
+                    <DecorationCard
+                      key={decoration.id}
+                      decoration={decoration}
+                      userFavourites={user?.favourites.map(
+                        (favourite) => favourite.id
+                      )}
+                      addDecorationToFavourites={addDecorationsToFavourites}
+                      removeDecorationFromFavourites={
+                        removeDecorationFromFavourites
+                      }
+                      unFavouriteDecorationLoading={
+                        unFavouriteDecorationLoading
+                      }
+                      favouriteDecorationLoading={favouriteDecorationLoading}
+                    />
+                  ))}
+                </div>
+              ) : null}
+            </>
           </div>
-        ) : null}
-        <>
-          {decorationsByRating && decorationsByRating.length > 0 ? (
-            <div className="grid grid-cols-6 gap-x-6 gap-y-10 my-8">
-              {decorationsByRating.map((decoration) => (
-                <DecorationCard
-                  decoration={decoration}
-                  userFavourites={user?.favourites.map(
-                    (favourite) => favourite.id
-                  )}
-                  addDecorationToFavourites={addDecorationsToFavourites}
-                  removeDecorationFromFavourites={
-                    removeDecorationFromFavourites
-                  }
-                  unFavouriteDecorationLoading={unFavouriteDecorationLoading}
-                  favouriteDecorationLoading={favouriteDecorationLoading}
-                  getUserNetworkStatus={getUserNetworkStatus}
-                />
-              ))}
-            </div>
-          ) : null}
-        </>
+        )}
+
         {!showMap ? (
-          <div className="fixed bottom-24 left-[46.5%] z-20">
+          <div className="fixed bottom-24 left-[47.5%] z-20">
             <button
               onClick={() => setShowMap(true)}
               className="flex items-center text-sm py-2 px-3 font-semibold rounded-full shadow-lg text-white bg-ch-teal hover:scale-110 transition-all"
@@ -243,8 +273,9 @@ export const Home = () => {
             </button>
           </div>
         ) : (
-          <div className="fixed bottom-24 left-[46.5%] z-20">
+          <div className="fixed bottom-24 left-[47.5%] z-20">
             <button
+              disabled={mapLoading}
               onClick={() => setShowMap(false)}
               className="flex items-center text-sm py-2 px-3 font-semibold rounded-full shadow-lg text-white bg-ch-teal hover:scale-110 transition-all"
             >

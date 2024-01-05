@@ -59,6 +59,22 @@ export const DecorationCard = ({
     }
   };
 
+  const showArrows = () => {
+    if (currentIndex === 0) {
+      setShowRightArrow(true);
+    } else if (currentIndex === decoration.images.length - 1) {
+      setShowLeftArrow(true);
+    } else {
+      setShowLeftArrow(true);
+      setShowRightArrow(true);
+    }
+  };
+
+  const hideArrows = () => {
+    setShowLeftArrow(false);
+    setShowRightArrow(false);
+  };
+
   return (
     <>
       <div className="group block sm:hidden">
@@ -185,7 +201,11 @@ export const DecorationCard = ({
 
       {/* Desktop */}
       <div className="hidden sm:group sm:block">
-        <div className="overflow-hidden rounded-xl relative">
+        <div
+          className="overflow-hidden rounded-xl relative"
+          onMouseOver={showArrows}
+          onMouseLeave={hideArrows}
+        >
           <Link to={`/decoration/${decoration.id}`}>
             <div
               className="flex transition-transform ease-out duration-500"
@@ -245,7 +265,7 @@ export const DecorationCard = ({
               </>
             )}
           </div>
-          {currentIndex === 0 ? null : (
+          {!showLeftArrow ? null : (
             <div className="absolute left-5 top-[45%] z-10">
               <button
                 onClick={prevImage}
@@ -256,8 +276,7 @@ export const DecorationCard = ({
             </div>
           )}
 
-          {decoration.images.length > 1 &&
-          currentIndex !== decoration.images.length - 1 ? (
+          {showRightArrow ? (
             <div className="absolute right-5 top-[45%] z-10">
               <button
                 onClick={nextImage}

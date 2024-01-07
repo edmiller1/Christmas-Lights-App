@@ -152,7 +152,7 @@ export const AppHeader = ({ user }: Props) => {
           </div>
         </div>
       </div>
-      <nav className="fixed shadow w-full max-w-[560px] h-18 bottom-0 left-0 right-0 z-10 flex items-center bg-slate-50 dark:bg-zinc-900 border-t dark:border-black sm:hidden">
+      <nav className="fixed shadow w-full max-w-[560px] h-18 bottom-0 left-0 right-0 z-50 flex items-center bg-slate-50 dark:bg-zinc-900 border-t dark:border-black sm:hidden">
         <div className="flex flex-auto items-start justify-center">
           <Link
             to="/home"
@@ -174,25 +174,36 @@ export const AppHeader = ({ user }: Props) => {
             <span className="text-xs mt-1">Home</span>
           </Link>
 
-          <Link
-            to="/profile/route-planning"
-            type="button"
-            className={`${
-              location.pathname === "/route-planning"
-                ? "flex flex-col flex-1 items-center p-4 text-center text-ch-red"
-                : "flex flex-col flex-1 items-center p-4 text-center"
-            }`}
-          >
-            <Path
-              size={24}
+          {user ? (
+            <Link
+              to="/route-planning"
+              type="button"
               className={`${
                 location.pathname === "/route-planning"
-                  ? "text-ch-red"
-                  : "text-ch-dark dark:text-ch-light"
+                  ? "flex flex-col flex-1 items-center p-4 text-center text-ch-red"
+                  : "flex flex-col flex-1 items-center p-4 text-center"
               }`}
-            />
-            <span className="text-xs mt-1">Route</span>
-          </Link>
+            >
+              <Path
+                size={24}
+                className={`${
+                  location.pathname === "/route-planning"
+                    ? "text-ch-red"
+                    : "text-ch-dark dark:text-ch-light"
+                }`}
+              />
+              <span className="text-xs mt-1">Route</span>
+            </Link>
+          ) : (
+            <Link
+              to="/signin"
+              type="button"
+              className="flex flex-col flex-1 items-center p-4 text-center"
+            >
+              <Path size={24} className="text-ch-dark dark:text-ch-light" />
+              <span className="text-xs mt-1">Route</span>
+            </Link>
+          )}
 
           {user ? (
             <div

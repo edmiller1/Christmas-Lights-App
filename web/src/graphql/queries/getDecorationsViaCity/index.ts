@@ -1,8 +1,8 @@
 import { gql } from "@apollo/client";
 
-export const GET_DECORATIONS_VIA_REGION = gql`
-  query getDecorationsViaRegion($input: DecorationsViaMapInput!) {
-    getDecorationsViaRegion(input: $input) {
+export const GET_DECORATIONS_VIA_CITY = gql`
+  query getDecorationsViaCity($input: DecorationsViaMapInput!) {
+    getDecorationsViaCity(input: $input) {
       id
       name
       city

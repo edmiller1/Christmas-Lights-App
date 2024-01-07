@@ -1,6 +1,6 @@
 import { DecorationImage } from "@/lib/types";
 
-export interface Get_Decorations_Via_Region {
+export interface Get_Decorations_Via_City {
   __typename: "Decoration";
   id: string;
   name: string;
@@ -12,15 +12,15 @@ export interface Get_Decorations_Via_Region {
   images: DecorationImage[];
 }
 
-export interface GetDecorationsViaRegion {
-  getDecorationsViaRegion: Get_Decorations_Via_Region[];
+export interface GetDecorationsViaCity {
+  getDecorationsViaCity: Get_Decorations_Via_City[];
 }
 
-export interface GetDecorationsViaRegionInput {
+export interface GetDecorationsViaCityInput {
   latitude: string;
   longitude: string;
 }
 
-export interface GetDecorationsViaRegionArgs {
-  input: GetDecorationsViaRegionInput;
+export interface GetDecorationsViaCityArgs {
+  input: GetDecorationsViaCityInput;
 }

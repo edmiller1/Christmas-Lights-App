@@ -28,8 +28,11 @@ import { useToast } from "@/components/ui/use-toast";
 import { useState } from "react";
 import { ListBullets, MapTrifold } from "@phosphor-icons/react";
 import { useUserData } from "@/lib/hooks";
+import { useNavigate } from "react-router-dom";
+import { ToastAction } from "@/components/ui/toast";
 
 export const Home = () => {
+  const navigate = useNavigate();
   const currentUser = useUserData();
   const { toast } = useToast();
 
@@ -109,7 +112,20 @@ export const Home = () => {
     );
 
   const addDecorationsToFavourites = (decorationId: string) => {
-    favouriteDecoration({ variables: { input: { id: decorationId } } });
+    if (currentUser) {
+      favouriteDecoration({ variables: { input: { id: decorationId } } });
+    } else {
+      toast({
+        variant: "default",
+        title: "Not currently signed in.",
+        description: "Create an account to like decorations.",
+        action: (
+          <ToastAction altText="Sign Up" onClick={() => navigate("/signin")}>
+            Sign Up
+          </ToastAction>
+        ),
+      });
+    }
   };
 
   const removeDecorationFromFavourites = (decorationId: string) => {
@@ -122,6 +138,7 @@ export const Home = () => {
 
   return (
     <>
+      {/* Mobile */}
       <div className="sm:hidden">
         {showMap ? (
           <HomeMap
@@ -204,6 +221,7 @@ export const Home = () => {
         )}
       </div>
 
+      {/* Desktop */}
       <div className="hidden sm:block">
         {showMap ? (
           <HomeMap

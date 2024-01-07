@@ -19,6 +19,7 @@ import {
   NotFound,
   Notifications,
   Profile,
+  RoutePlanning,
   SignIn,
   VerifyDecoration,
 } from "./pages";
@@ -39,6 +40,10 @@ const router = createBrowserRouter([
       {
         path: "/home",
         element: <Home />,
+      },
+      {
+        path: "/route-planning",
+        element: <RoutePlanning />,
       },
       {
         path: "/decoration/:decorationId",

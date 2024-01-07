@@ -8,6 +8,8 @@ export const GET_DECORATIONS_VIA_COUNTRY = gql`
       city
       country
       rating
+      latitude
+      longitude
       images {
         id
         url

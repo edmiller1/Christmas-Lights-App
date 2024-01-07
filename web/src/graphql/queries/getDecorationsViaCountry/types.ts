@@ -7,6 +7,8 @@ export interface Get_Decorations_Via_Country {
   city: string;
   country: string;
   rating: number;
+  latitude: number;
+  longitude: number;
   images: DecorationImage[];
 }
 

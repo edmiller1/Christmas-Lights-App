@@ -18,10 +18,23 @@ interface Props {
     | Get_Decorations_Via_Region
     | Get_Decorations_Via_Country
     | undefined;
-  userFavourites: Decoration[] | undefined;
+  setActiveDecoration: (
+    activeDecoration:
+      | Get_Decorations_Via_City
+      | Get_Decorations_Via_Region
+      | Get_Decorations_Via_Country
+      | undefined
+  ) => void;
+  setActiveDecorationIndex: (activeDecorationIndex: number) => void;
+  userFavourites: string[] | undefined;
 }
 
-export const PopupCard = ({ activeDecoration, userFavourites }: Props) => {
+export const PopupCard = ({
+  activeDecoration,
+  setActiveDecoration,
+  setActiveDecorationIndex,
+  userFavourites,
+}: Props) => {
   const [showRightArrow, setShowRightArrow] = useState<boolean>(false);
   const [showLeftArrow, setShowLeftArrow] = useState<boolean>(false);
   const [currentImage, setCurrentImage] = useState<DecorationImage | undefined>(
@@ -75,10 +88,22 @@ export const PopupCard = ({ activeDecoration, userFavourites }: Props) => {
     setShowRightArrow(false);
   };
 
+  const closePopup = () => {
+    setActiveDecoration(undefined);
+    setActiveDecorationIndex(0);
+  };
+
   return (
     <>
       {/* Mobile */}
-      <div className="sm:hidden"></div>
+      <div className="sm:hidden block">
+        <div className="flex w-full h-96 absolute bottom-5 left-2 right-2 rounded-xl z-50">
+          <div className="w-1/3">
+            <img src={currentImage?.url} alt="Christmas decoration" />
+          </div>
+          <div className="w-2/3"></div>
+        </div>
+      </div>
 
       {/* Desktop */}
       <div className="hidden sm:block">
@@ -112,7 +137,7 @@ export const PopupCard = ({ activeDecoration, userFavourites }: Props) => {
             </div>
 
             <div className="absolute inset-0 flex justify-between p-4 z-10">
-              <div role="button">
+              <div role="button" onClick={closePopup}>
                 <X
                   size={28}
                   weight="bold"
@@ -173,7 +198,10 @@ export const PopupCard = ({ activeDecoration, userFavourites }: Props) => {
                 {activeDecoration?.city}, {activeDecoration?.country}
               </span>
               <div className="mt-1 p-1 bg-ch-red opacity-80 rounded-full hover:opacity-100 transition-all">
-                <Link to={`/decoration/${activeDecoration?.id}`}>
+                <Link
+                  to={`/decoration/${activeDecoration?.id}`}
+                  target="_blank"
+                >
                   <ArrowUpRight
                     size={20}
                     weight="bold"

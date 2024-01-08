@@ -143,7 +143,7 @@ export const Home = () => {
         {showMap ? (
           <HomeMap
             setMapLoading={setMapLoading}
-            userFavourites={user?.favourites}
+            userFavourites={user?.favourites.map((favourite) => favourite.id)}
           />
         ) : (
           <div className="px-6 overflow-y-auto py-16">
@@ -226,7 +226,7 @@ export const Home = () => {
         {showMap ? (
           <HomeMap
             setMapLoading={setMapLoading}
-            userFavourites={user?.favourites}
+            userFavourites={user?.favourites.map((favourite) => favourite.id)}
           />
         ) : (
           <div className="px-32 overflow-y-auto py-24">

@@ -21,6 +21,7 @@ import {
   Get_Decorations_Via_Region,
 } from "@/graphql/queries/getDecorationsViaRegion/types";
 import Map, {
+  GeolocateControl,
   Layer,
   MapRef,
   Marker,
@@ -28,8 +29,9 @@ import Map, {
   Popup,
 } from "react-map-gl";
 import { Decoration } from "@/lib/types";
-import { Circle } from "@phosphor-icons/react";
+import { Circle, Heart, Star, X } from "@phosphor-icons/react";
 import { CustomMarker, PopupCard } from "./components";
+import { Link } from "react-router-dom";
 
 const initialViewState = {
   latitude: localStorage.getItem("latitude")
@@ -45,7 +47,7 @@ const initialViewState = {
 
 interface Props {
   setMapLoading: (mapLoading: boolean) => void;
-  userFavourites: Decoration[] | undefined;
+  userFavourites: string[] | undefined;
 }
 
 export const HomeMap = ({ setMapLoading, userFavourites }: Props) => {
@@ -103,6 +105,13 @@ export const HomeMap = ({ setMapLoading, userFavourites }: Props) => {
   ) => {
     e.originalEvent.stopPropagation();
     setActiveDecoration(decoration);
+  };
+
+  const closePopup = () => {
+    if (activeDecoration) {
+      setActiveDecoration(undefined);
+      setActiveDecorationIndex(0);
+    }
   };
 
   useEffect(() => {
@@ -163,6 +172,7 @@ export const HomeMap = ({ setMapLoading, userFavourites }: Props) => {
           onMove={(e) => setViewState(e.viewState)}
           onZoom={(e) => setViewState(e.viewState)}
           maxZoom={13.5}
+          onClick={closePopup}
         >
           {getDecorationsViaCountryLoading ||
           getDecorationsViaRegionLoading ||
@@ -215,7 +225,51 @@ export const HomeMap = ({ setMapLoading, userFavourites }: Props) => {
           ))}
 
           <NavigationControl />
+          <GeolocateControl />
         </Map>
+        {activeDecoration ? (
+          <Link to={`/decoration/${activeDecoration.id}`}>
+            <div className="flex absolute text-black bottom-24 h-32 w-96 bg-white rounded-xl left-6 z-[99]">
+              <div className="w-[40%] relative">
+                <div
+                  role="button"
+                  className="absolute left-2 top-2 bg-black p-1 rounded-full opacity-80"
+                  onClick={closePopup}
+                >
+                  <X size={16} weight="bold" color="#FFFFFF" />
+                </div>
+                <img
+                  src={activeDecoration?.images[0].url}
+                  alt="Christmas decoration"
+                  className="h-full w-full object-center object-cover rounded-tl-xl rounded-bl-xl"
+                />
+              </div>
+              <div className="w-[60%] p-2">
+                <div className="flex justify-between">
+                  <div className="flex flex-col">
+                    <span className="font-semibold text-sm">
+                      {activeDecoration.name}
+                    </span>
+                    <span className="text-xs text-gray-500">
+                      {activeDecoration.city}, {activeDecoration.country}
+                    </span>
+                  </div>
+                  {userFavourites?.includes(activeDecoration.id) ? (
+                    <Heart size={20} weight="fill" color="#FF647F" />
+                  ) : (
+                    <Heart size={20} weight="bold" color="#000000" />
+                  )}
+                </div>
+                <div className="absolute right-2 bottom-2 flex items-center space-x-1">
+                  <Star size={16} weight="fill" color="#000000" />
+                  <span className="mt-[0.15rem] text-sm">
+                    {activeDecoration.rating.toFixed(1)}
+                  </span>
+                </div>
+              </div>
+            </div>
+          </Link>
+        ) : null}
       </div>
 
       <div className="absolute pt-16 h-full w-full">
@@ -288,6 +342,8 @@ export const HomeMap = ({ setMapLoading, userFavourites }: Props) => {
                 >
                   <PopupCard
                     activeDecoration={activeDecoration}
+                    setActiveDecoration={setActiveDecoration}
+                    setActiveDecorationIndex={setActiveDecorationIndex}
                     userFavourites={userFavourites}
                   />
                 </Popup>
@@ -296,6 +352,7 @@ export const HomeMap = ({ setMapLoading, userFavourites }: Props) => {
           ))}
 
           <NavigationControl />
+          <GeolocateControl />
         </Map>
       </div>
     </>

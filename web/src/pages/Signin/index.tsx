@@ -45,7 +45,7 @@ export const SignIn = () => {
           sessionStorage.setItem("token", data.signIn.token);
         }
         setTimeout(() => {
-          navigate("/home");
+          navigate("/");
         }, 3000);
       } else {
         sessionStorage.removeItem("token");
@@ -101,13 +101,13 @@ export const SignIn = () => {
   }
 
   if (currentUser) {
-    navigate("/home");
+    navigate("/");
   }
 
   return (
     <div className="flex flex-col min-h-screen items-center justify-center space-y-8 py-12">
       <div>
-        <Link to="/home">
+        <Link to="/">
           <img src={logo} alt="logo" className="h-52" />
         </Link>
       </div>

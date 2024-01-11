@@ -32,53 +32,54 @@ import {
   YourDecorations,
 } from "./pages/Profile/pages/index.ts";
 
+const hasSession = sessionStorage.getItem("token");
+console.log(hasSession);
+
 const router = createBrowserRouter([
   {
     path: "/",
     element: <App />,
-    children: [
-      {
-        path: "/home",
-        element: <Home />,
-      },
-      {
-        path: "/route-planning",
-        element: <RoutePlanning />,
-      },
-      {
-        path: "/decoration/:decorationId",
-        element: <Decoration />,
-      },
-      {
-        path: "/verify-decoration/:decorationId",
-        element: <VerifyDecoration />,
-      },
-      {
-        path: "/notifications",
-        element: <Notifications />,
-      },
-      {
-        path: "/profile",
-        element: <Profile />,
-      },
-      {
-        path: "/profile/personal-info",
-        element: <PersonalInfo />,
-      },
-      {
-        path: "/profile/notification-settings",
-        element: <NotificationSettings />,
-      },
-      {
-        path: "/profile/decorations",
-        element: <YourDecorations />,
-      },
-      {
-        path: "/profile/history",
-        element: <History />,
-      },
-      { path: "/profile/favourites", element: <Favourites /> },
-    ],
+    children: [],
+  },
+  {
+    path: "/route-planning",
+    element: <RoutePlanning />,
+  },
+  {
+    path: "/decoration/:decorationId",
+    element: <Decoration />,
+  },
+  {
+    path: "/verify-decoration/:decorationId",
+    element: hasSession ? <VerifyDecoration /> : <NotFound />,
+  },
+  {
+    path: "/notifications",
+    element: <Notifications />,
+  },
+  {
+    path: "/profile",
+    element: hasSession ? <Profile /> : <NotFound />,
+  },
+  {
+    path: "/profile/personal-info",
+    element: hasSession ? <PersonalInfo /> : <NotFound />,
+  },
+  {
+    path: "/profile/notification-settings",
+    element: hasSession ? <NotificationSettings /> : <NotFound />,
+  },
+  {
+    path: "/profile/decorations",
+    element: hasSession ? <YourDecorations /> : <NotFound />,
+  },
+  {
+    path: "/profile/history",
+    element: hasSession ? <History /> : <NotFound />,
+  },
+  {
+    path: "/profile/favourites",
+    element: hasSession ? <Favourites /> : <NotFound />,
   },
   {
     path: "/admin",

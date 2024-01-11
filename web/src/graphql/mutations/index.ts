@@ -15,6 +15,7 @@ export * from "./markNotificationAsRead";
 export * from "./markNotificationAsUnread";
 export * from "./mutateNotificationSettings";
 export * from "./rateDecoration";
+export * from "./removeDecorationFromHistory";
 export * from "./reportDecoration";
 export * from "./submitDecorationForVerification";
 export * from "./unfavouriteDecoration";

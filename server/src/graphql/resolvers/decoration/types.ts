@@ -99,6 +99,12 @@ export interface AddDecorationToHistoryArgs {
   };
 }
 
+export interface removeDecorationFromHistoryArgs {
+  input: {
+    id: string;
+  };
+}
+
 export interface DecorationsViaMapArgs {
   input: {
     latitude: string;

@@ -22,7 +22,11 @@ import {
 } from "@/graphql/mutations/markNotificationAsUnread/types";
 import { Get_User_Notifications } from "@/graphql/queries/getUserNotifications/types";
 import { CircleNotch, Notification } from "@phosphor-icons/react";
-import { AllNotificationsMenu, NotificationOptionsMenu } from "./components";
+import {
+  AllNotificationsMenu,
+  NotificationItem,
+  NotificationOptionsMenu,
+} from "./components";
 import { toast } from "@/components/ui/use-toast";
 import { PopoverContent } from "@/components/ui/popover";
 import { Separator } from "@/components/ui/separator";
@@ -160,56 +164,14 @@ export const NotificationsMenu = ({
               </div>
             ) : (
               <>
-                {userNotifications.map((notification) => (
-                  <div
+                {userNotifications.map((notification, index) => (
+                  <NotificationItem
                     key={notification.id}
-                    className="flex flex-col text-sm py-2 mx-2 my-2 px-2 rounded-xl cursor-default hover:bg-gray-50 dark:hover:bg-zinc-800"
-                  >
-                    {markNotificationAsReadLoading ||
-                    markNotificationAsUnreadLoading ||
-                    deleteNotificationLoading ? (
-                      <div className="h-24 flex justify-center items-center">
-                        <CircleNotch
-                          size={40}
-                          className="text-ch-dark dark:text-ch-light animate-spin"
-                        />
-                      </div>
-                    ) : (
-                      <>
-                        <div className="flex justify-between items-center">
-                          <span className="font-bold">
-                            {notification.title}
-                          </span>
-                          <NotificationOptionsMenu
-                            notification={notification}
-                            markSingleNotification={markSingleNotification}
-                            deleteSingleNotification={deleteSingleNotification}
-                          />
-                        </div>
-                        <span className="text-left text-xs pb-3">
-                          {notification.body}
-                        </span>
-                        <div className="flex justify-between items-center text-xs mt-1">
-                          {notification.unread ? (
-                            <span className="py-1 px-2 bg-red-200 text-red-600 font-semibold rounded-full">
-                              unread
-                            </span>
-                          ) : (
-                            <span className="py-1 px-2 bg-green-200 text-green-600 font-semibold rounded-full">
-                              read
-                            </span>
-                          )}
-                          <span>
-                            {
-                              new Date(+notification.created_at)
-                                .toLocaleString("en-AU")
-                                .split(",")[0]
-                            }
-                          </span>
-                        </div>
-                      </>
-                    )}
-                  </div>
+                    index={index}
+                    notification={notification}
+                    notifications={userNotifications}
+                    refetchUserNotifications={refetchUserNotifications}
+                  />
                 ))}
                 <Separator />
               </>

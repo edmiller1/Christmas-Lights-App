@@ -7,15 +7,15 @@ export const HomeFooter = () => {
         <span className="px-3 text-sm">&copy; Christmas Lights App</span>
 
         <span>&middot;</span>
-        <Link to="/home">
+        <Link to="/">
           <span className="px-3 text-sm hover:underline">Privacy</span>
         </Link>
         <span>&middot;</span>
-        <Link to="/home">
+        <Link to="/">
           <span className="px-3 text-sm hover:underline">Terms</span>
         </Link>
         <span>&middot;</span>
-        <Link to="/home">
+        <Link to="/">
           <span className="px-3 text-sm hover:underline">Sitemap</span>
         </Link>
       </div>

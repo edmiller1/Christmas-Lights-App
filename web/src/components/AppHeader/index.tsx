@@ -55,7 +55,7 @@ export const AppHeader = ({ user }: Props) => {
           title: "Success 🎉",
           description: "Signed out successfully!",
         });
-        redirect("/home");
+        redirect("/");
       })
       .catch(() => {
         toast({
@@ -88,7 +88,7 @@ export const AppHeader = ({ user }: Props) => {
           }`}
         >
           <div className="flex h-16 items-center justify-between px-10">
-            <Link to="/home" className="hidden sm:block">
+            <Link to="/" className="hidden sm:block">
               <img src={logo} alt="logo" className="h-12" />
             </Link>
             <div className="flex w-full max-w-sm items-center justify-center space-x-2">
@@ -119,7 +119,7 @@ export const AppHeader = ({ user }: Props) => {
                   {/* Notifications */}
                   <Popover>
                     <PopoverTrigger>
-                      <div className="relative flex-shrink-0 mr-2 rounded-full p-2 hover:bg-gray-500 dark:hover:bg-zinc-800 focus:outline-none">
+                      <div className="relative flex-shrink-0 mr-2 rounded-full p-2 hover:bg-gray-100 dark:hover:bg-zinc-800 focus:outline-none">
                         <Bell
                           size={20}
                           weight="bold"
@@ -155,10 +155,10 @@ export const AppHeader = ({ user }: Props) => {
       <nav className="fixed shadow w-full max-w-[560px] h-18 bottom-0 left-0 right-0 z-50 flex items-center bg-slate-50 dark:bg-zinc-900 border-t dark:border-black sm:hidden">
         <div className="flex flex-auto items-start justify-center">
           <Link
-            to="/home"
+            to="/"
             type="button"
             className={`${
-              location.pathname === "/home"
+              location.pathname === "/"
                 ? "flex flex-col flex-1 items-center p-4 text-center text-ch-red"
                 : "flex flex-col flex-1 items-center p-4 text-center"
             }`}
@@ -166,7 +166,7 @@ export const AppHeader = ({ user }: Props) => {
             <House
               size={24}
               className={`${
-                location.pathname === "/home"
+                location.pathname === "/"
                   ? "text-ch-red"
                   : "text-ch-dark dark:text-ch-light"
               }`}

@@ -1,39 +1,28 @@
 import { useMutation, useQuery } from "@apollo/client";
-import { GET_USER_NOTIFICATIONS } from "@/graphql/queries";
+import { GET_USER, GET_USER_NOTIFICATIONS } from "@/graphql/queries";
 import {
   DELETE_ALL_NOTIFICATIONS,
-  DELETE_NOTIFICATION,
   MARK_ALL_NOTIFICATIONS_AS_READ,
-  MARK_NOTIFICATION_AS_READ,
-  MARK_NOTIFICATION_AS_UNREAD,
 } from "@/graphql/mutations";
+import {
+  GetUser as GetUserData,
+  GetUserArgs,
+} from "@/graphql/queries/getUser/types";
 import { GetUserNotifications as GetUserNotificationsData } from "@/graphql/queries/getUserNotifications/types";
 import { DeleteAllNotifications as DeleteAllNotificationsData } from "@/graphql/mutations/deleteAllNotifications/types";
-import {
-  DeleteNotification as DeleteNotificationData,
-  DeleteNotificationArgs,
-} from "@/graphql/mutations/deleteNotification/types";
 import { MarkAllNotificationsAsRead as MarkAllNotificationsAsReadData } from "@/graphql/mutations/markAllNotificationsAsRead/types";
-import {
-  MarkNotificationAsRead as MarkNotificationAsReadData,
-  MarkNotificationAsReadArgs,
-} from "@/graphql/mutations/markNotificationAsRead/types";
-import {
-  MarkNotificationAsUnread as MarkNotificationAsUnreadData,
-  MarkNotificationAUnreadArgs,
-} from "@/graphql/mutations/markNotificationAsUnread/types";
 import { NotFound } from "..";
 import { CircleNotch, Notification } from "@phosphor-icons/react";
-import { Separator } from "@/components/ui/separator";
-import { NotificationsLoading } from "./components";
+import { NotificationItem, NotificationsLoading } from "./components";
 import { useToast } from "@/components/ui/use-toast";
-import {
-  AllNotificationsMenu,
-  NotificationOptionsMenu,
-} from "@/components/AppHeader/components/NotificationsMenu/components";
+import { AllNotificationsMenu } from "@/components/AppHeader/components/NotificationsMenu/components";
+import { useUserData } from "@/lib/hooks";
+import { AppHeaderLoading } from "@/components/AppHeader/components";
+import { AppHeader } from "@/components";
 
 export const Notifications = () => {
   const { toast } = useToast();
+  const currentUser = useUserData();
 
   const [deleteAllNotifications, { loading: deleteAllNotificationsLoading }] =
     useMutation<DeleteAllNotificationsData>(DELETE_ALL_NOTIFICATIONS, {
@@ -41,16 +30,6 @@ export const Notifications = () => {
         refetchUserNotifications();
       },
     });
-
-  const [deleteNotification, { loading: deleteNotificationLoading }] =
-    useMutation<DeleteNotificationData, DeleteNotificationArgs>(
-      DELETE_NOTIFICATION,
-      {
-        onCompleted: () => {
-          refetchUserNotifications();
-        },
-      }
-    );
 
   const [
     markAllNotificationsAsRead,
@@ -71,41 +50,14 @@ export const Notifications = () => {
     }
   );
 
-  const [markNotificationAsRead, { loading: markNotificationAsReadLoading }] =
-    useMutation<MarkNotificationAsReadData, MarkNotificationAsReadArgs>(
-      MARK_NOTIFICATION_AS_READ,
-      {
-        onCompleted: () => {
-          refetchUserNotifications();
-        },
-        onError: (error) => {
-          toast({
-            variant: "destructive",
-            title: "Uh oh!",
-            description: `Failed to mark notification as read. ${error}`,
-          });
-        },
-      }
-    );
+  const { data: getUserData, loading: getUserLoading } = useQuery<
+    GetUserData,
+    GetUserArgs
+  >(GET_USER, {
+    variables: { input: { id: currentUser?.uid ? currentUser.uid : "" } },
+  });
 
-  const [
-    markNotificationAsUnread,
-    { loading: markNotificationAsUnreadLoading },
-  ] = useMutation<MarkNotificationAsUnreadData, MarkNotificationAUnreadArgs>(
-    MARK_NOTIFICATION_AS_UNREAD,
-    {
-      onCompleted: () => {
-        refetchUserNotifications();
-      },
-      onError: (error) => {
-        toast({
-          variant: "destructive",
-          title: "Uh oh!",
-          description: `Failed to mark notification as unread. ${error}`,
-        });
-      },
-    }
-  );
+  const user = getUserData?.getUser ? getUserData.getUser : null;
 
   const {
     data: getUserNotificationsData,
@@ -122,33 +74,15 @@ export const Notifications = () => {
     getUserNotificationsRefetch();
   };
 
-  const markSingleNotification = (notificationId: string) => {
-    const notification = userNotifications?.find(
-      (not) => not.id === notificationId
-    );
-
-    if (notification?.unread) {
-      markNotificationAsRead({ variables: { input: { id: notificationId } } });
-    } else {
-      markNotificationAsUnread({
-        variables: { input: { id: notificationId } },
-      });
-    }
-  };
-
   const markAllNotifications = () => {
     markAllNotificationsAsRead();
-  };
-
-  const deleteSingleNotification = (notificationId: string) => {
-    deleteNotification({ variables: { input: { id: notificationId } } });
   };
 
   const deleteAllTheNotifications = () => {
     deleteAllNotifications();
   };
 
-  if (getUserNotificationsLoading) {
+  if (getUserNotificationsLoading || getUserLoading) {
     return <NotificationsLoading />;
   }
 
@@ -157,7 +91,8 @@ export const Notifications = () => {
       <div className="hidden sm:block">
         <NotFound />
       </div>
-      <div className="py-5 sm:hidden">
+      <div className="py-5 min-h-screen sm:hidden">
+        {getUserLoading ? <AppHeaderLoading /> : <AppHeader user={user} />}
         <div className="flex justify-between items-center px-2">
           <div className="flex items-center mt-5">
             <h1 className="ml-5 font-bold text-3xl">Notifications</h1>
@@ -182,59 +117,14 @@ export const Notifications = () => {
                 </div>
               ) : (
                 <div className="mt-10">
-                  {userNotifications?.map((notification) => (
-                    <div key={notification.id}>
-                      {markNotificationAsReadLoading ||
-                      markNotificationAsUnreadLoading ||
-                      deleteNotificationLoading ? (
-                        <div className="h-32 flex justify-center items-center">
-                          <CircleNotch
-                            size={40}
-                            className="text-ch-dark dark:text-ch-light animate-spin"
-                          />
-                        </div>
-                      ) : (
-                        <>
-                          <Separator />
-                          <div className="px-5 py-2">
-                            <div className="flex justify-between items-center">
-                              <span className="font-bold">
-                                {notification.title}
-                              </span>
-                              <NotificationOptionsMenu
-                                deleteSingleNotification={
-                                  deleteSingleNotification
-                                }
-                                markSingleNotification={markSingleNotification}
-                                notification={notification}
-                              />
-                            </div>
-                            <span className="text-left text-sm pb-3">
-                              {notification.body}
-                            </span>
-                            <div className="flex justify-between itemspcenter text-xs mt-5 mb-3">
-                              {notification.unread ? (
-                                <span className="py-1 px-2 bg-red-200 text-red-600 font-semibold rounded-full">
-                                  unread
-                                </span>
-                              ) : (
-                                <span className="py-1 px-2 bg-green-200 text-green-600 font-semibold rounded-full">
-                                  read
-                                </span>
-                              )}
-                              <span>
-                                {
-                                  new Date(+notification.created_at)
-                                    .toLocaleString("en-AU")
-                                    .split(",")[0]
-                                }
-                              </span>
-                            </div>
-                          </div>
-                          <Separator />
-                        </>
-                      )}
-                    </div>
+                  {userNotifications?.map((notification, index) => (
+                    <NotificationItem
+                      key={notification.id}
+                      index={index}
+                      notification={notification}
+                      notifications={userNotifications}
+                      refetchUserNotifications={refetchUserNotifications}
+                    />
                   ))}
                 </div>
               )}

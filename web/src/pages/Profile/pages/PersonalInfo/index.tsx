@@ -26,6 +26,7 @@ import { Label } from "@/components/ui/label";
 import { getBase64Value } from "@/lib/helpers";
 import { Breadcrumbs } from "@/components";
 import { useUserData } from "@/lib/hooks";
+import { NotFound } from "@/pages";
 
 export const PersonalInfo = () => {
   const currentUser = useUserData();
@@ -134,7 +135,7 @@ export const PersonalInfo = () => {
   return (
     <>
       {/* Mobile */}
-      <div className="px-8 py-5 h-[40vh] sm:hidden">
+      <div className="px-8 py-5 h-screen sm:hidden">
         <div role="button" className="pb-12" onClick={() => navigate(-1)}>
           <CaretLeft
             size={24}
@@ -283,7 +284,7 @@ export const PersonalInfo = () => {
           </div>
         </div>
         <Separator />
-        <div className="flex h-full justify-center items-end w-full">
+        <div className="flex h-[26rem] justify-center items-end w-full">
           <Button variant="default" className="w-full py-6">
             Delete Account
           </Button>
@@ -291,7 +292,7 @@ export const PersonalInfo = () => {
       </div>
 
       {/* Desktop */}
-      <div className="hidden sm:block sm:mx-96 sm:py-24">
+      <div className="hidden sm:block sm:mx-96 sm:py-24 sm:min-h-screen">
         <Breadcrumbs firstWord="Profile" secondWord="Personal Info" />
         <h1 className="my-7 font-bold text-4xl">Personal Info</h1>
         <div className="w-1/2 my-8 ml-1">

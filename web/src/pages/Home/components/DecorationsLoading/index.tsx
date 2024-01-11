@@ -11,7 +11,7 @@ export const DecorationsLoading = () => {
         </div>
       </div>
 
-      <div className="hidden sm:block px-16 pt-32">
+      <div className="hidden sm:block px-16 pt-32 min-h-screen">
         <div className="grid grid-cols-6 gap-x-6 gap-y-10">
           {Array.from([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]).map((item) => (
             <DecorationCardLoading key={item} />

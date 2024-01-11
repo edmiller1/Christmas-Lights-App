@@ -230,6 +230,10 @@ export const typeDefs = gql`
     id: String!
   }
 
+  input RemoveDecorationFromHistoryInput {
+    id: String!
+  }
+
   input DecorationsViaMapInput {
     latitude: String!
     longitude: String!
@@ -281,6 +285,7 @@ export const typeDefs = gql`
       input: SubmitDecorationForVerificationInput!
     ): Decoration!
     addDecorationToHistory(input: AddDecorationToHistoryInput!): User!
+    removeDecorationFromHistory(input: RemoveDecorationFromHistoryInput!): User!
     # Notification
     markNotificationAsRead(input: MutateNotificationInput!): User!
     markNotificationAsUnread(input: MutateNotificationInput!): User!

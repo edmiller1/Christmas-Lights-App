@@ -11,6 +11,7 @@ import { useState } from "react";
 import { NoDecorations, YourDecorationsLoading } from "./components";
 import { Breadcrumbs } from "@/components";
 import { useUserData } from "@/lib/hooks";
+import { NotFound } from "@/pages";
 
 export const YourDecorations = () => {
   const currentUser = useUserData();

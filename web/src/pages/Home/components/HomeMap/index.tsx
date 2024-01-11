@@ -156,10 +156,6 @@ export const HomeMap = ({ setMapLoading, userFavourites }: Props) => {
     }, 2500);
   }, []);
 
-  useEffect(() => {
-    console.log(activeDecoration);
-  }, [activeDecoration]);
-
   return (
     <>
       <div className="sm:hidden pt-16 min-h-screen -pb-24 absolute rounded-lg">
@@ -206,7 +202,7 @@ export const HomeMap = ({ setMapLoading, userFavourites }: Props) => {
               <Marker
                 key={decoration.id}
                 style={{
-                  zIndex: activeDecorationIndex === index ? 99 : "unset",
+                  zIndex: activeDecorationIndex === index ? 98 : "unset",
                 }}
                 longitude={decoration.longitude}
                 latitude={decoration.latitude}

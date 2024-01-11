@@ -11,11 +11,11 @@ import {
 
 export const Footer = () => {
   return (
-    <footer className="bg-gray-100 dark:bg-zinc-900">
+    <footer className="bg-[#f7f7f7] border-t border-gray-200 dark:border-black dark:bg-zinc-900">
       <div className="mx-auto w-full max-w-screen-xl p-4 py-6 lg:py-8">
         <div className="md:flex md:justify-between">
           <div className="mb-6 md:mb-0">
-            <a href="https://flowbite.com/" className="flex items-center">
+            <Link to="/" className="flex items-center">
               <img
                 src={logo}
                 className="h-8 me-3"
@@ -24,7 +24,7 @@ export const Footer = () => {
               <span className="self-center text-2xl font-semibold whitespace-nowrap dark:text-white">
                 Christmas Lights App
               </span>
-            </a>
+            </Link>
           </div>
           <div className="grid grid-cols-2 gap-8 sm:gap-6 sm:grid-cols-3">
             <div>
@@ -92,10 +92,10 @@ export const Footer = () => {
         <hr className="my-6 border-gray-200 sm:mx-auto dark:border-gray-700 lg:my-8" />
         <div className="sm:flex sm:items-center sm:justify-between">
           <span className="text-sm text-gray-500 sm:text-center dark:text-gray-400">
-            © 2023{" "}
-            <a href="https://flowbite.com/" className="hover:underline">
-              Flowbite™
-            </a>
+            © {new Date().getFullYear()}{" "}
+            <Link to="/" className="hover:underline">
+              ChristmasLightsApp™
+            </Link>
             . All Rights Reserved.
           </span>
           <div className="flex mt-4 sm:justify-center sm:mt-0">

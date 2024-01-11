@@ -104,8 +104,9 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { useToast } from "@/components/ui/use-toast";
-import { Footer } from "@/components";
+import { AppHeader, Footer } from "@/components";
 import { useUserData } from "@/lib/hooks";
+import { AppHeaderLoading } from "@/components/AppHeader/components";
 
 export const Decoration = () => {
   const navigate = useNavigate();
@@ -116,10 +117,11 @@ export const Decoration = () => {
     useState<Get_Recommended_Decorations[]>();
 
   // QUERIES
-  const { data: getUserData, refetch: getUserRefetch } = useQuery<
-    GetUserData,
-    GetUserArgs
-  >(GET_USER, {
+  const {
+    data: getUserData,
+    loading: getUserLoading,
+    refetch: getUserRefetch,
+  } = useQuery<GetUserData, GetUserArgs>(GET_USER, {
     variables: { input: { id: currentUser?.uid ? currentUser.uid : "" } },
   });
 
@@ -448,7 +450,7 @@ export const Decoration = () => {
   };
 
   useEffect(() => {
-    if (decoration !== null) {
+    if (decoration) {
       addView({
         variables: {
           input: { id: decorationId, numViews: decoration?.num_views },
@@ -456,7 +458,7 @@ export const Decoration = () => {
       });
       addDecorationToHistory({ variables: { input: { id: decoration.id } } });
     }
-  }, []);
+  }, [decoration?.id]);
 
   useEffect(() => {
     if (decoration?.creator_id !== user?.id) {
@@ -769,6 +771,7 @@ export const Decoration = () => {
 
       {/* Desktop */}
       <div className="hidden sm:block">
+        {getUserLoading ? <AppHeaderLoading /> : <AppHeader user={user} />}
         {showImageOverlay ? (
           <ImagesOverlay
             decorationImages={decoration?.images}

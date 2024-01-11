@@ -10,10 +10,7 @@ export const NotFound = () => {
         Sorry, we couldn’t find the page you’re looking for.
       </p>
       <div className="mt-10">
-        <Link
-          to="/home"
-          className="underline text-ch-red hover:text-ch-red-hover"
-        >
+        <Link to="/" className="underline text-ch-red hover:text-ch-red-hover">
           Go back home
         </Link>
       </div>

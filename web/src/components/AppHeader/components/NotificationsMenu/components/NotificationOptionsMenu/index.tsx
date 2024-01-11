@@ -27,7 +27,7 @@ export const NotificationOptionsMenu = ({
     <DropdownMenu>
       <DropdownMenuTrigger>
         <DotsThreeVertical
-          size={28}
+          size={32}
           weight="bold"
           className="p-1 text-ch-dark dark:text-ch-light hover:bg-gray-300 dark:hover:bg-zinc-700 rounded-full"
         />

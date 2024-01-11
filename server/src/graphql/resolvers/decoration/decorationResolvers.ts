@@ -15,6 +15,7 @@ import {
   RateDecorationArgs,
   ReportDecorationArgs,
   SubmitDecorationForVerificationArgs,
+  removeDecorationFromHistoryArgs,
   unfavouriteDecorationArgs,
 } from "./types";
 import { authorise, calculateRating } from "../../../lib/helpers";
@@ -884,6 +885,36 @@ export const decorationResolvers = {
             });
           }
         }
+
+        return user;
+      } catch (error) {
+        throw new Error(`${error}`);
+      }
+    },
+    removeDecorationFromHistory: async (
+      _root: undefined,
+      { input }: removeDecorationFromHistoryArgs,
+      { _, req, res }: { _: undefined; req: Request; res: Response }
+    ): Promise<User> => {
+      try {
+        const user = await authorise(req);
+
+        if (!user) {
+          throw new Error("User cannot be found.");
+        }
+
+        await prisma.user.update({
+          where: {
+            id: user.id,
+          },
+          data: {
+            history: {
+              disconnect: {
+                id: input.id,
+              },
+            },
+          },
+        });
 
         return user;
       } catch (error) {

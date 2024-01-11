@@ -18,6 +18,7 @@ import { useState } from "react";
 import { PersonalInfoLoading } from "../PersonalInfo/components";
 import { Breadcrumbs } from "@/components";
 import { useUserData } from "@/lib/hooks";
+import { NotFound } from "@/pages";
 
 export const NotificationSettings = () => {
   const currentUser = useUserData();
@@ -60,7 +61,7 @@ export const NotificationSettings = () => {
 
   return (
     <>
-      <div className="px-8 py-5 sm:hidden">
+      <div className="px-8 py-5 min-h-screen sm:hidden">
         <div role="button" className="pb-12" onClick={() => navigate(-1)}>
           <CaretLeft
             size={24}
@@ -132,7 +133,7 @@ export const NotificationSettings = () => {
       </div>
 
       {/* Desktop */}
-      <div className="hidden sm:block sm:mx-96 sm:py-24">
+      <div className="hidden sm:block sm:min-h-screen sm:mx-96 sm:py-24">
         <Breadcrumbs firstWord="Profile" secondWord="Notification Settings" />
         <h1 className="mt-7 font-bold text-4xl">Notification Settings</h1>
         <span className="text-sm mb-7">

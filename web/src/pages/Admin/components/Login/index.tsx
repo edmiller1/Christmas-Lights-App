@@ -72,7 +72,7 @@ export const Login = () => {
 
   if (loginLoading) {
     return (
-      <div className="min-h screen flex flex-col items-center justify-center">
+      <div className="min-h-screen flex flex-col items-center justify-center">
         <CircleNotch
           size={96}
           weight="bold"
@@ -86,7 +86,7 @@ export const Login = () => {
   return (
     <div className="min-h-screen">
       <Link
-        to="/home"
+        to="/"
         className="flex items-center space-x-3 py-5 px-5 text-ch-red hover:text-ch-red-hover"
       >
         <ArrowLeft size={20} weight="bold" />

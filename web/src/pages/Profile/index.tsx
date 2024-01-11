@@ -27,6 +27,8 @@ import { useTheme } from "@/components/ui/theme-provider";
 import { Switch } from "@/components/ui/switch";
 import { useUserData } from "@/lib/hooks";
 import { auth } from "@/lib/firebase";
+import { AppHeaderLoading } from "@/components/AppHeader/components";
+import { AppHeader } from "@/components";
 
 export const Profile = () => {
   const navigate = useNavigate();
@@ -74,7 +76,7 @@ export const Profile = () => {
         });
         setTimeout(() => {
           setLogoutLoading(false);
-          navigate("/home");
+          navigate("/");
         }, 2000);
       })
       .catch((error) => {
@@ -91,9 +93,6 @@ export const Profile = () => {
 
   if (getUserLoading) {
     return <ProfileLoading />;
-  }
-  if (!currentUser) {
-    return <NotFound />;
   }
 
   if (logoutLoading) {
@@ -112,7 +111,8 @@ export const Profile = () => {
   return (
     <>
       {/* Mobile */}
-      <div className="px-8 py-10 sm:hidden">
+      <div className="px-8 pt-10 min-h-[110vh] h-full sm:hidden">
+        {getUserLoading ? <AppHeaderLoading /> : <AppHeader user={user} />}
         <h1 className="text-3xl font-bold">Profile</h1>
         {/* User image & name */}
         <div className="my-5 flex space-x-5 items-center">
@@ -241,7 +241,7 @@ export const Profile = () => {
           </div>
         </div>
         {/* Footer */}
-        <div className="mt-10 mb-20 flex flex-col justify-center items-center">
+        <div className="mt-10 flex flex-col justify-center items-center">
           <Button variant="outline" className="w-full" onClick={logOut}>
             Log out
           </Button>
@@ -264,80 +264,91 @@ export const Profile = () => {
       </div>
 
       {/* Desktop */}
-      <div className="hidden sm:block sm:mx-96 sm:py-24">
-        <h1 className="text-4xl font-bold tracking-wide">Profile</h1>
-        <h3 className="mt-2 text-lg">
-          {user?.name} - {user?.email}
-        </h3>
-        <div className="mt-10 grid grid-cols-2 gap-x-6 gap-y-10">
-          <div
-            className="profile-card flex flex-col rounded-lg p-2 space-y-3 shadow-lg cursor-pointer bg-white dark:bg-zinc-800"
-            onClick={() =>
-              navigate("/profile/personal-info", { state: user?.id })
-            }
-          >
-            <UserCircle size={36} className="text-ch-dark dark:text-ch-light" />
-            <div>
-              <h4 className="text-lg">Personal Info</h4>
-              <p className="text-sm text-gray-500 dark:text-zinc-400">
-                View and edit your name and avatar information.
-              </p>
+      <div className="hidden sm:block">
+        {getUserLoading ? <AppHeaderLoading /> : <AppHeader user={user} />}
+        <div className="sm:mx-96 sm:py-24 sm:min-h-screen">
+          <h1 className="text-4xl font-bold tracking-wide">Profile</h1>
+          <h3 className="mt-2 text-lg">
+            {user?.name} - {user?.email}
+          </h3>
+          <div className="mt-10 grid grid-cols-2 gap-x-6 gap-y-10">
+            <div
+              className="profile-card flex flex-col rounded-lg p-2 space-y-3 shadow-lg cursor-pointer bg-white dark:bg-zinc-800"
+              onClick={() =>
+                navigate("/profile/personal-info", { state: user?.id })
+              }
+            >
+              <UserCircle
+                size={36}
+                className="text-ch-dark dark:text-ch-light"
+              />
+              <div>
+                <h4 className="text-lg">Personal Info</h4>
+                <p className="text-sm text-gray-500 dark:text-zinc-400">
+                  View and edit your name and avatar information.
+                </p>
+              </div>
             </div>
-          </div>
-          <div
-            className="profile-card flex flex-col rounded-lg p-2 space-y-3 shadow-lg cursor-pointer dark:bg-zinc-800"
-            onClick={() =>
-              navigate("/profile/notification-settings", { state: user?.id })
-            }
-          >
-            <Bell size={36} className="text-ch-dark dark:text-ch-light" />
-            <div>
-              <h4 className="text-lg">Notifications</h4>
-              <p className="text-sm text-gray-500 dark:text-zinc-400">
-                Choose what notifications you want to see, and where you see
-                them.
-              </p>
+            <div
+              className="profile-card flex flex-col rounded-lg p-2 space-y-3 shadow-lg cursor-pointer dark:bg-zinc-800"
+              onClick={() =>
+                navigate("/profile/notification-settings", { state: user?.id })
+              }
+            >
+              <Bell size={36} className="text-ch-dark dark:text-ch-light" />
+              <div>
+                <h4 className="text-lg">Notifications</h4>
+                <p className="text-sm text-gray-500 dark:text-zinc-400">
+                  Choose what notifications you want to see, and where you see
+                  them.
+                </p>
+              </div>
             </div>
-          </div>
-          <div
-            className="profile-card flex flex-col rounded-lg p-2 space-y-3 shadow-lg cursor-pointer dark:bg-zinc-800"
-            onClick={() =>
-              navigate("/profile/decorations", { state: user?.id })
-            }
-          >
-            <HouseLine size={36} className="text-ch-dark dark:text-ch-light" />
-            <div>
-              <h4 className="text-lg">Decorations</h4>
-              <p className="text-sm text-gray-500 dark:text-zinc-400">
-                View and manage your decorations.
-              </p>
+            <div
+              className="profile-card flex flex-col rounded-lg p-2 space-y-3 shadow-lg cursor-pointer dark:bg-zinc-800"
+              onClick={() =>
+                navigate("/profile/decorations", { state: user?.id })
+              }
+            >
+              <HouseLine
+                size={36}
+                className="text-ch-dark dark:text-ch-light"
+              />
+              <div>
+                <h4 className="text-lg">Decorations</h4>
+                <p className="text-sm text-gray-500 dark:text-zinc-400">
+                  View and manage your decorations.
+                </p>
+              </div>
             </div>
-          </div>
-          <div
-            className="profile-card flex flex-col rounded-lg p-2 space-y-3 shadow-lg cursor-pointer dark:bg-zinc-800"
-            onClick={() => navigate("/profile/history", { state: user?.id })}
-          >
-            <ClockCounterClockwise
-              size={36}
-              className="text-ch-dark dark:text-ch-light"
-            />
-            <div>
-              <h4 className="text-lg">History</h4>
-              <p className="text-sm text-gray-500 dark:text-zinc-400">
-                View your recently visited decorations.
-              </p>
+            <div
+              className="profile-card flex flex-col rounded-lg p-2 space-y-3 shadow-lg cursor-pointer dark:bg-zinc-800"
+              onClick={() => navigate("/profile/history", { state: user?.id })}
+            >
+              <ClockCounterClockwise
+                size={36}
+                className="text-ch-dark dark:text-ch-light"
+              />
+              <div>
+                <h4 className="text-lg">History</h4>
+                <p className="text-sm text-gray-500 dark:text-zinc-400">
+                  View your recently visited decorations.
+                </p>
+              </div>
             </div>
-          </div>
-          <div
-            className="profile-card flex flex-col rounded-lg p-2 space-y-3 shadow-lg cursor-pointer dark:bg-zinc-800"
-            onClick={() => navigate("/profile/favourites", { state: user?.id })}
-          >
-            <Heart size={36} className="text-ch-dark dark:text-ch-light" />
-            <div>
-              <h4 className="text-lg">Favourites</h4>
-              <p className="text-sm text-gray-500 dark:text-zinc-400">
-                Decorations you think are really awesome.
-              </p>
+            <div
+              className="profile-card flex flex-col rounded-lg p-2 space-y-3 shadow-lg cursor-pointer dark:bg-zinc-800"
+              onClick={() =>
+                navigate("/profile/favourites", { state: user?.id })
+              }
+            >
+              <Heart size={36} className="text-ch-dark dark:text-ch-light" />
+              <div>
+                <h4 className="text-lg">Favourites</h4>
+                <p className="text-sm text-gray-500 dark:text-zinc-400">
+                  Decorations you think are really awesome.
+                </p>
+              </div>
             </div>
           </div>
         </div>

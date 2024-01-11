@@ -11,6 +11,7 @@ import { Outlet } from "react-router-dom";
 import "mapbox-gl/dist/mapbox-gl.css";
 import { useUserData } from "./lib/hooks";
 import { UserContext } from "./lib/context";
+import { Home } from "./pages";
 
 function App() {
   const currentUser = useUserData();
@@ -46,21 +47,21 @@ function App() {
     getCoords();
   }, []);
 
+  // useEffect(() => {
+  //   if (!user) {
+  //     sessionStorage.removeItem("token");
+  //   }
+  // }, [user]);
+
   return (
     <UserContext.Provider value={currentUser}>
-      <div className="min-h-screen">
-        {window.location.pathname.includes("decoration") ? (
-          <div className="hidden sm:block">
-            {getUserLoading ? <AppHeaderLoading /> : <AppHeader user={user} />}
-          </div>
-        ) : (
-          <>
-            {getUserLoading ? <AppHeaderLoading /> : <AppHeader user={user} />}
-          </>
-        )}
+      {getUserLoading ? <AppHeaderLoading /> : <AppHeader user={user} />}
+      <Home />
+      {/* <div className="min-h-screen">
+        {getUserLoading ? <AppHeaderLoading /> : <AppHeader user={user} />}
 
         <Outlet />
-      </div>
+      </div> */}
     </UserContext.Provider>
   );
 }

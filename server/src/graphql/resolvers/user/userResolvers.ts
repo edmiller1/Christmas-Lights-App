@@ -110,7 +110,7 @@ export const userResolvers = {
       _root: undefined,
       { input }: SignInArgs,
       { _, req, res }: { _: undefined; req: Request; res: Response }
-    ): Promise<User> => {
+    ): Promise<User | null> => {
       try {
         let user: User | null = null;
         const isNewUser = input.result.isNewUser;
@@ -132,14 +132,19 @@ export const userResolvers = {
             },
           });
         } else {
-          user = await prisma.user.update({
+          user = await prisma.user.findFirst({
             where: {
               id: input.result.uid,
             },
-            data: {
-              token: input.result.accessToken,
-            },
           });
+          // user = await prisma.user.update({
+          //   where: {
+          //     id: input.result.uid,
+          //   },
+          //   data: {
+          //     token: input.result.accessToken,
+          //   },
+          // });
         }
 
         return user;

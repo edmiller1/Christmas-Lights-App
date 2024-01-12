@@ -1,4 +1,4 @@
-import { useMutation, useQuery } from "@apollo/client";
+import { useQuery } from "@apollo/client";
 import {
   GET_DECORATIONS_BY_CITY,
   GET_DECORATIONS_BY_RATING,
@@ -10,31 +10,14 @@ import {
   GetUser as GetUserData,
   GetUserArgs,
 } from "@/graphql/queries/getUser/types";
-import {
-  FAVOURITE_DECORATION,
-  UNFAVOURITE_DECORATION,
-} from "@/graphql/mutations";
-import {
-  FavouriteDecoration as FavouriteDecorationData,
-  FavouriteDecorationArgs,
-} from "@/graphql/mutations/favouriteDecoration/types";
-import {
-  UnfavouriteDecoration as UnFavouriteDecorationData,
-  UnfavouriteDecorationArgs,
-} from "@/graphql/mutations/unfavouriteDecoration/types";
 import { DecorationCard } from "@/components";
 import { DecorationsLoading, HomeFooter, HomeMap } from "./components";
-import { useToast } from "@/components/ui/use-toast";
 import { useState } from "react";
 import { ListBullets, MapTrifold } from "@phosphor-icons/react";
 import { useUserData } from "@/lib/hooks";
-import { useNavigate } from "react-router-dom";
-import { ToastAction } from "@/components/ui/toast";
 
 export const Home = () => {
-  const navigate = useNavigate();
   const currentUser = useUserData();
-  const { toast } = useToast();
 
   const [showMap, setShowMap] = useState<boolean>(false);
   const [mapLoading, setMapLoading] = useState<boolean>(false);
@@ -64,72 +47,8 @@ export const Home = () => {
     ? decorationsByRatingData.getDecorationsByRating
     : null;
 
-  //MUTATIONS
-  const [favouriteDecoration, { loading: favouriteDecorationLoading }] =
-    useMutation<FavouriteDecorationData, FavouriteDecorationArgs>(
-      FAVOURITE_DECORATION,
-      {
-        onCompleted: () => {
-          toast({
-            variant: "success",
-            title: "Success 🎉",
-            description: "Decoration added to favourites ❤️",
-          });
-          refetchUser();
-        },
-        onError() {
-          toast({
-            variant: "destructive",
-            title: "Success 🎉",
-            description:
-              "Failed to add decoration to favourites. Please Try again.",
-          });
-        },
-      }
-    );
-
-  const [unFavouriteDecoration, { loading: unFavouriteDecorationLoading }] =
-    useMutation<UnFavouriteDecorationData, UnfavouriteDecorationArgs>(
-      UNFAVOURITE_DECORATION,
-      {
-        onCompleted: () => {
-          toast({
-            variant: "success",
-            title: "Success 🎉",
-            description: "Decoration removed from favourites ❤️",
-          });
-          refetchUser();
-        },
-        onError() {
-          toast({
-            variant: "destructive",
-            title: "Success 🎉",
-            description:
-              "Failed to remove decoration to favourites. Please Try again.",
-          });
-        },
-      }
-    );
-
-  const addDecorationsToFavourites = (decorationId: string) => {
-    if (currentUser) {
-      favouriteDecoration({ variables: { input: { id: decorationId } } });
-    } else {
-      toast({
-        variant: "default",
-        title: "Not currently signed in.",
-        description: "Create an account to like decorations.",
-        action: (
-          <ToastAction altText="Sign Up" onClick={() => navigate("/signin")}>
-            Sign Up
-          </ToastAction>
-        ),
-      });
-    }
-  };
-
-  const removeDecorationFromFavourites = (decorationId: string) => {
-    unFavouriteDecoration({ variables: { input: { id: decorationId } } });
+  const refetchUserData = () => {
+    refetchUser();
   };
 
   if (decorationsByCityLoading || decorationsByRatingLoading) {
@@ -149,19 +68,17 @@ export const Home = () => {
           <div className="px-6 overflow-y-auto py-16">
             {decorationsByCity && decorationsByCity.length > 0 ? (
               <div className="grid grid-cols-1 gap-x-6 gap-y-8 my-8">
-                {decorationsByCity.map((decoration) => (
+                {decorationsByCity.map((decoration, index) => (
                   <DecorationCard
                     key={decoration.id}
+                    index={index}
+                    currentUser={currentUser}
                     decoration={decoration}
+                    decorations={decorationsByCity}
                     userFavourites={user?.favourites.map(
                       (favourite) => favourite.id
                     )}
-                    addDecorationToFavourites={addDecorationsToFavourites}
-                    removeDecorationFromFavourites={
-                      removeDecorationFromFavourites
-                    }
-                    unFavouriteDecorationLoading={unFavouriteDecorationLoading}
-                    favouriteDecorationLoading={favouriteDecorationLoading}
+                    refetchUserData={refetchUserData}
                   />
                 ))}
               </div>
@@ -169,21 +86,17 @@ export const Home = () => {
             <>
               {decorationsByRating && decorationsByRating.length > 0 ? (
                 <div className="grid grid-cols-1 gap-x-6 gap-y-8 my-8">
-                  {decorationsByRating.map((decoration) => (
+                  {decorationsByRating.map((decoration, index) => (
                     <DecorationCard
                       key={decoration.id}
+                      index={index}
+                      currentUser={currentUser}
                       decoration={decoration}
+                      decorations={decorationsByRating}
                       userFavourites={user?.favourites.map(
                         (favourite) => favourite.id
                       )}
-                      addDecorationToFavourites={addDecorationsToFavourites}
-                      removeDecorationFromFavourites={
-                        removeDecorationFromFavourites
-                      }
-                      unFavouriteDecorationLoading={
-                        unFavouriteDecorationLoading
-                      }
-                      favouriteDecorationLoading={favouriteDecorationLoading}
+                      refetchUserData={refetchUserData}
                     />
                   ))}
                 </div>
@@ -232,19 +145,17 @@ export const Home = () => {
           <div className="px-32 overflow-y-auto py-24">
             {decorationsByCity && decorationsByCity.length > 0 ? (
               <div className="grid grid-cols-6 gap-x-10 gap-y-10 my-8">
-                {decorationsByCity.map((decoration) => (
+                {decorationsByCity.map((decoration, index) => (
                   <DecorationCard
                     key={decoration.id}
+                    index={index}
+                    currentUser={currentUser}
                     decoration={decoration}
+                    decorations={decorationsByCity}
                     userFavourites={user?.favourites.map(
                       (favourite) => favourite.id
                     )}
-                    addDecorationToFavourites={addDecorationsToFavourites}
-                    removeDecorationFromFavourites={
-                      removeDecorationFromFavourites
-                    }
-                    unFavouriteDecorationLoading={unFavouriteDecorationLoading}
-                    favouriteDecorationLoading={favouriteDecorationLoading}
+                    refetchUserData={refetchUserData}
                   />
                 ))}
               </div>
@@ -252,21 +163,17 @@ export const Home = () => {
             <>
               {decorationsByRating && decorationsByRating.length > 0 ? (
                 <div className="grid grid-cols-6 gap-x-6 gap-y-10 my-8">
-                  {decorationsByRating.map((decoration) => (
+                  {decorationsByRating.map((decoration, index) => (
                     <DecorationCard
                       key={decoration.id}
+                      index={index}
+                      currentUser={currentUser}
                       decoration={decoration}
+                      decorations={decorationsByRating}
                       userFavourites={user?.favourites.map(
                         (favourite) => favourite.id
                       )}
-                      addDecorationToFavourites={addDecorationsToFavourites}
-                      removeDecorationFromFavourites={
-                        removeDecorationFromFavourites
-                      }
-                      unFavouriteDecorationLoading={
-                        unFavouriteDecorationLoading
-                      }
-                      favouriteDecorationLoading={favouriteDecorationLoading}
+                      refetchUserData={refetchUserData}
                     />
                   ))}
                 </div>

@@ -1,6 +1,19 @@
+import { useState } from "react";
+import { useMutation } from "@apollo/client";
+import {
+  FAVOURITE_DECORATION,
+  UNFAVOURITE_DECORATION,
+} from "@/graphql/mutations";
+import {
+  FavouriteDecoration as FavouriteDecorationData,
+  FavouriteDecorationArgs,
+} from "@/graphql/mutations/favouriteDecoration/types";
+import {
+  UnfavouriteDecoration as UnFavouriteDecorationData,
+  UnfavouriteDecorationArgs,
+} from "@/graphql/mutations/unfavouriteDecoration/types";
 import { Get_Decorations_By_City } from "@/graphql/queries/getDecorationsByCity/types";
 import { DecorationImage } from "@/lib/types";
-import { NetworkStatus } from "@apollo/client";
 import {
   ArrowUpRight,
   CaretLeft,
@@ -9,33 +22,115 @@ import {
   Heart,
   Star,
 } from "@phosphor-icons/react";
-import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { useToast } from "../ui/use-toast";
+import { User } from "firebase/auth";
+import { ToastAction } from "../ui/toast";
+import { Get_Decorations_By_Rating } from "@/graphql/queries/getDecorationsByRating/types";
 
 interface Props {
+  index: number;
+  currentUser: User | null | undefined;
   decoration: Get_Decorations_By_City;
+  decorations: Get_Decorations_By_City[] | Get_Decorations_By_Rating[];
   userFavourites: string[] | undefined;
-  addDecorationToFavourites: (decorationId: string) => void;
-  removeDecorationFromFavourites: (decorationId: string) => void;
-  unFavouriteDecorationLoading: boolean;
-  favouriteDecorationLoading: boolean;
+  refetchUserData: () => void;
 }
 
 export const DecorationCard = ({
+  index,
+  currentUser,
   decoration,
+  decorations,
   userFavourites,
-  addDecorationToFavourites,
-  removeDecorationFromFavourites,
-  unFavouriteDecorationLoading,
-  favouriteDecorationLoading,
+  refetchUserData,
 }: Props) => {
   const navigate = useNavigate();
+  const { toast } = useToast();
   const [showRightArrow, setShowRightArrow] = useState<boolean>(false);
   const [showLeftArrow, setShowLeftArrow] = useState<boolean>(false);
   const [currentImage, setCurrentImage] = useState<DecorationImage>(
     decoration.images[0]
   );
   const [currentIndex, setCurrentIndex] = useState<number>(0);
+  const [currentDecorationIndex, setCurrentDecorationIndex] =
+    useState<number>(0);
+
+  //MUTATIONS
+  const [favouriteDecoration, { loading: favouriteDecorationLoading }] =
+    useMutation<FavouriteDecorationData, FavouriteDecorationArgs>(
+      FAVOURITE_DECORATION,
+      {
+        onCompleted: () => {
+          toast({
+            variant: "success",
+            title: "Success 🎉",
+            description: "Decoration added to favourites ❤️",
+          });
+          refetchUserData();
+        },
+        onError() {
+          toast({
+            variant: "destructive",
+            title: "Success 🎉",
+            description:
+              "Failed to add decoration to favourites. Please Try again.",
+          });
+        },
+      }
+    );
+
+  const [unFavouriteDecoration, { loading: unFavouriteDecorationLoading }] =
+    useMutation<UnFavouriteDecorationData, UnfavouriteDecorationArgs>(
+      UNFAVOURITE_DECORATION,
+      {
+        onCompleted: () => {
+          toast({
+            variant: "success",
+            title: "Success 🎉",
+            description: "Decoration removed from favourites ❤️",
+          });
+          refetchUserData();
+        },
+        onError() {
+          toast({
+            variant: "destructive",
+            title: "Success 🎉",
+            description:
+              "Failed to remove decoration to favourites. Please Try again.",
+          });
+        },
+      }
+    );
+
+  const addDecorationToFavourites = (decorationId: string) => {
+    if (currentUser) {
+      const decorationIndex = decorations.findIndex(
+        (decoration) => decoration.id === decorationId
+      );
+      setCurrentDecorationIndex(decorationIndex);
+      favouriteDecoration({ variables: { input: { id: decorationId } } });
+    } else {
+      toast({
+        variant: "default",
+        title: "Not currently signed in.",
+        description: "Create an account to like decorations.",
+        action: (
+          <ToastAction altText="Sign Up" onClick={() => navigate("/signin")}>
+            Sign Up
+          </ToastAction>
+        ),
+      });
+    }
+  };
+
+  const removeDecorationFromFavourites = (decorationId: string) => {
+    const decorationIndex = decorations.findIndex(
+      (decoration) => decoration.id === decorationId
+    );
+    setCurrentDecorationIndex(decorationIndex);
+    unFavouriteDecoration({ variables: { input: { id: decorationId } } });
+  };
 
   const nextImage = () => {
     const currentImageIndex = decoration.images.indexOf(currentImage);
@@ -95,7 +190,8 @@ export const DecorationCard = ({
           <div className="absolute inset-0 flex items-start justify-end p-2 z-10">
             {userFavourites?.includes(decoration.id) ? (
               <>
-                {unFavouriteDecorationLoading ? (
+                {unFavouriteDecorationLoading &&
+                currentDecorationIndex === index ? (
                   <CircleNotch
                     size={32}
                     weight="bold"
@@ -117,7 +213,8 @@ export const DecorationCard = ({
               </>
             ) : (
               <>
-                {favouriteDecorationLoading ? (
+                {favouriteDecorationLoading &&
+                currentDecorationIndex === index ? (
                   <CircleNotch
                     size={32}
                     weight="bold"
@@ -223,7 +320,8 @@ export const DecorationCard = ({
           <div className="absolute inset-0 flex items-start justify-end p-2">
             {userFavourites?.includes(decoration.id) ? (
               <>
-                {unFavouriteDecorationLoading ? (
+                {unFavouriteDecorationLoading &&
+                currentDecorationIndex === index ? (
                   <CircleNotch
                     size={32}
                     weight="bold"
@@ -245,7 +343,8 @@ export const DecorationCard = ({
               </>
             ) : (
               <>
-                {favouriteDecorationLoading ? (
+                {favouriteDecorationLoading &&
+                currentDecorationIndex === index ? (
                   <CircleNotch
                     size={32}
                     weight="bold"

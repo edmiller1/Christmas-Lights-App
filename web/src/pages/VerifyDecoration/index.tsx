@@ -190,8 +190,8 @@ export const VerifyDecoration = () => {
       </div>
 
       {/* Desktop */}
-      <div className="hidden sm:block sm:h-full">
-        <div className="flex items-center space-x-40 mx-96 my-24">
+      <div className="hidden sm:block sm:min-h-screen">
+        <div className="flex items-center space-x-40 mx-96 py-24">
           <div className="w-1/2">
             <h1 className="text-3xl font-semibold pb-5">Verify Decoration</h1>
             <Separator />
@@ -239,7 +239,7 @@ export const VerifyDecoration = () => {
               alt="Christmas decoration"
               className="w-64 h-64 object-cover rounded-tr-lg rounded-tl-lg"
             />
-            <div className="flex flex-col items-start border-gray-400 border-b border-r border-l rounded-bl-lg rounded-br-lg w-64 px-3 py-3">
+            <div className="flex flex-col items-start border-gray-400 dark:border-black border-b border-r border-l rounded-bl-lg rounded-br-lg w-64 px-3 py-3">
               <span className="font-semibold">{decoration?.name}</span>
               <span className="text-xs">{decoration?.address}</span>
             </div>

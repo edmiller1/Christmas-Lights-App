@@ -18,6 +18,7 @@ import { ArrowLeft, CircleNotch } from "@phosphor-icons/react";
 import { Link } from "react-router-dom";
 import { useState } from "react";
 import { useToast } from "@/components/ui/use-toast";
+import { useUserData } from "@/lib/hooks";
 
 const formSchema = z.object({
   email: z.string().email({ message: "Input must be a valid email address" }),
@@ -27,6 +28,7 @@ const formSchema = z.object({
 });
 
 export const Login = () => {
+  const currentUser = useUserData();
   const navigate = useNavigate();
   const { toast } = useToast();
   const [loginLoading, setLoginLoading] = useState<boolean>(false);
@@ -43,12 +45,13 @@ export const Login = () => {
     setLoginLoading(true);
     await auth
       .signInWithEmailAndPassword(email, password)
-      .then(() => {
+      .then((res) => {
         toast({
           variant: "success",
           title: "Success 🎉",
           description: "Logged in successfully!",
         });
+        sessionStorage.setItem("token", res.user!.refreshToken);
         setTimeout(() => {
           setLoginLoading(false);
           navigate("/admin");

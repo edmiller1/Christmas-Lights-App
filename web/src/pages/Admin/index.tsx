@@ -28,6 +28,7 @@ export const Admin = () => {
           title: "Success 🎉",
           description: "Signed out successfully!",
         });
+        sessionStorage.removeItem("token");
         setTimeout(() => {
           setLogoutLoading(false);
           redirect("/admin");

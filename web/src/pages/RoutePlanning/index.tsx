@@ -158,7 +158,6 @@ export const RoutePlanning = () => {
   };
 
   const handleScroll = (decorationId: string, index: number) => {
-    console.log(refs);
     refs[decorationId].current.scrollIntoView({
       behavior: "smooth",
       block: "start",
@@ -174,7 +173,7 @@ export const RoutePlanning = () => {
   ) => {
     mapRef.current?.flyTo({
       center: [decoration.longitude, decoration.latitude],
-      zoom: 14,
+      zoom: 12,
       duration: 2000,
     });
     setActiveDecoration(decoration);

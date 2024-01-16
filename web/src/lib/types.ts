@@ -48,3 +48,11 @@ export interface Notification {
   created_at: string;
   user_id: string;
 }
+
+export interface ViewState {
+  latitude: string | number | null;
+  longitude: string | number | null;
+  zoom: number;
+  bearing: number;
+  pitch: number;
+}

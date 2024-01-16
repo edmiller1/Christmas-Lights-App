@@ -50,6 +50,8 @@ module.exports = {
         "ch-pink": "#FF647F",
         "ch-light": "#ffffff",
         "ch-dark": "#202023",
+        "ch-green": "#1acd81",
+        "ch-green-hover": "#3acd89",
       },
     },
   },

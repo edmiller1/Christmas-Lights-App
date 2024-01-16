@@ -50,6 +50,9 @@ export const MenuItems = ({ user, signOut }: Props) => {
           <DropdownMenuItem onClick={() => navigate("/profile")}>
             Profile
           </DropdownMenuItem>
+          <DropdownMenuItem onClick={() => navigate("/route-planning")}>
+            Route Planning
+          </DropdownMenuItem>
           <DropdownMenuItem onClick={() => navigate("/profile/decorations")}>
             Decorations
           </DropdownMenuItem>

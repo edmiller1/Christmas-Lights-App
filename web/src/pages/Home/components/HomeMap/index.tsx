@@ -22,13 +22,11 @@ import {
 } from "@/graphql/queries/getDecorationsViaRegion/types";
 import Map, {
   GeolocateControl,
-  Layer,
   MapRef,
   Marker,
   NavigationControl,
   Popup,
 } from "react-map-gl";
-import { Decoration } from "@/lib/types";
 import { Circle, Heart, Star, X } from "@phosphor-icons/react";
 import { CustomMarker, PopupCard } from "./components";
 import { Link } from "react-router-dom";

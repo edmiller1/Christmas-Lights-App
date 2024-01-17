@@ -45,7 +45,7 @@ export const SignIn = () => {
           sessionStorage.setItem("token", data.signIn.token);
         }
         setTimeout(() => {
-          navigate("/");
+          navigate(-1);
         }, 3000);
       } else {
         sessionStorage.removeItem("token");

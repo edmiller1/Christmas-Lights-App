@@ -1,11 +1,15 @@
 import React, { useEffect, useRef, useState } from "react";
-import { useLazyQuery, useQuery } from "@apollo/client";
+import { useLazyQuery, useMutation, useQuery } from "@apollo/client";
 import {
   GET_DECORATIONS_VIA_CITY,
   GET_DECORATIONS_VIA_COUNTRY,
   GET_DECORATIONS_VIA_REGION,
   GET_USER,
 } from "@/graphql/queries";
+import {
+  FAVOURITE_DECORATION,
+  UNFAVOURITE_DECORATION,
+} from "@/graphql/mutations";
 import {
   GetDecorationsViaCity as GetDecorationsViaCityData,
   GetDecorationsViaCityArgs,
@@ -25,18 +29,25 @@ import {
   GetUser as GetUserData,
   GetUserArgs,
 } from "@/graphql/queries/getUser/types";
-import { redirect, useNavigate } from "react-router-dom";
+import {
+  FavouriteDecoration as FavouriteDecorationData,
+  FavouriteDecorationArgs,
+} from "@/graphql/mutations/favouriteDecoration/types";
+import {
+  UnfavouriteDecoration as UnfavouriteDecorationData,
+  UnfavouriteDecorationArgs,
+} from "@/graphql/mutations/unfavouriteDecoration/types";
+import { Link, redirect, useNavigate } from "react-router-dom";
 import {
   CaretLeft,
   ClockCounterClockwise,
   Heart,
   MapPin,
   MapTrifold,
-  Star,
-  X,
+  UserCircle,
 } from "@phosphor-icons/react";
-import { RouteMap, SecondaryNav } from "./components";
-import { MenuItems } from "@/components/AppHeader/components";
+import { DecorationPopup, RouteMap, SecondaryNav } from "./components";
+import { MenuItems, ThemeToggle } from "@/components/AppHeader/components";
 import { useUserData } from "@/lib/hooks";
 import { auth } from "@/lib/firebase";
 import { useToast } from "@/components/ui/use-toast";
@@ -48,8 +59,13 @@ import {
 } from "@/components/ui/tooltip";
 import { ViewState } from "@/lib/types";
 import { MapRef } from "react-map-gl";
-import { Button } from "@/components/ui/button";
-import { motion } from "framer-motion";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { ToastAction } from "@/components/ui/toast";
 
 function classNames(...classes: any) {
   return classes.filter(Boolean).join(" ");
@@ -93,10 +109,11 @@ export const RoutePlanning = () => {
     return acc;
   }, {});
 
-  const { data: getUserData, loading: getUserLoading } = useQuery<
-    GetUserData,
-    GetUserArgs
-  >(GET_USER, {
+  const {
+    data: getUserData,
+    loading: getUserLoading,
+    refetch: refetchUser,
+  } = useQuery<GetUserData, GetUserArgs>(GET_USER, {
     variables: { input: { id: currentUser?.uid ? currentUser.uid : "" } },
   });
 
@@ -131,6 +148,86 @@ export const RoutePlanning = () => {
         },
       }
     );
+
+  const [favouriteDecoration, { loading: favouriteDecorationLoading }] =
+    useMutation<FavouriteDecorationData, FavouriteDecorationArgs>(
+      FAVOURITE_DECORATION,
+      {
+        onCompleted: () => {
+          refetchUser();
+          toast({
+            variant: "success",
+            title: "Success 🎉",
+            description: "Decoration added to favourites",
+          });
+        },
+        onError: () => {
+          toast({
+            variant: "destructive",
+            title: "Error 😬",
+            description:
+              "Failed to add decoration to favourites. Please try again.",
+          });
+        },
+      }
+    );
+
+  const [unFavouriteDecoration, { loading: unFavouriteDecorationLoading }] =
+    useMutation<UnfavouriteDecorationData, UnfavouriteDecorationArgs>(
+      UNFAVOURITE_DECORATION,
+      {
+        onCompleted: () => {
+          refetchUser();
+          toast({
+            variant: "success",
+            title: "Success 🎉",
+            description: "Decoration removed from favourites",
+          });
+        },
+        onError: () => {
+          toast({
+            variant: "destructive",
+            title: "Error 😬",
+            description:
+              "Failed to remove decoration to favourites. Please try again.",
+          });
+        },
+      }
+    );
+
+  const addDecorationToFavourites = (decorationId: string) => {
+    if (!currentUser) {
+      toast({
+        variant: "default",
+        title: "Not currently signed in.",
+        description: "Create an account to like decorations.",
+        action: (
+          <ToastAction altText="Sign Up" onClick={() => navigate("/signin")}>
+            Sign Up
+          </ToastAction>
+        ),
+      });
+    } else {
+      favouriteDecoration({ variables: { input: { id: decorationId } } });
+    }
+  };
+
+  const removeDecorationFromFavourites = (decorationId: string) => {
+    if (!currentUser) {
+      toast({
+        variant: "default",
+        title: "Not currently signed in.",
+        description: "Create an account to like decorations.",
+        action: (
+          <ToastAction altText="Sign Up" onClick={() => navigate("/signin")}>
+            Sign Up
+          </ToastAction>
+        ),
+      });
+    } else {
+      unFavouriteDecoration({ variables: { input: { id: decorationId } } });
+    }
+  };
 
   const signOut = async () => {
     await auth
@@ -349,6 +446,7 @@ export const RoutePlanning = () => {
           getDecorationsViaRegionLoading={getDecorationsViaRegionLoading}
           handleDecorationSelect={handleDecorationSelect}
           refs={refs}
+          userFavourites={user?.favourites}
         />
 
         {/* Main column */}
@@ -369,74 +467,36 @@ export const RoutePlanning = () => {
           />
         </main>
         <div className="absolute top-5 right-16 z-50 cursor-pointer">
-          <MenuItems signOut={signOut} user={user} />
+          {currentUser ? (
+            <MenuItems signOut={signOut} user={user} />
+          ) : (
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <UserCircle
+                  size={40}
+                  weight="fill"
+                  className="cursor-pointer text-ch-dark"
+                />
+              </DropdownMenuTrigger>
+              <DropdownMenuContent className="mt-1 w-56" align="end" forceMount>
+                <ThemeToggle />
+                <Link to="/signin">
+                  <DropdownMenuItem>Log in / Sign up</DropdownMenuItem>
+                </Link>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          )}
         </div>
         {activeDecoration ? (
-          <motion.div
-            initial={{ y: 30 }}
-            animate={{ y: 0 }}
-            transition={{
-              type: "spring",
-              damping: 30,
-              stiffness: 300,
-            }}
-            className="absolute bottom-10 right-2 w-72 rounded-xl bg-white text-black p-2"
-          >
-            <div className="flex items-center justify-between py-1 px-2">
-              <span className="font-semibold">{activeDecoration.name}</span>
-              <button
-                className="p-1 rounded-full hover:bg-gray-400/40"
-                onClick={() => setActiveDecoration(undefined)}
-              >
-                <X size={16} weight="bold" className="text-gray-600" />
-              </button>
-            </div>
-            <img
-              src={activeDecoration.images[0].url}
-              alt="Christmas Decoration"
-              className="rounded-2xl w-full h-48 object-cover object-center p-2"
-            />
-            <div className="flex flex-col space-y-3 bg-gray-100 rounded-xl p-2 mx-2">
-              <div className="flex items-center text-xs space-x-2">
-                <MapPin size={16} className="text-gray-800" />
-                <span>
-                  {activeDecoration.city}, {activeDecoration.country}
-                </span>
-              </div>
-              <div className="flex items-center text-xs space-x-2">
-                <Star size={16} className="text-gray-800" />
-                <span>{activeDecoration.rating.toFixed(1)}</span>
-              </div>
-            </div>
-            <div className="flex items-center space-x-3 mx-2 my-2">
-              <TooltipProvider>
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <Button
-                      variant="outline"
-                      className="w-1/5 dark:bg-gray-200 dark:border-none dark:hover:bg-gray-300"
-                    >
-                      <Heart
-                        size={32}
-                        weight="bold"
-                        className="text-gray-400"
-                      />
-                    </Button>
-                  </TooltipTrigger>
-                  <TooltipContent>
-                    <span>Add to favourites</span>
-                  </TooltipContent>
-                </Tooltip>
-              </TooltipProvider>
-
-              <Button
-                variant="default"
-                className="w-4/5 dark:bg-ch-green dark:hover:bg-ch-green-hover"
-              >
-                Add to route
-              </Button>
-            </div>
-          </motion.div>
+          <DecorationPopup
+            activeDecoration={activeDecoration}
+            setActiveDecoration={setActiveDecoration}
+            userFavourites={user?.favourites.map((decoration) => decoration.id)}
+            addDecorationToFavourites={addDecorationToFavourites}
+            removeDecorationFromFavourites={removeDecorationFromFavourites}
+            favouriteDecorationLoading={favouriteDecorationLoading}
+            unFavouriteDecorationLoading={unFavouriteDecorationLoading}
+          />
         ) : null}
       </div>
     </>

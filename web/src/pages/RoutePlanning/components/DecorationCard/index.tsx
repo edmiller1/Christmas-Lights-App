@@ -1,6 +1,7 @@
 import { Get_Decorations_Via_City } from "@/graphql/queries/getDecorationsViaCity/types";
 import { Get_Decorations_Via_Country } from "@/graphql/queries/getDecorationsViaCountry/types";
 import { Get_Decorations_Via_Region } from "@/graphql/queries/getDecorationsViaRegion/types";
+import { Decoration } from "@/lib/types";
 import { Heart, Star } from "@phosphor-icons/react";
 
 interface Props {
@@ -31,6 +32,7 @@ interface Props {
     index: number
   ) => void;
   refs: any;
+  userFavourites: string[] | undefined;
 }
 
 export const DecorationCard = ({
@@ -42,12 +44,8 @@ export const DecorationCard = ({
   index,
   handleDecorationSelect,
   refs,
+  userFavourites,
 }: Props) => {
-  const onDecorationSelect = () => {
-    setActiveDecoration(decoration);
-    setActiveDecorationIndex(index);
-  };
-
   return (
     <div
       ref={refs[decoration.id]}
@@ -81,11 +79,15 @@ export const DecorationCard = ({
       </div>
       <div className="flex flex-col justify-between">
         <div className="flex items-start justify-end px-3 py-2">
-          <Heart
-            size={16}
-            weight="bold"
-            className="text-ch-dark dark:text-ch-light"
-          />
+          {userFavourites?.includes(decoration.id) ? (
+            <Heart size={16} weight="fill" className="text-ch-pink" />
+          ) : (
+            <Heart
+              size={16}
+              weight="bold"
+              className="text-ch-dark dark:text-ch-light"
+            />
+          )}
         </div>
         <div className="flex items-end justify-end text-xs space-x-2 px-3 py-2">
           <Star

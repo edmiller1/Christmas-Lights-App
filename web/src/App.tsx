@@ -47,11 +47,11 @@ function App() {
     getCoords();
   }, []);
 
-  // useEffect(() => {
-  //   if (!user) {
-  //     sessionStorage.removeItem("token");
-  //   }
-  // }, [user]);
+  useEffect(() => {
+    if (!currentUser || !user) {
+      sessionStorage.removeItem("token");
+    }
+  }, [currentUser]);
 
   return (
     <UserContext.Provider value={currentUser}>

@@ -135,7 +135,7 @@ export const Home = () => {
       </div>
 
       {/* Desktop */}
-      <div className="hidden sm:block">
+      <div className="hidden sm:block min-h-screen">
         {showMap ? (
           <HomeMap
             setMapLoading={setMapLoading}

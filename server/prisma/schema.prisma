@@ -33,6 +33,7 @@ model User {
   notifications Notification[]
   ratings Rating[]
   reports Report[]
+  routes Route[]
 }
 
 model Decoration {
@@ -63,6 +64,8 @@ model Decoration {
   views View[] 
   reports Report[]
   verification Verification?
+  route Route? @relation(fields: [route_id], references: [id])
+  route_id String
 }
 
 model DecorationImage {
@@ -121,4 +124,13 @@ model Verification {
   created_At DateTime @default(now())
   decoration Decoration @relation(fields: [decoration_id], references: [id])
   decoration_id String @unique
+}
+
+model Route {
+  id String @id @default(cuid())
+  name String
+  decorations Decoration[] @relation()
+  user User @relation(fields: [user_id], references: [id])
+  user_id String
+  created_at DateTime @default(now())
 }

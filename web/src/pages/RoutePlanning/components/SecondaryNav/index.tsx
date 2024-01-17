@@ -5,6 +5,7 @@ import { Get_Decorations_Via_Country } from "@/graphql/queries/getDecorationsVia
 import { Get_Decorations_Via_Region } from "@/graphql/queries/getDecorationsViaRegion/types";
 import { FadersHorizontal, Warning } from "@phosphor-icons/react";
 import { DecorationCard, DecorationsLoading } from "..";
+import { Decoration } from "@/lib/types";
 
 interface Props {
   selectedIcon: string;
@@ -38,6 +39,7 @@ interface Props {
     index: number
   ) => void;
   refs: any;
+  userFavourites: Decoration[] | undefined;
 }
 
 export const SecondaryNav = ({
@@ -52,6 +54,7 @@ export const SecondaryNav = ({
   getDecorationsViaRegionLoading,
   handleDecorationSelect,
   refs,
+  userFavourites,
 }: Props) => {
   if (selectedIcon === "route-planning") {
     return (
@@ -150,6 +153,9 @@ export const SecondaryNav = ({
                 setActiveDecorationIndex={setActiveDecorationIndex}
                 index={index}
                 handleDecorationSelect={handleDecorationSelect}
+                userFavourites={userFavourites?.map(
+                  (decoration) => decoration.id
+                )}
               />
             ))}
           </div>

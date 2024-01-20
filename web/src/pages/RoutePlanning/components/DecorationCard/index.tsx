@@ -8,27 +8,21 @@ interface Props {
   decoration:
     | Get_Decorations_Via_City
     | Get_Decorations_Via_Region
-    | Get_Decorations_Via_Country;
+    | Get_Decorations_Via_Country
+    | Decoration;
   activeDecoration:
     | Get_Decorations_Via_City
     | Get_Decorations_Via_Region
     | Get_Decorations_Via_Country
+    | Decoration
     | undefined;
-  setActiveDecoration: (
-    decoration:
-      | Get_Decorations_Via_City
-      | Get_Decorations_Via_Region
-      | Get_Decorations_Via_Country
-      | undefined
-  ) => void;
-  activeDecorationIndex: number;
-  setActiveDecorationIndex: (activeDecorationIndex: number) => void;
   index: number;
   handleDecorationSelect: (
     decoration:
       | Get_Decorations_Via_City
       | Get_Decorations_Via_Country
-      | Get_Decorations_Via_Region,
+      | Get_Decorations_Via_Region
+      | Decoration,
     index: number
   ) => void;
   refs: any;
@@ -38,9 +32,6 @@ interface Props {
 export const DecorationCard = ({
   decoration,
   activeDecoration,
-  activeDecorationIndex,
-  setActiveDecoration,
-  setActiveDecorationIndex,
   index,
   handleDecorationSelect,
   refs,

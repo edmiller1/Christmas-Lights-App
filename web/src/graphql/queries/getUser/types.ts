@@ -1,4 +1,4 @@
-import { Decoration, Notification, Rating } from "@/lib/types";
+import { Decoration, Rating, Route } from "@/lib/types";
 
 export interface Get_User {
   __typename: "User";
@@ -13,6 +13,7 @@ export interface Get_User {
   decorations: Decoration[];
   favourites: Decoration[];
   history: Decoration[];
+  routes: Route[];
   notifications_on_app_verification: boolean;
   notifications_on_app_rating: boolean;
   notifications_by_email_verification: boolean;

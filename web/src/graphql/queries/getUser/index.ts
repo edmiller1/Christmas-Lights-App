@@ -30,6 +30,8 @@ export const GET_USER = gql`
         city
         country
         rating
+        latitude
+        longitude
         images {
           id
           url
@@ -41,6 +43,8 @@ export const GET_USER = gql`
         city
         country
         rating
+        latitude
+        longitude
         images {
           id
           url
@@ -50,6 +54,23 @@ export const GET_USER = gql`
       notifications_on_app_rating
       notifications_by_email_verification
       notifications_by_email_rating
+      routes {
+        id
+        name
+        decorations {
+          id
+          name
+          city
+          country
+          latitude
+          longitude
+          rating
+          images {
+            id
+            url
+          }
+        }
+      }
     }
   }
 `;

@@ -42,6 +42,15 @@ export const userResolvers = {
                 images: true,
               },
             },
+            routes: {
+              include: {
+                decorations: {
+                  include: {
+                    images: true,
+                  },
+                },
+              },
+            },
           },
         });
 
@@ -137,16 +146,7 @@ export const userResolvers = {
               id: input.result.uid,
             },
           });
-          // user = await prisma.user.update({
-          //   where: {
-          //     id: input.result.uid,
-          //   },
-          //   data: {
-          //     token: input.result.accessToken,
-          //   },
-          // });
         }
-
         return user;
       } catch (error) {
         throw new Error(`${error}`);

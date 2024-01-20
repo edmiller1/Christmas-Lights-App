@@ -65,7 +65,7 @@ model Decoration {
   reports Report[]
   verification Verification?
   route Route? @relation(fields: [route_id], references: [id])
-  route_id String
+  route_id String?
 }
 
 model DecorationImage {

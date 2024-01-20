@@ -57,7 +57,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { ViewState } from "@/lib/types";
+import { Decoration, ViewState } from "@/lib/types";
 import { MapRef } from "react-map-gl";
 import {
   DropdownMenu,
@@ -101,6 +101,7 @@ export const RoutePlanning = () => {
     | Get_Decorations_Via_City
     | Get_Decorations_Via_Country
     | Get_Decorations_Via_Region
+    | Decoration
   >();
   const [activeDecorationIndex, setActiveDecorationIndex] = useState<number>(0);
 
@@ -265,7 +266,8 @@ export const RoutePlanning = () => {
     decoration:
       | Get_Decorations_Via_City
       | Get_Decorations_Via_Country
-      | Get_Decorations_Via_Region,
+      | Get_Decorations_Via_Region
+      | Decoration,
     index: number
   ) => {
     mapRef.current?.flyTo({
@@ -447,6 +449,10 @@ export const RoutePlanning = () => {
           handleDecorationSelect={handleDecorationSelect}
           refs={refs}
           userFavourites={user?.favourites}
+          userRoutes={user?.routes}
+          getUserLoading={getUserLoading}
+          currentUser={currentUser}
+          userHistory={user?.history}
         />
 
         {/* Main column */}
@@ -496,6 +502,8 @@ export const RoutePlanning = () => {
             removeDecorationFromFavourites={removeDecorationFromFavourites}
             favouriteDecorationLoading={favouriteDecorationLoading}
             unFavouriteDecorationLoading={unFavouriteDecorationLoading}
+            userRoutes={user?.routes}
+            currentUser={currentUser}
           />
         ) : null}
       </div>

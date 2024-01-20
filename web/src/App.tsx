@@ -48,7 +48,7 @@ function App() {
   }, []);
 
   useEffect(() => {
-    if (!currentUser || !user) {
+    if (!currentUser) {
       sessionStorage.removeItem("token");
     }
   }, [currentUser]);

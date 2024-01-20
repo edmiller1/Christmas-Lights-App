@@ -1,7 +1,7 @@
 import { Get_Decorations_Via_City } from "@/graphql/queries/getDecorationsViaCity/types";
 import { Get_Decorations_Via_Country } from "@/graphql/queries/getDecorationsViaCountry/types";
 import { Get_Decorations_Via_Region } from "@/graphql/queries/getDecorationsViaRegion/types";
-import { ViewState } from "@/lib/types";
+import { Decoration, ViewState } from "@/lib/types";
 import { CustomMarker } from "@/pages/Home/components/HomeMap/components";
 import { Circle } from "@phosphor-icons/react";
 import { MutableRefObject, useEffect, useRef } from "react";
@@ -25,12 +25,14 @@ interface Props {
     | Get_Decorations_Via_City
     | Get_Decorations_Via_Country
     | Get_Decorations_Via_Region
+    | Decoration
     | undefined;
   setActiveDecoration: (
     activeDecoration:
       | Get_Decorations_Via_City
       | Get_Decorations_Via_Country
       | Get_Decorations_Via_Region
+      | Decoration
       | undefined
   ) => void;
   activeDecorationIndex: number;

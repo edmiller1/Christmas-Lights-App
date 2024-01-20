@@ -56,3 +56,11 @@ export interface ViewState {
   bearing: number;
   pitch: number;
 }
+
+export interface Route {
+  id: string;
+  name: string;
+  decorations: Decoration[];
+  created_at: string;
+  user_id: string;
+}

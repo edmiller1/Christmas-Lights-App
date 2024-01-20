@@ -21,6 +21,7 @@ export const typeDefs = gql`
     history: [Decoration!]
     ratings: [Rating!]
     notifications: [Notification]!
+    routes: [Route!]
   }
 
   type Decoration {
@@ -96,6 +97,14 @@ export const typeDefs = gql`
     archived: Boolean
     decoration: Decoration!
     decoration_id: String!
+  }
+
+  type Route {
+    id: String!
+    name: String!
+    decorations: [Decoration!]
+    created_at: String!
+    user_id: String!
   }
 
   #input

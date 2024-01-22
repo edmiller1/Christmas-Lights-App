@@ -40,6 +40,7 @@ interface Props {
   unFavouriteDecorationLoading: boolean;
   userRoutes: Route[] | undefined;
   currentUser: User | null | undefined;
+  setIsCreateRouteOpen: (isCreateRouteOpen: boolean) => void;
 }
 
 export const DecorationPopup = ({
@@ -52,6 +53,7 @@ export const DecorationPopup = ({
   unFavouriteDecorationLoading,
   userRoutes,
   currentUser,
+  setIsCreateRouteOpen,
 }: Props) => {
   const { toast } = useToast();
   const navigate = useNavigate();
@@ -160,7 +162,9 @@ export const DecorationPopup = ({
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent className="w-48 absolute bottom-12 -right-24">
-              <DropdownMenuItem>New Route</DropdownMenuItem>
+              <DropdownMenuItem onClick={() => setIsCreateRouteOpen(true)}>
+                New Route
+              </DropdownMenuItem>
               <DropdownMenuSeparator />
               {userRoutes?.map((route, index) => (
                 <>

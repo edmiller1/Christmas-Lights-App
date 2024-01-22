@@ -1,6 +1,7 @@
 export * from "./addDecorationToHistory";
 export * from "./addView";
 export * from "./createDecoration";
+export * from "./createRoute";
 export * from "./createUser";
 export * from "./deleteAllNotifications";
 export * from "./deleteNotification";

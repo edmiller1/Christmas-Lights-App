@@ -8,6 +8,7 @@ import {
 } from "@/graphql/queries";
 import {
   FAVOURITE_DECORATION,
+  CREATE_ROUTE,
   UNFAVOURITE_DECORATION,
 } from "@/graphql/mutations";
 import {
@@ -37,6 +38,10 @@ import {
   UnfavouriteDecoration as UnfavouriteDecorationData,
   UnfavouriteDecorationArgs,
 } from "@/graphql/mutations/unfavouriteDecoration/types";
+import {
+  CreateRoute as CreateRouteData,
+  CreateRouteArgs,
+} from "@/graphql/mutations/createRoute/types";
 import { Link, redirect, useNavigate } from "react-router-dom";
 import {
   CaretLeft,
@@ -46,7 +51,12 @@ import {
   MapTrifold,
   UserCircle,
 } from "@phosphor-icons/react";
-import { DecorationPopup, RouteMap, SecondaryNav } from "./components";
+import {
+  CreateRouteModal,
+  DecorationPopup,
+  RouteMap,
+  SecondaryNav,
+} from "./components";
 import { MenuItems, ThemeToggle } from "@/components/AppHeader/components";
 import { useUserData } from "@/lib/hooks";
 import { auth } from "@/lib/firebase";
@@ -89,6 +99,8 @@ export const RoutePlanning = () => {
   const navigate = useNavigate();
   const mapRef = useRef<MapRef>();
 
+  const [isCreateRouteOpen, setIsCreateRouteOpen] = useState<boolean>(false);
+  const [isCancelOpen, setIsCancelOpen] = useState<boolean>(false);
   const [selectedIcon, setSelectedIcon] = useState<string>("map");
   const [decorations, setDecorations] = useState<
     | Get_Decorations_Via_City[]
@@ -196,6 +208,39 @@ export const RoutePlanning = () => {
       }
     );
 
+  const [createRoute, { loading: createRouteLoading }] = useMutation<
+    CreateRouteData,
+    CreateRouteArgs
+  >(CREATE_ROUTE, {
+    onCompleted: () => {
+      setIsCreateRouteOpen(false);
+      refetchUser();
+      toast({
+        variant: "success",
+        title: "Success 🎉",
+        description: "Created a new route",
+      });
+    },
+    onError: () => {
+      toast({
+        variant: "destructive",
+        title: "Error 😬",
+        description: "Failed to create a new route. Please try again.",
+      });
+    },
+  });
+
+  const createNewRoute = (name: string, decorationId: string | undefined) => {
+    createRoute({
+      variables: {
+        input: {
+          name: name,
+          decorationId: decorationId ? decorationId : undefined,
+        },
+      },
+    });
+  };
+
   const addDecorationToFavourites = (decorationId: string) => {
     if (!currentUser) {
       toast({
@@ -277,6 +322,11 @@ export const RoutePlanning = () => {
     });
     setActiveDecoration(decoration);
     setActiveDecorationIndex(index);
+  };
+
+  const discardRoute = () => {
+    setIsCancelOpen(false);
+    setIsCreateRouteOpen(false);
   };
 
   useEffect(() => {
@@ -504,8 +554,18 @@ export const RoutePlanning = () => {
             unFavouriteDecorationLoading={unFavouriteDecorationLoading}
             userRoutes={user?.routes}
             currentUser={currentUser}
+            setIsCreateRouteOpen={setIsCreateRouteOpen}
           />
         ) : null}
+        <CreateRouteModal
+          isCreateRouteOpen={isCreateRouteOpen}
+          isCancelOpen={isCancelOpen}
+          setIsCancelOpen={setIsCancelOpen}
+          discardRoute={discardRoute}
+          createNewRoute={createNewRoute}
+          activeDecoration={activeDecoration}
+          createRouteLoading={createRouteLoading}
+        />
       </div>
     </>
   );

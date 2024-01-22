@@ -248,6 +248,11 @@ export const typeDefs = gql`
     longitude: String!
   }
 
+  input CreateRouteInput {
+    name: String!
+    decorationId: String
+  }
+
   #Queries
   type Query {
     # App Queries
@@ -301,5 +306,7 @@ export const typeDefs = gql`
     markAllNotificationsAsRead: User!
     deleteAllNotifications: User!
     deleteNotification(input: MutateNotificationInput!): User!
+    #Routes
+    createRoute(input: CreateRouteInput!): User!
   }
 `;

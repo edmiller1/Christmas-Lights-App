@@ -101,7 +101,7 @@ export const RouteMap = ({
           <Marker
             key={decoration.id}
             style={{
-              zIndex: activeDecorationIndex === index ? 98 : "unset",
+              zIndex: activeDecorationIndex === index ? 49 : "unset",
             }}
             longitude={decoration.longitude}
             latitude={decoration.latitude}

@@ -503,6 +503,7 @@ export const RoutePlanning = () => {
           getUserLoading={getUserLoading}
           currentUser={currentUser}
           userHistory={user?.history}
+          setIsCreateRouteOpen={setIsCreateRouteOpen}
         />
 
         {/* Main column */}

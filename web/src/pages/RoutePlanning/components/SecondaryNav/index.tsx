@@ -45,6 +45,7 @@ interface Props {
   getUserLoading: boolean;
   currentUser: User | null | undefined;
   userHistory: Decoration[] | undefined;
+  setIsCreateRouteOpen: (isCreateRouteOpen: boolean) => void;
 }
 
 export const SecondaryNav = ({
@@ -64,6 +65,7 @@ export const SecondaryNav = ({
   getUserLoading,
   currentUser,
   userHistory,
+  setIsCreateRouteOpen,
 }: Props) => {
   if (selectedIcon === "route-planning") {
     return (
@@ -71,6 +73,8 @@ export const SecondaryNav = ({
         userRoutes={userRoutes}
         getUserLoading={getUserLoading}
         currentUser={currentUser}
+        setIsCreateRouteOpen={setIsCreateRouteOpen}
+        userFavourites={userFavourites}
       />
     );
   } else if (selectedIcon === "favourites") {

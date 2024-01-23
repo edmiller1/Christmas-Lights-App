@@ -6,6 +6,7 @@ export * from "./DecorationsNav";
 export * from "./FavouriteButton";
 export * from "./FavouritesNav";
 export * from "./HistoryNav";
+export * from "./RouteCard";
 export * from "./RouteMap";
 export * from "./RoutesNav";
 export * from "./SecondaryNav";

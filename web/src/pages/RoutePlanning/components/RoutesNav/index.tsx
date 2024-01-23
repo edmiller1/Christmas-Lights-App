@@ -5,7 +5,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { Route } from "@/lib/types";
+import { Decoration, Route } from "@/lib/types";
 import { Plus } from "@phosphor-icons/react";
 import { Button } from "@/components/ui/button";
 import { RoutesLoading } from "./components";
@@ -13,17 +13,22 @@ import { User } from "firebase/auth";
 import { useToast } from "@/components/ui/use-toast";
 import { ToastAction } from "@/components/ui/toast";
 import { useNavigate } from "react-router-dom";
+import { RouteCard } from "..";
 
 interface Props {
   userRoutes: Route[] | undefined;
   getUserLoading: boolean;
   currentUser: User | null | undefined;
+  setIsCreateRouteOpen: (isCreateRouteOpen: boolean) => void;
+  userFavourites: Decoration[] | undefined;
 }
 
 export const RoutesNav = ({
   currentUser,
   getUserLoading,
   userRoutes,
+  setIsCreateRouteOpen,
+  userFavourites,
 }: Props) => {
   const { toast } = useToast();
   const navigate = useNavigate();
@@ -45,6 +50,8 @@ export const RoutesNav = ({
           </ToastAction>
         ),
       });
+    } else {
+      setIsCreateRouteOpen(true);
     }
   };
 
@@ -112,7 +119,34 @@ export const RoutesNav = ({
           </Tooltip>
         </TooltipProvider>
       </div>
-      <div className="mt-44"></div>
+      <div>
+        {selectedRoute && selectedRoute.decorations.length === 0 ? (
+          <div className="p-5 flex justify-center items-center text-center flex-col text-ch-red">
+            <span className="mt-3 text-lg">This route has no decorations.</span>
+            <span>
+              Add decorations to get started with planning your route.
+            </span>
+          </div>
+        ) : selectedRoute ? (
+          <>
+            {selectedRoute.decorations.map((decoration) => (
+              <div className="p-5">
+                <RouteCard
+                  decoration={decoration}
+                  userFavourites={userFavourites?.map(
+                    (decoration) => decoration.id
+                  )}
+                />
+              </div>
+            ))}
+          </>
+        ) : (
+          <div className="p-5 flex justify-center items-center text-center flex-col text-ch-red">
+            <span className="mt-3 text-lg">No route selected.</span>
+            <span>Select a route to get started.</span>
+          </div>
+        )}
+      </div>
     </aside>
   );
 };

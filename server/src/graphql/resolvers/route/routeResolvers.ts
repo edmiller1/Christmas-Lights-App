@@ -1,8 +1,12 @@
 import { Request, Response } from "express";
 import { prisma } from "../../../database";
 import { authorise } from "../../../lib/helpers";
-import { CreateRouteArgs } from "./types";
-import { User } from "@prisma/client";
+import {
+  AddDecorationToRouteArgs,
+  CreateRouteArgs,
+  RemoveDecorationFromRouteArgs,
+} from "./types";
+import { Decoration, User } from "@prisma/client";
 
 export const routeResolvers = {
   Query: {},
@@ -39,6 +43,76 @@ export const routeResolvers = {
             },
           });
         }
+
+        return user;
+      } catch (error) {
+        throw new Error(`${error}`);
+      }
+    },
+    addDecorationToRoute: async (
+      _root: undefined,
+      { input }: AddDecorationToRouteArgs,
+      { _, req, res }: { _: undefined; req: Request; res: Response }
+    ): Promise<User> => {
+      try {
+        const user = await authorise(req);
+
+        if (!user) {
+          throw new Error("user cannot be found");
+        }
+
+        const userDecorations = user.routes.map((item) => item.decorations);
+
+        const exists = userDecorations[0].some(
+          (decoration) => decoration.id === input.decorationId
+        );
+
+        if (exists) {
+          throw new Error("Decoration already exists in route");
+        } else {
+          await prisma.route.update({
+            where: {
+              id: input.routeId,
+            },
+            data: {
+              decorations: {
+                connect: {
+                  id: input.decorationId,
+                },
+              },
+            },
+          });
+        }
+
+        return user;
+      } catch (error) {
+        throw new Error(`${error}`);
+      }
+    },
+    removeDecorationFromRoute: async (
+      _root: undefined,
+      { input }: RemoveDecorationFromRouteArgs,
+      { _, req, res }: { _: undefined; req: Request; res: Response }
+    ): Promise<User> => {
+      try {
+        const user = await authorise(req);
+
+        if (!user) {
+          throw new Error("User cannot be found");
+        }
+
+        await prisma.route.update({
+          where: {
+            id: input.routeId,
+          },
+          data: {
+            decorations: {
+              disconnect: {
+                id: input.decorationId,
+              },
+            },
+          },
+        });
 
         return user;
       } catch (error) {

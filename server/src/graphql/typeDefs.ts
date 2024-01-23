@@ -253,6 +253,16 @@ export const typeDefs = gql`
     decorationId: String
   }
 
+  input AddDecorationToRouteInput {
+    routeId: String!
+    decorationId: String!
+  }
+
+  input RemoveDecorationFromRouteInput {
+    routeId: String!
+    decorationId: String!
+  }
+
   #Queries
   type Query {
     # App Queries
@@ -308,5 +318,7 @@ export const typeDefs = gql`
     deleteNotification(input: MutateNotificationInput!): User!
     #Routes
     createRoute(input: CreateRouteInput!): User!
+    addDecorationToRoute(input: AddDecorationToRouteInput!): User!
+    removeDecorationFromRoute(input: RemoveDecorationFromRouteInput!): User!
   }
 `;

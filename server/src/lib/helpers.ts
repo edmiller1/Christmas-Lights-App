@@ -9,6 +9,11 @@ export const authorise = async (req: Request) => {
     },
     include: {
       history: true,
+      routes: {
+        include: {
+          decorations: true,
+        },
+      },
     },
   });
   return user;

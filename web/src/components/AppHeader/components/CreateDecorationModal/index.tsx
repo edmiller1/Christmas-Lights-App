@@ -291,7 +291,7 @@ export const CreateDecorationModal = ({
     setCurrentImage(imagesArray[imagesArray.length - 1]);
   };
 
-  const removeImage = async (id: string | undefined) => {
+  const removeImage = (id: string | undefined) => {
     const imagesCopy = [...images];
     const filesCopy = [...files];
     const selectedIndex = images.findIndex((image) => image.id === id);

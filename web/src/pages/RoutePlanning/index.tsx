@@ -7,8 +7,11 @@ import {
   GET_USER,
 } from "@/graphql/queries";
 import {
-  FAVOURITE_DECORATION,
+  ADD_DECORATION_TO_ROUTE,
   CREATE_ROUTE,
+  DELETE_ROUTE,
+  FAVOURITE_DECORATION,
+  REMOVE_DECORATION_FROM_ROUTE,
   UNFAVOURITE_DECORATION,
 } from "@/graphql/mutations";
 import {
@@ -42,6 +45,18 @@ import {
   CreateRoute as CreateRouteData,
   CreateRouteArgs,
 } from "@/graphql/mutations/createRoute/types";
+import {
+  AddDecorationToRoute as AddDecorationToRouteData,
+  AddDecorationToRouteArgs,
+} from "@/graphql/mutations/addDecorationToRoute/types";
+import {
+  DeleteRoute as DeleteRouteData,
+  DeleteRouteArgs,
+} from "@/graphql/mutations/deleteRoute/types";
+import {
+  RemoveDecorationFromRoute as RemoveDecorationFromRouteData,
+  RemoveDecorationfromRouteArgs,
+} from "@/graphql/mutations/removeDecorationFromRoute/types";
 import { Link, redirect, useNavigate } from "react-router-dom";
 import {
   CaretLeft,
@@ -54,6 +69,8 @@ import {
 import {
   CreateRouteModal,
   DecorationPopup,
+  DeleteRouteModal,
+  RemoveDecorationModal,
   RouteMap,
   SecondaryNav,
 } from "./components";
@@ -99,7 +116,10 @@ export const RoutePlanning = () => {
   const navigate = useNavigate();
   const mapRef = useRef<MapRef>();
 
+  const [isDeleteRouteOpen, setIsDeleteRouteOpen] = useState<boolean>(false);
   const [isCreateRouteOpen, setIsCreateRouteOpen] = useState<boolean>(false);
+  const [isRemoveDecorationOpen, setIsRemoveDecorationOpen] =
+    useState<boolean>(false);
   const [isCancelOpen, setIsCancelOpen] = useState<boolean>(false);
   const [selectedIcon, setSelectedIcon] = useState<string>("map");
   const [decorations, setDecorations] = useState<
@@ -116,6 +136,10 @@ export const RoutePlanning = () => {
     | Decoration
   >();
   const [activeDecorationIndex, setActiveDecorationIndex] = useState<number>(0);
+  const [routeToDelete, setRouteToDelete] = useState<string>("");
+  const [isEditing, setIsEditing] = useState<boolean>(false);
+  const [decorationToRemove, setDecorationToRemove] = useState<string>("");
+  const [removalRoute, setRemovalRoute] = useState<string>("");
 
   const refs = decorations?.reduce((acc: any, value: any) => {
     acc[value.id] = React.createRef();
@@ -230,6 +254,107 @@ export const RoutePlanning = () => {
     },
   });
 
+  const [addDecorationToRoute, { loading: addDecorationToRouteLoading }] =
+    useMutation<AddDecorationToRouteData, AddDecorationToRouteArgs>(
+      ADD_DECORATION_TO_ROUTE,
+      {
+        onCompleted: () => {
+          refetchUser();
+          toast({
+            variant: "success",
+            title: "Success 🎉",
+            description: "Decoration added to route.",
+          });
+        },
+        onError: () => {
+          toast({
+            variant: "destructive",
+            title: "Error 😬",
+            description: "Failed to add decoration to route. Please try again.",
+          });
+        },
+      }
+    );
+
+  const [deleteRoute, { loading: deleteRouteLoading }] = useMutation<
+    DeleteRouteData,
+    DeleteRouteArgs
+  >(DELETE_ROUTE, {
+    onCompleted: () => {
+      setIsDeleteRouteOpen(false);
+      setIsEditing(false);
+      refetchUser();
+      toast({
+        variant: "success",
+        title: "Success 🎉",
+        description: "Route deleted successfully",
+      });
+    },
+    onError: () => {
+      toast({
+        variant: "destructive",
+        title: "Error 😬",
+        description: "Failed to delete route. Please try again.",
+      });
+    },
+  });
+
+  const [
+    removeDecorationFromRoute,
+    { loading: removeDecorationFromRouteLoading },
+  ] = useMutation<RemoveDecorationFromRouteData, RemoveDecorationfromRouteArgs>(
+    REMOVE_DECORATION_FROM_ROUTE,
+    {
+      onCompleted: () => {
+        refetchUser();
+        setIsRemoveDecorationOpen(false);
+        toast({
+          variant: "success",
+          title: "Success 🎉",
+          description: "Decoration removed from route.",
+        });
+      },
+      onError: () => {
+        toast({
+          variant: "destructive",
+          title: "Error 😬",
+          description:
+            "Failed to remove decoration from route. Please try again.",
+        });
+      },
+    }
+  );
+
+  const addDecorationToARoute = (routeId: string, decorationId: string) => {
+    addDecorationToRoute({
+      variables: { input: { decorationId: decorationId, routeId: routeId } },
+    });
+  };
+
+  const deleteARoute = (routeId: string) => {
+    deleteRoute({ variables: { input: { routeId: routeId } } });
+  };
+
+  const openDeleteRouteModal = (routeId: string) => {
+    setRouteToDelete(routeId);
+    setIsDeleteRouteOpen(true);
+  };
+
+  const removeDecorationFromARoute = (
+    routeId: string,
+    decorationId: string
+  ) => {
+    removeDecorationFromRoute({
+      variables: { input: { decorationId: decorationId, routeId: routeId } },
+    });
+  };
+
+  const openRemoveDecorationModal = (decorationId: string, routeId: string) => {
+    setDecorationToRemove(decorationId);
+    setRemovalRoute(routeId);
+    setIsRemoveDecorationOpen(true);
+  };
+
   const createNewRoute = (name: string, decorationId: string | undefined) => {
     createRoute({
       variables: {
@@ -300,7 +425,7 @@ export const RoutePlanning = () => {
     setSelectedIcon(icon);
   };
 
-  const handleScroll = (decorationId: string, index: number) => {
+  const handleScroll = (decorationId: string) => {
     refs[decorationId].current.scrollIntoView({
       behavior: "smooth",
       block: "start",
@@ -504,6 +629,10 @@ export const RoutePlanning = () => {
           currentUser={currentUser}
           userHistory={user?.history}
           setIsCreateRouteOpen={setIsCreateRouteOpen}
+          openDeleteRouteModal={openDeleteRouteModal}
+          isEditing={isEditing}
+          setIsEditing={setIsEditing}
+          openRemoveDecorationModal={openRemoveDecorationModal}
         />
 
         {/* Main column */}
@@ -556,6 +685,8 @@ export const RoutePlanning = () => {
             userRoutes={user?.routes}
             currentUser={currentUser}
             setIsCreateRouteOpen={setIsCreateRouteOpen}
+            addDecorationToARoute={addDecorationToARoute}
+            addDecorationToRouteLoading={addDecorationToRouteLoading}
           />
         ) : null}
         <CreateRouteModal
@@ -566,6 +697,23 @@ export const RoutePlanning = () => {
           createNewRoute={createNewRoute}
           activeDecoration={activeDecoration}
           createRouteLoading={createRouteLoading}
+        />
+        <DeleteRouteModal
+          isDeleteRouteOpen={isDeleteRouteOpen}
+          setIsDeleteRouteOpen={setIsDeleteRouteOpen}
+          deleteARoute={deleteARoute}
+          routeToDelete={routeToDelete}
+          deleteRouteLoading={deleteRouteLoading}
+          isEditing={isEditing}
+          setIsEditing={setIsEditing}
+        />
+        <RemoveDecorationModal
+          decorationToRemove={decorationToRemove}
+          removalRoute={removalRoute}
+          isRemoveDecorationOpen={isRemoveDecorationOpen}
+          setIsRemoveDecorationOpen={setIsRemoveDecorationOpen}
+          removeDecorationFromARoute={removeDecorationFromARoute}
+          removeDecorationFromRouteLoading={removeDecorationFromRouteLoading}
         />
       </div>
     </>

@@ -18,3 +18,9 @@ export interface RemoveDecorationFromRouteArgs {
     decorationId: string;
   };
 }
+
+export interface DeleteRouteArgs {
+  input: {
+    routeId: string;
+  };
+}

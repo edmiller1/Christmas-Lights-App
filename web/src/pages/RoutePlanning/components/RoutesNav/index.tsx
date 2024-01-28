@@ -6,7 +6,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { Decoration, Route } from "@/lib/types";
-import { Plus } from "@phosphor-icons/react";
+import { Plus, X } from "@phosphor-icons/react";
 import { Button } from "@/components/ui/button";
 import { RoutesLoading } from "./components";
 import { User } from "firebase/auth";
@@ -21,6 +21,10 @@ interface Props {
   currentUser: User | null | undefined;
   setIsCreateRouteOpen: (isCreateRouteOpen: boolean) => void;
   userFavourites: Decoration[] | undefined;
+  openDeleteRouteModal: (routeId: string) => void;
+  isEditing: boolean;
+  setIsEditing: (isEditing: boolean) => void;
+  openRemoveDecorationModal: (decorationId: string, routeId: string) => void;
 }
 
 export const RoutesNav = ({
@@ -29,6 +33,10 @@ export const RoutesNav = ({
   userRoutes,
   setIsCreateRouteOpen,
   userFavourites,
+  openDeleteRouteModal,
+  isEditing,
+  setIsEditing,
+  openRemoveDecorationModal,
 }: Props) => {
   const { toast } = useToast();
   const navigate = useNavigate();
@@ -62,7 +70,24 @@ export const RoutesNav = ({
   return (
     <aside className="fixed bottom-0 left-20 top-0 w-96 overflow-y-auto border-r dark:border-black">
       <div className="bg-zinc-800 p-8 dark:border-b dark:border-black">
-        <h1 className="text-xl font-semibold">Routes</h1>
+        <div className="flex items-center justify-between">
+          <h1 className="text-xl font-semibold">Routes</h1>
+          {isEditing ? (
+            <button
+              className="mt-1 text-xs text-ch-red hover:underline"
+              onClick={() => setIsEditing(false)}
+            >
+              Cancel
+            </button>
+          ) : (
+            <button
+              className="mt-1 text-xs text-ch-red hover:underline"
+              onClick={() => setIsEditing(true)}
+            >
+              Edit
+            </button>
+          )}
+        </div>
         <div className="grid grid-cols-4 gap-x-4 gap-y-5 my-5">
           {userRoutes &&
             userRoutes.map((route) => (
@@ -73,11 +98,26 @@ export const RoutesNav = ({
                       variant="outline"
                       className={`${
                         selectedRoute && selectedRoute.id === route.id
-                          ? "border cursor-pointer dark:bg-zinc-900 dark:border-black dark:hover:bg-zinc-900/70 ring-2 ring-ch-green"
-                          : "border cursor-pointer dark:bg-zinc-900 dark:border-black dark:hover:bg-zinc-900/70"
+                          ? "border relative cursor-pointer dark:bg-zinc-900 dark:border-black dark:hover:bg-zinc-900/70 ring-2 ring-ch-green"
+                          : "border relative cursor-pointer dark:bg-zinc-900 dark:border-black dark:hover:bg-zinc-900/70"
                       }`}
-                      onClick={() => handleSelectRoute(route)}
+                      onClick={
+                        !isEditing ? () => handleSelectRoute(route) : () => {}
+                      }
                     >
+                      {isEditing ? (
+                        <button
+                          className="absolute flex items-center justify-center w-5 h-5 rounded-full -top-2 -right-2 dark:bg-zinc-900 dark:hover:bg-zinc-700"
+                          onClick={() => {
+                            openDeleteRouteModal(route.id);
+                          }}
+                        >
+                          <X
+                            size={8}
+                            className="text-ch-dark dark:text-ch-light"
+                          />
+                        </button>
+                      ) : null}
                       {route.decorations.length > 0 ? (
                         <img
                           src={route.decorations[0].images[0].url}
@@ -120,7 +160,14 @@ export const RoutesNav = ({
         </TooltipProvider>
       </div>
       <div>
-        {selectedRoute && selectedRoute.decorations.length === 0 ? (
+        {!currentUser ? (
+          <div className="p-5 flex justify-center items-center text-center flex-col text-ch-red">
+            <span className="mt-3 text-lg">
+              You must have an account to create routes.
+            </span>
+            <span>Login or signup to continue</span>
+          </div>
+        ) : selectedRoute && selectedRoute.decorations.length === 0 ? (
           <div className="p-5 flex justify-center items-center text-center flex-col text-ch-red">
             <span className="mt-3 text-lg">This route has no decorations.</span>
             <span>
@@ -130,12 +177,14 @@ export const RoutesNav = ({
         ) : selectedRoute ? (
           <>
             {selectedRoute.decorations.map((decoration) => (
-              <div className="p-5">
+              <div className="px-5 py-3">
                 <RouteCard
                   decoration={decoration}
                   userFavourites={userFavourites?.map(
                     (decoration) => decoration.id
                   )}
+                  openRemoveDecorationModal={openRemoveDecorationModal}
+                  selectedRoute={selectedRoute}
                 />
               </div>
             ))}

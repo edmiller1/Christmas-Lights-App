@@ -4,6 +4,7 @@ import { authorise } from "../../../lib/helpers";
 import {
   AddDecorationToRouteArgs,
   CreateRouteArgs,
+  DeleteRouteArgs,
   RemoveDecorationFromRouteArgs,
 } from "./types";
 import { Decoration, User } from "@prisma/client";
@@ -111,6 +112,29 @@ export const routeResolvers = {
                 id: input.decorationId,
               },
             },
+          },
+        });
+
+        return user;
+      } catch (error) {
+        throw new Error(`${error}`);
+      }
+    },
+    deleteRoute: async (
+      _root: undefined,
+      { input }: DeleteRouteArgs,
+      { _, req, res }: { _: undefined; req: Request; res: Response }
+    ): Promise<User> => {
+      try {
+        const user = await authorise(req);
+
+        if (!user) {
+          throw new Error("User cannot be found");
+        }
+
+        await prisma.route.delete({
+          where: {
+            id: input.routeId,
           },
         });
 

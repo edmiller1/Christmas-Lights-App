@@ -2,7 +2,7 @@ import { motion } from "framer-motion";
 import { Get_Decorations_Via_City } from "@/graphql/queries/getDecorationsViaCity/types";
 import { Get_Decorations_Via_Country } from "@/graphql/queries/getDecorationsViaCountry/types";
 import { Get_Decorations_Via_Region } from "@/graphql/queries/getDecorationsViaRegion/types";
-import { CaretDown, MapPin, Star, X } from "@phosphor-icons/react";
+import { CaretDown, CircleNotch, MapPin, Star, X } from "@phosphor-icons/react";
 import { Button } from "@/components/ui/button";
 import { FavouriteButton } from "..";
 import { useState } from "react";
@@ -41,6 +41,8 @@ interface Props {
   userRoutes: Route[] | undefined;
   currentUser: User | null | undefined;
   setIsCreateRouteOpen: (isCreateRouteOpen: boolean) => void;
+  addDecorationToARoute: (routeId: string, decorationId: string) => void;
+  addDecorationToRouteLoading: boolean;
 }
 
 export const DecorationPopup = ({
@@ -54,6 +56,8 @@ export const DecorationPopup = ({
   userRoutes,
   currentUser,
   setIsCreateRouteOpen,
+  addDecorationToARoute,
+  addDecorationToRouteLoading,
 }: Props) => {
   const { toast } = useToast();
   const navigate = useNavigate();
@@ -148,17 +152,28 @@ export const DecorationPopup = ({
                 className="w-4/5 dark:bg-ch-green dark:hover:bg-ch-green-hover"
                 onClick={() => setRotate(!rotate)}
               >
-                Add to route
-                <CaretDown
-                  size={16}
-                  weight="bold"
-                  color="#FFFFFF"
-                  className={`${
-                    rotate
-                      ? "ml-2 rotate-180 transition-all duration-300"
-                      : "ml-2 rotate-0 transition-all duration-300"
-                  }`}
-                />
+                {addDecorationToRouteLoading ? (
+                  <CircleNotch
+                    size={24}
+                    weight="bold"
+                    color="#FFFFFF"
+                    className="animate-spin"
+                  />
+                ) : (
+                  <>
+                    Add to route
+                    <CaretDown
+                      size={16}
+                      weight="bold"
+                      color="#FFFFFF"
+                      className={`${
+                        rotate
+                          ? "ml-2 rotate-180 transition-all duration-300"
+                          : "ml-2 rotate-0 transition-all duration-300"
+                      }`}
+                    />
+                  </>
+                )}
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent className="w-48 absolute bottom-12 -right-24">
@@ -168,7 +183,13 @@ export const DecorationPopup = ({
               <DropdownMenuSeparator />
               {userRoutes?.map((route, index) => (
                 <>
-                  <DropdownMenuItem>{route.name}</DropdownMenuItem>
+                  <DropdownMenuItem
+                    onClick={() =>
+                      addDecorationToARoute(route.id, activeDecoration.id)
+                    }
+                  >
+                    {route.name}
+                  </DropdownMenuItem>
                   {index !== userRoutes.length - 1 ? (
                     <DropdownMenuSeparator />
                   ) : null}

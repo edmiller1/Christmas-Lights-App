@@ -46,6 +46,10 @@ interface Props {
   currentUser: User | null | undefined;
   userHistory: Decoration[] | undefined;
   setIsCreateRouteOpen: (isCreateRouteOpen: boolean) => void;
+  openDeleteRouteModal: (routeId: string) => void;
+  isEditing: boolean;
+  setIsEditing: (isEditing: boolean) => void;
+  openRemoveDecorationModal: (decorationId: string, routeId: string) => void;
 }
 
 export const SecondaryNav = ({
@@ -66,6 +70,10 @@ export const SecondaryNav = ({
   currentUser,
   userHistory,
   setIsCreateRouteOpen,
+  openDeleteRouteModal,
+  isEditing,
+  setIsEditing,
+  openRemoveDecorationModal,
 }: Props) => {
   if (selectedIcon === "route-planning") {
     return (
@@ -75,6 +83,10 @@ export const SecondaryNav = ({
         currentUser={currentUser}
         setIsCreateRouteOpen={setIsCreateRouteOpen}
         userFavourites={userFavourites}
+        openDeleteRouteModal={openDeleteRouteModal}
+        isEditing={isEditing}
+        setIsEditing={setIsEditing}
+        openRemoveDecorationModal={openRemoveDecorationModal}
       />
     );
   } else if (selectedIcon === "favourites") {

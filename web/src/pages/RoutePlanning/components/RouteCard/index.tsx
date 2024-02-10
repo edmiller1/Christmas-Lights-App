@@ -2,21 +2,34 @@ import { Decoration, Route } from "@/lib/types";
 import { DotsSixVertical, Heart, Star } from "@phosphor-icons/react";
 
 interface Props {
+  index: number;
   decoration: Decoration;
-  userFavourites: string[] | undefined;
   openRemoveDecorationModal: (decorationId: string, routeId: string) => void;
   selectedRoute: Route;
+  handleSortRoute: () => void;
+  dragDecoration: React.MutableRefObject<number>;
+  draggedOverDecoration: React.MutableRefObject<number>;
 }
 
 export const RouteCard = ({
+  index,
   decoration,
-  userFavourites,
   openRemoveDecorationModal,
   selectedRoute,
+  handleSortRoute,
+  dragDecoration,
+  draggedOverDecoration,
 }: Props) => {
   return (
     <>
-      <div className="flex rounded-lg h-20 border dark:bg-zinc-800 dark:border-zinc-500">
+      <div
+        className="flex rounded-lg h-20 border cursor-grab dark:bg-zinc-800 dark:border-zinc-500"
+        draggable
+        onDragStart={() => (dragDecoration.current = index)}
+        onDragEnter={() => (draggedOverDecoration.current = index)}
+        onDragEnd={handleSortRoute}
+        onDragOver={(e) => e.preventDefault()}
+      >
         <div className="w-1/3">
           <img
             src={decoration.images[0].url}
@@ -40,7 +53,7 @@ export const RouteCard = ({
             Remove
           </button>
         </div>
-        <div className="flex justify-center items-center pr-5 cursor-grab">
+        <div className="flex justify-center items-center pr-5">
           <DotsSixVertical
             size={20}
             weight="bold"

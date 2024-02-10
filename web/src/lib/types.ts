@@ -1,3 +1,5 @@
+import { before } from "node:test";
+
 export interface Decoration {
   id: string;
   name: string;
@@ -63,4 +65,23 @@ export interface Route {
   decorations: Decoration[];
   created_at: string;
   user_id: string;
+}
+
+export interface Step {
+  distance: number;
+  driving_side: string;
+  duration: number;
+  geometry: any;
+  maneuver: Maneuver;
+  mode: string;
+  name: string;
+  weight: number;
+}
+
+export interface Maneuver {
+  bearing_after: number;
+  bearing_before: number;
+  instruction: string;
+  location: number[];
+  type: string;
 }

@@ -11,6 +11,7 @@
   },
   "dependencies": {
     "@apollo/client": "^3.8.5",
+    "@danmarshall/deckgl-typings": "^3.5.0",
     "@headlessui/react": "^1.7.17",
     "@hookform/resolvers": "^3.3.2",
     "@phosphor-icons/react": "^2.0.13",
@@ -31,6 +32,7 @@
     "@types/mapbox-gl": "^2.7.19",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.0.0",
+    "deck.gl": "^8.9.34",
     "firebase": "^10.7.1",
     "framer-motion": "^10.16.4",
     "lucide-react": "^0.286.0",

@@ -3,14 +3,15 @@ import { Get_Decorations_Via_Country } from "@/graphql/queries/getDecorationsVia
 import { Get_Decorations_Via_Region } from "@/graphql/queries/getDecorationsViaRegion/types";
 import { Decoration, ViewState } from "@/lib/types";
 import { CustomMarker } from "@/pages/Home/components/HomeMap/components";
-import { Circle } from "@phosphor-icons/react";
-import { MutableRefObject, useEffect, useRef } from "react";
+import { ChatCentered, Circle, NavigationArrow } from "@phosphor-icons/react";
+import { MutableRefObject } from "react";
 import Map, {
   GeolocateControl,
+  Layer,
   MapRef,
   Marker,
   NavigationControl,
-  Popup,
+  Source,
 } from "react-map-gl";
 
 interface Props {
@@ -42,6 +43,13 @@ interface Props {
   getDecorationsViaRegionLoading: boolean;
   mapRef: MutableRefObject<MapRef | undefined>;
   handleScroll: (decorationId: string, index: number) => void;
+  currentlyOnRoute: boolean;
+  routeLayer: any;
+  routeGeoJson: {
+    type: string;
+    coordinates: number[][];
+  } | null;
+  routeDecorations: Decoration[] | null;
 }
 
 export const RouteMap = ({
@@ -57,6 +65,10 @@ export const RouteMap = ({
   getDecorationsViaRegionLoading,
   mapRef,
   handleScroll,
+  currentlyOnRoute,
+  routeLayer,
+  routeGeoJson,
+  routeDecorations,
 }: Props) => {
   return (
     <Map
@@ -67,8 +79,35 @@ export const RouteMap = ({
       mapboxAccessToken={import.meta.env.VITE_MAPBOX_API_KEY}
       onMove={(e) => setViewState(e.viewState)}
       onZoom={(e) => setViewState(e.viewState)}
-      maxZoom={13.5}
     >
+      {currentlyOnRoute ? (
+        <>
+          <Source id="currentRoute" type="geojson" data={routeGeoJson as any}>
+            <Layer {...routeLayer}></Layer>
+          </Source>
+          <Marker
+            longitude={Number(localStorage.getItem("longitude"))}
+            latitude={Number(localStorage.getItem("latitude"))}
+          >
+            <Circle size={28} weight="fill" color="#28a177" />
+          </Marker>
+          {routeDecorations?.map((decoration, index) => (
+            <Marker
+              key={decoration.id}
+              longitude={decoration.longitude}
+              latitude={decoration.latitude}
+            >
+              <div className="relative">
+                <ChatCentered size={48} weight="fill" color="#28a177" />
+                <span className="absolute top-2 left-[1.15rem] font-bold text-xl">
+                  {index + 1}
+                </span>
+              </div>
+            </Marker>
+          ))}
+        </>
+      ) : null}
+
       {getDecorationsViaCountryLoading ||
       getDecorationsViaRegionLoading ||
       getDecorationsViaCityLoading ? (
@@ -96,28 +135,29 @@ export const RouteMap = ({
         </div>
       ) : null}
 
-      {decorations?.map((decoration, index: number) => (
-        <>
-          <Marker
-            key={decoration.id}
-            style={{
-              zIndex: activeDecorationIndex === index ? 49 : "unset",
-            }}
-            longitude={decoration.longitude}
-            latitude={decoration.latitude}
-            onClick={() => handleScroll(decoration.id, index)}
-          >
-            <CustomMarker
-              activeDecoration={activeDecoration}
-              activeDecorationIndex={activeDecorationIndex}
-              decoration={decoration}
-              index={index}
-              setActiveDecoration={setActiveDecoration}
-              setActiveDecorationIndex={setActiveDecorationIndex}
-            />
-          </Marker>
-        </>
-      ))}
+      {!currentlyOnRoute &&
+        decorations?.map((decoration, index: number) => (
+          <>
+            <Marker
+              key={decoration.id}
+              style={{
+                zIndex: activeDecorationIndex === index ? 49 : "unset",
+              }}
+              longitude={decoration.longitude}
+              latitude={decoration.latitude}
+              onClick={() => handleScroll(decoration.id, index)}
+            >
+              <CustomMarker
+                activeDecoration={activeDecoration}
+                activeDecorationIndex={activeDecorationIndex}
+                decoration={decoration}
+                index={index}
+                setActiveDecoration={setActiveDecoration}
+                setActiveDecorationIndex={setActiveDecorationIndex}
+              />
+            </Marker>
+          </>
+        ))}
 
       <NavigationControl />
       <GeolocateControl />

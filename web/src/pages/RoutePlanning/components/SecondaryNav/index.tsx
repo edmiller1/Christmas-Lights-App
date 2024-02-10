@@ -50,6 +50,19 @@ interface Props {
   isEditing: boolean;
   setIsEditing: (isEditing: boolean) => void;
   openRemoveDecorationModal: (decorationId: string, routeId: string) => void;
+  getRouteData: (coordinates: number[][] | undefined) => void;
+  routeDuration: number;
+  routeDistance: number;
+  startRoute: () => void;
+  dragDecoration: React.MutableRefObject<number>;
+  draggedOverDecoration: React.MutableRefObject<number>;
+  handleSortRoute: () => void;
+  selectedRoute: Route | null;
+  routeDecorations: Decoration[] | null;
+  handleSelectRoute: (route: Route) => void;
+  fetchRouteError: boolean;
+  currentlyOnRoute: boolean;
+  endRoute: () => void;
 }
 
 export const SecondaryNav = ({
@@ -74,6 +87,19 @@ export const SecondaryNav = ({
   isEditing,
   setIsEditing,
   openRemoveDecorationModal,
+  getRouteData,
+  routeDuration,
+  routeDistance,
+  startRoute,
+  dragDecoration,
+  draggedOverDecoration,
+  handleSortRoute,
+  selectedRoute,
+  routeDecorations,
+  handleSelectRoute,
+  fetchRouteError,
+  currentlyOnRoute,
+  endRoute,
 }: Props) => {
   if (selectedIcon === "route-planning") {
     return (
@@ -82,11 +108,23 @@ export const SecondaryNav = ({
         getUserLoading={getUserLoading}
         currentUser={currentUser}
         setIsCreateRouteOpen={setIsCreateRouteOpen}
-        userFavourites={userFavourites}
         openDeleteRouteModal={openDeleteRouteModal}
         isEditing={isEditing}
         setIsEditing={setIsEditing}
         openRemoveDecorationModal={openRemoveDecorationModal}
+        getRouteData={getRouteData}
+        routeDuration={routeDuration}
+        routeDistance={routeDistance}
+        startRoute={startRoute}
+        dragDecoration={dragDecoration}
+        draggedOverDecoration={draggedOverDecoration}
+        handleSortRoute={handleSortRoute}
+        selectedRoute={selectedRoute}
+        routeDecorations={routeDecorations}
+        handleSelectRoute={handleSelectRoute}
+        fetchRouteError={fetchRouteError}
+        currentlyOnRoute={currentlyOnRoute}
+        endRoute={endRoute}
       />
     );
   } else if (selectedIcon === "favourites") {

@@ -58,33 +58,22 @@ import {
   RemoveDecorationfromRouteArgs,
 } from "@/graphql/mutations/removeDecorationFromRoute/types";
 import { Link, redirect, useNavigate } from "react-router-dom";
-import {
-  CaretLeft,
-  ClockCounterClockwise,
-  Heart,
-  MapPin,
-  MapTrifold,
-  UserCircle,
-} from "@phosphor-icons/react";
+import { UserCircle } from "@phosphor-icons/react";
 import {
   CreateRouteModal,
   DecorationPopup,
   DeleteRouteModal,
   RemoveDecorationModal,
+  RouteDirections,
   RouteMap,
+  RoutePlanningNav,
   SecondaryNav,
 } from "./components";
 import { MenuItems, ThemeToggle } from "@/components/AppHeader/components";
 import { useUserData } from "@/lib/hooks";
 import { auth } from "@/lib/firebase";
 import { useToast } from "@/components/ui/use-toast";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
-import { Decoration, ViewState } from "@/lib/types";
+import { Decoration, Route, Step, ViewState } from "@/lib/types";
 import { MapRef } from "react-map-gl";
 import {
   DropdownMenu,
@@ -94,9 +83,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { ToastAction } from "@/components/ui/toast";
 
-function classNames(...classes: any) {
-  return classes.filter(Boolean).join(" ");
-}
+const mbApiKey = import.meta.env.VITE_MAPBOX_API_KEY;
 
 const initialViewState = {
   latitude: localStorage.getItem("latitude")
@@ -114,7 +101,10 @@ export const RoutePlanning = () => {
   const { toast } = useToast();
   const currentUser = useUserData();
   const navigate = useNavigate();
+
   const mapRef = useRef<MapRef>();
+  const dragDecoration = useRef<number>(0);
+  const draggedOverDecoration = useRef<number>(0);
 
   const [isDeleteRouteOpen, setIsDeleteRouteOpen] = useState<boolean>(false);
   const [isCreateRouteOpen, setIsCreateRouteOpen] = useState<boolean>(false);
@@ -140,6 +130,22 @@ export const RoutePlanning = () => {
   const [isEditing, setIsEditing] = useState<boolean>(false);
   const [decorationToRemove, setDecorationToRemove] = useState<string>("");
   const [removalRoute, setRemovalRoute] = useState<string>("");
+
+  const [selectedRoute, setSelectedRoute] = useState<Route | null>(null);
+  const [routeDecorations, setRouteDecorations] = useState<Decoration[] | null>(
+    null
+  );
+
+  const [currentlyOnRoute, setCurrentlyOnRoute] = useState<boolean>(false);
+  const [routeLayer, setRouteLayer] = useState<any>("");
+  const [routeGeoJson, setRouteGeoJson] = useState<{
+    type: string;
+    coordinates: number[][];
+  } | null>(null);
+  const [routeDistance, setRouteDistance] = useState<number>(0);
+  const [routeDuration, setRouteDuration] = useState<number>(0);
+  const [fetchRouteError, setFetchRouteError] = useState<boolean>(false);
+  const [routeDirections, setRouteDirections] = useState<Step[]>([]);
 
   const refs = decorations?.reduce((acc: any, value: any) => {
     acc[value.id] = React.createRef();
@@ -421,6 +427,22 @@ export const RoutePlanning = () => {
       });
   };
 
+  const handleSelectRoute = (route: Route) => {
+    setSelectedRoute(route);
+    setRouteDecorations(route.decorations);
+  };
+
+  const handleSortRoute = () => {
+    if (routeDecorations) {
+      const routeDecorationsCopy = [...routeDecorations];
+      const temp = routeDecorationsCopy[dragDecoration.current];
+      routeDecorationsCopy[dragDecoration.current] =
+        routeDecorationsCopy[draggedOverDecoration.current];
+      routeDecorationsCopy[draggedOverDecoration.current] = temp;
+      setRouteDecorations(routeDecorationsCopy);
+    }
+  };
+
   const changeRoute = (icon: string) => {
     setSelectedIcon(icon);
   };
@@ -454,9 +476,128 @@ export const RoutePlanning = () => {
     setIsCreateRouteOpen(false);
   };
 
+  const getRouteData = async (coordinates: number[][] | undefined) => {
+    const userLocation = [
+      Number(localStorage.getItem("longitude")),
+      Number(localStorage.getItem("latitude")),
+    ];
+    coordinates!.splice(0, 0, userLocation);
+    console.log(coordinates);
+    const result = coordinates?.map((coord) => coord.join(",")).join(";");
+    const response = await fetch(
+      `https://api.mapbox.com/directions/v5/mapbox/driving/${result}?geometries=geojson&access_token=${mbApiKey}&waypoints_per_route=true&steps=true`
+    );
+    const jsonData = await response.json();
+    console.log(jsonData);
+    if (jsonData.code === "NoRoute") {
+      setFetchRouteError(true);
+      toast({
+        variant: "destructive",
+        title: "Error 😬",
+        description:
+          "No route found for decorations and your current location. Make sure the decorations and your location are in the same area.",
+      });
+    } else {
+      setFetchRouteError(false);
+      const route = jsonData.routes[0];
+      const newRouteLayer = {
+        id: "route",
+        type: "line",
+        source: {
+          type: "geojson",
+          data: route.geometry,
+        },
+        layout: {
+          "line-join": "round",
+          "line-cap": "round",
+        },
+        paint: {
+          "line-color": "#28a177",
+          "line-width": 5,
+          "line-opacity": 0.9,
+        },
+      };
+
+      const steps = jsonData.routes[0].legs.map((leg: any) => leg.steps);
+      const combinedSteps = steps.reduce((result: any, currentArray: any) => {
+        return result.concat(currentArray);
+      }, []);
+      console.log(combinedSteps);
+      setRouteDistance(route.distance);
+      setRouteDuration(route.duration);
+      setRouteLayer(newRouteLayer);
+      setRouteGeoJson(route.geometry);
+      setRouteDirections(combinedSteps);
+    }
+  };
+
+  const startRoute = () => {
+    if (!fetchRouteError) {
+      setCurrentlyOnRoute(true);
+      mapRef.current?.flyTo({
+        center: [
+          Number(localStorage.getItem("longitude")),
+          Number(localStorage.getItem("latitude")),
+        ],
+        zoom: 14,
+        duration: 2000,
+      });
+    }
+  };
+
+  const selectStep = (location: number[]) => {
+    mapRef.current?.flyTo({
+      center: location as any,
+      zoom: 17,
+      duration: 2000,
+    });
+  };
+
+  const endRoute = () => {
+    setCurrentlyOnRoute(false);
+    mapRef.current?.flyTo({
+      center: [
+        localStorage.getItem("longitude")
+          ? Number(localStorage.getItem("longitude"))
+          : 161.016257,
+        localStorage.getItem("latitude")
+          ? Number(localStorage.getItem("latitude"))
+          : -37.715713,
+      ],
+      zoom: 8,
+      duration: 2000,
+    });
+  };
+
+  const getUserCoords = () => {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition((position) => {
+        localStorage.setItem(
+          "latitude",
+          JSON.stringify(position.coords.latitude)
+        );
+        localStorage.setItem(
+          "longitude",
+          JSON.stringify(position.coords.longitude)
+        );
+      });
+    } else {
+      toast({
+        variant: "destructive",
+        title: "Error 😬",
+        description:
+          "Couldn't get your location. Route Planning features requires location services. Please try again.",
+      });
+    }
+  };
+
+  // useEffect(() => {
+  //   getUserCoords();
+  // }, []);
+
   useEffect(() => {
     const getDecorationData = setTimeout(() => {
-      if (viewState && viewState.zoom <= 6) {
+      if (viewState && viewState.zoom <= 6 && !currentlyOnRoute) {
         getDecorationsViaCountry({
           variables: {
             input: {
@@ -465,7 +606,12 @@ export const RoutePlanning = () => {
             },
           },
         });
-      } else if (viewState && viewState.zoom > 6 && viewState.zoom <= 10) {
+      } else if (
+        viewState &&
+        viewState.zoom > 6 &&
+        viewState.zoom <= 10 &&
+        !currentlyOnRoute
+      ) {
         getDecorationsViaRegion({
           variables: {
             input: {
@@ -474,7 +620,7 @@ export const RoutePlanning = () => {
             },
           },
         });
-      } else {
+      } else if (!currentlyOnRoute) {
         getDecorationsViaCity({
           variables: {
             input: {
@@ -498,118 +644,11 @@ export const RoutePlanning = () => {
 
       {/* Desktop */}
       <div className="hidden sm:block sm:min-h-screen">
-        <div className="fixed inset-y-0 left-0 z-50 w-20 overflow-y-auto border-r dark:border-black pb-4">
-          <div className="flex h-16 shrink-0 items-center justify-center">
-            <button onClick={() => navigate(-1)}>
-              <CaretLeft
-                size={32}
-                weight="bold"
-                className="text-ch-dark dark:text-ch-light"
-              />
-            </button>
-          </div>
-          <nav className="mt-8">
-            <ul role="list" className="flex flex-col items-center space-y-10">
-              <li className="cursor-pointer" onClick={() => changeRoute("map")}>
-                <TooltipProvider>
-                  <Tooltip>
-                    <TooltipTrigger>
-                      <div
-                        className={classNames(
-                          selectedIcon === "map"
-                            ? "bg-ch-red text-white"
-                            : "text-gray-400 dark:hover:text-white dark:hover:bg-zinc-800",
-                          "group flex gap-x-3 rounded-md p-3 text-sm leading-6 font-semibold"
-                        )}
-                      >
-                        <MapTrifold size={24} weight="bold" />
-                        <span className="sr-only">Map</span>
-                      </div>
-                    </TooltipTrigger>
-                    <TooltipContent>
-                      <p>Map</p>
-                    </TooltipContent>
-                  </Tooltip>
-                </TooltipProvider>
-              </li>
-              <li
-                className="cursor-pointer"
-                onClick={() => changeRoute("route-planning")}
-              >
-                <TooltipProvider>
-                  <Tooltip>
-                    <TooltipTrigger>
-                      <div
-                        className={classNames(
-                          selectedIcon === "route-planning"
-                            ? "bg-ch-red text-white"
-                            : "text-gray-400 dark:hover:text-white dark:hover:bg-zinc-800",
-                          "group flex gap-x-3 rounded-md p-3 text-sm leading-6 font-semibold"
-                        )}
-                      >
-                        <MapPin size={24} weight="bold" />
-                        <span className="sr-only">Route Planning</span>
-                      </div>
-                    </TooltipTrigger>
-                    <TooltipContent>
-                      <p>Route Planning</p>
-                    </TooltipContent>
-                  </Tooltip>
-                </TooltipProvider>
-              </li>
-              <li
-                className="cursor-pointer"
-                onClick={() => changeRoute("favourites")}
-              >
-                <TooltipProvider>
-                  <Tooltip>
-                    <TooltipTrigger>
-                      <div
-                        className={classNames(
-                          selectedIcon === "favourites"
-                            ? "bg-ch-red text-white"
-                            : "text-gray-400 dark:hover:text-white dark:hover:bg-zinc-800",
-                          "group flex gap-x-3 rounded-md p-3 text-sm leading-6 font-semibold"
-                        )}
-                      >
-                        <Heart size={24} weight="bold" />
-                        <span className="sr-only">Favourites</span>
-                      </div>
-                    </TooltipTrigger>
-                    <TooltipContent>
-                      <p>Favourites</p>
-                    </TooltipContent>
-                  </Tooltip>
-                </TooltipProvider>
-              </li>
-              <li
-                className="cursor-pointer"
-                onClick={() => changeRoute("history")}
-              >
-                <TooltipProvider>
-                  <Tooltip>
-                    <TooltipTrigger>
-                      <div
-                        className={classNames(
-                          selectedIcon === "history"
-                            ? "bg-ch-red text-white"
-                            : "text-gray-400 dark:hover:text-white dark:hover:bg-zinc-800",
-                          "group flex gap-x-3 rounded-md p-3 text-sm leading-6 font-semibold"
-                        )}
-                      >
-                        <ClockCounterClockwise size={24} weight="bold" />
-                        <span className="sr-only">History</span>
-                      </div>
-                    </TooltipTrigger>
-                    <TooltipContent>
-                      <p>History</p>
-                    </TooltipContent>
-                  </Tooltip>
-                </TooltipProvider>
-              </li>
-            </ul>
-          </nav>
-        </div>
+        {/* First Nav */}
+        <RoutePlanningNav
+          changeRoute={changeRoute}
+          selectedIcon={selectedIcon}
+        />
         {/* Secondary column */}
         <SecondaryNav
           activeDecoration={activeDecoration}
@@ -633,10 +672,23 @@ export const RoutePlanning = () => {
           isEditing={isEditing}
           setIsEditing={setIsEditing}
           openRemoveDecorationModal={openRemoveDecorationModal}
+          getRouteData={getRouteData}
+          routeDuration={routeDuration}
+          routeDistance={routeDistance}
+          startRoute={startRoute}
+          dragDecoration={dragDecoration}
+          draggedOverDecoration={draggedOverDecoration}
+          handleSortRoute={handleSortRoute}
+          selectedRoute={selectedRoute}
+          routeDecorations={routeDecorations}
+          handleSelectRoute={handleSelectRoute}
+          fetchRouteError={fetchRouteError}
+          currentlyOnRoute={currentlyOnRoute}
+          endRoute={endRoute}
         />
 
         {/* Main column */}
-        <main className="ml-[29rem] w-[75.8vw] h-screen">
+        <main className="ml-[29rem] w-[75.8vw] h-screen relative">
           <RouteMap
             setViewState={setViewState}
             viewState={viewState}
@@ -650,7 +702,19 @@ export const RoutePlanning = () => {
             getDecorationsViaRegionLoading={getDecorationsViaRegionLoading}
             mapRef={mapRef}
             handleScroll={handleScroll}
+            currentlyOnRoute={currentlyOnRoute}
+            routeLayer={routeLayer}
+            routeGeoJson={routeGeoJson}
+            routeDecorations={routeDecorations}
           />
+          {currentlyOnRoute ? (
+            <RouteDirections
+              routeDistance={routeDistance}
+              routeDuration={routeDuration}
+              routeDirections={routeDirections}
+              selectStep={selectStep}
+            />
+          ) : null}
         </main>
         <div className="absolute top-5 right-16 z-50 cursor-pointer">
           {currentUser ? (

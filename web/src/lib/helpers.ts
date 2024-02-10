@@ -16,3 +16,31 @@ export const getBase64Value = (
     callback(reader.result as string);
   };
 };
+
+export const convertTime = (seconds: number) => {
+  const roundedSeconds = Math.floor(seconds);
+  const hours = Math.floor(roundedSeconds / 3600);
+  const remainingSeconds = roundedSeconds % 3600;
+  const minutes = Math.floor(remainingSeconds / 60);
+
+  const formattedTime = `${hours === 0 ? "" : hours + "h"} ${
+    minutes < 10 ? minutes : ""
+  }${minutes}min`;
+
+  return formattedTime;
+};
+
+export const convertDistance = (distance: number) => {
+  const km = distance / 1000;
+  const formattedDistance = `${km.toFixed(1)}km`;
+  return formattedDistance;
+};
+
+export const convertStepDistance = (distance: number) => {
+  const formattedDistance = `${
+    Math.floor(distance) > 1000
+      ? distance.toFixed(0) + "km"
+      : distance.toFixed(0) + "m"
+  }`;
+  return formattedDistance;
+};

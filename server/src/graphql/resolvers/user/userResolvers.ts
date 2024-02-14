@@ -5,10 +5,11 @@ import {
   EditAvatarArgs,
   EditNameArgs,
   GetUserArgs,
+  SearchArgs,
   SignInArgs,
   mutateNotficationSettingsArgs,
 } from "./types";
-import { Notification, User } from "@prisma/client";
+import { Decoration, Notification, User } from "@prisma/client";
 import { authorise } from "../../../lib/helpers";
 import { Cloudinary } from "../../../lib/cloudinary";
 
@@ -109,6 +110,53 @@ export const userResolvers = {
         });
 
         return userNotificationsCount;
+      } catch (error) {
+        throw new Error(`${error}`);
+      }
+    },
+    searchUserFavourites: async (
+      _root: undefined,
+      { input }: SearchArgs,
+      { _, req, res }: { _: undefined; req: Request; res: Response }
+    ): Promise<Decoration[]> => {
+      try {
+        const user = await authorise(req);
+
+        if (!user) {
+          throw new Error("User cannot be found");
+        }
+
+        const favourites = await prisma.decoration.findMany({
+          where: {
+            AND: [
+              {
+                favourited_by_id: user.id,
+              },
+            ],
+            OR: [
+              {
+                name: {
+                  contains: input.searchTerm,
+                  mode: "insensitive",
+                },
+              },
+              {
+                city: {
+                  contains: input.searchTerm,
+                  mode: "insensitive",
+                },
+              },
+              {
+                address: {
+                  contains: input.searchTerm,
+                  mode: "insensitive",
+                },
+              },
+            ],
+          },
+        });
+
+        return favourites;
       } catch (error) {
         throw new Error(`${error}`);
       }

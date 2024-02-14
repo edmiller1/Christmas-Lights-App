@@ -15,6 +15,7 @@ import {
   RateDecorationArgs,
   ReportDecorationArgs,
   SubmitDecorationForVerificationArgs,
+  getDecorationsViaSearchArgs,
   removeDecorationFromHistoryArgs,
   unfavouriteDecorationArgs,
 } from "./types";
@@ -296,6 +297,45 @@ export const decorationResolvers = {
         } else {
           throw new Error("Latitude and Longitude not provided.");
         }
+
+        return decorations;
+      } catch (error) {
+        throw new Error(`${error}`);
+      }
+    },
+    getDecorationsViaSearch: async (
+      _root: undefined,
+      { input }: getDecorationsViaSearchArgs,
+      { _, req, res }: { _: undefined; req: Request; res: Response }
+    ): Promise<Decoration[]> => {
+      try {
+        const decorations = await prisma.decoration.findMany({
+          where: {
+            OR: [
+              {
+                name: {
+                  contains: input.searchTerm,
+                  mode: "insensitive",
+                },
+              },
+              {
+                city: {
+                  contains: input.searchTerm,
+                  mode: "insensitive",
+                },
+              },
+              {
+                address: {
+                  contains: input.searchTerm,
+                  mode: "insensitive",
+                },
+              },
+            ],
+          },
+          include: {
+            images: true,
+          },
+        });
 
         return decorations;
       } catch (error) {

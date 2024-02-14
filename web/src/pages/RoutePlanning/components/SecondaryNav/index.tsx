@@ -4,6 +4,8 @@ import { Get_Decorations_Via_Region } from "@/graphql/queries/getDecorationsViaR
 import { DecorationsNav, FavouritesNav, HistoryNav, RoutesNav } from "..";
 import { Decoration, Route } from "@/lib/types";
 import { User } from "firebase/auth";
+import { Get_Decorations_Via_Search } from "@/graphql/queries/getDecorationsViaSearch/types";
+import { Search_User_Favourites } from "@/graphql/queries/searchUserFavourites/types";
 
 interface Props {
   selectedIcon: string;
@@ -11,6 +13,7 @@ interface Props {
     | Get_Decorations_Via_City[]
     | Get_Decorations_Via_Country[]
     | Get_Decorations_Via_Region[]
+    | Get_Decorations_Via_Search[]
     | null;
   activeDecoration:
     | Get_Decorations_Via_City
@@ -63,6 +66,8 @@ interface Props {
   fetchRouteError: boolean;
   currentlyOnRoute: boolean;
   endRoute: () => void;
+  searchForDecorations: (searchTerm: string) => void;
+  getDecoratiosnViaSearchLoading: boolean;
 }
 
 export const SecondaryNav = ({
@@ -100,6 +105,8 @@ export const SecondaryNav = ({
   fetchRouteError,
   currentlyOnRoute,
   endRoute,
+  searchForDecorations,
+  getDecoratiosnViaSearchLoading,
 }: Props) => {
   if (selectedIcon === "route-planning") {
     return (
@@ -164,6 +171,8 @@ export const SecondaryNav = ({
         setActiveDecoration={setActiveDecoration}
         setActiveDecorationIndex={setActiveDecorationIndex}
         userFavourites={userFavourites}
+        searchForDecorations={searchForDecorations}
+        getDecoratiosnViaSearchLoading={getDecoratiosnViaSearchLoading}
       />
     );
   }

@@ -7,6 +7,7 @@ import { DecorationCard, DecorationsLoading } from "..";
 import { Get_Decorations_Via_Country } from "@/graphql/queries/getDecorationsViaCountry/types";
 import { Get_Decorations_Via_Region } from "@/graphql/queries/getDecorationsViaRegion/types";
 import { Get_Decorations_Via_City } from "@/graphql/queries/getDecorationsViaCity/types";
+import { Search_User_Favourites } from "@/graphql/queries/searchUserFavourites/types";
 
 interface Props {
   activeDecoration:
@@ -27,7 +28,7 @@ interface Props {
       | Decoration,
     index: number
   ) => void;
-  userFavourites: Decoration[] | undefined;
+  userFavourites: Decoration[] | Search_User_Favourites[] | undefined;
 }
 
 export const HistoryNav = ({

@@ -111,3 +111,9 @@ export interface DecorationsViaMapArgs {
     longitude: string;
   };
 }
+
+export interface getDecorationsViaSearchArgs {
+  input: {
+    searchTerm: string;
+  };
+}

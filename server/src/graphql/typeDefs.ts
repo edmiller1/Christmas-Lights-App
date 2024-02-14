@@ -267,6 +267,14 @@ export const typeDefs = gql`
     routeId: String!
   }
 
+  input DecorationsViaSearchInput {
+    searchTerm: String!
+  }
+
+  input SearchInput {
+    searchTerm: String!
+  }
+
   #Queries
   type Query {
     # App Queries
@@ -282,6 +290,8 @@ export const typeDefs = gql`
     getDecorationsViaCountry(input: DecorationsViaMapInput!): [Decoration!]!
     getDecorationsViaRegion(input: DecorationsViaMapInput!): [Decoration!]!
     getDecorationsViaCity(input: DecorationsViaMapInput!): [Decoration!]!
+    getDecorationsViaSearch(input: DecorationsViaSearchInput!): [Decoration!]!
+    searchUserFavourites(input: SearchInput!): [Decoration!]!
 
     # Admin Queries
     getVerificationSubmissions: [Decoration]!

@@ -4,6 +4,7 @@ import {
   GET_DECORATIONS_VIA_CITY,
   GET_DECORATIONS_VIA_COUNTRY,
   GET_DECORATIONS_VIA_REGION,
+  GET_DECORATIONS_VIA_SEARCH,
   GET_USER,
 } from "@/graphql/queries";
 import {
@@ -29,6 +30,11 @@ import {
   GetDecorationsViaRegionArgs,
   Get_Decorations_Via_Region,
 } from "@/graphql/queries/getDecorationsViaRegion/types";
+import {
+  GetDecorationsViaSearch as GetDecorationsViaSearchData,
+  GetDecorationsViaSearchArgs,
+  Get_Decorations_Via_Search,
+} from "@/graphql/queries/getDecorationsViaSearch/types";
 import {
   GetUser as GetUserData,
   GetUserArgs,
@@ -106,16 +112,23 @@ export const RoutePlanning = () => {
   const dragDecoration = useRef<number>(0);
   const draggedOverDecoration = useRef<number>(0);
 
+  //Modals
   const [isDeleteRouteOpen, setIsDeleteRouteOpen] = useState<boolean>(false);
   const [isCreateRouteOpen, setIsCreateRouteOpen] = useState<boolean>(false);
   const [isRemoveDecorationOpen, setIsRemoveDecorationOpen] =
     useState<boolean>(false);
   const [isCancelOpen, setIsCancelOpen] = useState<boolean>(false);
+  //Nav
   const [selectedIcon, setSelectedIcon] = useState<string>("map");
+
+  const [userFavourites, setUserFavourites] = useState<
+    Decoration[] | undefined
+  >();
   const [decorations, setDecorations] = useState<
     | Get_Decorations_Via_City[]
     | Get_Decorations_Via_Country[]
     | Get_Decorations_Via_Region[]
+    | Get_Decorations_Via_Search[]
     | null
   >(null);
   const [viewState, setViewState] = useState<ViewState>(initialViewState);
@@ -158,6 +171,9 @@ export const RoutePlanning = () => {
     refetch: refetchUser,
   } = useQuery<GetUserData, GetUserArgs>(GET_USER, {
     variables: { input: { id: currentUser?.uid ? currentUser.uid : "" } },
+    onCompleted: (data) => {
+      setUserFavourites(data.getUser.favourites);
+    },
   });
 
   const [
@@ -188,6 +204,16 @@ export const RoutePlanning = () => {
       {
         onCompleted: (data) => {
           setDecorations(data.getDecorationsViaRegion);
+        },
+      }
+    );
+
+  const [getDecorationsViaSearch, { loading: getDecoratiosnViaSearchLoading }] =
+    useLazyQuery<GetDecorationsViaSearchData, GetDecorationsViaSearchArgs>(
+      GET_DECORATIONS_VIA_SEARCH,
+      {
+        onCompleted: (data) => {
+          setDecorations(data.getDecorationsViaSearch);
         },
       }
     );
@@ -331,6 +357,12 @@ export const RoutePlanning = () => {
     }
   );
 
+  const searchForDecorations = (searchTerm: string) => {
+    getDecorationsViaSearch({
+      variables: { input: { searchTerm: searchTerm } },
+    });
+  };
+
   const addDecorationToARoute = (routeId: string, decorationId: string) => {
     addDecorationToRoute({
       variables: { input: { decorationId: decorationId, routeId: routeId } },
@@ -459,6 +491,7 @@ export const RoutePlanning = () => {
       | Get_Decorations_Via_City
       | Get_Decorations_Via_Country
       | Get_Decorations_Via_Region
+      | Get_Decorations_Via_Search
       | Decoration,
     index: number
   ) => {
@@ -685,6 +718,8 @@ export const RoutePlanning = () => {
           fetchRouteError={fetchRouteError}
           currentlyOnRoute={currentlyOnRoute}
           endRoute={endRoute}
+          searchForDecorations={searchForDecorations}
+          getDecoratiosnViaSearchLoading={getDecoratiosnViaSearchLoading}
         />
 
         {/* Main column */}

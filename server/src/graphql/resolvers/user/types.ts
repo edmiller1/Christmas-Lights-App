@@ -48,3 +48,9 @@ export interface mutateNotficationSettingsArgs {
     name: string;
   };
 }
+
+export interface SearchArgs {
+  input: {
+    searchTerm: string;
+  };
+}

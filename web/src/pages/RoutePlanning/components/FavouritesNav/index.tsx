@@ -4,9 +4,15 @@ import { Get_Decorations_Via_City } from "@/graphql/queries/getDecorationsViaCit
 import { Get_Decorations_Via_Country } from "@/graphql/queries/getDecorationsViaCountry/types";
 import { Get_Decorations_Via_Region } from "@/graphql/queries/getDecorationsViaRegion/types";
 import { Decoration } from "@/lib/types";
-import { FadersHorizontal, Warning } from "@phosphor-icons/react";
+import {
+  FadersHorizontal,
+  MagnifyingGlass,
+  Warning,
+} from "@phosphor-icons/react";
 import { User } from "firebase/auth";
 import { DecorationCard, DecorationsLoading } from "..";
+import { Search_User_Favourites } from "@/graphql/queries/searchUserFavourites/types";
+import { useState } from "react";
 
 interface Props {
   activeDecoration:
@@ -37,14 +43,39 @@ export const FavouritesNav = ({
   refs,
   userFavourites,
 }: Props) => {
+  const [searchWord, setSearchWord] = useState<string>("");
+  const [filteredList, setFilteredList] = useState<Decoration[] | undefined>(
+    userFavourites
+  );
+
+  const handleSearchWord = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchWord(e.target.value);
+  };
+
+  const filterUserFavourites = () => {
+    const filteredData = userFavourites?.filter((favourite) =>
+      Object.values(favourite).some(
+        (value) =>
+          value &&
+          value.toString().toLowerCase().includes(searchWord.toLowerCase())
+      )
+    );
+    setFilteredList(filteredData);
+  };
+
   return (
     <aside className="fixed bottom-0 left-20 top-0 w-96 overflow-y-auto border-r dark:border-black">
       <div className="bg-zinc-800 p-8 dark:border-b dark:border-black">
         <h1 className="text-xl font-semibold">Favourites</h1>
         <div className="flex items-center space-x-4 my-5">
-          <Input type="text" placeholder="Search Favourites" />
-          <Button variant="outline">
-            <FadersHorizontal
+          <Input
+            type="text"
+            placeholder="Search Favourites"
+            value={searchWord}
+            onChange={(e) => handleSearchWord(e)}
+          />
+          <Button variant="outline" onClick={filterUserFavourites}>
+            <MagnifyingGlass
               size={16}
               weight="bold"
               className="text-ch-dark dark:text-ch-light"
@@ -69,7 +100,7 @@ export const FavouritesNav = ({
         </div>
       ) : (
         <div className="grid grid-cols-1 gap-y-5 p-5 overflow-y-auto">
-          {userFavourites?.map((decoration, index) => (
+          {filteredList?.map((decoration, index) => (
             <DecorationCard
               activeDecoration={activeDecoration}
               decoration={decoration}

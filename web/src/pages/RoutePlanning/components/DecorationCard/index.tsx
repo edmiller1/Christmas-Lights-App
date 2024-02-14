@@ -1,6 +1,7 @@
 import { Get_Decorations_Via_City } from "@/graphql/queries/getDecorationsViaCity/types";
 import { Get_Decorations_Via_Country } from "@/graphql/queries/getDecorationsViaCountry/types";
 import { Get_Decorations_Via_Region } from "@/graphql/queries/getDecorationsViaRegion/types";
+import { Get_Decorations_Via_Search } from "@/graphql/queries/getDecorationsViaSearch/types";
 import { Decoration } from "@/lib/types";
 import { Heart, Star } from "@phosphor-icons/react";
 
@@ -9,6 +10,7 @@ interface Props {
     | Get_Decorations_Via_City
     | Get_Decorations_Via_Region
     | Get_Decorations_Via_Country
+    | Get_Decorations_Via_Search
     | Decoration;
   activeDecoration:
     | Get_Decorations_Via_City

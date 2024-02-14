@@ -1,4 +1,8 @@
-import { FadersHorizontal, Warning } from "@phosphor-icons/react";
+import {
+  FadersHorizontal,
+  MagnifyingGlass,
+  Warning,
+} from "@phosphor-icons/react";
 import { DecorationCard, DecorationsLoading } from "..";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -6,6 +10,9 @@ import { Get_Decorations_Via_City } from "@/graphql/queries/getDecorationsViaCit
 import { Get_Decorations_Via_Country } from "@/graphql/queries/getDecorationsViaCountry/types";
 import { Get_Decorations_Via_Region } from "@/graphql/queries/getDecorationsViaRegion/types";
 import { Decoration } from "@/lib/types";
+import { Get_Decorations_Via_Search } from "@/graphql/queries/getDecorationsViaSearch/types";
+import { useState } from "react";
+import { Search_User_Favourites } from "@/graphql/queries/searchUserFavourites/types";
 
 interface Props {
   getDecorationsViaCountryLoading: boolean;
@@ -15,6 +22,7 @@ interface Props {
     | Get_Decorations_Via_City[]
     | Get_Decorations_Via_Country[]
     | Get_Decorations_Via_Region[]
+    | Get_Decorations_Via_Search[]
     | null;
   activeDecoration:
     | Get_Decorations_Via_City
@@ -33,14 +41,17 @@ interface Props {
   ) => void;
   setActiveDecorationIndex: (activeDecorationIndex: number) => void;
   refs: any;
-  userFavourites: Decoration[] | undefined;
+  userFavourites: Decoration[] | Search_User_Favourites[] | undefined;
   handleDecorationSelect: (
     decoration:
       | Get_Decorations_Via_City
       | Get_Decorations_Via_Country
-      | Get_Decorations_Via_Region,
+      | Get_Decorations_Via_Region
+      | Decoration,
     index: number
   ) => void;
+  searchForDecorations: (searchTerm: string) => void;
+  getDecoratiosnViaSearchLoading: boolean;
 }
 
 export const DecorationsNav = ({
@@ -55,15 +66,31 @@ export const DecorationsNav = ({
   setActiveDecoration,
   setActiveDecorationIndex,
   userFavourites,
+  searchForDecorations,
+  getDecoratiosnViaSearchLoading,
 }: Props) => {
+  const [searchWord, setSearchWord] = useState<string>("");
+
+  const handleSearchWord = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchWord(e.target.value);
+  };
   return (
     <aside className="fixed bottom-0 left-20 top-0 w-96 overflow-y-auto border-r dark:border-black">
       <div className="fixed top-0 w-96 bg-zinc-800 p-8 dark:border-b dark:border-black">
         <h1 className="text-xl font-semibold">Decorations</h1>
         <div className="flex items-center space-x-4 my-5">
-          <Input type="text" placeholder="Search Decorations" />
-          <Button variant="outline">
-            <FadersHorizontal
+          <Input
+            type="text"
+            placeholder="Search Decorations"
+            value={searchWord}
+            onChange={(e) => handleSearchWord(e)}
+          />
+          <Button
+            variant="outline"
+            disabled={!searchWord}
+            onClick={() => searchForDecorations(searchWord)}
+          >
+            <MagnifyingGlass
               size={16}
               weight="bold"
               className="text-ch-dark dark:text-ch-light"
@@ -73,7 +100,8 @@ export const DecorationsNav = ({
       </div>
       {getDecorationsViaCityLoading ||
       getDecorationsViaCountryLoading ||
-      getDecorationsViaRegionLoading ? (
+      getDecorationsViaRegionLoading ||
+      getDecoratiosnViaSearchLoading ? (
         <DecorationsLoading />
       ) : decorations && decorations.length === 0 ? (
         <div className="mt-44 p-5 flex justify-center items-center text-center flex-col text-ch-red">

@@ -85,7 +85,7 @@ export const FavouritesNav = ({
       </div>
       {getUserLoading ? (
         <DecorationsLoading />
-      ) : userFavourites && userFavourites.length === 0 ? (
+      ) : filteredList && filteredList.length === 0 ? (
         <div className="p-5 flex justify-center items-center text-center flex-col text-ch-red">
           <Warning size={32} />
           <span className="mt-3">You haven't liked any decorations yet.</span>

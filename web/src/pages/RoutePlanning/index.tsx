@@ -88,6 +88,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { ToastAction } from "@/components/ui/toast";
+import { MobileDecorationPopup } from "./components/MobileDecorationPopup";
 
 const mbApiKey = import.meta.env.VITE_MAPBOX_API_KEY;
 
@@ -739,6 +740,7 @@ export const RoutePlanning = () => {
           routeGeoJson={routeGeoJson}
           routeDecorations={routeDecorations}
         />
+
         {currentlyOnRoute ? (
           <RouteDirections
             routeDistance={routeDistance}
@@ -923,7 +925,7 @@ export const RoutePlanning = () => {
           removeDecorationFromARoute={removeDecorationFromARoute}
           removeDecorationFromRouteLoading={removeDecorationFromRouteLoading}
         />
-        <DecorationPopup
+        <MobileDecorationPopup
           activeDecoration={activeDecoration}
           setActiveDecoration={setActiveDecoration}
           userFavourites={user?.favourites.map((decoration) => decoration.id)}

@@ -36,11 +36,11 @@ export const FavouriteButton = ({
   return (
     <>
       {/* Mobile */}
-      <div className="sm:hidden">
+      <div className="sm:hidden block">
         {activeDecoration && userFavourites?.includes(activeDecoration.id) ? (
           <Button
             variant="outline"
-            className=" bg-gray-200 dark:border-none hover:bg-gray-300"
+            className="w-full bg-zinc-800 dark:border-none hover:bg-zinc-900"
             onClick={() => removeDecorationFromFavourites(activeDecoration!.id)}
             disabled={unFavouriteDecorationLoading}
           >
@@ -57,7 +57,7 @@ export const FavouriteButton = ({
         ) : (
           <Button
             variant="outline"
-            className=" bg-gray-200 dark:border-none hover:bg-gray-300"
+            className="w-full bg-zinc-800 dark:border-none hover:bg-zinc-900"
             onClick={() => addDecorationToFavourites(activeDecoration!.id)}
             disabled={favouriteDecorationLoading}
           >

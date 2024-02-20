@@ -70,7 +70,8 @@ export const RouteDirections = ({
 
   return (
     <>
-      <div className="hidden sm:block absolute p-3 w-64 rounded-xl top-5 left-5 dark:bg-zinc-800">
+      {/* Desktop */}
+      <div className="absolute p-3 w-72 sm:w-64 rounded-xl top-5 left-5 dark:bg-zinc-800">
         <div className="flex items-center justify-between">
           <div className="flex flex-col">
             <span className="font-semibold text-lg">

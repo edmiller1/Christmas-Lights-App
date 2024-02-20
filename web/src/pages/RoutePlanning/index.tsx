@@ -112,12 +112,14 @@ export const RoutePlanning = () => {
   const dragDecoration = useRef<number>(0);
   const draggedOverDecoration = useRef<number>(0);
 
-  //Modals
+  //Toggles
   const [isDeleteRouteOpen, setIsDeleteRouteOpen] = useState<boolean>(false);
   const [isCreateRouteOpen, setIsCreateRouteOpen] = useState<boolean>(false);
   const [isRemoveDecorationOpen, setIsRemoveDecorationOpen] =
     useState<boolean>(false);
   const [isCancelOpen, setIsCancelOpen] = useState<boolean>(false);
+  const [showActiveDecoration, setShowActiveDecoration] =
+    useState<boolean>(false);
   //Nav
   const [selectedIcon, setSelectedIcon] = useState<string>("map");
 
@@ -208,7 +210,7 @@ export const RoutePlanning = () => {
       }
     );
 
-  const [getDecorationsViaSearch, { loading: getDecoratiosnViaSearchLoading }] =
+  const [getDecorationsViaSearch, { loading: getDecorationsViaSearchLoading }] =
     useLazyQuery<GetDecorationsViaSearchData, GetDecorationsViaSearchArgs>(
       GET_DECORATIONS_VIA_SEARCH,
       {
@@ -668,19 +670,123 @@ export const RoutePlanning = () => {
     return () => clearTimeout(getDecorationData);
   }, [viewState]);
 
+  useEffect(() => {
+    if (activeDecoration) {
+      setShowActiveDecoration(true);
+    } else {
+      setShowActiveDecoration(false);
+    }
+  }, [activeDecoration]);
+
   const user = getUserData?.getUser ? getUserData.getUser : null;
 
   return (
     <>
       {/* Mobile */}
-      <div className="sm:hidden"></div>
-
-      {/* Desktop */}
-      <div className="hidden sm:block sm:min-h-screen">
-        {/* First Nav */}
+      <div className="sm:hidden h-screen w-full">
         <RoutePlanningNav
           changeRoute={changeRoute}
           selectedIcon={selectedIcon}
+          user={user}
+          activeDecoration={activeDecoration}
+          decorations={decorations}
+          getDecorationsViaCityLoading={getDecorationsViaCityLoading}
+          getDecorationsViaCountryLoading={getDecorationsViaCountryLoading}
+          getDecorationsViaRegionLoading={getDecorationsViaRegionLoading}
+          getDecorationsViaSearchLoading={getDecorationsViaSearchLoading}
+          handleDecorationSelect={handleDecorationSelect}
+          refs={refs}
+          searchForDecorations={searchForDecorations}
+          userFavourites={user?.favourites}
+          currentUser={currentUser}
+          currentlyOnRoute={currentlyOnRoute}
+          dragDecoration={dragDecoration}
+          draggedOverDecoration={draggedOverDecoration}
+          endRoute={endRoute}
+          fetchRouteError={fetchRouteError}
+          getRouteData={getRouteData}
+          getUserLoading={getUserLoading}
+          handleSelectRoute={handleSelectRoute}
+          handleSortRoute={handleSortRoute}
+          isEditing={isEditing}
+          openDeleteRouteModal={openDeleteRouteModal}
+          openRemoveDecorationModal={openRemoveDecorationModal}
+          routeDecorations={routeDecorations}
+          routeDistance={routeDistance}
+          routeDuration={routeDuration}
+          selectedRoute={selectedRoute}
+          setIsCreateRouteOpen={setIsCreateRouteOpen}
+          setIsEditing={setIsEditing}
+          startRoute={startRoute}
+          userRoutes={user?.routes}
+          userHistory={user?.history}
+        />
+        <RouteMap
+          setViewState={setViewState}
+          viewState={viewState}
+          decorations={decorations}
+          activeDecoration={activeDecoration}
+          setActiveDecoration={setActiveDecoration}
+          activeDecorationIndex={activeDecorationIndex}
+          setActiveDecorationIndex={setActiveDecorationIndex}
+          getDecorationsViaCountryLoading={getDecorationsViaCountryLoading}
+          getDecorationsViaCityLoading={getDecorationsViaCityLoading}
+          getDecorationsViaRegionLoading={getDecorationsViaRegionLoading}
+          mapRef={mapRef}
+          handleScroll={handleScroll}
+          currentlyOnRoute={currentlyOnRoute}
+          routeLayer={routeLayer}
+          routeGeoJson={routeGeoJson}
+          routeDecorations={routeDecorations}
+        />
+        {currentlyOnRoute ? (
+          <RouteDirections
+            routeDistance={routeDistance}
+            routeDuration={routeDuration}
+            routeDirections={routeDirections}
+            selectStep={selectStep}
+          />
+        ) : null}
+      </div>
+
+      {/* Desktop */}
+      <div className="hidden sm:block sm:min-h-screen">
+        <RoutePlanningNav
+          changeRoute={changeRoute}
+          selectedIcon={selectedIcon}
+          user={user}
+          activeDecoration={activeDecoration}
+          decorations={decorations}
+          getDecorationsViaCityLoading={getDecorationsViaCityLoading}
+          getDecorationsViaCountryLoading={getDecorationsViaCountryLoading}
+          getDecorationsViaRegionLoading={getDecorationsViaRegionLoading}
+          getDecorationsViaSearchLoading={getDecorationsViaSearchLoading}
+          handleDecorationSelect={handleDecorationSelect}
+          refs={refs}
+          searchForDecorations={searchForDecorations}
+          userFavourites={user?.favourites}
+          currentUser={currentUser}
+          currentlyOnRoute={currentlyOnRoute}
+          dragDecoration={dragDecoration}
+          draggedOverDecoration={draggedOverDecoration}
+          endRoute={endRoute}
+          fetchRouteError={fetchRouteError}
+          getRouteData={getRouteData}
+          getUserLoading={getUserLoading}
+          handleSelectRoute={handleSelectRoute}
+          handleSortRoute={handleSortRoute}
+          isEditing={isEditing}
+          openDeleteRouteModal={openDeleteRouteModal}
+          openRemoveDecorationModal={openRemoveDecorationModal}
+          routeDecorations={routeDecorations}
+          routeDistance={routeDistance}
+          routeDuration={routeDuration}
+          selectedRoute={selectedRoute}
+          setIsCreateRouteOpen={setIsCreateRouteOpen}
+          setIsEditing={setIsEditing}
+          startRoute={startRoute}
+          userRoutes={user?.routes}
+          userHistory={user?.history}
         />
         {/* Secondary column */}
         <SecondaryNav
@@ -719,7 +825,8 @@ export const RoutePlanning = () => {
           currentlyOnRoute={currentlyOnRoute}
           endRoute={endRoute}
           searchForDecorations={searchForDecorations}
-          getDecoratiosnViaSearchLoading={getDecoratiosnViaSearchLoading}
+          getDecorationsViaSearchLoading={getDecorationsViaSearchLoading}
+          changeRoute={changeRoute}
         />
 
         {/* Main column */}
@@ -786,6 +893,8 @@ export const RoutePlanning = () => {
             setIsCreateRouteOpen={setIsCreateRouteOpen}
             addDecorationToARoute={addDecorationToARoute}
             addDecorationToRouteLoading={addDecorationToRouteLoading}
+            showActiveDecoration={showActiveDecoration}
+            setShowActiveDecoration={setShowActiveDecoration}
           />
         ) : null}
         <CreateRouteModal
@@ -813,6 +922,22 @@ export const RoutePlanning = () => {
           setIsRemoveDecorationOpen={setIsRemoveDecorationOpen}
           removeDecorationFromARoute={removeDecorationFromARoute}
           removeDecorationFromRouteLoading={removeDecorationFromRouteLoading}
+        />
+        <DecorationPopup
+          activeDecoration={activeDecoration}
+          setActiveDecoration={setActiveDecoration}
+          userFavourites={user?.favourites.map((decoration) => decoration.id)}
+          addDecorationToFavourites={addDecorationToFavourites}
+          removeDecorationFromFavourites={removeDecorationFromFavourites}
+          favouriteDecorationLoading={favouriteDecorationLoading}
+          unFavouriteDecorationLoading={unFavouriteDecorationLoading}
+          userRoutes={user?.routes}
+          currentUser={currentUser}
+          setIsCreateRouteOpen={setIsCreateRouteOpen}
+          addDecorationToARoute={addDecorationToARoute}
+          addDecorationToRouteLoading={addDecorationToRouteLoading}
+          showActiveDecoration={showActiveDecoration}
+          setShowActiveDecoration={setShowActiveDecoration}
         />
       </div>
     </>

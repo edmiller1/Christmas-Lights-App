@@ -17,7 +17,8 @@ interface Props {
     | Get_Decorations_Via_City
     | Get_Decorations_Via_Country
     | Get_Decorations_Via_Region
-    | Decoration;
+    | Decoration
+    | undefined;
   addDecorationToFavourites: (decorationId: string) => void;
   removeDecorationFromFavourites: (decorationId: string) => void;
   favouriteDecorationLoading: boolean;
@@ -34,61 +35,105 @@ export const FavouriteButton = ({
 }: Props) => {
   return (
     <>
-      {userFavourites?.includes(activeDecoration.id) ? (
-        <TooltipProvider>
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <Button
-                variant="outline"
-                className="w-1/5 dark:bg-gray-200 dark:border-none dark:hover:bg-gray-300"
-                onClick={() =>
-                  removeDecorationFromFavourites(activeDecoration.id)
-                }
-                disabled={unFavouriteDecorationLoading}
-              >
-                {unFavouriteDecorationLoading ? (
-                  <CircleNotch
-                    size={32}
-                    weight="fill"
-                    className="text-ch-pink animate-spin"
-                  />
-                ) : (
-                  <Heart size={32} weight="fill" className="text-ch-pink" />
-                )}
-              </Button>
-            </TooltipTrigger>
-            <TooltipContent>
-              <span>Remove from favourites</span>
-            </TooltipContent>
-          </Tooltip>
-        </TooltipProvider>
-      ) : (
-        <TooltipProvider>
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <Button
-                variant="outline"
-                className="w-1/5 dark:bg-gray-200 dark:border-none dark:hover:bg-gray-300"
-                onClick={() => addDecorationToFavourites(activeDecoration.id)}
-                disabled={favouriteDecorationLoading}
-              >
-                {favouriteDecorationLoading ? (
-                  <CircleNotch
-                    size={32}
-                    weight="bold"
-                    className="text-gray-400 animate-spin"
-                  />
-                ) : (
-                  <Heart size={32} weight="bold" className="text-gray-400" />
-                )}
-              </Button>
-            </TooltipTrigger>
-            <TooltipContent>
-              <span>Add to favourites</span>
-            </TooltipContent>
-          </Tooltip>
-        </TooltipProvider>
-      )}
+      {/* Mobile */}
+      <div className="sm:hidden">
+        {activeDecoration && userFavourites?.includes(activeDecoration.id) ? (
+          <Button
+            variant="outline"
+            className=" bg-gray-200 dark:border-none hover:bg-gray-300"
+            onClick={() => removeDecorationFromFavourites(activeDecoration!.id)}
+            disabled={unFavouriteDecorationLoading}
+          >
+            {unFavouriteDecorationLoading ? (
+              <CircleNotch
+                size={32}
+                weight="fill"
+                className="text-ch-pink animate-spin"
+              />
+            ) : (
+              <Heart size={32} weight="fill" className="text-ch-pink" />
+            )}
+          </Button>
+        ) : (
+          <Button
+            variant="outline"
+            className=" bg-gray-200 dark:border-none hover:bg-gray-300"
+            onClick={() => addDecorationToFavourites(activeDecoration!.id)}
+            disabled={favouriteDecorationLoading}
+          >
+            {favouriteDecorationLoading ? (
+              <CircleNotch
+                size={32}
+                weight="bold"
+                className="text-gray-400 animate-spin"
+              />
+            ) : (
+              <Heart size={32} weight="bold" className="text-gray-400" />
+            )}
+          </Button>
+        )}
+      </div>
+
+      {/* Desktop */}
+      <div className="hidden sm:block">
+        {activeDecoration && userFavourites?.includes(activeDecoration.id) ? (
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button
+                  variant="outline"
+                  className="w-1/5 dark:bg-gray-200 dark:border-none dark:hover:bg-gray-300"
+                  onClick={() =>
+                    removeDecorationFromFavourites(activeDecoration!.id)
+                  }
+                  disabled={unFavouriteDecorationLoading}
+                >
+                  {unFavouriteDecorationLoading ? (
+                    <CircleNotch
+                      size={32}
+                      weight="fill"
+                      className="text-ch-pink animate-spin"
+                    />
+                  ) : (
+                    <Heart size={32} weight="fill" className="text-ch-pink" />
+                  )}
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent>
+                <span>Remove from favourites</span>
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
+        ) : (
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button
+                  variant="outline"
+                  className="w-1/5 dark:bg-gray-200 dark:border-none dark:hover:bg-gray-300"
+                  onClick={() =>
+                    addDecorationToFavourites(activeDecoration!.id)
+                  }
+                  disabled={favouriteDecorationLoading}
+                >
+                  {favouriteDecorationLoading ? (
+                    <CircleNotch
+                      size={32}
+                      weight="bold"
+                      className="text-gray-400 animate-spin"
+                    />
+                  ) : (
+                    <Heart size={32} weight="bold" className="text-gray-400" />
+                  )}
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent>
+                <span>Add to favourites</span>
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
+        )}
+      </div>
     </>
   );
 };

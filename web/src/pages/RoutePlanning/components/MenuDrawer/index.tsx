@@ -1,36 +1,26 @@
 import { Get_Decorations_Via_City } from "@/graphql/queries/getDecorationsViaCity/types";
+import { DecorationsNav, FavouritesNav, HistoryNav, RoutesNav } from "..";
 import { Get_Decorations_Via_Country } from "@/graphql/queries/getDecorationsViaCountry/types";
 import { Get_Decorations_Via_Region } from "@/graphql/queries/getDecorationsViaRegion/types";
-import { DecorationsNav, FavouritesNav, HistoryNav, RoutesNav } from "..";
 import { Decoration, Route } from "@/lib/types";
-import { User } from "firebase/auth";
 import { Get_Decorations_Via_Search } from "@/graphql/queries/getDecorationsViaSearch/types";
-import { Search_User_Favourites } from "@/graphql/queries/searchUserFavourites/types";
+import { User } from "firebase/auth";
 
 interface Props {
   selectedIcon: string;
-  decorations:
-    | Get_Decorations_Via_City[]
-    | Get_Decorations_Via_Country[]
-    | Get_Decorations_Via_Region[]
-    | Get_Decorations_Via_Search[]
-    | null;
+  changeRoute: (icon: string) => void;
   activeDecoration:
     | Get_Decorations_Via_City
     | Get_Decorations_Via_Country
     | Get_Decorations_Via_Region
     | Decoration
     | undefined;
-  activeDecorationIndex: number;
-  setActiveDecoration: (
-    activeDecoration:
-      | Get_Decorations_Via_City
-      | Get_Decorations_Via_Country
-      | Get_Decorations_Via_Region
-      | Decoration
-      | undefined
-  ) => void;
-  setActiveDecorationIndex: (activeDecorationIndex: number) => void;
+  decorations:
+    | Get_Decorations_Via_City[]
+    | Get_Decorations_Via_Country[]
+    | Get_Decorations_Via_Region[]
+    | Get_Decorations_Via_Search[]
+    | null;
   getDecorationsViaCountryLoading: boolean;
   getDecorationsViaCityLoading: boolean;
   getDecorationsViaRegionLoading: boolean;
@@ -44,14 +34,15 @@ interface Props {
   ) => void;
   refs: any;
   userFavourites: Decoration[] | undefined;
+  searchForDecorations: (searchTerm: string) => void;
+  getDecorationsViaSearchLoading: boolean;
   userRoutes: Route[] | undefined;
   getUserLoading: boolean;
   currentUser: User | null | undefined;
-  userHistory: Decoration[] | undefined;
   setIsCreateRouteOpen: (isCreateRouteOpen: boolean) => void;
   openDeleteRouteModal: (routeId: string) => void;
-  isEditing: boolean;
   setIsEditing: (isEditing: boolean) => void;
+  isEditing: boolean;
   openRemoveDecorationModal: (decorationId: string, routeId: string) => void;
   getRouteData: (coordinates: number[][] | undefined) => void;
   routeDuration: number;
@@ -66,51 +57,50 @@ interface Props {
   fetchRouteError: boolean;
   currentlyOnRoute: boolean;
   endRoute: () => void;
-  searchForDecorations: (searchTerm: string) => void;
-  getDecorationsViaSearchLoading: boolean;
-  changeRoute: (icon: string) => void;
+  mobileMenuOpen: boolean;
+  setMobileMenuOpen: (mobileMenuOpen: boolean) => void;
+  userHistory: Decoration[] | undefined;
 }
 
-export const SecondaryNav = ({
+export const MenuDrawer = ({
   selectedIcon,
+  changeRoute,
   activeDecoration,
-  activeDecorationIndex,
   decorations,
-  setActiveDecoration,
-  setActiveDecorationIndex,
   getDecorationsViaCityLoading,
   getDecorationsViaCountryLoading,
   getDecorationsViaRegionLoading,
+  getDecorationsViaSearchLoading,
   handleDecorationSelect,
   refs,
+  searchForDecorations,
   userFavourites,
-  userRoutes,
-  getUserLoading,
   currentUser,
-  userHistory,
-  setIsCreateRouteOpen,
-  openDeleteRouteModal,
-  isEditing,
-  setIsEditing,
-  openRemoveDecorationModal,
-  getRouteData,
-  routeDuration,
-  routeDistance,
-  startRoute,
+  currentlyOnRoute,
   dragDecoration,
   draggedOverDecoration,
-  handleSortRoute,
-  selectedRoute,
-  routeDecorations,
-  handleSelectRoute,
-  fetchRouteError,
-  currentlyOnRoute,
   endRoute,
-  searchForDecorations,
-  getDecorationsViaSearchLoading,
-  changeRoute,
+  fetchRouteError,
+  getRouteData,
+  getUserLoading,
+  handleSelectRoute,
+  handleSortRoute,
+  setIsEditing,
+  isEditing,
+  openDeleteRouteModal,
+  openRemoveDecorationModal,
+  routeDecorations,
+  routeDistance,
+  routeDuration,
+  selectedRoute,
+  setIsCreateRouteOpen,
+  startRoute,
+  userRoutes,
+  mobileMenuOpen,
+  setMobileMenuOpen,
+  userHistory,
 }: Props) => {
-  if (selectedIcon === "route-planning") {
+  if (selectedIcon === "route-planning" && mobileMenuOpen) {
     return (
       <RoutesNav
         userRoutes={userRoutes}
@@ -136,9 +126,11 @@ export const SecondaryNav = ({
         endRoute={endRoute}
         selectedIcon={selectedIcon}
         changeRoute={changeRoute}
+        mobileMenuOpen={mobileMenuOpen}
+        setMobileMenuOpen={setMobileMenuOpen}
       />
     );
-  } else if (selectedIcon === "favourites") {
+  } else if (selectedIcon === "favourites" && mobileMenuOpen) {
     return (
       <FavouritesNav
         activeDecoration={activeDecoration}
@@ -147,39 +139,43 @@ export const SecondaryNav = ({
         handleDecorationSelect={handleDecorationSelect}
         refs={refs}
         userFavourites={userFavourites}
+        setMobileMenuOpen={setMobileMenuOpen}
         selectedIcon={selectedIcon}
         changeRoute={changeRoute}
       />
     );
-  } else if (selectedIcon === "history") {
+  } else if (selectedIcon === "history" && mobileMenuOpen) {
     return (
       <HistoryNav
         activeDecoration={activeDecoration}
         currentUser={currentUser}
-        userHistory={userHistory}
         getUserLoading={getUserLoading}
-        refs={refs}
         handleDecorationSelect={handleDecorationSelect}
+        refs={refs}
         userFavourites={userFavourites}
+        userHistory={userHistory}
+        setMobileMenuOpen={setMobileMenuOpen}
         selectedIcon={selectedIcon}
         changeRoute={changeRoute}
       />
     );
-  } else {
+  } else if (selectedIcon === "map" && mobileMenuOpen) {
     return (
       <DecorationsNav
         activeDecoration={activeDecoration}
+        changeRoute={changeRoute}
         decorations={decorations}
         getDecorationsViaCityLoading={getDecorationsViaCityLoading}
         getDecorationsViaCountryLoading={getDecorationsViaCountryLoading}
         getDecorationsViaRegionLoading={getDecorationsViaRegionLoading}
+        getDecorationsViaSearchLoading={getDecorationsViaSearchLoading}
         handleDecorationSelect={handleDecorationSelect}
         refs={refs}
-        userFavourites={userFavourites}
         searchForDecorations={searchForDecorations}
-        getDecorationsViaSearchLoading={getDecorationsViaSearchLoading}
         selectedIcon={selectedIcon}
-        changeRoute={changeRoute}
+        userFavourites={userFavourites}
+        mobileMenuOpen={mobileMenuOpen}
+        setMobileMenuOpen={setMobileMenuOpen}
       />
     );
   }

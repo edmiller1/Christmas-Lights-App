@@ -13,6 +13,8 @@ import { Decoration } from "@/lib/types";
 import { Get_Decorations_Via_Search } from "@/graphql/queries/getDecorationsViaSearch/types";
 import { useState } from "react";
 import { Search_User_Favourites } from "@/graphql/queries/searchUserFavourites/types";
+import { AnimatePresence, motion } from "framer-motion";
+import { DrawerNavigation } from "../DrawerNavigation";
 
 interface Props {
   getDecorationsViaCountryLoading: boolean;
@@ -30,16 +32,6 @@ interface Props {
     | Get_Decorations_Via_Region
     | Decoration
     | undefined;
-  activeDecorationIndex: number;
-  setActiveDecoration: (
-    activeDecoration:
-      | Get_Decorations_Via_City
-      | Get_Decorations_Via_Country
-      | Get_Decorations_Via_Region
-      | Decoration
-      | undefined
-  ) => void;
-  setActiveDecorationIndex: (activeDecorationIndex: number) => void;
   refs: any;
   userFavourites: Decoration[] | Search_User_Favourites[] | undefined;
   handleDecorationSelect: (
@@ -51,7 +43,11 @@ interface Props {
     index: number
   ) => void;
   searchForDecorations: (searchTerm: string) => void;
-  getDecoratiosnViaSearchLoading: boolean;
+  getDecorationsViaSearchLoading: boolean;
+  selectedIcon: string;
+  changeRoute: (icon: string) => void;
+  mobileMenuOpen?: boolean;
+  setMobileMenuOpen?: (mobileMenuOpen: boolean) => void;
 }
 
 export const DecorationsNav = ({
@@ -60,76 +56,174 @@ export const DecorationsNav = ({
   getDecorationsViaRegionLoading,
   decorations,
   activeDecoration,
-  activeDecorationIndex,
   handleDecorationSelect,
   refs,
-  setActiveDecoration,
-  setActiveDecorationIndex,
   userFavourites,
   searchForDecorations,
-  getDecoratiosnViaSearchLoading,
+  getDecorationsViaSearchLoading,
+  selectedIcon,
+  changeRoute,
+  mobileMenuOpen,
+  setMobileMenuOpen,
 }: Props) => {
   const [searchWord, setSearchWord] = useState<string>("");
 
   const handleSearchWord = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchWord(e.target.value);
   };
+
+  const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter" && searchWord) {
+      searchForDecorations(searchWord);
+    }
+  };
   return (
-    <aside className="fixed bottom-0 left-20 top-0 w-96 overflow-y-auto border-r dark:border-black">
-      <div className="fixed top-0 w-96 bg-zinc-800 p-8 dark:border-b dark:border-black">
-        <h1 className="text-xl font-semibold">Decorations</h1>
-        <div className="flex items-center space-x-4 my-5">
-          <Input
-            type="text"
-            placeholder="Search Decorations"
-            value={searchWord}
-            onChange={(e) => handleSearchWord(e)}
-          />
-          <Button
-            variant="outline"
-            disabled={!searchWord}
-            onClick={() => searchForDecorations(searchWord)}
+    <>
+      {/* Mobile */}
+      <div className="sm:hidden">
+        <AnimatePresence>
+          <motion.div
+            className="fixed shadow w-full max-w-[560px] z-50 h-[70%] bottom-0 left-0 right-0 flex flex-col px-3 rounded-t-[10px] bg-slate-50 dark:bg-zinc-900 border-t dark:border-black sm:hidden"
+            initial={{ y: 1000 }}
+            animate={{ y: 0 }}
+            transition={{
+              type: "spring",
+              damping: 30,
+              stiffness: 300,
+            }}
           >
-            <MagnifyingGlass
-              size={16}
-              weight="bold"
-              className="text-ch-dark dark:text-ch-light"
-            />
-          </Button>
-        </div>
-      </div>
-      {getDecorationsViaCityLoading ||
-      getDecorationsViaCountryLoading ||
-      getDecorationsViaRegionLoading ||
-      getDecoratiosnViaSearchLoading ? (
-        <DecorationsLoading />
-      ) : decorations && decorations.length === 0 ? (
-        <div className="mt-44 p-5 flex justify-center items-center text-center flex-col text-ch-red">
-          <Warning size={32} />
-          <span className="mt-3">
-            Could not find any decorations in this area.
-          </span>
-          <span className="text-sm">
-            Try searching for decorations above or using the map
-          </span>
-        </div>
-      ) : (
-        <div className="mt-44 grid grid-cols-1 gap-y-5 p-5 overflow-y-auto">
-          {decorations?.map((decoration, index) => (
-            <DecorationCard
-              refs={refs}
-              key={decoration.id}
-              decoration={decoration}
-              activeDecoration={activeDecoration}
-              index={index}
-              handleDecorationSelect={handleDecorationSelect}
-              userFavourites={userFavourites?.map(
-                (decoration) => decoration.id
+            <div className="flex justify-center my-2 w-screen">
+              <button
+                className="w-1/4 bg-zinc-700 h-3 rounded-full"
+                onClick={() => setMobileMenuOpen!(false)}
+              ></button>
+            </div>
+            <div className="px-5 dark:text-ch-light">
+              <div className="my-5 flex items-center justify-between space-x-3">
+                <Input
+                  type="text"
+                  placeholder="Search Decorations"
+                  value={searchWord}
+                  onChange={(e) => handleSearchWord(e)}
+                  onKeyDown={(e) => handleKeyPress(e)}
+                />
+                <Button
+                  variant="outline"
+                  disabled={!searchWord}
+                  onClick={() => searchForDecorations(searchWord)}
+                >
+                  <MagnifyingGlass
+                    size={16}
+                    weight="bold"
+                    className="text-ch-dark dark:text-ch-light"
+                  />
+                </Button>
+              </div>
+              <DrawerNavigation
+                selectedIcon={selectedIcon}
+                changeRoute={changeRoute}
+              />
+              {getDecorationsViaCityLoading ||
+              getDecorationsViaCountryLoading ||
+              getDecorationsViaRegionLoading ||
+              getDecorationsViaSearchLoading ? (
+                <DecorationsLoading />
+              ) : decorations && decorations.length === 0 ? (
+                <div className="p-5 flex justify-center items-center text-center flex-col text-ch-red">
+                  <Warning size={32} />
+                  <span className="mt-3">
+                    Could not find any decorations in this area.
+                  </span>
+                  <span className="text-sm">
+                    Try searching for decorations above or using the map
+                  </span>
+                </div>
+              ) : (
+                <>
+                  <span className="mt-5 text-sm font-semibold dark:text-zinc-500">
+                    Decorations
+                  </span>
+                  <div className="grid grid-cols-1 rounded-lg h-[21rem] overflow-y-auto mb-5">
+                    {decorations?.map((decoration, index) => (
+                      <DecorationCard
+                        decorations={decorations}
+                        refs={refs}
+                        key={decoration.id}
+                        decoration={decoration}
+                        activeDecoration={activeDecoration}
+                        index={index}
+                        handleDecorationSelect={handleDecorationSelect}
+                        userFavourites={userFavourites?.map(
+                          (decoration) => decoration.id
+                        )}
+                      />
+                    ))}
+                  </div>
+                </>
               )}
+            </div>
+          </motion.div>
+        </AnimatePresence>
+      </div>
+
+      {/* Desktop */}
+      <aside className="hidden sm:block fixed bottom-0 left-20 top-0 w-96 overflow-y-auto border-r dark:border-black">
+        <div className="fixed top-0 w-96 bg-zinc-800 p-8 dark:border-b dark:border-black">
+          <h1 className="text-xl font-semibold">Decorations</h1>
+          <div className="flex items-center space-x-4 my-5">
+            <Input
+              type="text"
+              placeholder="Search Decorations"
+              value={searchWord}
+              onChange={(e) => handleSearchWord(e)}
             />
-          ))}
+            <Button
+              variant="outline"
+              disabled={!searchWord}
+              onClick={() => searchForDecorations(searchWord)}
+            >
+              <MagnifyingGlass
+                size={16}
+                weight="bold"
+                className="text-ch-dark dark:text-ch-light"
+              />
+            </Button>
+          </div>
         </div>
-      )}
-    </aside>
+        {getDecorationsViaCityLoading ||
+        getDecorationsViaCountryLoading ||
+        getDecorationsViaRegionLoading ||
+        getDecorationsViaSearchLoading ? (
+          <DecorationsLoading />
+        ) : decorations && decorations.length === 0 ? (
+          <div className="mt-44 p-5 flex justify-center items-center text-center flex-col text-ch-red">
+            <Warning size={32} />
+            <span className="mt-3">
+              Could not find any decorations in this area.
+            </span>
+            <span className="text-sm">
+              Try searching for decorations above or using the map
+            </span>
+          </div>
+        ) : (
+          <div className="mt-44 grid grid-cols-1 gap-y-5 p-5 overflow-y-auto">
+            {decorations?.map((decoration, index) => (
+              <DecorationCard
+                refs={refs}
+                key={decoration.id}
+                decoration={decoration}
+                activeDecoration={activeDecoration}
+                index={index}
+                handleDecorationSelect={handleDecorationSelect}
+                userFavourites={userFavourites?.map(
+                  (decoration) => decoration.id
+                )}
+                decorations={decorations}
+              />
+            ))}
+          </div>
+        )}
+      </aside>
+    </>
   );
 };

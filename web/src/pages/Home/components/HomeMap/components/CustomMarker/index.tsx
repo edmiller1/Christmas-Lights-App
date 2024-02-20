@@ -22,7 +22,6 @@ interface Props {
       | Get_Decorations_Via_City
       | Get_Decorations_Via_Region
       | Get_Decorations_Via_Country
-      | Decoration
       | undefined
   ) => void;
   setActiveDecorationIndex: (activeDecorationIndex: number) => void;

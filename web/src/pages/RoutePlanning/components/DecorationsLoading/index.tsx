@@ -1,7 +1,9 @@
 export const DecorationsLoading = () => {
   return (
     <>
-      <div className="sm:hidden"></div>
+      <div className="sm:hidden">
+        <div className="mt-5 h-64 rounded-lg w-full p-2 animate-pulse bg-gray-200 dark:bg-zinc-700"></div>
+      </div>
 
       <div className="hidden sm:block">
         <div className="grid grid-cols-1 gap-y-5 p-5">

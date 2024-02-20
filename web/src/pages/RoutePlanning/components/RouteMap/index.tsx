@@ -71,96 +71,101 @@ export const RouteMap = ({
   routeDecorations,
 }: Props) => {
   return (
-    <Map
-      {...viewState}
-      //@ts-ignore
-      ref={mapRef}
-      mapStyle="mapbox://styles/mapbox/streets-v12"
-      mapboxAccessToken={import.meta.env.VITE_MAPBOX_API_KEY}
-      onMove={(e) => setViewState(e.viewState)}
-      onZoom={(e) => setViewState(e.viewState)}
-    >
-      {currentlyOnRoute ? (
-        <>
-          <Source id="currentRoute" type="geojson" data={routeGeoJson as any}>
-            <Layer {...routeLayer}></Layer>
-          </Source>
-          <Marker
-            longitude={Number(localStorage.getItem("longitude"))}
-            latitude={Number(localStorage.getItem("latitude"))}
-          >
-            <Circle size={28} weight="fill" color="#28a177" />
-          </Marker>
-          {routeDecorations?.map((decoration, index) => (
-            <Marker
-              key={decoration.id}
-              longitude={decoration.longitude}
-              latitude={decoration.latitude}
-            >
-              <div className="relative">
-                <ChatCentered size={48} weight="fill" color="#28a177" />
-                <span className="absolute top-2 left-[1.15rem] font-bold text-xl">
-                  {index + 1}
-                </span>
-              </div>
-            </Marker>
-          ))}
-        </>
-      ) : null}
-
-      {getDecorationsViaCountryLoading ||
-      getDecorationsViaRegionLoading ||
-      getDecorationsViaCityLoading ? (
-        <div className="absolute top-0 left-[48%] mt-5 w-16 h-8 rounded-lg bg-white z-40">
-          <div className="flex justify-center space-x-1 items-center h-full">
-            <Circle
-              size={12}
-              color="#3b403d"
-              weight="fill"
-              className="animate-bounce [animation-delay:-0.3s]"
-            />
-            <Circle
-              size={12}
-              color="#3b403d"
-              weight="fill"
-              className="animate-bounce [animation-delay:-0.15s]"
-            />
-            <Circle
-              size={12}
-              color="#3b403d"
-              weight="fill"
-              className="animate-bounce"
-            />
-          </div>
-        </div>
-      ) : null}
-
-      {!currentlyOnRoute &&
-        decorations?.map((decoration, index: number) => (
+    <>
+      <Map
+        {...viewState}
+        //@ts-ignore
+        ref={mapRef}
+        mapStyle="mapbox://styles/mapbox/streets-v12"
+        mapboxAccessToken={import.meta.env.VITE_MAPBOX_API_KEY}
+        onMove={(e) => setViewState(e.viewState)}
+        onZoom={(e) => setViewState(e.viewState)}
+      >
+        {currentlyOnRoute ? (
           <>
+            <Source id="currentRoute" type="geojson" data={routeGeoJson as any}>
+              <Layer {...routeLayer}></Layer>
+            </Source>
             <Marker
-              key={decoration.id}
-              style={{
-                zIndex: activeDecorationIndex === index ? 49 : "unset",
-              }}
-              longitude={decoration.longitude}
-              latitude={decoration.latitude}
-              onClick={() => handleScroll(decoration.id, index)}
+              longitude={Number(localStorage.getItem("longitude"))}
+              latitude={Number(localStorage.getItem("latitude"))}
             >
-              <CustomMarker
-                activeDecoration={activeDecoration}
-                activeDecorationIndex={activeDecorationIndex}
-                decoration={decoration}
-                index={index}
-                setActiveDecoration={setActiveDecoration}
-                setActiveDecorationIndex={setActiveDecorationIndex}
-              />
+              <Circle size={28} weight="fill" color="#28a177" />
             </Marker>
+            {routeDecorations?.map((decoration, index) => (
+              <Marker
+                key={decoration.id}
+                longitude={decoration.longitude}
+                latitude={decoration.latitude}
+              >
+                <div className="relative">
+                  <ChatCentered size={48} weight="fill" color="#28a177" />
+                  <span className="absolute top-2 left-[1.15rem] font-bold text-xl">
+                    {index + 1}
+                  </span>
+                </div>
+              </Marker>
+            ))}
           </>
-        ))}
+        ) : null}
 
-      <NavigationControl />
-      <GeolocateControl />
-    </Map>
+        {getDecorationsViaCountryLoading ||
+        getDecorationsViaRegionLoading ||
+        getDecorationsViaCityLoading ? (
+          <div className="absolute top-0 left-[48%] mt-5 w-16 h-8 rounded-lg bg-white z-40">
+            <div className="flex justify-center space-x-1 items-center h-full">
+              <Circle
+                size={12}
+                color="#3b403d"
+                weight="fill"
+                className="animate-bounce [animation-delay:-0.3s]"
+              />
+              <Circle
+                size={12}
+                color="#3b403d"
+                weight="fill"
+                className="animate-bounce [animation-delay:-0.15s]"
+              />
+              <Circle
+                size={12}
+                color="#3b403d"
+                weight="fill"
+                className="animate-bounce"
+              />
+            </div>
+          </div>
+        ) : null}
+
+        {!currentlyOnRoute &&
+          decorations?.map((decoration, index: number) => (
+            <>
+              <Marker
+                key={decoration.id}
+                style={{
+                  zIndex:
+                    activeDecoration && activeDecoration.id === decoration.id
+                      ? 49
+                      : "unset",
+                }}
+                longitude={decoration.longitude}
+                latitude={decoration.latitude}
+                onClick={() => handleScroll(decoration.id, index)}
+              >
+                <CustomMarker
+                  activeDecoration={activeDecoration}
+                  activeDecorationIndex={activeDecorationIndex}
+                  decoration={decoration}
+                  index={index}
+                  setActiveDecoration={setActiveDecoration}
+                  setActiveDecorationIndex={setActiveDecorationIndex}
+                />
+              </Marker>
+            </>
+          ))}
+
+        <NavigationControl />
+        <GeolocateControl />
+      </Map>
+    </>
   );
 };

@@ -13,4 +13,5 @@ export * from "./getUnresolvedReportsCount";
 export * from "./getUserNotifications";
 export * from "./getVerificatonRequests";
 export * from "./getVerificationRequestsCount";
+export * from "./searchForDecorations";
 export * from "./searchUserFavourites";

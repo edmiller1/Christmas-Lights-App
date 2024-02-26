@@ -5,5 +5,6 @@ export * from "./NotFound";
 export * from "./Notifications";
 export * from "./Profile";
 export * from "./RoutePlanning";
+export * from "./Search";
 export * from "./Signin";
 export * from "./VerifyDecoration";

@@ -20,6 +20,7 @@ import {
   Notifications,
   Profile,
   RoutePlanning,
+  Search,
   SignIn,
   VerifyDecoration,
 } from "./pages";
@@ -40,6 +41,10 @@ const router = createBrowserRouter([
     path: "/",
     element: <App />,
     children: [],
+  },
+  {
+    path: "/search",
+    element: <Search />,
   },
   {
     path: "/route-planning",

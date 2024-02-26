@@ -14,6 +14,7 @@ import {
   GetRecommendedDecorationsArgs,
   RateDecorationArgs,
   ReportDecorationArgs,
+  SearchForDecorationsArgs,
   SubmitDecorationForVerificationArgs,
   getDecorationsViaSearchArgs,
   removeDecorationFromHistoryArgs,
@@ -338,6 +339,73 @@ export const decorationResolvers = {
         });
 
         return decorations;
+      } catch (error) {
+        throw new Error(`${error}`);
+      }
+    },
+    searchForDecorations: async (
+      _root: undefined,
+      { input }: SearchForDecorationsArgs,
+      { _, req, res }: { _: undefined; req: Request; res: Response }
+    ): Promise<{ decorations: Decoration[]; count: number }> => {
+      try {
+        const [decorations, count] = await prisma.$transaction([
+          prisma.decoration.findMany({
+            skip: input.skip,
+            take: 18,
+            where: {
+              OR: [
+                {
+                  name: {
+                    contains: input.searchTerm,
+                    mode: "insensitive",
+                  },
+                },
+                {
+                  city: {
+                    contains: input.searchTerm,
+                    mode: "insensitive",
+                  },
+                },
+                {
+                  address: {
+                    contains: input.searchTerm,
+                    mode: "insensitive",
+                  },
+                },
+              ],
+            },
+            include: {
+              images: true,
+            },
+          }),
+          prisma.decoration.count({
+            where: {
+              OR: [
+                {
+                  name: {
+                    contains: input.searchTerm,
+                    mode: "insensitive",
+                  },
+                },
+                {
+                  city: {
+                    contains: input.searchTerm,
+                    mode: "insensitive",
+                  },
+                },
+                {
+                  address: {
+                    contains: input.searchTerm,
+                    mode: "insensitive",
+                  },
+                },
+              ],
+            },
+          }),
+        ]);
+
+        return { decorations: decorations, count: count };
       } catch (error) {
         throw new Error(`${error}`);
       }

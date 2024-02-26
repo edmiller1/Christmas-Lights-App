@@ -275,6 +275,16 @@ export const typeDefs = gql`
     searchTerm: String!
   }
 
+  input GlobalSearchInput {
+    searchTerm: String!
+    skip: Int!
+  }
+
+  type SearchedDecorations {
+    decorations: [Decoration!]!
+    count: Int!
+  }
+
   #Queries
   type Query {
     # App Queries
@@ -292,6 +302,7 @@ export const typeDefs = gql`
     getDecorationsViaCity(input: DecorationsViaMapInput!): [Decoration!]!
     getDecorationsViaSearch(input: DecorationsViaSearchInput!): [Decoration!]!
     searchUserFavourites(input: SearchInput!): [Decoration!]!
+    searchForDecorations(input: GlobalSearchInput!): SearchedDecorations!
 
     # Admin Queries
     getVerificationSubmissions: [Decoration]!

@@ -25,15 +25,33 @@ import { Get_User } from "@/graphql/queries/getUser/types";
 import { useState } from "react";
 import { useToast } from "../ui/use-toast";
 import { auth } from "@/lib/firebase";
+import { useNavigate } from "react-router-dom";
 
 interface Props {
   user: Get_User | null;
+  searchQuery?: string | null;
 }
 
-export const AppHeader = ({ user }: Props) => {
+export const AppHeader = ({ user, searchQuery }: Props) => {
+  const navigate = useNavigate();
   const location = useLocation();
   const { toast } = useToast();
   const [isCreateOpen, setIsCreateOpen] = useState<boolean>(false);
+  const [searchTerm, setSearchTerm] = useState<string>("");
+
+  const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchTerm(e.target.value);
+  };
+
+  const searchViaKey = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter" && searchTerm) {
+      navigate(`/search?query=${searchTerm}`);
+    }
+  };
+
+  const searchViaClick = () => {
+    navigate(`/search?query=${searchTerm}`);
+  };
 
   const {
     data: getUserNotificationsData,
@@ -92,8 +110,20 @@ export const AppHeader = ({ user }: Props) => {
               <img src={logo} alt="logo" className="h-12" />
             </Link>
             <div className="flex w-full max-w-sm items-center justify-center space-x-2">
-              <Input type="text" placeholder="Search" />
-              <Button variant="outline" size="icon" type="submit">
+              <Input
+                type="text"
+                placeholder="Search"
+                value={searchQuery ? searchQuery : searchTerm}
+                onChange={(e) => handleSearch(e)}
+                onKeyDown={(e) => searchViaKey(e)}
+              />
+              <Button
+                variant="outline"
+                size="icon"
+                type="submit"
+                disabled={!searchTerm}
+                onClick={searchViaClick}
+              >
                 <MagnifyingGlass
                   size={16}
                   weight="bold"

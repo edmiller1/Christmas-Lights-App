@@ -23,11 +23,11 @@ import {
   Star,
 } from "@phosphor-icons/react";
 import { Link, useNavigate } from "react-router-dom";
-import { useToast } from "../ui/use-toast";
 import { User } from "firebase/auth";
-import { ToastAction } from "../ui/toast";
 import { Get_Decorations_By_Rating } from "@/graphql/queries/getDecorationsByRating/types";
 import { Search_For_Decorations } from "@/graphql/queries/searchForDecorations/types";
+import { useToast } from "@/components/ui/use-toast";
+import { ToastAction } from "@/components/ui/toast";
 
 interface Props {
   index: number;
@@ -176,6 +176,7 @@ export const DecorationCard = ({
 
   return (
     <>
+      {/* Mobile */}
       <div className="group block sm:hidden">
         <div className="overflow-hidden rounded-xl relative">
           <div
@@ -316,7 +317,7 @@ export const DecorationCard = ({
                 <img
                   key={image.id}
                   src={image.url}
-                  className="decoration-card-image object-cover w-60 h-60"
+                  className="decoration-card-image object-cover w-56 h-80"
                 />
               ))}
             </div>
@@ -423,7 +424,7 @@ export const DecorationCard = ({
           </span>
           <Link to={`/decoration/${decoration.id}`}>
             <ArrowUpRight
-              size={16}
+              size={20}
               weight="bold"
               className="more-arrow text-ch-dark dark:text-ch-light"
             />

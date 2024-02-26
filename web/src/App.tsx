@@ -7,7 +7,6 @@ import {
 import { AppHeader } from "./components";
 import { useEffect } from "react";
 import { AppHeaderLoading } from "./components/AppHeader/components";
-import { Outlet } from "react-router-dom";
 import "mapbox-gl/dist/mapbox-gl.css";
 import { useUserData } from "./lib/hooks";
 import { UserContext } from "./lib/context";
@@ -57,11 +56,6 @@ function App() {
     <UserContext.Provider value={currentUser}>
       {getUserLoading ? <AppHeaderLoading /> : <AppHeader user={user} />}
       <Home />
-      {/* <div className="min-h-screen">
-        {getUserLoading ? <AppHeaderLoading /> : <AppHeader user={user} />}
-
-        <Outlet />
-      </div> */}
     </UserContext.Provider>
   );
 }

@@ -117,3 +117,10 @@ export interface getDecorationsViaSearchArgs {
     searchTerm: string;
   };
 }
+
+export interface SearchForDecorationsArgs {
+  input: {
+    searchTerm: string;
+    skip: number;
+  };
+}

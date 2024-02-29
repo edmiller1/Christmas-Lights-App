@@ -310,9 +310,7 @@ export const Search = () => {
             closePopup={closePopup}
             activeDecoration={activeDecoration}
             setActiveDecoration={setActiveDecoration}
-            activeDecorationIndex={activeDecorationIndex}
             setActiveDecorationIndex={setActiveDecorationIndex}
-            userFavourites={user?.favourites.map((decoration) => decoration.id)}
           />
         </div>
         <div className="fixed shadow w-full max-w-[560px] p-2 z-50 bottom-0 left-0 right-0 flex flex-col rounded-t-[10px] bg-slate-50 dark:bg-zinc-900 border-t dark:border-black">
@@ -447,11 +445,7 @@ export const Search = () => {
               closePopup={closePopup}
               activeDecoration={activeDecoration}
               setActiveDecoration={setActiveDecoration}
-              activeDecorationIndex={activeDecorationIndex}
               setActiveDecorationIndex={setActiveDecorationIndex}
-              userFavourites={user?.favourites.map(
-                (decoration) => decoration.id
-              )}
             />
           </div>
         </div>

@@ -48,9 +48,7 @@ interface Props {
       | Search_For_Decorations
       | undefined
   ) => void;
-  activeDecorationIndex: number;
   setActiveDecorationIndex: (activeDecorationIndex: number) => void;
-  userFavourites: string[] | undefined;
 }
 
 export const SearchMap = ({
@@ -65,9 +63,7 @@ export const SearchMap = ({
   showPopup,
   activeDecoration,
   setActiveDecoration,
-  activeDecorationIndex,
   setActiveDecorationIndex,
-  userFavourites,
 }: Props) => {
   const mapRef = useRef<MapRef>();
   return (

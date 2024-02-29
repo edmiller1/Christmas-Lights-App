@@ -36,7 +36,6 @@ interface Props {
       | Decoration
       | undefined
   ) => void;
-  activeDecorationIndex: number;
   setActiveDecorationIndex: (activeDecorationIndex: number) => void;
   getDecorationsViaCountryLoading: boolean;
   getDecorationsViaCityLoading: boolean;
@@ -58,7 +57,6 @@ export const RouteMap = ({
   decorations,
   activeDecoration,
   setActiveDecoration,
-  activeDecorationIndex,
   setActiveDecorationIndex,
   getDecorationsViaCityLoading,
   getDecorationsViaCountryLoading,

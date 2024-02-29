@@ -182,158 +182,159 @@ export const AppHeader = ({ user, searchQuery }: Props) => {
           </div>
         </div>
       </div>
-      <nav className="fixed shadow w-full max-w-[560px] h-18 bottom-0 left-0 right-0 z-50 flex items-center bg-slate-50 dark:bg-zinc-900 border-t dark:border-black sm:hidden">
-        <div className="flex flex-auto items-start justify-center">
-          <Link
-            to="/"
-            type="button"
-            className={`${
-              location.pathname === "/" || location.pathname.includes("/search")
-                ? "flex flex-col flex-1 items-center p-4 text-center text-ch-red"
-                : "flex flex-col flex-1 items-center p-4 text-center"
-            }`}
-          >
-            <House
-              size={24}
-              className={`${
-                location.pathname === "/" ||
-                location.pathname.includes("/search")
-                  ? "text-ch-red"
-                  : "text-ch-dark dark:text-ch-light"
-              }`}
-            />
-            <span className="text-xs mt-1">Home</span>
-          </Link>
-
-          {user ? (
+      {!location.pathname.includes("search") ? (
+        <nav className="fixed shadow w-full max-w-[560px] h-18 bottom-0 left-0 right-0 z-50 flex items-center bg-slate-50 dark:bg-zinc-900 border-t dark:border-black sm:hidden">
+          <div className="flex flex-auto items-start justify-center">
             <Link
-              to="/route-planning"
+              to="/"
               type="button"
               className={`${
-                location.pathname === "/route-planning"
+                location.pathname === "/"
                   ? "flex flex-col flex-1 items-center p-4 text-center text-ch-red"
                   : "flex flex-col flex-1 items-center p-4 text-center"
               }`}
             >
-              <Path
+              <House
                 size={24}
+                className={`${
+                  location.pathname === "/"
+                    ? "text-ch-red"
+                    : "text-ch-dark dark:text-ch-light"
+                }`}
+              />
+              <span className="text-xs mt-1">Home</span>
+            </Link>
+
+            {user ? (
+              <Link
+                to="/route-planning"
+                type="button"
                 className={`${
                   location.pathname === "/route-planning"
-                    ? "text-ch-red"
-                    : "text-ch-dark dark:text-ch-light"
+                    ? "flex flex-col flex-1 items-center p-4 text-center text-ch-red"
+                    : "flex flex-col flex-1 items-center p-4 text-center"
                 }`}
-              />
-              <span className="text-xs mt-1">Route</span>
-            </Link>
-          ) : (
-            <Link
-              to="/signin"
-              type="button"
-              className="flex flex-col flex-1 items-center p-4 text-center"
-            >
-              <Path size={24} className="text-ch-dark dark:text-ch-light" />
-              <span className="text-xs mt-1">Route</span>
-            </Link>
-          )}
+              >
+                <Path
+                  size={24}
+                  className={`${
+                    location.pathname === "/route-planning"
+                      ? "text-ch-red"
+                      : "text-ch-dark dark:text-ch-light"
+                  }`}
+                />
+                <span className="text-xs mt-1">Route</span>
+              </Link>
+            ) : (
+              <Link
+                to="/signin"
+                type="button"
+                className="flex flex-col flex-1 items-center p-4 text-center"
+              >
+                <Path size={24} className="text-ch-dark dark:text-ch-light" />
+                <span className="text-xs mt-1">Route</span>
+              </Link>
+            )}
 
-          {user ? (
-            <div
-              role="button"
-              className="flex flex-col flex-1 items-center p-4 text-center"
-              onClick={() => setIsCreateOpen(true)}
-            >
-              <PlusSquare
-                size={24}
-                className="text-ch-dark dark:text-ch-light"
-              />
-              <span className="text-xs mt-1">Create</span>
-            </div>
-          ) : (
-            <Link
-              to="/signin"
-              type="button"
-              className="flex flex-col flex-1 items-center p-4 text-center"
-            >
-              <PlusSquare
-                size={24}
-                className="text-ch-dark dark:text-ch-light"
-              />
-              <span className="text-xs mt-1">Create</span>
-            </Link>
-          )}
+            {user ? (
+              <div
+                role="button"
+                className="flex flex-col flex-1 items-center p-4 text-center"
+                onClick={() => setIsCreateOpen(true)}
+              >
+                <PlusSquare
+                  size={24}
+                  className="text-ch-dark dark:text-ch-light"
+                />
+                <span className="text-xs mt-1">Create</span>
+              </div>
+            ) : (
+              <Link
+                to="/signin"
+                type="button"
+                className="flex flex-col flex-1 items-center p-4 text-center"
+              >
+                <PlusSquare
+                  size={24}
+                  className="text-ch-dark dark:text-ch-light"
+                />
+                <span className="text-xs mt-1">Create</span>
+              </Link>
+            )}
 
-          {!user ? (
-            <Link
-              to="/signin"
-              type="button"
-              className="flex flex-col flex-1 items-center p-4 text-center"
-            >
-              <Bell size={24} className="text-ch-dark dark:text-ch-light" />
-              <span className="text-xs mt-1">Inbox</span>
-            </Link>
-          ) : (
-            <Link
-              to="/notifications"
-              type="button"
-              className={`${
-                location.pathname === "/notifications"
-                  ? "relative flex flex-col flex-1 items-center p-4 text-center text-ch-red"
-                  : "relative flex flex-col flex-1 items-center p-4 text-center"
-              }`}
-            >
-              <Bell
-                size={24}
+            {!user ? (
+              <Link
+                to="/signin"
+                type="button"
+                className="flex flex-col flex-1 items-center p-4 text-center"
+              >
+                <Bell size={24} className="text-ch-dark dark:text-ch-light" />
+                <span className="text-xs mt-1">Inbox</span>
+              </Link>
+            ) : (
+              <Link
+                to="/notifications"
+                type="button"
                 className={`${
                   location.pathname === "/notifications"
-                    ? "text-ch-red"
-                    : "text-ch-dark dark:text-ch-light"
+                    ? "relative flex flex-col flex-1 items-center p-4 text-center text-ch-red"
+                    : "relative flex flex-col flex-1 items-center p-4 text-center"
                 }`}
-              />
-              <span className="text-xs mt-1">Inbox</span>
-              {userNotifications?.filter((not) => not.unread).length ===
-              0 ? null : (
-                <div className="absolute top-2 right-7 w-4 h-4 bg-red-600 rounded-full text-xs text-white">
-                  {userNotifications?.filter((not) => not.unread).length}
-                </div>
-              )}
-            </Link>
-          )}
+              >
+                <Bell
+                  size={24}
+                  className={`${
+                    location.pathname === "/notifications"
+                      ? "text-ch-red"
+                      : "text-ch-dark dark:text-ch-light"
+                  }`}
+                />
+                <span className="text-xs mt-1">Inbox</span>
+                {userNotifications?.filter((not) => not.unread).length ===
+                0 ? null : (
+                  <div className="absolute top-2 right-7 w-4 h-4 bg-red-600 rounded-full text-xs text-white">
+                    {userNotifications?.filter((not) => not.unread).length}
+                  </div>
+                )}
+              </Link>
+            )}
 
-          {!user ? (
-            <Link
-              to="/signin"
-              type="button"
-              className="flex flex-col flex-1 items-center p-4 text-center"
-            >
-              <UserCircle
-                size={24}
-                className="text-ch-dark dark:text-ch-light"
-              />
-              <span className="text-xs mt-1">Profile</span>
-            </Link>
-          ) : (
-            <Link
-              to="/profile"
-              type="button"
-              className={`${
-                location.pathname.includes("/profile")
-                  ? "relative flex flex-col flex-1 items-center p-4 text-center text-ch-red"
-                  : "relative flex flex-col flex-1 items-center p-4 text-center"
-              }`}
-            >
-              <UserCircle
-                size={24}
+            {!user ? (
+              <Link
+                to="/signin"
+                type="button"
+                className="flex flex-col flex-1 items-center p-4 text-center"
+              >
+                <UserCircle
+                  size={24}
+                  className="text-ch-dark dark:text-ch-light"
+                />
+                <span className="text-xs mt-1">Profile</span>
+              </Link>
+            ) : (
+              <Link
+                to="/profile"
+                type="button"
                 className={`${
                   location.pathname.includes("/profile")
-                    ? "text-ch-red"
-                    : "text-ch-dark dark:text-ch-light"
+                    ? "relative flex flex-col flex-1 items-center p-4 text-center text-ch-red"
+                    : "relative flex flex-col flex-1 items-center p-4 text-center"
                 }`}
-              />
-              <span className="text-xs mt-1">Profile</span>
-            </Link>
-          )}
-        </div>
-      </nav>
+              >
+                <UserCircle
+                  size={24}
+                  className={`${
+                    location.pathname.includes("/profile")
+                      ? "text-ch-red"
+                      : "text-ch-dark dark:text-ch-light"
+                  }`}
+                />
+                <span className="text-xs mt-1">Profile</span>
+              </Link>
+            )}
+          </div>
+        </nav>
+      ) : null}
     </>
   );
 };

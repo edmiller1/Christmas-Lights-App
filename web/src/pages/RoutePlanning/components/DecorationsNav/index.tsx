@@ -156,7 +156,7 @@ export const DecorationsNav = ({
                   <span className="mt-5 text-sm font-semibold dark:text-zinc-500">
                     Decorations
                   </span>
-                  <div className="grid grid-cols-1 rounded-lg h-[21rem] overflow-y-auto mb-5">
+                  <div className="grid grid-cols-1 rounded-lg h-[21rem] overflow-y-auto mb-5 no-scrollbar">
                     {decorations?.map((decoration, index) => (
                       <DecorationCard
                         decorations={decorations}

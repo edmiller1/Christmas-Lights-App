@@ -32,24 +32,40 @@ import {
 } from "@/graphql/queries/searchForDecorations/types";
 import { useUserData } from "@/lib/hooks";
 import { useQuery, useLazyQuery } from "@apollo/client";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { AppHeaderLoading } from "@/components/AppHeader/components";
 import { useEffect, useState } from "react";
 import {
   DecorationCard,
   DecorationsLoading,
   Pagi,
+  SearchDrawer,
   SearchMap,
 } from "./components";
 import { Warning } from "@phosphor-icons/react";
+import { Button } from "@/components/ui/button";
+import { Drawer, DrawerTrigger } from "@/components/ui/drawer";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { UserMenu } from "../RoutePlanning/components";
+
+const initialViewState = {
+  latitude: 0,
+  longitude: 0,
+  zoom: 14,
+  bearing: 0,
+  pitch: 0,
+};
 
 export const Search = () => {
+  const navigate = useNavigate();
   const currentUser = useUserData();
   const location = useLocation();
   const searchQuery = new URLSearchParams(location.search).get("query");
 
-  const [globalType, setGlobalType] = useState<string>("");
-  const [viewState, setViewState] = useState<any>();
+  const [openSearchDrawer, setOpenSearchDrawer] = useState<boolean>(false);
+
+  const [globalType, setGlobalType] = useState<string>("search");
+  const [viewState, setViewState] = useState<any>(initialViewState);
   const [decorationCount, setDecorationCount] = useState<number>(0);
   const [searchedDecorations, setSearchedDecorations] = useState<
     | Search_For_Decorations[]
@@ -135,10 +151,11 @@ export const Search = () => {
         setTotalPages(Math.ceil(data.searchForDecorations.count / 18));
         setDecorationCount(data.searchForDecorations.count);
         setSearchedDecorations(data.searchForDecorations.decorations);
+        setGlobalType(data.searchForDecorations.type);
         const newViewState = {
           latitude: data.searchForDecorations.decorations[0].latitude,
           longitude: data.searchForDecorations.decorations[0].longitude,
-          zoom: 15,
+          zoom: 14,
           bearing: 0,
           pitch: 0,
         };
@@ -237,9 +254,10 @@ export const Search = () => {
   };
 
   useEffect(() => {
-    if (viewState && viewState.zoom !== 15) {
+    if (viewState && viewState.zoom !== 14) {
       const getDecorationData = setTimeout(() => {
         if (viewState && viewState.zoom <= 6) {
+          console.log("HUH!!");
           getDecorationsViaCountry({
             variables: {
               input: {
@@ -278,12 +296,93 @@ export const Search = () => {
   return (
     <>
       {/* Mobile */}
-      <div className="sm:hidden">
+      <div className="sm:hidden h-screen">
         {getUserLoading ? (
           <AppHeaderLoading />
         ) : (
           <AppHeader user={user} searchQuery={searchQuery} />
         )}
+        <div className="fixed top-16 w-screen h-screen">
+          <SearchMap
+            searchedDecorations={searchedDecorations}
+            viewState={viewState}
+            setViewState={setViewState}
+            getDecorationsViaCountryLoading={getDecorationsViaCountryLoading}
+            getDecorationsViaCityLoading={getDecorationsViaCityLoading}
+            getDecorationsViaRegionLoading={getDecorationsViaRegionLoading}
+            searchForDecorationsLoading={searchForDecorationsLoading}
+            showPopup={showPopup}
+            closePopup={closePopup}
+            activeDecoration={activeDecoration}
+            setActiveDecoration={setActiveDecoration}
+            activeDecorationIndex={activeDecorationIndex}
+            setActiveDecorationIndex={setActiveDecorationIndex}
+            userFavourites={user?.favourites.map((decoration) => decoration.id)}
+          />
+        </div>
+        <div className="fixed shadow w-full max-w-[560px] p-2 z-50 bottom-0 left-0 right-0 flex flex-col rounded-t-[10px] bg-slate-50 dark:bg-zinc-900 border-t dark:border-black">
+          <div>
+            <div className="w-full flex items-center justify-center mt-2">
+              <button
+                className="w-1/4 bg-zinc-700 h-3 rounded-full"
+                onClick={() => setOpenSearchDrawer(true)}
+              ></button>
+            </div>
+            {openSearchDrawer ? (
+              <SearchDrawer
+                searchQuery={searchQuery}
+                getDecorationsViaCityLoading={getDecorationsViaCityLoading}
+                getDecorationsViaCountryLoading={
+                  getDecorationsViaCountryLoading
+                }
+                getDecorationsViaRegionLoading={getDecorationsViaRegionLoading}
+                searchForDecorationsLoading={searchForDecorationsLoading}
+                searchedDecorations={searchedDecorations}
+                openSearchDrawer={openSearchDrawer}
+                setOpenSearchDrawer={setOpenSearchDrawer}
+                currentUser={currentUser}
+                refetchUserData={refetchUserData}
+                userFavourites={user?.favourites.map((item) => item.id)}
+                nextPage={nextPage}
+                pageNumber={pageNumber}
+                previousPage={previousPage}
+                setPageNumber={setPageNumber}
+                totalPages={totalPages}
+              />
+            ) : null}
+          </div>
+          <div className="flex justify-between items-center">
+            <span className="font-semibold">
+              Showing top results for: <strong>{searchQuery}</strong>
+            </span>
+            {getUserLoading ? (
+              <div className="p-2">
+                <div className="w-10 h-10 rounded-full animate-pulse bg-gray-200 dark:bg-zinc-700"></div>
+              </div>
+            ) : user ? (
+              <div className="p-2">
+                <Drawer>
+                  <DrawerTrigger>
+                    <Avatar>
+                      <AvatarImage src={user?.image} alt="profile picture" />
+                      <AvatarFallback>
+                        {user?.name[0].toUpperCase()}
+                      </AvatarFallback>
+                    </Avatar>
+                    <UserMenu user={user} />
+                  </DrawerTrigger>
+                </Drawer>
+              </div>
+            ) : (
+              <Button
+                className="w-1/4 mr-2"
+                onClick={() => navigate("/signin")}
+              >
+                Log In
+              </Button>
+            )}
+          </div>
+        </div>
       </div>
 
       {/* Desktop */}
@@ -299,7 +398,7 @@ export const Search = () => {
               <div className="h-10 w-1/4 rounded-lg animate-pulse bg-gray-200 dark:bg-zinc-700"></div>
             ) : (
               <span className="font-semibold">
-                Showing top results for: {searchQuery}
+                Showing top results for: <strong>{searchQuery}</strong>
               </span>
             )}
             {getDecorationsViaCountryLoading ||

@@ -137,7 +137,7 @@ export const FavouritesNav = ({
                   <span className="mt-5 text-sm font-semibold dark:text-zinc-500">
                     Favourites
                   </span>
-                  <div className="grid grid-cols-1 rounded-lg h-[21rem] mb-5 overflow-y-auto">
+                  <div className="grid grid-cols-1 rounded-lg h-[21rem] mb-5 overflow-y-auto no-scrollbar">
                     {filteredList?.map((decoration, index) => (
                       <DecorationCard
                         activeDecoration={activeDecoration}

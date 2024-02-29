@@ -31,7 +31,7 @@ export const Pagi = ({
     if (totalPages <= visiblePages) {
       for (let i = 1; i <= totalPages; i++) {
         pageNumbers.push(
-          <PaginationItem onClick={() => setPageNumber(i)}>
+          <PaginationItem key={i} onClick={() => setPageNumber(i)}>
             <PaginationLink isActive={i === pageNumber}>{i}</PaginationLink>
           </PaginationItem>
         );
@@ -50,7 +50,7 @@ export const Pagi = ({
 
       for (let i = startPage; i <= endPage; i++) {
         pageNumbers.push(
-          <PaginationItem onClick={() => setPageNumber(i)}>
+          <PaginationItem key={i} onClick={() => setPageNumber(i)}>
             <PaginationLink isActive={i === pageNumber}>{i}</PaginationLink>
           </PaginationItem>
         );
@@ -67,46 +67,6 @@ export const Pagi = ({
 
     return pageNumbers;
   };
-
-  // const renderPageNumbers = () => {
-  //   const pageNumbers = [];
-
-  //   for (let i = 1; i <= Math.min(totalPages, visiblePages); i++) {
-  //     pageNumbers.push(
-  //       <PaginationItem onClick={() => setPageNumber(i)}>
-  //         <PaginationLink isActive={i === pageNumber}>{i}</PaginationLink>
-  //       </PaginationItem>
-  //     );
-  //   }
-
-  //   if (totalPages > visiblePages) {
-  //     pageNumbers.push(
-  //       <PaginationItem>
-  //         <PaginationEllipsis />
-  //       </PaginationItem>
-  //     );
-
-  //     const additionalPagesStart = Math.max(
-  //       pageNumber - Math.floor(visiblePages / 2),
-  //       1
-  //     );
-  //     const additionalPagesEnd = Math.min(
-  //       additionalPagesStart + visiblePages - 1,
-  //       totalPages
-  //     );
-
-  //     for (let i = additionalPagesStart; i <= additionalPagesEnd; i++) {
-  //       if (i > Math.min(totalPages, visiblePages)) {
-  //         pageNumbers.push(
-  //           <PaginationItem onClick={() => setPageNumber(i)}>
-  //             <PaginationLink isActive={i === pageNumber}>{i}</PaginationLink>
-  //           </PaginationItem>
-  //         );
-  //       }
-  //     }
-  //   }
-  //   return pageNumbers;
-  // };
 
   return (
     <Pagination>

@@ -212,9 +212,7 @@ export const HomeMap = ({ setMapLoading, userFavourites }: Props) => {
                 <CustomMarker
                   activeDecoration={activeDecoration}
                   decoration={decoration}
-                  index={index}
                   setActiveDecoration={setActiveDecoration}
-                  setActiveDecorationIndex={setActiveDecorationIndex}
                 />
               </Marker>
             </>
@@ -321,9 +319,7 @@ export const HomeMap = ({ setMapLoading, userFavourites }: Props) => {
                 <CustomMarker
                   activeDecoration={activeDecoration}
                   decoration={decoration}
-                  index={index}
                   setActiveDecoration={setActiveDecoration}
-                  setActiveDecorationIndex={setActiveDecorationIndex}
                 />
               </Marker>
 
@@ -338,7 +334,6 @@ export const HomeMap = ({ setMapLoading, userFavourites }: Props) => {
                   <PopupCard
                     activeDecoration={activeDecoration}
                     setActiveDecoration={setActiveDecoration}
-                    setActiveDecorationIndex={setActiveDecorationIndex}
                   />
                 </Popup>
               ) : null}

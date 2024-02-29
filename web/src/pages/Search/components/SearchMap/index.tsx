@@ -105,7 +105,7 @@ export const SearchMap = ({
           </div>
         ) : null}
 
-        {searchedDecorations?.map((decoration, index) => (
+        {searchedDecorations?.map((decoration) => (
           <>
             <Marker
               key={decoration.id}

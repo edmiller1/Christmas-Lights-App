@@ -6,8 +6,8 @@ import {
   GetUserArgs,
   Get_User,
 } from "@/graphql/queries/getUser/types";
-import { CaretLeft, CircleNotch, Heart, Star } from "@phosphor-icons/react";
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { CaretLeft } from "@phosphor-icons/react";
+import { useLocation, useNavigate } from "react-router-dom";
 import { YourDecorationsLoading } from "../YourDecorations/components";
 import { DecorationCard, NoFavourites } from "./components";
 import { Breadcrumbs } from "@/components";

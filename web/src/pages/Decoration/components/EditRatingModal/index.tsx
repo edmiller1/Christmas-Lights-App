@@ -101,35 +101,38 @@ export const EditRatingModal = ({
                 ) : (
                   <>
                     <div className="flex justify-center mt-3 p-4">
-                      {[...Array(5)].map((star, index) => {
-                        const ratingValue = index + 1;
-                        return (
-                          <label key={ratingValue}>
-                            <input
-                              type="radio"
-                              name="rating"
-                              value={rating}
-                              onClick={() => handleRating(ratingValue)}
-                              checked={ratingValue === rating}
-                              readOnly
-                              hidden
-                            />
-                            {rating && ratingValue <= rating ? (
-                              <Star
-                                size={54}
-                                color="#E8A951"
-                                weight="fill"
-                                className="cursor-pointer"
+                      {[...Array(5)].map(
+                        //@ts-ignore
+                        (star, index) => {
+                          const ratingValue = index + 1;
+                          return (
+                            <label key={ratingValue}>
+                              <input
+                                type="radio"
+                                name="rating"
+                                value={rating}
+                                onClick={() => handleRating(ratingValue)}
+                                checked={ratingValue === rating}
+                                readOnly
+                                hidden
                               />
-                            ) : (
-                              <Star
-                                size={54}
-                                className="cursor-pointer text-ch-dark dark:text-ch-light"
-                              />
-                            )}
-                          </label>
-                        );
-                      })}
+                              {rating && ratingValue <= rating ? (
+                                <Star
+                                  size={54}
+                                  color="#E8A951"
+                                  weight="fill"
+                                  className="cursor-pointer"
+                                />
+                              ) : (
+                                <Star
+                                  size={54}
+                                  className="cursor-pointer text-ch-dark dark:text-ch-light"
+                                />
+                              )}
+                            </label>
+                          );
+                        }
+                      )}
                     </div>
                     <div className="flex justify-center py-4">
                       <Button

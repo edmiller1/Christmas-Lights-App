@@ -3,7 +3,6 @@ import logo from "../../assets/ChristmasLights-House-Logo.png";
 import {
   FaDiscord,
   FaDribbble,
-  FaFacebook,
   FaFacebookF,
   FaGithub,
   FaTwitter,

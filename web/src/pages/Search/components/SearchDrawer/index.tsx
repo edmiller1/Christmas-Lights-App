@@ -1,13 +1,8 @@
-import {
-  DrawerClose,
-  DrawerContent,
-  DrawerHeader,
-} from "@/components/ui/drawer";
 import { Get_Decorations_Via_City } from "@/graphql/queries/getDecorationsViaCity/types";
 import { Get_Decorations_Via_Country } from "@/graphql/queries/getDecorationsViaCountry/types";
 import { Get_Decorations_Via_Region } from "@/graphql/queries/getDecorationsViaRegion/types";
 import { Search_For_Decorations } from "@/graphql/queries/searchForDecorations/types";
-import { Warning, X } from "@phosphor-icons/react";
+import { Warning } from "@phosphor-icons/react";
 import { DecorationCard, DecorationsLoading, Pagi } from "..";
 import { AnimatePresence, motion } from "framer-motion";
 import { User } from "firebase/auth";
@@ -24,7 +19,6 @@ interface Props {
     | Get_Decorations_Via_Country[]
     | Get_Decorations_Via_Region[]
     | undefined;
-  openSearchDrawer: boolean;
   setOpenSearchDrawer: (openSearchDrawer: boolean) => void;
   currentUser: User | null | undefined;
   refetchUserData: () => void;
@@ -43,7 +37,6 @@ export const SearchDrawer = ({
   getDecorationsViaRegionLoading,
   searchForDecorationsLoading,
   searchedDecorations,
-  openSearchDrawer,
   setOpenSearchDrawer,
   currentUser,
   refetchUserData,

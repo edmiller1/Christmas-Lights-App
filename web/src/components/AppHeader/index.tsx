@@ -55,7 +55,6 @@ export const AppHeader = ({ user, searchQuery }: Props) => {
 
   const {
     data: getUserNotificationsData,
-    loading: getUserNotificationsLoading,
     refetch: getUserNotificationsRefetch,
   } = useQuery<GetUserNotificationsData>(GET_USER_NOTIFICATIONS);
 

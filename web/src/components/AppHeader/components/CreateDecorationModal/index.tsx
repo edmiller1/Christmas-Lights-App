@@ -5,7 +5,7 @@ import {
   CreateDecoration as CreateDecorationData,
   CreateDecorationArgs,
 } from "@/graphql/mutations/createDecoration/types";
-import { generateUID, getBase64Value } from "@/lib/helpers";
+import { generateUID } from "@/lib/helpers";
 import { Get_User } from "@/graphql/queries/getUser/types";
 import { useToast } from "@/components/ui/use-toast";
 import { DetailsModal, ImagesModal, UploadModal } from "..";
@@ -75,6 +75,7 @@ export const CreateDecorationModal = ({
     const imagesCopy = [...images];
     const filesCopy = [...files];
     if (!user?.premium && images.length > 6) {
+      //@ts-ignore
       imagesCopy.forEach((image) => {
         if (imagesCopy.length > 6) {
           imagesCopy.pop();
@@ -88,6 +89,7 @@ export const CreateDecorationModal = ({
         description: "You can only upload a maximum of 6 images",
       });
     } else if (user?.premium && images.length > 8) {
+      //@ts-ignore
       imagesCopy.forEach((image) => {
         if (imagesCopy.length > 8) {
           imagesCopy.pop();
@@ -148,6 +150,7 @@ export const CreateDecorationModal = ({
       return;
     }
 
+    //@ts-ignore
     Object.values(e.dataTransfer.files).forEach((item: any, index: number) => {
       if (!e.dataTransfer.files[index].type.includes("image")) {
         toast({
@@ -205,7 +208,6 @@ export const CreateDecorationModal = ({
 
     const imagesArray: { id: string; url: string }[] = [];
     const filesArray: File[] = [];
-    const base64Array: string[] = [];
 
     if (
       (user?.premium && images.length > 8) ||
@@ -239,7 +241,7 @@ export const CreateDecorationModal = ({
       }
       return;
     }
-
+    //@ts-ignore
     Object.values(e.target.files).forEach((item: any, index: number) => {
       if (!e.target.files[index].type.includes("image")) {
         //toast invlaid file type

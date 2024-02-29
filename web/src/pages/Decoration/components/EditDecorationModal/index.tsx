@@ -101,6 +101,7 @@ export const EditDecorationModal = ({
       return;
     }
 
+    //@ts-ignore
     Object.values(e.target.files).forEach((item: any, index: number) => {
       if (!e.target.files[index].type.includes("image")) {
         toast({
@@ -157,7 +158,6 @@ export const EditDecorationModal = ({
   };
 
   const removeImage = (id: string | undefined) => {
-    const imagesLength = images?.length;
     const imagesCopy = [...images!];
     const deletedImagesCopy = [...deletedImages];
     const filesCopy = [...(files as File[])];

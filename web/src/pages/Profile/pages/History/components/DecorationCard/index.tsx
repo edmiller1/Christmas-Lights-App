@@ -5,12 +5,7 @@ import {
   RemoveDecorationFromHistory as RemoveDecorationfromHistoryData,
   removeDecorationFromHistoryArgs,
 } from "@/graphql/mutations/removeDecorationFromHistory/types";
-import {
-  CaretLeft,
-  CircleNotch,
-  DotsThreeVertical,
-  Star,
-} from "@phosphor-icons/react";
+import { CircleNotch, DotsThreeVertical, Star } from "@phosphor-icons/react";
 import {
   DropdownMenu,
   DropdownMenuContent,

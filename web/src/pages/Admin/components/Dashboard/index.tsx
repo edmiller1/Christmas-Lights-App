@@ -45,10 +45,12 @@ export const Dashboard = () => {
     loading: getVerificationRequestsLoading,
   } = useQuery<GetVerificationRequestsData>(GET_VERIFICATION_REQUESTS);
 
+  //@ts-ignore
   const recentReports = getRecentReportsData?.getRecentReports
     ? getRecentReportsData.getRecentReports
     : null;
 
+  //@ts-ignore
   const verificationRequestsData =
     getVerificationRequestsData?.getVerificationRequests
       ? getVerificationRequestsData?.getVerificationRequests

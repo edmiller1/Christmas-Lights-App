@@ -5,12 +5,7 @@ import {
   SignInArgs,
 } from "@/graphql/mutations/signIn/types";
 import { Link, useNavigate } from "react-router-dom";
-import {
-  auth,
-  googleAuthProvider,
-  githubAuthProvider,
-  facebookAuthProvider,
-} from "../../lib/firebase";
+import { auth, googleAuthProvider } from "../../lib/firebase";
 import { useUserData } from "../../lib/hooks";
 import logo from "../../assets/ChristmasLights-House-Logo.png";
 import { Button } from "@/components/ui/button";

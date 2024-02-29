@@ -1,6 +1,6 @@
 import { useTheme } from "@/components/ui/theme-provider";
 import { Switch } from "@/components/ui/switch";
-import { Moon, Sun } from "@phosphor-icons/react";
+import { Moon } from "@phosphor-icons/react";
 import { useState } from "react";
 
 export const ThemeToggle = () => {

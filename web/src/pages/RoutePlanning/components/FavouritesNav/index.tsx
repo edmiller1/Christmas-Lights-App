@@ -4,14 +4,9 @@ import { Get_Decorations_Via_City } from "@/graphql/queries/getDecorationsViaCit
 import { Get_Decorations_Via_Country } from "@/graphql/queries/getDecorationsViaCountry/types";
 import { Get_Decorations_Via_Region } from "@/graphql/queries/getDecorationsViaRegion/types";
 import { Decoration } from "@/lib/types";
-import {
-  FadersHorizontal,
-  MagnifyingGlass,
-  Warning,
-} from "@phosphor-icons/react";
+import { MagnifyingGlass, Warning } from "@phosphor-icons/react";
 import { User } from "firebase/auth";
 import { DecorationCard, DecorationsLoading } from "..";
-import { Search_User_Favourites } from "@/graphql/queries/searchUserFavourites/types";
 import { useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { DrawerNavigation } from "../DrawerNavigation";

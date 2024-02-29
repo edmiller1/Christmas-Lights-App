@@ -42,7 +42,6 @@ interface Props {
   endRoute: () => void;
   selectedIcon: string;
   changeRoute: (icon: string) => void;
-  mobileMenuOpen?: boolean;
   setMobileMenuOpen?: (mobileMenuOpen: boolean) => void;
 }
 
@@ -70,7 +69,6 @@ export const RoutesNav = ({
   endRoute,
   selectedIcon,
   changeRoute,
-  mobileMenuOpen,
   setMobileMenuOpen,
 }: Props) => {
   const { toast } = useToast();

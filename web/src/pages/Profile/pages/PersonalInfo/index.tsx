@@ -26,7 +26,6 @@ import { Label } from "@/components/ui/label";
 import { getBase64Value } from "@/lib/helpers";
 import { Breadcrumbs } from "@/components";
 import { useUserData } from "@/lib/hooks";
-import { NotFound } from "@/pages";
 
 export const PersonalInfo = () => {
   const currentUser = useUserData();

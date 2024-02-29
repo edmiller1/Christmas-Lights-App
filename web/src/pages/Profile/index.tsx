@@ -21,7 +21,6 @@ import { Separator } from "@/components/ui/separator";
 import { Button } from "@/components/ui/button";
 import { Link, useNavigate } from "react-router-dom";
 import { ProfileLoading } from "./components";
-import { NotFound } from "..";
 import { useToast } from "@/components/ui/use-toast";
 import { useTheme } from "@/components/ui/theme-provider";
 import { Switch } from "@/components/ui/switch";

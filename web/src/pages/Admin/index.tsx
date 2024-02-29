@@ -2,8 +2,8 @@ import { useEffect, useState } from "react";
 import { auth } from "../../lib/firebase";
 import { Login, SideNav } from "./components";
 import { useToast } from "@/components/ui/use-toast";
-import { Link, Outlet, redirect } from "react-router-dom";
-import { CircleNotch, User } from "@phosphor-icons/react";
+import { Outlet, redirect } from "react-router-dom";
+import { CircleNotch } from "@phosphor-icons/react";
 import { useUserData } from "@/lib/hooks";
 
 export const Admin = () => {

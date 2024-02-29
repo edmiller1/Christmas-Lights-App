@@ -1,8 +1,4 @@
-import {
-  FadersHorizontal,
-  MagnifyingGlass,
-  Warning,
-} from "@phosphor-icons/react";
+import { MagnifyingGlass, Warning } from "@phosphor-icons/react";
 import { DecorationCard, DecorationsLoading } from "..";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -11,7 +7,6 @@ import { Get_Decorations_Via_Country } from "@/graphql/queries/getDecorationsVia
 import { Get_Decorations_Via_Region } from "@/graphql/queries/getDecorationsViaRegion/types";
 import { Decoration } from "@/lib/types";
 import { Get_Decorations_Via_Search } from "@/graphql/queries/getDecorationsViaSearch/types";
-import { useState } from "react";
 import { Search_User_Favourites } from "@/graphql/queries/searchUserFavourites/types";
 import { AnimatePresence, motion } from "framer-motion";
 import { DrawerNavigation } from "../DrawerNavigation";
@@ -47,7 +42,6 @@ interface Props {
   searchDecorations: (searchTerm: string) => void;
   selectedIcon: string;
   changeRoute: (icon: string) => void;
-  mobileMenuOpen?: boolean;
   setMobileMenuOpen?: (mobileMenuOpen: boolean) => void;
   pageNumber: number;
   setPageNumber: (pageNumber: number) => void;
@@ -71,7 +65,6 @@ export const DecorationsNav = ({
   searchDecorations,
   selectedIcon,
   changeRoute,
-  mobileMenuOpen,
   setMobileMenuOpen,
   nextPage,
   pageNumber,

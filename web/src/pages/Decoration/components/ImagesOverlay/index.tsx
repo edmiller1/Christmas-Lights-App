@@ -58,6 +58,7 @@ export const ImagesOverlay = ({
           ) : null}
           <div className="gap-4 grid grid-cols-2 mt-5 px-3">
             {decorationImages
+              //@ts-ignore
               ?.filter((image, index) => index !== 0)
               .map((image, i) => (
                 <img
@@ -131,6 +132,7 @@ export const ImagesOverlay = ({
             ) : null}
             <div className="mt-5 gap-5 columns-2 mb-8">
               {decorationImages
+                //@ts-ignore
                 ?.filter((image, index) => index !== 0)
                 .map((image, i) => (
                   <img

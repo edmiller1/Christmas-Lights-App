@@ -98,7 +98,7 @@ export const RouteDirections = ({
         </div>
         {showDirections ? (
           <div className="mt-2 h-72 overflow-y-auto rounded-lg bg-zinc-700">
-            {routeDirections.map((direction, index) => (
+            {routeDirections.map((direction) => (
               <div key={generateUID()}>
                 <div
                   className="p-2 flex items-center space-x-5 cursor-pointer hover:bg-zinc-600"

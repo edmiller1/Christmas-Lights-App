@@ -10,7 +10,6 @@ interface Props {
     | Get_Decorations_Via_City
     | Get_Decorations_Via_Region
     | Get_Decorations_Via_Country;
-  activeDecorationIndex: number;
   activeDecoration:
     | Get_Decorations_Via_City
     | Get_Decorations_Via_Region
@@ -29,7 +28,6 @@ interface Props {
 
 export const CustomMarker = ({
   activeDecoration,
-  activeDecorationIndex,
   decoration,
   index,
   setActiveDecoration,

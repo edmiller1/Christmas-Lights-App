@@ -22,11 +22,10 @@ export const Home = () => {
   const [showMap, setShowMap] = useState<boolean>(false);
   const [mapLoading, setMapLoading] = useState<boolean>(false);
 
-  const {
-    data: getUserData,
-    refetch: refetchUser,
-    networkStatus: getUserNetworkStatus,
-  } = useQuery<GetUserData, GetUserArgs>(GET_USER, {
+  const { data: getUserData, refetch: refetchUser } = useQuery<
+    GetUserData,
+    GetUserArgs
+  >(GET_USER, {
     variables: { input: { id: currentUser ? currentUser.uid : "" } },
     notifyOnNetworkStatusChange: true,
   });

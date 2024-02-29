@@ -92,34 +92,37 @@ export const AddRatingModal = ({
                 ) : (
                   <>
                     <div className="flex justify-center mt-3 p-4">
-                      {[...Array(5)].map((star, index) => {
-                        const ratingValue = index + 1;
-                        return (
-                          <label key={ratingValue}>
-                            <input
-                              type="radio"
-                              name="rating"
-                              value={ratingValue}
-                              onClick={() => handleRating(ratingValue)}
-                              readOnly
-                              hidden
-                            />
-                            {ratingValue <= rating ? (
-                              <Star
-                                size={54}
-                                color="#E8A951"
-                                weight="fill"
-                                className="cursor-pointer"
+                      {[...Array(5)].map(
+                        //@ts-ignore
+                        (star, index) => {
+                          const ratingValue = index + 1;
+                          return (
+                            <label key={ratingValue}>
+                              <input
+                                type="radio"
+                                name="rating"
+                                value={ratingValue}
+                                onClick={() => handleRating(ratingValue)}
+                                readOnly
+                                hidden
                               />
-                            ) : (
-                              <Star
-                                size={54}
-                                className="cursor-pointer text-ch-dark dark:text-ch-light"
-                              />
-                            )}
-                          </label>
-                        );
-                      })}
+                              {ratingValue <= rating ? (
+                                <Star
+                                  size={54}
+                                  color="#E8A951"
+                                  weight="fill"
+                                  className="cursor-pointer"
+                                />
+                              ) : (
+                                <Star
+                                  size={54}
+                                  className="cursor-pointer text-ch-dark dark:text-ch-light"
+                                />
+                              )}
+                            </label>
+                          );
+                        }
+                      )}
                     </div>
                     <div className="pt-2 pb-4 px-10 text-sm text-center text-ch-indigo dark:text-ch-light">
                       <span>

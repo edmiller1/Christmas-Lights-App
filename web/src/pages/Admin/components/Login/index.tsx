@@ -1,7 +1,7 @@
 import * as z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { redirect, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { auth } from "../../../../lib/firebase";
 import logo from "../../../../assets/ChristmasLights-House-Logo.png";
 import {
@@ -18,7 +18,6 @@ import { ArrowLeft, CircleNotch } from "@phosphor-icons/react";
 import { Link } from "react-router-dom";
 import { useState } from "react";
 import { useToast } from "@/components/ui/use-toast";
-import { useUserData } from "@/lib/hooks";
 
 const formSchema = z.object({
   email: z.string().email({ message: "Input must be a valid email address" }),
@@ -28,7 +27,6 @@ const formSchema = z.object({
 });
 
 export const Login = () => {
-  const currentUser = useUserData();
   const navigate = useNavigate();
   const { toast } = useToast();
   const [loginLoading, setLoginLoading] = useState<boolean>(false);

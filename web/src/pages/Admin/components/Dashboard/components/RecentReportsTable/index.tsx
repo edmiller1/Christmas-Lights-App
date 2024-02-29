@@ -1,4 +1,4 @@
-import { CaretRight, House, Warning } from "@phosphor-icons/react";
+import { CaretRight, Warning } from "@phosphor-icons/react";
 import { TableLoading } from "../TableLoading";
 
 interface Props {

@@ -9,7 +9,6 @@ interface Props {
   deleteARoute: (routeId: string) => void;
   routeToDelete: string;
   deleteRouteLoading: boolean;
-  isEditing: boolean;
   setIsEditing: (isEditing: boolean) => void;
 }
 
@@ -19,7 +18,6 @@ export const DeleteRouteModal = ({
   deleteARoute,
   routeToDelete,
   deleteRouteLoading,
-  isEditing,
   setIsEditing,
 }: Props) => {
   return (

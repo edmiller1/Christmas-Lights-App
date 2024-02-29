@@ -1,5 +1,5 @@
 import { Decoration, Route } from "@/lib/types";
-import { DotsSixVertical, Heart, Star } from "@phosphor-icons/react";
+import { DotsSixVertical } from "@phosphor-icons/react";
 
 interface Props {
   index: number;

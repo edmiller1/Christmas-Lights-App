@@ -3,7 +3,7 @@ import { Get_Decorations_Via_Country } from "@/graphql/queries/getDecorationsVia
 import { Get_Decorations_Via_Region } from "@/graphql/queries/getDecorationsViaRegion/types";
 import { Decoration, ViewState } from "@/lib/types";
 import { CustomMarker } from "@/pages/Home/components/HomeMap/components";
-import { ChatCentered, Circle, NavigationArrow } from "@phosphor-icons/react";
+import { ChatCentered, Circle } from "@phosphor-icons/react";
 import { MutableRefObject } from "react";
 import Map, {
   GeolocateControl,

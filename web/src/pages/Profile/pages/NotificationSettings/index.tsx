@@ -18,7 +18,6 @@ import { useState } from "react";
 import { PersonalInfoLoading } from "../PersonalInfo/components";
 import { Breadcrumbs } from "@/components";
 import { useUserData } from "@/lib/hooks";
-import { NotFound } from "@/pages";
 
 export const NotificationSettings = () => {
   const currentUser = useUserData();

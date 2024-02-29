@@ -1,7 +1,7 @@
 import { Get_Decorations_Via_City } from "@/graphql/queries/getDecorationsViaCity/types";
 import { Get_Decorations_Via_Country } from "@/graphql/queries/getDecorationsViaCountry/types";
 import { Get_Decorations_Via_Region } from "@/graphql/queries/getDecorationsViaRegion/types";
-import { Decoration, DecorationImage } from "@/lib/types";
+import { DecorationImage } from "@/lib/types";
 import {
   ArrowUpRight,
   CaretLeft,
@@ -26,14 +26,12 @@ interface Props {
       | undefined
   ) => void;
   setActiveDecorationIndex: (activeDecorationIndex: number) => void;
-  userFavourites: string[] | undefined;
 }
 
 export const PopupCard = ({
   activeDecoration,
   setActiveDecoration,
   setActiveDecorationIndex,
-  userFavourites,
 }: Props) => {
   const [showRightArrow, setShowRightArrow] = useState<boolean>(false);
   const [showLeftArrow, setShowLeftArrow] = useState<boolean>(false);

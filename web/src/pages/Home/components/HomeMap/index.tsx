@@ -68,7 +68,7 @@ export const HomeMap = ({ setMapLoading, userFavourites }: Props) => {
     GET_DECORATIONS_VIA_COUNTRY,
     {
       onCompleted: (data) => {
-        setDecorations(data.getDecorationsViaCountry);
+        setDecorations(data.getDecorationsViaCountry.decorations);
       },
     }
   );
@@ -78,7 +78,7 @@ export const HomeMap = ({ setMapLoading, userFavourites }: Props) => {
       GET_DECORATIONS_VIA_CITY,
       {
         onCompleted: (data) => {
-          setDecorations(data.getDecorationsViaCity);
+          setDecorations(data.getDecorationsViaCity.decorations);
         },
       }
     );
@@ -88,7 +88,7 @@ export const HomeMap = ({ setMapLoading, userFavourites }: Props) => {
       GET_DECORATIONS_VIA_REGION,
       {
         onCompleted: (data) => {
-          setDecorations(data.getDecorationsViaRegion);
+          setDecorations(data.getDecorationsViaRegion.decorations);
         },
       }
     );
@@ -120,6 +120,7 @@ export const HomeMap = ({ setMapLoading, userFavourites }: Props) => {
             input: {
               latitude: viewState.latitude?.toString() as string,
               longitude: viewState.longitude?.toString() as string,
+              skip: 0,
             },
           },
         });
@@ -129,6 +130,7 @@ export const HomeMap = ({ setMapLoading, userFavourites }: Props) => {
             input: {
               latitude: viewState.latitude?.toString() as string,
               longitude: viewState.longitude?.toString() as string,
+              skip: 0,
             },
           },
         });
@@ -138,6 +140,7 @@ export const HomeMap = ({ setMapLoading, userFavourites }: Props) => {
             input: {
               latitude: viewState.latitude?.toString() as string,
               longitude: viewState.longitude?.toString() as string,
+              skip: 0,
             },
           },
         });
@@ -208,7 +211,6 @@ export const HomeMap = ({ setMapLoading, userFavourites }: Props) => {
               >
                 <CustomMarker
                   activeDecoration={activeDecoration}
-                  activeDecorationIndex={activeDecorationIndex}
                   decoration={decoration}
                   index={index}
                   setActiveDecoration={setActiveDecoration}
@@ -318,7 +320,6 @@ export const HomeMap = ({ setMapLoading, userFavourites }: Props) => {
               >
                 <CustomMarker
                   activeDecoration={activeDecoration}
-                  activeDecorationIndex={activeDecorationIndex}
                   decoration={decoration}
                   index={index}
                   setActiveDecoration={setActiveDecoration}
@@ -338,7 +339,6 @@ export const HomeMap = ({ setMapLoading, userFavourites }: Props) => {
                     activeDecoration={activeDecoration}
                     setActiveDecoration={setActiveDecoration}
                     setActiveDecorationIndex={setActiveDecorationIndex}
-                    userFavourites={userFavourites}
                   />
                 </Popup>
               ) : null}

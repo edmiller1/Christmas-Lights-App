@@ -140,7 +140,6 @@ export const MenuDrawer = ({
         endRoute={endRoute}
         selectedIcon={selectedIcon}
         changeRoute={changeRoute}
-        mobileMenuOpen={mobileMenuOpen}
         setMobileMenuOpen={setMobileMenuOpen}
       />
     );
@@ -188,7 +187,6 @@ export const MenuDrawer = ({
         searchDecorations={searchDecorations}
         selectedIcon={selectedIcon}
         userFavourites={userFavourites}
-        mobileMenuOpen={mobileMenuOpen}
         setMobileMenuOpen={setMobileMenuOpen}
         nextPage={nextPage}
         pageNumber={pageNumber}

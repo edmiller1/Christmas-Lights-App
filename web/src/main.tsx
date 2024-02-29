@@ -15,7 +15,6 @@ import { Toaster } from "./components/ui/toaster.tsx";
 import {
   Admin,
   Decoration,
-  Home,
   NotFound,
   Notifications,
   Profile,
@@ -110,6 +109,7 @@ const router = createBrowserRouter([
   },
 ]);
 
+//@ts-ignore
 const authLink = setContext((_, { headers }) => {
   const token = sessionStorage.getItem("token");
   const latitude = localStorage.getItem("latitude");

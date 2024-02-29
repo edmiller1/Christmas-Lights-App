@@ -116,7 +116,6 @@ export const RoutePlanning = () => {
   const [searchTerm, setSearchTerm] = useState<string>("");
   const [pageNumber, setPageNumber] = useState<number>(1);
   const [totalPages, setTotalPages] = useState<number>(0);
-  const [decorationCount, setDecorationCount] = useState<number>(0);
   const [globalType, setGlobalType] = useState<string>("");
 
   //Toggles
@@ -130,9 +129,6 @@ export const RoutePlanning = () => {
   //Nav
   const [selectedIcon, setSelectedIcon] = useState<string>("map");
 
-  const [userFavourites, setUserFavourites] = useState<
-    Decoration[] | undefined
-  >();
   const [decorations, setDecorations] = useState<
     | Get_Decorations_Via_City[]
     | Get_Decorations_Via_Country[]
@@ -180,64 +176,45 @@ export const RoutePlanning = () => {
     refetch: refetchUser,
   } = useQuery<GetUserData, GetUserArgs>(GET_USER, {
     variables: { input: { id: currentUser?.uid ? currentUser.uid : "" } },
-    onCompleted: (data) => {
-      setUserFavourites(data.getUser.favourites);
-    },
   });
 
   const [
     getDecorationsViaCountry,
-    {
-      loading: getDecorationsViaCountryLoading,
-      refetch: getDecorationsViaCountryRefetch,
-    },
+    { loading: getDecorationsViaCountryLoading },
   ] = useLazyQuery<GetDecorationsViaCountryData, GetDecorationsViaCountryArgs>(
     GET_DECORATIONS_VIA_COUNTRY,
     {
       onCompleted: (data) => {
         setTotalPages(Math.ceil(data.getDecorationsViaCountry.count / 18));
-        setDecorationCount(data.getDecorationsViaCountry.count);
         setDecorations(data.getDecorationsViaCountry.decorations);
         setGlobalType(data.getDecorationsViaCountry.type);
       },
     }
   );
 
-  const [
-    getDecorationsViaCity,
-    {
-      loading: getDecorationsViaCityLoading,
-      refetch: getDecorationsViaCityRefetch,
-    },
-  ] = useLazyQuery<GetDecorationsViaCityData, GetDecorationsViaCityArgs>(
-    GET_DECORATIONS_VIA_CITY,
-    {
-      onCompleted: (data) => {
-        setTotalPages(Math.ceil(data.getDecorationsViaCity.count / 18));
-        setDecorationCount(data.getDecorationsViaCity.count);
-        setDecorations(data.getDecorationsViaCity.decorations);
-        setGlobalType(data.getDecorationsViaCity.type);
-      },
-    }
-  );
+  const [getDecorationsViaCity, { loading: getDecorationsViaCityLoading }] =
+    useLazyQuery<GetDecorationsViaCityData, GetDecorationsViaCityArgs>(
+      GET_DECORATIONS_VIA_CITY,
+      {
+        onCompleted: (data) => {
+          setTotalPages(Math.ceil(data.getDecorationsViaCity.count / 18));
+          setDecorations(data.getDecorationsViaCity.decorations);
+          setGlobalType(data.getDecorationsViaCity.type);
+        },
+      }
+    );
 
-  const [
-    getDecorationsViaRegion,
-    {
-      loading: getDecorationsViaRegionLoading,
-      refetch: getDecorationsViaRegionRefetch,
-    },
-  ] = useLazyQuery<GetDecorationsViaRegionData, GetDecorationsViaRegionArgs>(
-    GET_DECORATIONS_VIA_REGION,
-    {
-      onCompleted: (data) => {
-        setTotalPages(Math.ceil(data.getDecorationsViaRegion.count / 18));
-        setDecorationCount(data.getDecorationsViaRegion.count);
-        setDecorations(data.getDecorationsViaRegion.decorations);
-        setGlobalType(data.getDecorationsViaRegion.type);
-      },
-    }
-  );
+  const [getDecorationsViaRegion, { loading: getDecorationsViaRegionLoading }] =
+    useLazyQuery<GetDecorationsViaRegionData, GetDecorationsViaRegionArgs>(
+      GET_DECORATIONS_VIA_REGION,
+      {
+        onCompleted: (data) => {
+          setTotalPages(Math.ceil(data.getDecorationsViaRegion.count / 18));
+          setDecorations(data.getDecorationsViaRegion.decorations);
+          setGlobalType(data.getDecorationsViaRegion.type);
+        },
+      }
+    );
 
   const [searchForDecorations, { loading: searchForDecorationsLoading }] =
     useLazyQuery<SearchForDecorationsData, SearchForDecorationsArgs>(
@@ -245,7 +222,6 @@ export const RoutePlanning = () => {
       {
         onCompleted: (data) => {
           setTotalPages(Math.ceil(data.searchForDecorations.count / 18));
-          setDecorationCount(data.searchForDecorations.count);
           setDecorations(data.searchForDecorations.decorations);
           setGlobalType(data.searchForDecorations.type);
         },
@@ -680,28 +656,6 @@ export const RoutePlanning = () => {
     });
   };
 
-  const getUserCoords = () => {
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition((position) => {
-        localStorage.setItem(
-          "latitude",
-          JSON.stringify(position.coords.latitude)
-        );
-        localStorage.setItem(
-          "longitude",
-          JSON.stringify(position.coords.longitude)
-        );
-      });
-    } else {
-      toast({
-        variant: "destructive",
-        title: "Error 😬",
-        description:
-          "Couldn't get your location. Route Planning features requires location services. Please try again.",
-      });
-    }
-  };
-
   const previousPage = () => {
     if (pageNumber === 1) {
       return;
@@ -899,10 +853,7 @@ export const RoutePlanning = () => {
         {/* Secondary column */}
         <SecondaryNav
           activeDecoration={activeDecoration}
-          activeDecorationIndex={activeDecorationIndex}
           decorations={decorations}
-          setActiveDecoration={setActiveDecoration}
-          setActiveDecorationIndex={setActiveDecorationIndex}
           selectedIcon={selectedIcon}
           getDecorationsViaCountryLoading={getDecorationsViaCountryLoading}
           getDecorationsViaCityLoading={getDecorationsViaCityLoading}
@@ -1008,8 +959,6 @@ export const RoutePlanning = () => {
             setIsCreateRouteOpen={setIsCreateRouteOpen}
             addDecorationToARoute={addDecorationToARoute}
             addDecorationToRouteLoading={addDecorationToRouteLoading}
-            showActiveDecoration={showActiveDecoration}
-            setShowActiveDecoration={setShowActiveDecoration}
           />
         ) : null}
         <CreateRouteModal
@@ -1027,7 +976,6 @@ export const RoutePlanning = () => {
           deleteARoute={deleteARoute}
           routeToDelete={routeToDelete}
           deleteRouteLoading={deleteRouteLoading}
-          isEditing={isEditing}
           setIsEditing={setIsEditing}
         />
         <RemoveDecorationModal

@@ -1,6 +1,4 @@
 import { motion } from "framer-motion";
-import { Fragment } from "react";
-import { Dialog, Transition } from "@headlessui/react";
 import { Get_Decorations_Via_City } from "@/graphql/queries/getDecorationsViaCity/types";
 import { Get_Decorations_Via_Country } from "@/graphql/queries/getDecorationsViaCountry/types";
 import { Get_Decorations_Via_Region } from "@/graphql/queries/getDecorationsViaRegion/types";
@@ -46,8 +44,6 @@ interface Props {
   setIsCreateRouteOpen: (isCreateRouteOpen: boolean) => void;
   addDecorationToARoute: (routeId: string, decorationId: string) => void;
   addDecorationToRouteLoading: boolean;
-  showActiveDecoration: boolean;
-  setShowActiveDecoration: (showActiveDecoreation: boolean) => void;
 }
 
 export const DecorationPopup = ({
@@ -63,8 +59,6 @@ export const DecorationPopup = ({
   setIsCreateRouteOpen,
   addDecorationToARoute,
   addDecorationToRouteLoading,
-  setShowActiveDecoration,
-  showActiveDecoration,
 }: Props) => {
   const { toast } = useToast();
   const navigate = useNavigate();

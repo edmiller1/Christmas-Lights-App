@@ -66,7 +66,6 @@ export const Search = () => {
 
   const [globalType, setGlobalType] = useState<string>("search");
   const [viewState, setViewState] = useState<any>(initialViewState);
-  const [decorationCount, setDecorationCount] = useState<number>(0);
   const [searchedDecorations, setSearchedDecorations] = useState<
     | Search_For_Decorations[]
     | Get_Decorations_Via_City[]
@@ -93,7 +92,6 @@ export const Search = () => {
     {
       onCompleted: (data) => {
         setTotalPages(Math.ceil(data.getDecorationsViaCountry.count / 18));
-        setDecorationCount(data.getDecorationsViaCountry.count);
         setSearchedDecorations(data.getDecorationsViaCountry.decorations);
         setGlobalType(data.getDecorationsViaCountry.type);
       },
@@ -106,7 +104,6 @@ export const Search = () => {
       {
         onCompleted: (data) => {
           setTotalPages(Math.ceil(data.getDecorationsViaCity.count / 18));
-          setDecorationCount(data.getDecorationsViaCity.count);
           setSearchedDecorations(data.getDecorationsViaCity.decorations);
           setGlobalType(data.getDecorationsViaCity.type);
         },
@@ -119,7 +116,6 @@ export const Search = () => {
       {
         onCompleted: (data) => {
           setTotalPages(Math.ceil(data.getDecorationsViaRegion.count / 18));
-          setDecorationCount(data.getDecorationsViaRegion.count);
           setSearchedDecorations(data.getDecorationsViaRegion.decorations);
           setGlobalType(data.getDecorationsViaRegion.type);
         },
@@ -149,7 +145,6 @@ export const Search = () => {
       },
       onCompleted: (data) => {
         setTotalPages(Math.ceil(data.searchForDecorations.count / 18));
-        setDecorationCount(data.searchForDecorations.count);
         setSearchedDecorations(data.searchForDecorations.decorations);
         setGlobalType(data.searchForDecorations.type);
         const newViewState = {
@@ -338,7 +333,6 @@ export const Search = () => {
                 getDecorationsViaRegionLoading={getDecorationsViaRegionLoading}
                 searchForDecorationsLoading={searchForDecorationsLoading}
                 searchedDecorations={searchedDecorations}
-                openSearchDrawer={openSearchDrawer}
                 setOpenSearchDrawer={setOpenSearchDrawer}
                 currentUser={currentUser}
                 refetchUserData={refetchUserData}

@@ -1,11 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Decoration } from "@/lib/types";
-import {
-  FadersHorizontal,
-  MagnifyingGlass,
-  Warning,
-} from "@phosphor-icons/react";
+import { MagnifyingGlass, Warning } from "@phosphor-icons/react";
 import { User } from "firebase/auth";
 import { DecorationCard, DecorationsLoading } from "..";
 import { Get_Decorations_Via_Country } from "@/graphql/queries/getDecorationsViaCountry/types";

@@ -1,4 +1,3 @@
-import { motion } from "framer-motion";
 import { Fragment } from "react";
 import { Dialog, Transition } from "@headlessui/react";
 import { Get_Decorations_Via_City } from "@/graphql/queries/getDecorationsViaCity/types";

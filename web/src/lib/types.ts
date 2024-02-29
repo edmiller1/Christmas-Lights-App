@@ -1,5 +1,3 @@
-import { before } from "node:test";
-
 export interface Decoration {
   id: string;
   name: string;

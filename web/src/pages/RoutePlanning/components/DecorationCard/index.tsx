@@ -25,8 +25,7 @@ interface Props {
       | Get_Decorations_Via_City
       | Get_Decorations_Via_Country
       | Get_Decorations_Via_Region
-      | Decoration,
-    index: number
+      | Decoration
   ) => void;
   refs: any;
   userFavourites: string[] | undefined;
@@ -58,7 +57,7 @@ export const DecorationCard = ({
               ? "flex h-28 cursor-pointer dark:bg-ch-green transition-all"
               : "flex h-28 cursor-pointer dark:bg-zinc-800 hover:dark:bg-zinc-700 transition-all"
           }`}
-          onClick={() => handleDecorationSelect(decoration, index)}
+          onClick={() => handleDecorationSelect(decoration)}
         >
           <div className="w-1/3">
             <img
@@ -115,7 +114,7 @@ export const DecorationCard = ({
               ? "flex rounded-lg h-28 cursor-pointer dark:bg-ch-green transition-all"
               : "flex rounded-lg h-28 cursor-pointer dark:bg-zinc-800 hover:dark:bg-zinc-700 transition-all"
           }`}
-          onClick={() => handleDecorationSelect(decoration, index)}
+          onClick={() => handleDecorationSelect(decoration)}
         >
           <div className="w-1/3">
             <img

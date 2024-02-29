@@ -28,8 +28,7 @@ interface Props {
       | Get_Decorations_Via_City
       | Get_Decorations_Via_Country
       | Get_Decorations_Via_Region
-      | Decoration,
-    index: number
+      | Decoration
   ) => void;
   userFavourites: Decoration[] | Search_User_Favourites[] | undefined;
   setMobileMenuOpen?: (mobileMenuOpen: boolean) => void;

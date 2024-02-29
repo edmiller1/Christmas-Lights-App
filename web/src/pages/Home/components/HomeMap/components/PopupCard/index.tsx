@@ -25,14 +25,9 @@ interface Props {
       | Get_Decorations_Via_Country
       | undefined
   ) => void;
-  setActiveDecorationIndex: (activeDecorationIndex: number) => void;
 }
 
-export const PopupCard = ({
-  activeDecoration,
-  setActiveDecoration,
-  setActiveDecorationIndex,
-}: Props) => {
+export const PopupCard = ({ activeDecoration, setActiveDecoration }: Props) => {
   const [showRightArrow, setShowRightArrow] = useState<boolean>(false);
   const [showLeftArrow, setShowLeftArrow] = useState<boolean>(false);
   const [currentImage, setCurrentImage] = useState<DecorationImage | undefined>(
@@ -88,7 +83,6 @@ export const PopupCard = ({
 
   const closePopup = () => {
     setActiveDecoration(undefined);
-    setActiveDecorationIndex(0);
   };
 
   return (

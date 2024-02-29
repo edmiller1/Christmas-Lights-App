@@ -143,7 +143,6 @@ export const RoutePlanning = () => {
     | Get_Decorations_Via_Region
     | Decoration
   >();
-  const [activeDecorationIndex, setActiveDecorationIndex] = useState<number>(0);
   const [routeToDelete, setRouteToDelete] = useState<string>("");
   const [isEditing, setIsEditing] = useState<boolean>(false);
   const [decorationToRemove, setDecorationToRemove] = useState<string>("");
@@ -546,8 +545,7 @@ export const RoutePlanning = () => {
       | Get_Decorations_Via_Country
       | Get_Decorations_Via_Region
       | Search_For_Decorations
-      | Decoration,
-    index: number
+      | Decoration
   ) => {
     mapRef.current?.flyTo({
       center: [decoration.longitude, decoration.latitude],
@@ -555,7 +553,6 @@ export const RoutePlanning = () => {
       duration: 2000,
     });
     setActiveDecoration(decoration);
-    setActiveDecorationIndex(index);
   };
 
   const discardRoute = () => {
@@ -781,8 +778,6 @@ export const RoutePlanning = () => {
           decorations={decorations}
           activeDecoration={activeDecoration}
           setActiveDecoration={setActiveDecoration}
-          activeDecorationIndex={activeDecorationIndex}
-          setActiveDecorationIndex={setActiveDecorationIndex}
           getDecorationsViaCountryLoading={getDecorationsViaCountryLoading}
           getDecorationsViaCityLoading={getDecorationsViaCityLoading}
           getDecorationsViaRegionLoading={getDecorationsViaRegionLoading}
@@ -903,8 +898,6 @@ export const RoutePlanning = () => {
             decorations={decorations}
             activeDecoration={activeDecoration}
             setActiveDecoration={setActiveDecoration}
-            activeDecorationIndex={activeDecorationIndex}
-            setActiveDecorationIndex={setActiveDecorationIndex}
             getDecorationsViaCountryLoading={getDecorationsViaCountryLoading}
             getDecorationsViaCityLoading={getDecorationsViaCityLoading}
             getDecorationsViaRegionLoading={getDecorationsViaRegionLoading}

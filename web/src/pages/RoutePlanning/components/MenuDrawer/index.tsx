@@ -30,8 +30,7 @@ interface Props {
       | Get_Decorations_Via_City
       | Get_Decorations_Via_Country
       | Get_Decorations_Via_Region
-      | Decoration,
-    index: number
+      | Decoration
   ) => void;
   refs: any;
   userFavourites: Decoration[] | undefined;

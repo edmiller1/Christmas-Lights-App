@@ -36,8 +36,7 @@ interface Props {
       | Get_Decorations_Via_City
       | Get_Decorations_Via_Country
       | Get_Decorations_Via_Region
-      | Decoration,
-    index: number
+      | Decoration
   ) => void;
   searchDecorations: (searchTerm: string) => void;
   selectedIcon: string;

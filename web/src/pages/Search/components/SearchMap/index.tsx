@@ -48,7 +48,6 @@ interface Props {
       | Search_For_Decorations
       | undefined
   ) => void;
-  setActiveDecorationIndex: (activeDecorationIndex: number) => void;
 }
 
 export const SearchMap = ({
@@ -63,7 +62,6 @@ export const SearchMap = ({
   showPopup,
   activeDecoration,
   setActiveDecoration,
-  setActiveDecorationIndex,
 }: Props) => {
   const mapRef = useRef<MapRef>();
   return (
@@ -124,9 +122,7 @@ export const SearchMap = ({
               <CustomMarker
                 activeDecoration={activeDecoration}
                 decoration={decoration}
-                index={index}
                 setActiveDecoration={setActiveDecoration}
-                setActiveDecorationIndex={setActiveDecorationIndex}
               />
 
               {activeDecoration ? (
@@ -140,7 +136,6 @@ export const SearchMap = ({
                   <PopupCard
                     activeDecoration={activeDecoration}
                     setActiveDecoration={setActiveDecoration}
-                    setActiveDecorationIndex={setActiveDecorationIndex}
                   />
                 </Popup>
               ) : null}

@@ -3,17 +3,21 @@ import { gql } from "@apollo/client";
 export const GET_DECORATIONS_VIA_SEARCH = gql`
   query getDecorationsViaSearch($input: DecorationsViaSearchInput!) {
     getDecorationsViaSearch(input: $input) {
-      id
-      name
-      city
-      country
-      rating
-      images {
+      count
+      type
+      decorations {
         id
-        url
+        name
+        city
+        country
+        rating
+        images {
+          id
+          url
+        }
+        latitude
+        longitude
       }
-      latitude
-      longitude
     }
   }
 `;

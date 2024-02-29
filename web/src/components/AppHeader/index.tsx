@@ -188,7 +188,7 @@ export const AppHeader = ({ user, searchQuery }: Props) => {
             to="/"
             type="button"
             className={`${
-              location.pathname === "/"
+              location.pathname === "/" || location.pathname.includes("/search")
                 ? "flex flex-col flex-1 items-center p-4 text-center text-ch-red"
                 : "flex flex-col flex-1 items-center p-4 text-center"
             }`}
@@ -196,7 +196,8 @@ export const AppHeader = ({ user, searchQuery }: Props) => {
             <House
               size={24}
               className={`${
-                location.pathname === "/"
+                location.pathname === "/" ||
+                location.pathname.includes("/search")
                   ? "text-ch-red"
                   : "text-ch-dark dark:text-ch-light"
               }`}

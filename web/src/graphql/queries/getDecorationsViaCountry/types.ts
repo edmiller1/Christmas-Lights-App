@@ -13,12 +13,17 @@ export interface Get_Decorations_Via_Country {
 }
 
 export interface GetDecorationsViaCountry {
-  getDecorationsViaCountry: Get_Decorations_Via_Country[];
+  getDecorationsViaCountry: {
+    count: number;
+    type: string;
+    decorations: Get_Decorations_Via_Country[];
+  };
 }
 
 export interface GetDecorationsViaCountryInput {
   latitude: string;
   longitude: string;
+  skip: number;
 }
 
 export interface GetDecorationsViaCountryArgs {

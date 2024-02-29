@@ -4,6 +4,7 @@ export const SEARCH_FOR_DECORATIONS = gql`
   query searchForDecorations($input: GlobalSearchInput!) {
     searchForDecorations(input: $input) {
       count
+      type
       decorations {
         id
         name

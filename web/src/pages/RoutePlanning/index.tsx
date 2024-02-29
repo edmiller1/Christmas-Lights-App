@@ -4,8 +4,8 @@ import {
   GET_DECORATIONS_VIA_CITY,
   GET_DECORATIONS_VIA_COUNTRY,
   GET_DECORATIONS_VIA_REGION,
-  GET_DECORATIONS_VIA_SEARCH,
   GET_USER,
+  SEARCH_FOR_DECORATIONS,
 } from "@/graphql/queries";
 import {
   ADD_DECORATION_TO_ROUTE,
@@ -31,14 +31,14 @@ import {
   Get_Decorations_Via_Region,
 } from "@/graphql/queries/getDecorationsViaRegion/types";
 import {
-  GetDecorationsViaSearch as GetDecorationsViaSearchData,
-  GetDecorationsViaSearchArgs,
-  Get_Decorations_Via_Search,
-} from "@/graphql/queries/getDecorationsViaSearch/types";
-import {
   GetUser as GetUserData,
   GetUserArgs,
 } from "@/graphql/queries/getUser/types";
+import {
+  SearchForDecorations as SearchForDecorationsData,
+  SearchForDecorationsArgs,
+  Search_For_Decorations,
+} from "@/graphql/queries/searchForDecorations/types";
 import {
   FavouriteDecoration as FavouriteDecorationData,
   FavouriteDecorationArgs,
@@ -113,6 +113,12 @@ export const RoutePlanning = () => {
   const dragDecoration = useRef<number>(0);
   const draggedOverDecoration = useRef<number>(0);
 
+  const [searchTerm, setSearchTerm] = useState<string>("");
+  const [pageNumber, setPageNumber] = useState<number>(1);
+  const [totalPages, setTotalPages] = useState<number>(0);
+  const [decorationCount, setDecorationCount] = useState<number>(0);
+  const [globalType, setGlobalType] = useState<string>("");
+
   //Toggles
   const [isDeleteRouteOpen, setIsDeleteRouteOpen] = useState<boolean>(false);
   const [isCreateRouteOpen, setIsCreateRouteOpen] = useState<boolean>(false);
@@ -131,7 +137,7 @@ export const RoutePlanning = () => {
     | Get_Decorations_Via_City[]
     | Get_Decorations_Via_Country[]
     | Get_Decorations_Via_Region[]
-    | Get_Decorations_Via_Search[]
+    | Search_For_Decorations[]
     | null
   >(null);
   const [viewState, setViewState] = useState<ViewState>(initialViewState);
@@ -181,42 +187,67 @@ export const RoutePlanning = () => {
 
   const [
     getDecorationsViaCountry,
-    { loading: getDecorationsViaCountryLoading },
+    {
+      loading: getDecorationsViaCountryLoading,
+      refetch: getDecorationsViaCountryRefetch,
+    },
   ] = useLazyQuery<GetDecorationsViaCountryData, GetDecorationsViaCountryArgs>(
     GET_DECORATIONS_VIA_COUNTRY,
     {
       onCompleted: (data) => {
-        setDecorations(data.getDecorationsViaCountry);
+        setTotalPages(Math.ceil(data.getDecorationsViaCountry.count / 18));
+        setDecorationCount(data.getDecorationsViaCountry.count);
+        setDecorations(data.getDecorationsViaCountry.decorations);
+        setGlobalType(data.getDecorationsViaCountry.type);
       },
     }
   );
 
-  const [getDecorationsViaCity, { loading: getDecorationsViaCityLoading }] =
-    useLazyQuery<GetDecorationsViaCityData, GetDecorationsViaCityArgs>(
-      GET_DECORATIONS_VIA_CITY,
-      {
-        onCompleted: (data) => {
-          setDecorations(data.getDecorationsViaCity);
-        },
-      }
-    );
+  const [
+    getDecorationsViaCity,
+    {
+      loading: getDecorationsViaCityLoading,
+      refetch: getDecorationsViaCityRefetch,
+    },
+  ] = useLazyQuery<GetDecorationsViaCityData, GetDecorationsViaCityArgs>(
+    GET_DECORATIONS_VIA_CITY,
+    {
+      onCompleted: (data) => {
+        setTotalPages(Math.ceil(data.getDecorationsViaCity.count / 18));
+        setDecorationCount(data.getDecorationsViaCity.count);
+        setDecorations(data.getDecorationsViaCity.decorations);
+        setGlobalType(data.getDecorationsViaCity.type);
+      },
+    }
+  );
 
-  const [getDecorationsViaRegion, { loading: getDecorationsViaRegionLoading }] =
-    useLazyQuery<GetDecorationsViaRegionData, GetDecorationsViaRegionArgs>(
-      GET_DECORATIONS_VIA_REGION,
-      {
-        onCompleted: (data) => {
-          setDecorations(data.getDecorationsViaRegion);
-        },
-      }
-    );
+  const [
+    getDecorationsViaRegion,
+    {
+      loading: getDecorationsViaRegionLoading,
+      refetch: getDecorationsViaRegionRefetch,
+    },
+  ] = useLazyQuery<GetDecorationsViaRegionData, GetDecorationsViaRegionArgs>(
+    GET_DECORATIONS_VIA_REGION,
+    {
+      onCompleted: (data) => {
+        setTotalPages(Math.ceil(data.getDecorationsViaRegion.count / 18));
+        setDecorationCount(data.getDecorationsViaRegion.count);
+        setDecorations(data.getDecorationsViaRegion.decorations);
+        setGlobalType(data.getDecorationsViaRegion.type);
+      },
+    }
+  );
 
-  const [getDecorationsViaSearch, { loading: getDecorationsViaSearchLoading }] =
-    useLazyQuery<GetDecorationsViaSearchData, GetDecorationsViaSearchArgs>(
-      GET_DECORATIONS_VIA_SEARCH,
+  const [searchForDecorations, { loading: searchForDecorationsLoading }] =
+    useLazyQuery<SearchForDecorationsData, SearchForDecorationsArgs>(
+      SEARCH_FOR_DECORATIONS,
       {
         onCompleted: (data) => {
-          setDecorations(data.getDecorationsViaSearch);
+          setTotalPages(Math.ceil(data.searchForDecorations.count / 18));
+          setDecorationCount(data.searchForDecorations.count);
+          setDecorations(data.searchForDecorations.decorations);
+          setGlobalType(data.searchForDecorations.type);
         },
       }
     );
@@ -360,9 +391,53 @@ export const RoutePlanning = () => {
     }
   );
 
-  const searchForDecorations = (searchTerm: string) => {
-    getDecorationsViaSearch({
-      variables: { input: { searchTerm: searchTerm } },
+  const refetchDecorations = (
+    type: string,
+    viewState: any,
+    pageNumber: number
+  ) => {
+    if (type === "city") {
+      getDecorationsViaCity({
+        variables: {
+          input: {
+            latitude: viewState.latitude?.toString() as string,
+            longitude: viewState.longitude?.toString() as string,
+            skip: pageNumber * 18,
+          },
+        },
+      });
+    } else if (type === "region") {
+      getDecorationsViaCity({
+        variables: {
+          input: {
+            latitude: viewState.latitude?.toString() as string,
+            longitude: viewState.longitude?.toString() as string,
+            skip: pageNumber * 18,
+          },
+        },
+      });
+    } else if (type === "country") {
+      getDecorationsViaCountry({
+        variables: {
+          input: {
+            latitude: viewState.latitude?.toString() as string,
+            longitude: viewState.longitude?.toString() as string,
+            skip: pageNumber * 18,
+          },
+        },
+      });
+    } else if (type === "search") {
+      searchForDecorations({
+        variables: { input: { searchTerm: searchTerm, skip: pageNumber * 18 } },
+      });
+    }
+  };
+
+  const searchDecorations = (searchTerm: string) => {
+    searchForDecorations({
+      variables: {
+        input: { searchTerm: searchTerm, skip: (pageNumber - 1) * 18 },
+      },
     });
   };
 
@@ -494,7 +569,7 @@ export const RoutePlanning = () => {
       | Get_Decorations_Via_City
       | Get_Decorations_Via_Country
       | Get_Decorations_Via_Region
-      | Get_Decorations_Via_Search
+      | Search_For_Decorations
       | Decoration,
     index: number
   ) => {
@@ -627,9 +702,23 @@ export const RoutePlanning = () => {
     }
   };
 
-  // useEffect(() => {
-  //   getUserCoords();
-  // }, []);
+  const previousPage = () => {
+    if (pageNumber === 1) {
+      return;
+    } else {
+      setPageNumber(pageNumber - 1);
+      refetchDecorations(globalType, viewState, pageNumber);
+    }
+  };
+
+  const nextPage = () => {
+    if (pageNumber === totalPages) {
+      return;
+    } else {
+      setPageNumber(pageNumber + 1);
+      refetchDecorations(globalType, viewState, pageNumber);
+    }
+  };
 
   useEffect(() => {
     const getDecorationData = setTimeout(() => {
@@ -639,6 +728,7 @@ export const RoutePlanning = () => {
             input: {
               latitude: viewState.latitude?.toString() as string,
               longitude: viewState.longitude?.toString() as string,
+              skip: (pageNumber - 1) * 18,
             },
           },
         });
@@ -653,6 +743,7 @@ export const RoutePlanning = () => {
             input: {
               latitude: viewState.latitude?.toString() as string,
               longitude: viewState.longitude?.toString() as string,
+              skip: (pageNumber - 1) * 18,
             },
           },
         });
@@ -662,6 +753,7 @@ export const RoutePlanning = () => {
             input: {
               latitude: viewState.latitude?.toString() as string,
               longitude: viewState.longitude?.toString() as string,
+              skip: (pageNumber - 1) * 18,
             },
           },
         });
@@ -694,10 +786,10 @@ export const RoutePlanning = () => {
           getDecorationsViaCityLoading={getDecorationsViaCityLoading}
           getDecorationsViaCountryLoading={getDecorationsViaCountryLoading}
           getDecorationsViaRegionLoading={getDecorationsViaRegionLoading}
-          getDecorationsViaSearchLoading={getDecorationsViaSearchLoading}
+          searchForDecorationsLoading={searchForDecorationsLoading}
           handleDecorationSelect={handleDecorationSelect}
           refs={refs}
-          searchForDecorations={searchForDecorations}
+          searchDecorations={searchDecorations}
           userFavourites={user?.favourites}
           currentUser={currentUser}
           currentlyOnRoute={currentlyOnRoute}
@@ -721,6 +813,13 @@ export const RoutePlanning = () => {
           startRoute={startRoute}
           userRoutes={user?.routes}
           userHistory={user?.history}
+          nextPage={nextPage}
+          pageNumber={pageNumber}
+          previousPage={previousPage}
+          setPageNumber={setPageNumber}
+          totalPages={totalPages}
+          searchTerm={searchTerm}
+          setSearchTerm={setSearchTerm}
         />
         <RouteMap
           setViewState={setViewState}
@@ -762,10 +861,10 @@ export const RoutePlanning = () => {
           getDecorationsViaCityLoading={getDecorationsViaCityLoading}
           getDecorationsViaCountryLoading={getDecorationsViaCountryLoading}
           getDecorationsViaRegionLoading={getDecorationsViaRegionLoading}
-          getDecorationsViaSearchLoading={getDecorationsViaSearchLoading}
+          searchForDecorationsLoading={searchForDecorationsLoading}
           handleDecorationSelect={handleDecorationSelect}
           refs={refs}
-          searchForDecorations={searchForDecorations}
+          searchDecorations={searchDecorations}
           userFavourites={user?.favourites}
           currentUser={currentUser}
           currentlyOnRoute={currentlyOnRoute}
@@ -789,6 +888,13 @@ export const RoutePlanning = () => {
           startRoute={startRoute}
           userRoutes={user?.routes}
           userHistory={user?.history}
+          nextPage={nextPage}
+          pageNumber={pageNumber}
+          previousPage={previousPage}
+          setPageNumber={setPageNumber}
+          totalPages={totalPages}
+          searchTerm={searchTerm}
+          setSearchTerm={setSearchTerm}
         />
         {/* Secondary column */}
         <SecondaryNav
@@ -801,6 +907,7 @@ export const RoutePlanning = () => {
           getDecorationsViaCountryLoading={getDecorationsViaCountryLoading}
           getDecorationsViaCityLoading={getDecorationsViaCityLoading}
           getDecorationsViaRegionLoading={getDecorationsViaRegionLoading}
+          searchForDecorationsLoading={searchForDecorationsLoading}
           handleDecorationSelect={handleDecorationSelect}
           refs={refs}
           userFavourites={user?.favourites}
@@ -826,9 +933,15 @@ export const RoutePlanning = () => {
           fetchRouteError={fetchRouteError}
           currentlyOnRoute={currentlyOnRoute}
           endRoute={endRoute}
-          searchForDecorations={searchForDecorations}
-          getDecorationsViaSearchLoading={getDecorationsViaSearchLoading}
+          searchDecorations={searchDecorations}
           changeRoute={changeRoute}
+          pageNumber={pageNumber}
+          setPageNumber={setPageNumber}
+          totalPages={totalPages}
+          nextPage={nextPage}
+          previousPage={previousPage}
+          searchTerm={searchTerm}
+          setSearchTerm={setSearchTerm}
         />
 
         {/* Main column */}

@@ -34,6 +34,7 @@ interface Props {
   getDecorationsViaCountryLoading: boolean;
   getDecorationsViaCityLoading: boolean;
   getDecorationsViaRegionLoading: boolean;
+  searchForDecorationsLoading: boolean;
   handleDecorationSelect: (
     decoration:
       | Get_Decorations_Via_City
@@ -66,9 +67,15 @@ interface Props {
   fetchRouteError: boolean;
   currentlyOnRoute: boolean;
   endRoute: () => void;
-  searchForDecorations: (searchTerm: string) => void;
-  getDecorationsViaSearchLoading: boolean;
+  searchDecorations: (searchTerm: string) => void;
   changeRoute: (icon: string) => void;
+  pageNumber: number;
+  setPageNumber: (pageNumber: number) => void;
+  totalPages: number;
+  nextPage: () => void;
+  previousPage: () => void;
+  searchTerm: string;
+  setSearchTerm: (searchTerm: string) => void;
 }
 
 export const SecondaryNav = ({
@@ -81,6 +88,7 @@ export const SecondaryNav = ({
   getDecorationsViaCityLoading,
   getDecorationsViaCountryLoading,
   getDecorationsViaRegionLoading,
+  searchForDecorationsLoading,
   handleDecorationSelect,
   refs,
   userFavourites,
@@ -106,9 +114,15 @@ export const SecondaryNav = ({
   fetchRouteError,
   currentlyOnRoute,
   endRoute,
-  searchForDecorations,
-  getDecorationsViaSearchLoading,
+  searchDecorations,
   changeRoute,
+  nextPage,
+  pageNumber,
+  previousPage,
+  setPageNumber,
+  totalPages,
+  searchTerm,
+  setSearchTerm,
 }: Props) => {
   if (selectedIcon === "route-planning") {
     return (
@@ -173,13 +187,20 @@ export const SecondaryNav = ({
         getDecorationsViaCityLoading={getDecorationsViaCityLoading}
         getDecorationsViaCountryLoading={getDecorationsViaCountryLoading}
         getDecorationsViaRegionLoading={getDecorationsViaRegionLoading}
+        searchForDecorationsLoading={searchForDecorationsLoading}
         handleDecorationSelect={handleDecorationSelect}
         refs={refs}
         userFavourites={userFavourites}
-        searchForDecorations={searchForDecorations}
-        getDecorationsViaSearchLoading={getDecorationsViaSearchLoading}
+        searchDecorations={searchDecorations}
         selectedIcon={selectedIcon}
         changeRoute={changeRoute}
+        nextPage={nextPage}
+        pageNumber={pageNumber}
+        previousPage={previousPage}
+        setPageNumber={setPageNumber}
+        totalPages={totalPages}
+        searchTerm={searchTerm}
+        setSearchTerm={setSearchTerm}
       />
     );
   }

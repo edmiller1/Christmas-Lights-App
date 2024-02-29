@@ -24,6 +24,7 @@ interface Props {
   getDecorationsViaCountryLoading: boolean;
   getDecorationsViaCityLoading: boolean;
   getDecorationsViaRegionLoading: boolean;
+  searchForDecorationsLoading: boolean;
   handleDecorationSelect: (
     decoration:
       | Get_Decorations_Via_City
@@ -34,8 +35,7 @@ interface Props {
   ) => void;
   refs: any;
   userFavourites: Decoration[] | undefined;
-  searchForDecorations: (searchTerm: string) => void;
-  getDecorationsViaSearchLoading: boolean;
+  searchDecorations: (searchTerm: string) => void;
   userRoutes: Route[] | undefined;
   getUserLoading: boolean;
   currentUser: User | null | undefined;
@@ -60,6 +60,13 @@ interface Props {
   mobileMenuOpen: boolean;
   setMobileMenuOpen: (mobileMenuOpen: boolean) => void;
   userHistory: Decoration[] | undefined;
+  nextPage: () => void;
+  previousPage: () => void;
+  pageNumber: number;
+  setPageNumber: (pageNumber: number) => void;
+  totalPages: number;
+  searchTerm: string;
+  setSearchTerm: (searchTerm: string) => void;
 }
 
 export const MenuDrawer = ({
@@ -70,10 +77,10 @@ export const MenuDrawer = ({
   getDecorationsViaCityLoading,
   getDecorationsViaCountryLoading,
   getDecorationsViaRegionLoading,
-  getDecorationsViaSearchLoading,
+  searchForDecorationsLoading,
   handleDecorationSelect,
   refs,
-  searchForDecorations,
+  searchDecorations,
   userFavourites,
   currentUser,
   currentlyOnRoute,
@@ -99,6 +106,13 @@ export const MenuDrawer = ({
   mobileMenuOpen,
   setMobileMenuOpen,
   userHistory,
+  nextPage,
+  pageNumber,
+  previousPage,
+  setPageNumber,
+  totalPages,
+  searchTerm,
+  setSearchTerm,
 }: Props) => {
   if (selectedIcon === "route-planning" && mobileMenuOpen) {
     return (
@@ -168,14 +182,21 @@ export const MenuDrawer = ({
         getDecorationsViaCityLoading={getDecorationsViaCityLoading}
         getDecorationsViaCountryLoading={getDecorationsViaCountryLoading}
         getDecorationsViaRegionLoading={getDecorationsViaRegionLoading}
-        getDecorationsViaSearchLoading={getDecorationsViaSearchLoading}
+        searchForDecorationsLoading={searchForDecorationsLoading}
         handleDecorationSelect={handleDecorationSelect}
         refs={refs}
-        searchForDecorations={searchForDecorations}
+        searchDecorations={searchDecorations}
         selectedIcon={selectedIcon}
         userFavourites={userFavourites}
         mobileMenuOpen={mobileMenuOpen}
         setMobileMenuOpen={setMobileMenuOpen}
+        nextPage={nextPage}
+        pageNumber={pageNumber}
+        previousPage={previousPage}
+        setPageNumber={setPageNumber}
+        totalPages={totalPages}
+        searchTerm={searchTerm}
+        setSearchTerm={setSearchTerm}
       />
     );
   }

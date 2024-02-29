@@ -246,6 +246,7 @@ export const typeDefs = gql`
   input DecorationsViaMapInput {
     latitude: String!
     longitude: String!
+    skip: Int!
   }
 
   input CreateRouteInput {
@@ -269,6 +270,7 @@ export const typeDefs = gql`
 
   input DecorationsViaSearchInput {
     searchTerm: String!
+    skip: Int!
   }
 
   input SearchInput {
@@ -283,6 +285,7 @@ export const typeDefs = gql`
   type SearchedDecorations {
     decorations: [Decoration!]!
     count: Int!
+    type: String!
   }
 
   #Queries
@@ -297,10 +300,13 @@ export const typeDefs = gql`
     ): [Decoration!]!
     getDecorationsByCity: [Decoration!]!
     getDecorationsByRating: [Decoration!]!
-    getDecorationsViaCountry(input: DecorationsViaMapInput!): [Decoration!]!
-    getDecorationsViaRegion(input: DecorationsViaMapInput!): [Decoration!]!
-    getDecorationsViaCity(input: DecorationsViaMapInput!): [Decoration!]!
-    getDecorationsViaSearch(input: DecorationsViaSearchInput!): [Decoration!]!
+    getDecorationsViaCountry(
+      input: DecorationsViaMapInput!
+    ): SearchedDecorations!
+    getDecorationsViaRegion(
+      input: DecorationsViaMapInput!
+    ): SearchedDecorations!
+    getDecorationsViaCity(input: DecorationsViaMapInput!): SearchedDecorations!
     searchUserFavourites(input: SearchInput!): [Decoration!]!
     searchForDecorations(input: GlobalSearchInput!): SearchedDecorations!
 

@@ -109,12 +109,14 @@ export interface DecorationsViaMapArgs {
   input: {
     latitude: string;
     longitude: string;
+    skip: number;
   };
 }
 
 export interface getDecorationsViaSearchArgs {
   input: {
     searchTerm: string;
+    skip: number;
   };
 }
 

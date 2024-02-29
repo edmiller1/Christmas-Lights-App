@@ -6,7 +6,7 @@ export const DecorationsLoading = () => {
       </div>
 
       <div className="hidden sm:block">
-        <div className="grid grid-cols-1 gap-y-5 p-5">
+        <div className="mt-44 grid grid-cols-1 gap-y-5 p-5">
           {Array.from({ length: 5 }).map((_, index) => (
             <div
               key={index}

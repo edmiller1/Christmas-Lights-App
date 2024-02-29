@@ -15,6 +15,7 @@ export interface Search_For_Decorations {
 export interface SearchForDecorations {
   searchForDecorations: {
     count: number;
+    type: string;
     decorations: Search_For_Decorations[];
   };
 }

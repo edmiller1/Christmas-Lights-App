@@ -43,6 +43,7 @@ interface Props {
   getDecorationsViaCountryLoading: boolean;
   getDecorationsViaCityLoading: boolean;
   getDecorationsViaRegionLoading: boolean;
+  searchForDecorationsLoading: boolean;
   handleDecorationSelect: (
     decoration:
       | Get_Decorations_Via_City
@@ -53,8 +54,7 @@ interface Props {
   ) => void;
   refs: any;
   userFavourites: Decoration[] | undefined;
-  searchForDecorations: (searchTerm: string) => void;
-  getDecorationsViaSearchLoading: boolean;
+  searchDecorations: (searchTerm: string) => void;
   user: Get_User | null;
   currentUser: User | null | undefined;
   userRoutes: Route[] | undefined;
@@ -78,6 +78,13 @@ interface Props {
   currentlyOnRoute: boolean;
   endRoute: () => void;
   userHistory: Decoration[] | undefined;
+  nextPage: () => void;
+  previousPage: () => void;
+  pageNumber: number;
+  setPageNumber: (pageNumber: number) => void;
+  totalPages: number;
+  searchTerm: string;
+  setSearchTerm: (searchTerm: string) => void;
 }
 
 export const RoutePlanningNav = ({
@@ -89,10 +96,10 @@ export const RoutePlanningNav = ({
   getDecorationsViaCityLoading,
   getDecorationsViaCountryLoading,
   getDecorationsViaRegionLoading,
-  getDecorationsViaSearchLoading,
+  searchForDecorationsLoading,
   handleDecorationSelect,
   refs,
-  searchForDecorations,
+  searchDecorations,
   userFavourites,
   currentUser,
   currentlyOnRoute,
@@ -116,6 +123,13 @@ export const RoutePlanningNav = ({
   startRoute,
   userRoutes,
   userHistory,
+  nextPage,
+  pageNumber,
+  previousPage,
+  setPageNumber,
+  totalPages,
+  searchTerm,
+  setSearchTerm,
 }: Props) => {
   const navigate = useNavigate();
   const [mobileMenuOpen, setMobileMenuOpen] = useState<boolean>(false);
@@ -132,10 +146,10 @@ export const RoutePlanningNav = ({
             getDecorationsViaCityLoading={getDecorationsViaCityLoading}
             getDecorationsViaCountryLoading={getDecorationsViaCountryLoading}
             getDecorationsViaRegionLoading={getDecorationsViaRegionLoading}
-            getDecorationsViaSearchLoading={getDecorationsViaSearchLoading}
+            searchForDecorationsLoading={searchForDecorationsLoading}
             handleDecorationSelect={handleDecorationSelect}
             refs={refs}
-            searchForDecorations={searchForDecorations}
+            searchDecorations={searchDecorations}
             userFavourites={userFavourites}
             currentUser={currentUser}
             currentlyOnRoute={currentlyOnRoute}
@@ -161,6 +175,13 @@ export const RoutePlanningNav = ({
             mobileMenuOpen={mobileMenuOpen}
             setMobileMenuOpen={setMobileMenuOpen}
             userHistory={userHistory}
+            nextPage={nextPage}
+            pageNumber={pageNumber}
+            previousPage={previousPage}
+            setPageNumber={setPageNumber}
+            totalPages={totalPages}
+            searchTerm={searchTerm}
+            setSearchTerm={setSearchTerm}
           />
           <div className="w-full flex items-center justify-center mt-2">
             <button
@@ -211,7 +232,7 @@ export const RoutePlanningNav = ({
       {/* Desktop */}
       <div className="hidden sm:block fixed inset-y-0 left-0 z-50 w-20 overflow-y-auto border-r dark:border-black pb-4">
         <div className="flex h-16 shrink-0 items-center justify-center">
-          <button onClick={() => navigate(-1)}>
+          <button onClick={() => navigate("/")}>
             <CaretLeft
               size={32}
               weight="bold"

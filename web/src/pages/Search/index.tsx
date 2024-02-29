@@ -1,4 +1,4 @@
-import { AppHeader, Footer } from "@/components";
+import { AppHeader } from "@/components";
 import {
   GET_DECORATIONS_VIA_CITY,
   GET_DECORATIONS_VIA_COUNTRY,
@@ -41,20 +41,14 @@ import {
   Pagi,
   SearchMap,
 } from "./components";
-import {
-  Pagination,
-  PaginationContent,
-  PaginationItem,
-  PaginationLink,
-  PaginationNext,
-  PaginationPrevious,
-} from "@/components/ui/pagination";
+import { Warning } from "@phosphor-icons/react";
 
 export const Search = () => {
   const currentUser = useUserData();
   const location = useLocation();
   const searchQuery = new URLSearchParams(location.search).get("query");
 
+  const [globalType, setGlobalType] = useState<string>("");
   const [viewState, setViewState] = useState<any>();
   const [decorationCount, setDecorationCount] = useState<number>(0);
   const [searchedDecorations, setSearchedDecorations] = useState<
@@ -82,7 +76,10 @@ export const Search = () => {
     GET_DECORATIONS_VIA_COUNTRY,
     {
       onCompleted: (data) => {
-        setSearchedDecorations(data.getDecorationsViaCountry);
+        setTotalPages(Math.ceil(data.getDecorationsViaCountry.count / 18));
+        setDecorationCount(data.getDecorationsViaCountry.count);
+        setSearchedDecorations(data.getDecorationsViaCountry.decorations);
+        setGlobalType(data.getDecorationsViaCountry.type);
       },
     }
   );
@@ -92,7 +89,10 @@ export const Search = () => {
       GET_DECORATIONS_VIA_CITY,
       {
         onCompleted: (data) => {
-          setSearchedDecorations(data.getDecorationsViaCity);
+          setTotalPages(Math.ceil(data.getDecorationsViaCity.count / 18));
+          setDecorationCount(data.getDecorationsViaCity.count);
+          setSearchedDecorations(data.getDecorationsViaCity.decorations);
+          setGlobalType(data.getDecorationsViaCity.type);
         },
       }
     );
@@ -102,7 +102,10 @@ export const Search = () => {
       GET_DECORATIONS_VIA_REGION,
       {
         onCompleted: (data) => {
-          setSearchedDecorations(data.getDecorationsViaRegion);
+          setTotalPages(Math.ceil(data.getDecorationsViaRegion.count / 18));
+          setDecorationCount(data.getDecorationsViaRegion.count);
+          setSearchedDecorations(data.getDecorationsViaRegion.decorations);
+          setGlobalType(data.getDecorationsViaRegion.type);
         },
       }
     );
@@ -170,13 +173,49 @@ export const Search = () => {
     }
   };
 
-  const refetchDecorations = (pageNumber: number) => {
-    refetchSearchedDecorations({
-      input: {
-        searchTerm: searchQuery ? searchQuery : "",
-        skip: (pageNumber - 1) * 18,
-      },
-    });
+  const refetchDecorations = (
+    type: string,
+    viewState: any,
+    pageNumber: number
+  ) => {
+    if (type === "city") {
+      getDecorationsViaCity({
+        variables: {
+          input: {
+            latitude: viewState.latitude?.toString() as string,
+            longitude: viewState.longitude?.toString() as string,
+            skip: pageNumber * 18,
+          },
+        },
+      });
+    } else if (type === "region") {
+      getDecorationsViaCity({
+        variables: {
+          input: {
+            latitude: viewState.latitude?.toString() as string,
+            longitude: viewState.longitude?.toString() as string,
+            skip: pageNumber * 18,
+          },
+        },
+      });
+    } else if (type === "country") {
+      getDecorationsViaCountry({
+        variables: {
+          input: {
+            latitude: viewState.latitude?.toString() as string,
+            longitude: viewState.longitude?.toString() as string,
+            skip: pageNumber * 18,
+          },
+        },
+      });
+    } else if (type === "search") {
+      refetchSearchedDecorations({
+        input: {
+          searchTerm: searchQuery ? searchQuery : "",
+          skip: pageNumber * 18,
+        },
+      });
+    }
   };
 
   const previousPage = () => {
@@ -184,7 +223,7 @@ export const Search = () => {
       return;
     } else {
       setPageNumber(pageNumber - 1);
-      refetchDecorations(pageNumber - 1);
+      refetchDecorations(globalType, viewState, pageNumber);
     }
   };
 
@@ -193,16 +232,8 @@ export const Search = () => {
       return;
     } else {
       setPageNumber(pageNumber + 1);
-      refetchDecorations(pageNumber + 1);
+      refetchDecorations(globalType, viewState, pageNumber);
     }
-  };
-
-  const getTotalPagesAsArray = (totalPages: number) => {
-    const result = [];
-    for (let i = 1; i <= totalPages; i++) {
-      result.push(i);
-    }
-    return result;
   };
 
   useEffect(() => {
@@ -214,6 +245,7 @@ export const Search = () => {
               input: {
                 latitude: viewState.latitude?.toString() as string,
                 longitude: viewState.longitude?.toString() as string,
+                skip: (pageNumber - 1) * 18,
               },
             },
           });
@@ -223,6 +255,7 @@ export const Search = () => {
               input: {
                 latitude: viewState.latitude?.toString() as string,
                 longitude: viewState.longitude?.toString() as string,
+                skip: (pageNumber - 1) * 18,
               },
             },
           });
@@ -232,6 +265,7 @@ export const Search = () => {
               input: {
                 latitude: viewState.latitude?.toString() as string,
                 longitude: viewState.longitude?.toString() as string,
+                skip: (pageNumber - 1) * 18,
               },
             },
           });
@@ -243,7 +277,16 @@ export const Search = () => {
 
   return (
     <>
-      <div className="sm:hidden"></div>
+      {/* Mobile */}
+      <div className="sm:hidden">
+        {getUserLoading ? (
+          <AppHeaderLoading />
+        ) : (
+          <AppHeader user={user} searchQuery={searchQuery} />
+        )}
+      </div>
+
+      {/* Desktop */}
       <div className="hidden sm:block">
         {getUserLoading ? (
           <AppHeaderLoading />
@@ -264,6 +307,14 @@ export const Search = () => {
             getDecorationsViaCityLoading ||
             searchForDecorationsLoading ? (
               <DecorationsLoading />
+            ) : searchedDecorations && searchedDecorations.length === 0 ? (
+              <div className="mt-44 flex flex-col justify-center items-center text-xl text-ch-red">
+                <Warning size={40} weight="bold" />
+                <span>
+                  Could not find any decorations for search term:{" "}
+                  <strong>{searchQuery}</strong>
+                </span>
+              </div>
             ) : (
               <>
                 <div className="mt-5 grid grid-cols-3 gap-x-6 gap-y-10 mb-10">

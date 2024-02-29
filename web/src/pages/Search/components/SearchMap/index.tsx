@@ -7,7 +7,7 @@ import {
   PopupCard,
 } from "@/pages/Home/components/HomeMap/components";
 import { Circle } from "@phosphor-icons/react";
-import { useEffect, useRef, useState } from "react";
+import { useRef } from "react";
 import Map, {
   GeolocateControl,
   MapRef,

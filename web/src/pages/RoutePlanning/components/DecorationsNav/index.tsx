@@ -15,11 +15,13 @@ import { useState } from "react";
 import { Search_User_Favourites } from "@/graphql/queries/searchUserFavourites/types";
 import { AnimatePresence, motion } from "framer-motion";
 import { DrawerNavigation } from "../DrawerNavigation";
+import { Pagi } from "@/pages/Search/components";
 
 interface Props {
   getDecorationsViaCountryLoading: boolean;
   getDecorationsViaCityLoading: boolean;
   getDecorationsViaRegionLoading: boolean;
+  searchForDecorationsLoading: boolean;
   decorations:
     | Get_Decorations_Via_City[]
     | Get_Decorations_Via_Country[]
@@ -42,39 +44,50 @@ interface Props {
       | Decoration,
     index: number
   ) => void;
-  searchForDecorations: (searchTerm: string) => void;
-  getDecorationsViaSearchLoading: boolean;
+  searchDecorations: (searchTerm: string) => void;
   selectedIcon: string;
   changeRoute: (icon: string) => void;
   mobileMenuOpen?: boolean;
   setMobileMenuOpen?: (mobileMenuOpen: boolean) => void;
+  pageNumber: number;
+  setPageNumber: (pageNumber: number) => void;
+  totalPages: number;
+  nextPage: () => void;
+  previousPage: () => void;
+  searchTerm: string;
+  setSearchTerm: (searchTerm: string) => void;
 }
 
 export const DecorationsNav = ({
   getDecorationsViaCityLoading,
   getDecorationsViaCountryLoading,
   getDecorationsViaRegionLoading,
+  searchForDecorationsLoading,
   decorations,
   activeDecoration,
   handleDecorationSelect,
   refs,
   userFavourites,
-  searchForDecorations,
-  getDecorationsViaSearchLoading,
+  searchDecorations,
   selectedIcon,
   changeRoute,
   mobileMenuOpen,
   setMobileMenuOpen,
+  nextPage,
+  pageNumber,
+  previousPage,
+  setPageNumber,
+  totalPages,
+  searchTerm,
+  setSearchTerm,
 }: Props) => {
-  const [searchWord, setSearchWord] = useState<string>("");
-
   const handleSearchWord = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setSearchWord(e.target.value);
+    setSearchTerm(e.target.value);
   };
 
   const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === "Enter" && searchWord) {
-      searchForDecorations(searchWord);
+    if (e.key === "Enter" && searchTerm) {
+      searchDecorations(searchTerm);
     }
   };
   return (
@@ -83,7 +96,7 @@ export const DecorationsNav = ({
       <div className="sm:hidden">
         <AnimatePresence>
           <motion.div
-            className="fixed shadow w-full max-w-[560px] z-50 h-[70%] bottom-0 left-0 right-0 flex flex-col px-3 rounded-t-[10px] bg-slate-50 dark:bg-zinc-900 border-t dark:border-black sm:hidden"
+            className="fixed shadow w-full max-w-[560px] z-50 h-[75%] bottom-0 left-0 right-0 flex flex-col px-3 rounded-t-[10px] bg-slate-50 dark:bg-zinc-900 border-t dark:border-black sm:hidden"
             initial={{ y: 1000 }}
             animate={{ y: 0 }}
             transition={{
@@ -103,14 +116,14 @@ export const DecorationsNav = ({
                 <Input
                   type="text"
                   placeholder="Search Decorations"
-                  value={searchWord}
+                  value={searchTerm}
                   onChange={(e) => handleSearchWord(e)}
                   onKeyDown={(e) => handleKeyPress(e)}
                 />
                 <Button
                   variant="outline"
-                  disabled={!searchWord}
-                  onClick={() => searchForDecorations(searchWord)}
+                  disabled={!searchTerm}
+                  onClick={() => searchDecorations(searchTerm)}
                 >
                   <MagnifyingGlass
                     size={16}
@@ -126,7 +139,7 @@ export const DecorationsNav = ({
               {getDecorationsViaCityLoading ||
               getDecorationsViaCountryLoading ||
               getDecorationsViaRegionLoading ||
-              getDecorationsViaSearchLoading ? (
+              searchForDecorationsLoading ? (
                 <DecorationsLoading />
               ) : decorations && decorations.length === 0 ? (
                 <div className="p-5 flex justify-center items-center text-center flex-col text-ch-red">
@@ -159,6 +172,16 @@ export const DecorationsNav = ({
                       />
                     ))}
                   </div>
+                  <div className="my-5">
+                    <Pagi
+                      nextPage={nextPage}
+                      pageNumber={pageNumber}
+                      previousPage={previousPage}
+                      setPageNumber={setPageNumber}
+                      totalPages={totalPages}
+                      visiblePages={3}
+                    />
+                  </div>
                 </>
               )}
             </div>
@@ -174,13 +197,14 @@ export const DecorationsNav = ({
             <Input
               type="text"
               placeholder="Search Decorations"
-              value={searchWord}
+              value={searchTerm}
               onChange={(e) => handleSearchWord(e)}
+              onKeyDown={(e) => handleKeyPress(e)}
             />
             <Button
               variant="outline"
-              disabled={!searchWord}
-              onClick={() => searchForDecorations(searchWord)}
+              disabled={!searchTerm}
+              onClick={() => searchDecorations(searchTerm)}
             >
               <MagnifyingGlass
                 size={16}
@@ -193,7 +217,7 @@ export const DecorationsNav = ({
         {getDecorationsViaCityLoading ||
         getDecorationsViaCountryLoading ||
         getDecorationsViaRegionLoading ||
-        getDecorationsViaSearchLoading ? (
+        searchForDecorationsLoading ? (
           <DecorationsLoading />
         ) : decorations && decorations.length === 0 ? (
           <div className="mt-44 p-5 flex justify-center items-center text-center flex-col text-ch-red">
@@ -206,22 +230,34 @@ export const DecorationsNav = ({
             </span>
           </div>
         ) : (
-          <div className="mt-44 grid grid-cols-1 gap-y-5 p-5 overflow-y-auto">
-            {decorations?.map((decoration, index) => (
-              <DecorationCard
-                refs={refs}
-                key={decoration.id}
-                decoration={decoration}
-                activeDecoration={activeDecoration}
-                index={index}
-                handleDecorationSelect={handleDecorationSelect}
-                userFavourites={userFavourites?.map(
-                  (decoration) => decoration.id
-                )}
-                decorations={decorations}
+          <>
+            <div className="mt-44 grid grid-cols-1 gap-y-5 p-5 overflow-y-auto">
+              {decorations?.map((decoration, index) => (
+                <DecorationCard
+                  refs={refs}
+                  key={decoration.id}
+                  decoration={decoration}
+                  activeDecoration={activeDecoration}
+                  index={index}
+                  handleDecorationSelect={handleDecorationSelect}
+                  userFavourites={userFavourites?.map(
+                    (decoration) => decoration.id
+                  )}
+                  decorations={decorations}
+                />
+              ))}
+            </div>
+            <div className="my-5">
+              <Pagi
+                nextPage={nextPage}
+                pageNumber={pageNumber}
+                previousPage={previousPage}
+                setPageNumber={setPageNumber}
+                totalPages={totalPages}
+                visiblePages={3}
               />
-            ))}
-          </div>
+            </div>
+          </>
         )}
       </aside>
     </>

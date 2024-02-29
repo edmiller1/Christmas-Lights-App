@@ -13,11 +13,16 @@ export interface Get_Decorations_Via_Search {
 }
 
 export interface GetDecorationsViaSearch {
-  getDecorationsViaSearch: Get_Decorations_Via_Search[];
+  getDecorationsViaSearch: {
+    count: number;
+    type: string;
+    decorations: Get_Decorations_Via_Search[];
+  };
 }
 
 export interface GetDecorationsViaSearchInput {
   searchTerm: string;
+  skip: number;
 }
 
 export interface GetDecorationsViaSearchArgs {

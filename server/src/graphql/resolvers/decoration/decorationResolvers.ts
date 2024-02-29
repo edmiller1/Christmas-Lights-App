@@ -197,10 +197,11 @@ export const decorationResolvers = {
       _root: undefined,
       { input }: DecorationsViaMapArgs,
       { _, req, res }: { _: undefined; req: Request; res: Response }
-    ): Promise<Decoration[]> => {
+    ): Promise<{ decorations: Decoration[]; count: number; type: string }> => {
       try {
         let country: { text: string } | null = null;
         let decorations: Decoration[] | null = null;
+        let count: number = 0;
 
         if (input.latitude && input.longitude) {
           const response = await fetch(
@@ -218,14 +219,20 @@ export const decorationResolvers = {
             include: {
               images: true,
             },
-            skip: 0,
-            take: 24,
+            skip: input.skip,
+            take: 18,
+          });
+          count = await prisma.decoration.count({
+            where: {
+              country: country?.text,
+              verified: true,
+            },
           });
         } else {
           throw new Error("Latitude and Longitude not provided.");
         }
 
-        return decorations;
+        return { decorations: decorations, count: count, type: "country" };
       } catch (error) {
         throw new Error(`${error}`);
       }
@@ -234,10 +241,11 @@ export const decorationResolvers = {
       _root: undefined,
       { input }: DecorationsViaMapArgs,
       { _, req, res }: { _: undefined; req: Request; res: Response }
-    ): Promise<Decoration[]> => {
+    ): Promise<{ decorations: Decoration[]; count: number; type: string }> => {
       try {
         let region: { text: string } | null = null;
         let decorations: Decoration[] | null = null;
+        let count: number = 0;
 
         if (input.latitude && input.longitude) {
           const response = await fetch(
@@ -255,14 +263,20 @@ export const decorationResolvers = {
             include: {
               images: true,
             },
-            skip: 0,
-            take: 24,
+            skip: input.skip,
+            take: 18,
+          });
+          count = await prisma.decoration.count({
+            where: {
+              region: region?.text,
+              verified: true,
+            },
           });
         } else {
           throw new Error("Latitude and Longitude not provided.");
         }
 
-        return decorations;
+        return { decorations: decorations, count: count, type: "region" };
       } catch (error) {
         throw new Error(`${error}`);
       }
@@ -271,10 +285,11 @@ export const decorationResolvers = {
       _root: undefined,
       { input }: DecorationsViaMapArgs,
       { _, req, res }: { _: undefined; req: Request; res: Response }
-    ): Promise<Decoration[]> => {
+    ): Promise<{ decorations: Decoration[]; count: number; type: string }> => {
       try {
         let city: { text: string } | null = null;
         let decorations: Decoration[] | null = null;
+        let count: number = 0;
 
         if (input.latitude && input.longitude) {
           const response = await fetch(
@@ -292,53 +307,20 @@ export const decorationResolvers = {
             include: {
               images: true,
             },
-            skip: 0,
-            take: 24,
+            skip: input.skip,
+            take: 18,
+          });
+          count = await prisma.decoration.count({
+            where: {
+              city: city?.text,
+              verified: true,
+            },
           });
         } else {
           throw new Error("Latitude and Longitude not provided.");
         }
 
-        return decorations;
-      } catch (error) {
-        throw new Error(`${error}`);
-      }
-    },
-    getDecorationsViaSearch: async (
-      _root: undefined,
-      { input }: getDecorationsViaSearchArgs,
-      { _, req, res }: { _: undefined; req: Request; res: Response }
-    ): Promise<Decoration[]> => {
-      try {
-        const decorations = await prisma.decoration.findMany({
-          where: {
-            OR: [
-              {
-                name: {
-                  contains: input.searchTerm,
-                  mode: "insensitive",
-                },
-              },
-              {
-                city: {
-                  contains: input.searchTerm,
-                  mode: "insensitive",
-                },
-              },
-              {
-                address: {
-                  contains: input.searchTerm,
-                  mode: "insensitive",
-                },
-              },
-            ],
-          },
-          include: {
-            images: true,
-          },
-        });
-
-        return decorations;
+        return { decorations: decorations, count: count, type: "city" };
       } catch (error) {
         throw new Error(`${error}`);
       }
@@ -347,7 +329,11 @@ export const decorationResolvers = {
       _root: undefined,
       { input }: SearchForDecorationsArgs,
       { _, req, res }: { _: undefined; req: Request; res: Response }
-    ): Promise<{ decorations: Decoration[]; count: number }> => {
+    ): Promise<{
+      decorations: Decoration[];
+      count: number;
+      type: "search";
+    }> => {
       try {
         const [decorations, count] = await prisma.$transaction([
           prisma.decoration.findMany({
@@ -405,7 +391,7 @@ export const decorationResolvers = {
           }),
         ]);
 
-        return { decorations: decorations, count: count };
+        return { decorations: decorations, count: count, type: "search" };
       } catch (error) {
         throw new Error(`${error}`);
       }

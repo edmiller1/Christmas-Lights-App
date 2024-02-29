@@ -127,7 +127,6 @@ export const SearchMap = ({
             >
               <CustomMarker
                 activeDecoration={activeDecoration}
-                activeDecorationIndex={activeDecorationIndex}
                 decoration={decoration}
                 index={index}
                 setActiveDecoration={setActiveDecoration}
@@ -146,7 +145,6 @@ export const SearchMap = ({
                     activeDecoration={activeDecoration}
                     setActiveDecoration={setActiveDecoration}
                     setActiveDecorationIndex={setActiveDecorationIndex}
-                    userFavourites={userFavourites}
                   />
                 </Popup>
               ) : null}

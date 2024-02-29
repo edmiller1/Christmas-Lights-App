@@ -153,7 +153,6 @@ export const RouteMap = ({
               >
                 <CustomMarker
                   activeDecoration={activeDecoration}
-                  activeDecorationIndex={activeDecorationIndex}
                   decoration={decoration}
                   index={index}
                   setActiveDecoration={setActiveDecoration}

@@ -9,7 +9,7 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "seed": "ts-node temp/seed.ts"
   },
-  "author": "",
+  "author": "Christmas Lights App",
   "license": "MIT",
   "dependencies": {
     "@apollo/server": "^4.9.4",

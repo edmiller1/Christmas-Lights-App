@@ -125,7 +125,7 @@ const authLink = setContext((_, { headers }) => {
 });
 
 const httpLink = createHttpLink({
-  uri: "http://localhost:9000/api",
+  uri: "https://christmas-lights-app-server-fwjab.ondigitalocean.app/",
 });
 
 const client = new ApolloClient({

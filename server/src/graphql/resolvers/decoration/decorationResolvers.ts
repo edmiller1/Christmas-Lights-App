@@ -649,8 +649,8 @@ export const decorationResolvers = {
         if (owner.notifications_by_email_rating) {
           //send email to owner
           await resend.emails.send({
-            from: "Acme <onboarding@resend.dev>",
-            to: "edmiller.me@gmail.com",
+            from: "christmaslightsapp.com",
+            to: owner.email,
             subject: "New Decoration Rating",
             html: `<p>New Decoration Rating</p>
             <p>Your decoration ${decoration.name} has recieved a new rating</p>
@@ -760,8 +760,8 @@ export const decorationResolvers = {
 
         //Send email to CLA admin
         await resend.emails.send({
-          from: "Acme <onboarding@resend.dev>",
-          to: "edmiller.me@gmail.com",
+          from: "christmaslightsapp.com",
+          to: user.email,
           subject: "New Decoration Report",
           html: `<p>New Decoration Report</p>
           <p>Reported by: ${user.name}</p>
@@ -849,8 +849,8 @@ export const decorationResolvers = {
 
         //email admin about new verification_submitted
         await resend.emails.send({
-          from: "Acme <onboarding@resend.dev>",
-          to: "edmiller.me@gmail.com",
+          from: "christmaslightsapp.com",
+          to: user.email,
           subject: "New Verification Request",
           html: `<h1>New Verification Request<h1>
                   <p>User:</p>

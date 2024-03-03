@@ -152,7 +152,6 @@ export const RouteMap = ({
                   activeDecoration={activeDecoration}
                   decoration={decoration}
                   setActiveDecoration={setActiveDecoration}
-                  activeDecorationIndex={activeDecorationIndex}
                   setActiveDecorationIndex={setActiveDecorationIndex}
                   index={index}
                 />

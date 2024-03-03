@@ -19,10 +19,10 @@ export const RecommendedDecorations = ({
   return (
     <>
       {/* Mobile */}
-      <div className="sm:hidden px-5 mt-5 mb-24">
+      <div className="sm:hidden px-5 mt-5">
         <h2 className="text-xl">Other decorations you might like</h2>
         {recommendedDecorations && recommendedDecorations.length > 0 ? (
-          <div className="my-3 grid grid-cols-1 gap-y-6">
+          <div className="my-3 grid grid-cols-1 gap-y-6 mb-24">
             {recommendedDecorations.map((decoration) => (
               <Link to={`/decoration/${decoration.id}`}>
                 <div className="group">

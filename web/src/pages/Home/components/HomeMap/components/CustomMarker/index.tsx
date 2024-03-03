@@ -22,12 +22,18 @@ interface Props {
       | Get_Decorations_Via_Country
       | undefined
   ) => void;
+  activeDecorationIndex: number;
+  setActiveDecorationIndex: (activeDecorationIndex: number) => void;
+  index: number;
 }
 
 export const CustomMarker = ({
   activeDecoration,
   decoration,
   setActiveDecoration,
+  activeDecorationIndex,
+  setActiveDecorationIndex,
+  index,
 }: Props) => {
   return (
     <>
@@ -39,8 +45,8 @@ export const CustomMarker = ({
               ? "flex items-center cursor-pointer font-bold text-lg bg-black text-white rounded-xl px-2 py-1 shadow-lg hover:scale-110 transition-all"
               : "flex items-center cursor-pointer font-bold text-lg bg-white text-black rounded-xl px-2 py-1 shadow-lg hover:scale-110 transition-all"
           } `}
-          onMouseEnter={() => setActiveDecoration(decoration)}
-          onMouseLeave={() => setActiveDecoration(undefined)}
+          onMouseOver={() => setActiveDecorationIndex(index)}
+          onMouseOut={() => setActiveDecorationIndex(0)}
           onClick={() => setActiveDecoration(decoration)}
         >
           <Star
@@ -63,8 +69,8 @@ export const CustomMarker = ({
               ? "flex items-center cursor-pointer font-bold bg-black text-white rounded-xl px-3 py-1 shadow-lg hover:scale-110 transition-all"
               : "flex items-center cursor-pointer font-bold bg-white text-black rounded-xl px-2 py-1 shadow-lg hover:scale-110 transition-all"
           } `}
-          onMouseEnter={() => setActiveDecoration(decoration)}
-          onMouseLeave={() => setActiveDecoration(undefined)}
+          onMouseOver={() => setActiveDecorationIndex(index)}
+          onMouseOut={() => setActiveDecorationIndex(0)}
           onClick={() => setActiveDecoration(decoration)}
         >
           <Star

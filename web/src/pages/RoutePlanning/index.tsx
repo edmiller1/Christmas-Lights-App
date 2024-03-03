@@ -143,6 +143,8 @@ export const RoutePlanning = () => {
     | Get_Decorations_Via_Region
     | Decoration
   >();
+  const [activeDecorationIndex, setActiveDecorationIndex] = useState<number>(0);
+
   const [routeToDelete, setRouteToDelete] = useState<string>("");
   const [isEditing, setIsEditing] = useState<boolean>(false);
   const [decorationToRemove, setDecorationToRemove] = useState<string>("");
@@ -787,6 +789,8 @@ export const RoutePlanning = () => {
           routeLayer={routeLayer}
           routeGeoJson={routeGeoJson}
           routeDecorations={routeDecorations}
+          activeDecorationIndex={activeDecorationIndex}
+          setActiveDecorationIndex={setActiveDecorationIndex}
         />
 
         {currentlyOnRoute ? (
@@ -907,6 +911,8 @@ export const RoutePlanning = () => {
             routeLayer={routeLayer}
             routeGeoJson={routeGeoJson}
             routeDecorations={routeDecorations}
+            activeDecorationIndex={activeDecorationIndex}
+            setActiveDecorationIndex={setActiveDecorationIndex}
           />
           {currentlyOnRoute ? (
             <RouteDirections

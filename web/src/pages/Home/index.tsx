@@ -108,7 +108,7 @@ export const Home = () => {
           <div className="fixed bottom-24 left-[41%] z-20">
             <button
               onClick={() => setShowMap(true)}
-              className="flex items-center text-sm py-2 px-3 font-semibold rounded-full shadow-lg text-white bg-ch-teal hover:scale-110 transition-all"
+              className="flex items-center text-sm py-2 px-3 font-semibold rounded-full shadow-lg text-white bg-ch-teal z-50 hover:scale-110 transition-all"
             >
               Map
               <MapTrifold
@@ -124,7 +124,7 @@ export const Home = () => {
             <button
               disabled={mapLoading}
               onClick={() => setShowMap(false)}
-              className="flex items-center text-sm py-2 px-3 font-semibold rounded-full shadow-lg text-white bg-ch-teal hover:scale-110 transition-all"
+              className="flex items-center text-sm py-2 px-3 font-semibold rounded-full shadow-lg text-white bg-ch-teal z-[98] hover:scale-110 transition-all"
             >
               List
               <ListBullets size={24} color="#ffffff" className="ml-2" />

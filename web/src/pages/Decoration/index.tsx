@@ -549,7 +549,7 @@ export const Decoration = () => {
       </div>
 
       {/* Mobile */}
-      <div className="overflow-y-auto sm:hidden">
+      <div className="overflow-y-auto min-h-screen sm:hidden">
         {showImageOverlay ? (
           <ImagesOverlay
             decorationImages={decoration?.images}
@@ -757,16 +757,18 @@ export const Decoration = () => {
           getRecommendeddecorationsLoading={getRecommendedDecorationsLoading}
         />
         {/* Bottom nav */}
-        <div className="fixed shadow w-full max-w-[560px] h-18 bottom-0 left-0 right-0 px-5 py-3 flex items-center justify-between dark:bg-zinc-900 dark:border-t dark:border-black">
-          <div>
-            <Button variant="secondary" onClick={() => setIsEditOpen(true)}>
-              Edit
-            </Button>
+        {user?.id === decoration?.creator_id ? (
+          <div className="fixed shadow w-full max-w-[560px] h-18 bottom-0 left-0 right-0 px-5 py-3 flex items-center justify-between dark:bg-zinc-900 dark:border-t dark:border-black">
+            <div>
+              <Button variant="secondary" onClick={() => setIsEditOpen(true)}>
+                Edit
+              </Button>
+            </div>
+            <div>
+              <Button>Delete</Button>
+            </div>
           </div>
-          <div>
-            <Button>Delete</Button>
-          </div>
-        </div>
+        ) : null}
       </div>
 
       {/* Desktop */}

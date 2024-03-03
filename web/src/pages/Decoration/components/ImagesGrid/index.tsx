@@ -66,7 +66,7 @@ export const ImagesGrid = ({
           className="rounded-br-xl cursor-pointer"
           onClick={() => setShowImageOverlay(true)}
         />
-        <div className="absolute sm:bottom-10 right-[23%] 2xl:bottom-48 z-10">
+        <div className="absolute sm:bottom-48 sm:right-72 lg:right-[26%] xl:right-[22%] z-10">
           <Button variant="outline" onClick={() => setShowImageOverlay(true)}>
             <DotsNine
               size={28}

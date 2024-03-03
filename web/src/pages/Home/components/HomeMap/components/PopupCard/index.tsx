@@ -6,6 +6,7 @@ import {
   ArrowUpRight,
   CaretLeft,
   CaretRight,
+  Heart,
   Star,
   X,
 } from "@phosphor-icons/react";
@@ -25,9 +26,14 @@ interface Props {
       | Get_Decorations_Via_Country
       | undefined
   ) => void;
+  userFavourites: string[] | undefined;
 }
 
-export const PopupCard = ({ activeDecoration, setActiveDecoration }: Props) => {
+export const PopupCard = ({
+  activeDecoration,
+  setActiveDecoration,
+  userFavourites,
+}: Props) => {
   const [showRightArrow, setShowRightArrow] = useState<boolean>(false);
   const [showLeftArrow, setShowLeftArrow] = useState<boolean>(false);
   const [currentImage, setCurrentImage] = useState<DecorationImage | undefined>(
@@ -137,6 +143,12 @@ export const PopupCard = ({ activeDecoration, setActiveDecoration }: Props) => {
                   className="bg-black opacity-80 rounded-full p-1 hover:opacity-100"
                 />
               </div>
+              {activeDecoration &&
+              userFavourites?.includes(activeDecoration?.id) ? (
+                <Heart size={24} weight="fill" color="#FF647F" />
+              ) : (
+                <Heart size={24} weight="duotone" color="#FFFFFF" />
+              )}
             </div>
             {!showLeftArrow ? null : (
               <div className="absolute left-5 top-[45%] z-10">

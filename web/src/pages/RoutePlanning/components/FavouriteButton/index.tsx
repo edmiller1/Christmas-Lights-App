@@ -82,7 +82,7 @@ export const FavouriteButton = ({
               <TooltipTrigger asChild>
                 <Button
                   variant="outline"
-                  className="w-1/5 dark:bg-gray-200 dark:border-none dark:hover:bg-gray-300"
+                  className="-mx-2 w-[120%] dark:bg-gray-200 dark:border-none dark:hover:bg-gray-300"
                   onClick={() =>
                     removeDecorationFromFavourites(activeDecoration!.id)
                   }
@@ -92,7 +92,7 @@ export const FavouriteButton = ({
                     <CircleNotch
                       size={32}
                       weight="fill"
-                      className="text-ch-pink animate-spin"
+                      className="text-[#1acd81] animate-spin"
                     />
                   ) : (
                     <Heart size={32} weight="fill" className="text-ch-pink" />
@@ -110,7 +110,7 @@ export const FavouriteButton = ({
               <TooltipTrigger asChild>
                 <Button
                   variant="outline"
-                  className="w-1/5 dark:bg-gray-200 dark:border-none dark:hover:bg-gray-300"
+                  className="-mx-2 w-[120%] bg-gray-200 hover:bg-gray-300 dark:bg-gray-200 dark:border-none dark:hover:bg-gray-300"
                   onClick={() =>
                     addDecorationToFavourites(activeDecoration!.id)
                   }
@@ -120,10 +120,10 @@ export const FavouriteButton = ({
                     <CircleNotch
                       size={32}
                       weight="bold"
-                      className="text-gray-400 animate-spin"
+                      className="text-text-[#1acd81] animate-spin"
                     />
                   ) : (
-                    <Heart size={32} weight="bold" className="text-gray-400" />
+                    <Heart size={32} weight="bold" className="text-ch-pink" />
                   )}
                 </Button>
               </TooltipTrigger>

@@ -48,6 +48,8 @@ interface Props {
     coordinates: number[][];
   } | null;
   routeDecorations: Decoration[] | null;
+  activeDecorationIndex: number;
+  setActiveDecorationIndex: (activeDecorationIndex: number) => void;
 }
 
 export const RouteMap = ({
@@ -65,6 +67,8 @@ export const RouteMap = ({
   routeLayer,
   routeGeoJson,
   routeDecorations,
+  activeDecorationIndex,
+  setActiveDecorationIndex,
 }: Props) => {
   return (
     <>
@@ -138,10 +142,7 @@ export const RouteMap = ({
               <Marker
                 key={decoration.id}
                 style={{
-                  zIndex:
-                    activeDecoration && activeDecoration.id === decoration.id
-                      ? 49
-                      : "unset",
+                  zIndex: activeDecorationIndex === index ? 49 : "unset",
                 }}
                 longitude={decoration.longitude}
                 latitude={decoration.latitude}
@@ -151,6 +152,9 @@ export const RouteMap = ({
                   activeDecoration={activeDecoration}
                   decoration={decoration}
                   setActiveDecoration={setActiveDecoration}
+                  activeDecorationIndex={activeDecorationIndex}
+                  setActiveDecorationIndex={setActiveDecorationIndex}
+                  index={index}
                 />
               </Marker>
             </>

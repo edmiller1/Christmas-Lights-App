@@ -116,10 +116,7 @@ export const SearchMap = ({
             <Marker
               key={decoration.id}
               style={{
-                zIndex:
-                  activeDecoration && activeDecoration.id === decoration.id
-                    ? 49
-                    : "unset",
+                zIndex: activeDecorationIndex === index ? 98 : "unset",
               }}
               longitude={decoration.longitude}
               latitude={decoration.latitude}
@@ -129,7 +126,6 @@ export const SearchMap = ({
                 activeDecoration={activeDecoration}
                 decoration={decoration}
                 setActiveDecoration={setActiveDecoration}
-                activeDecorationIndex={activeDecorationIndex}
                 setActiveDecorationIndex={setActiveDecorationIndex}
                 index={index}
               />

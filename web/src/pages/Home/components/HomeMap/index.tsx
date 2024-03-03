@@ -213,7 +213,6 @@ export const HomeMap = ({ setMapLoading, userFavourites }: Props) => {
                   activeDecoration={activeDecoration}
                   decoration={decoration}
                   setActiveDecoration={setActiveDecoration}
-                  activeDecorationIndex={activeDecorationIndex}
                   setActiveDecorationIndex={setActiveDecorationIndex}
                   index={index}
                 />
@@ -323,7 +322,6 @@ export const HomeMap = ({ setMapLoading, userFavourites }: Props) => {
                   activeDecoration={activeDecoration}
                   decoration={decoration}
                   setActiveDecoration={setActiveDecoration}
-                  activeDecorationIndex={activeDecorationIndex}
                   setActiveDecorationIndex={setActiveDecorationIndex}
                   index={index}
                 />

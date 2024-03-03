@@ -22,7 +22,6 @@ interface Props {
       | Get_Decorations_Via_Country
       | undefined
   ) => void;
-  activeDecorationIndex: number;
   setActiveDecorationIndex: (activeDecorationIndex: number) => void;
   index: number;
 }
@@ -31,7 +30,6 @@ export const CustomMarker = ({
   activeDecoration,
   decoration,
   setActiveDecoration,
-  activeDecorationIndex,
   setActiveDecorationIndex,
   index,
 }: Props) => {

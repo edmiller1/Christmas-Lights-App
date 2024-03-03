@@ -48,6 +48,9 @@ interface Props {
       | Search_For_Decorations
       | undefined
   ) => void;
+  userFavourites: string[] | undefined;
+  activeDecorationIndex: number;
+  setActiveDecorationIndex: (activeDecorationIndex: number) => void;
 }
 
 export const SearchMap = ({
@@ -62,6 +65,9 @@ export const SearchMap = ({
   showPopup,
   activeDecoration,
   setActiveDecoration,
+  userFavourites,
+  activeDecorationIndex,
+  setActiveDecorationIndex,
 }: Props) => {
   const mapRef = useRef<MapRef>();
   return (
@@ -105,7 +111,7 @@ export const SearchMap = ({
           </div>
         ) : null}
 
-        {searchedDecorations?.map((decoration) => (
+        {searchedDecorations?.map((decoration, index) => (
           <>
             <Marker
               key={decoration.id}
@@ -123,6 +129,9 @@ export const SearchMap = ({
                 activeDecoration={activeDecoration}
                 decoration={decoration}
                 setActiveDecoration={setActiveDecoration}
+                activeDecorationIndex={activeDecorationIndex}
+                setActiveDecorationIndex={setActiveDecorationIndex}
+                index={index}
               />
 
               {activeDecoration ? (
@@ -136,6 +145,7 @@ export const SearchMap = ({
                   <PopupCard
                     activeDecoration={activeDecoration}
                     setActiveDecoration={setActiveDecoration}
+                    userFavourites={userFavourites}
                   />
                 </Popup>
               ) : null}

@@ -80,6 +80,7 @@ export const Search = () => {
     | Get_Decorations_Via_Region
     | undefined
   >();
+  const [activeDecorationIndex, setActiveDecorationIndex] = useState<number>(0);
   const [pageNumber, setPageNumber] = useState<number>(1);
   const [totalPages, setTotalPages] = useState<number>(0);
 
@@ -308,6 +309,9 @@ export const Search = () => {
             closePopup={closePopup}
             activeDecoration={activeDecoration}
             setActiveDecoration={setActiveDecoration}
+            userFavourites={user?.favourites.map((favourite) => favourite.id)}
+            activeDecorationIndex={activeDecorationIndex}
+            setActiveDecorationIndex={setActiveDecorationIndex}
           />
         </div>
         <div className="fixed shadow w-full max-w-[560px] p-2 z-50 bottom-0 left-0 right-0 flex flex-col rounded-t-[10px] bg-slate-50 dark:bg-zinc-900 border-t dark:border-black">
@@ -442,6 +446,9 @@ export const Search = () => {
               closePopup={closePopup}
               activeDecoration={activeDecoration}
               setActiveDecoration={setActiveDecoration}
+              userFavourites={user?.favourites.map((item) => item.id)}
+              activeDecorationIndex={activeDecorationIndex}
+              setActiveDecorationIndex={setActiveDecorationIndex}
             />
           </div>
         </div>

@@ -503,7 +503,7 @@ export const RoutePlanning = () => {
           title: "Success 🎉",
           description: "Signed out successfully!",
         });
-        redirect("/");
+        window.location.reload();
       })
       .catch(() => {
         toast({

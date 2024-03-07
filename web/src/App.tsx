@@ -9,8 +9,7 @@ import { AppHeader } from "./components";
 import { useEffect, useState } from "react";
 import { AppHeaderLoading } from "./components/AppHeader/components";
 import "mapbox-gl/dist/mapbox-gl.css";
-import { AuthProvider, useAuth, useUserData } from "./lib/hooks";
-import { UserContext } from "./lib/context";
+import { useAuth } from "./lib/hooks";
 import { Home } from "./pages";
 import { SIGN_IN } from "./graphql/mutations/signIn";
 import {

@@ -110,18 +110,17 @@ exports.typeDefs = (0, graphql_tag_1.gql) `
   }
 
   #input
-  input FirebaseAuthResult {
-    uid: String!
+  input SupabaseAuthResult {
+    id: String!
     accessToken: String!
-    isNewUser: Boolean!
-    displayName: String!
+    name: String!
     email: String!
     photoURL: String!
-    providerId: String!
+    provider: String!
   }
 
   input SignInInput {
-    result: FirebaseAuthResult!
+    result: SupabaseAuthResult!
   }
 
   input CreateUserInput {

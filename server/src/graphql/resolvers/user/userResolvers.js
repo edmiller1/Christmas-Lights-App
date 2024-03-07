@@ -143,16 +143,20 @@ exports.userResolvers = {
         signIn: (_root, { input }, { _, req, res }) => __awaiter(void 0, void 0, void 0, function* () {
             try {
                 let user = null;
-                const isNewUser = input.result.isNewUser;
-                if (isNewUser) {
+                const isNewUser = yield database_1.prisma.user.findFirst({
+                    where: {
+                        id: input.result.id,
+                    },
+                });
+                if (!isNewUser) {
                     user = yield database_1.prisma.user.create({
                         data: {
-                            id: input.result.uid,
+                            id: input.result.id,
                             email: input.result.email,
                             image: input.result.photoURL,
-                            name: input.result.displayName,
+                            name: input.result.name,
                             token: input.result.accessToken,
-                            provider: input.result.providerId,
+                            provider: input.result.provider,
                             notifications_by_email_rating: true,
                             notifications_by_email_verification: true,
                             notifications_on_app_rating: true,
@@ -162,11 +166,7 @@ exports.userResolvers = {
                     });
                 }
                 else {
-                    user = yield database_1.prisma.user.findFirst({
-                        where: {
-                            id: input.result.uid,
-                        },
-                    });
+                    user = isNewUser;
                 }
                 return user;
             }

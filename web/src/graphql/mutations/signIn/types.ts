@@ -9,13 +9,12 @@ export interface SignIn {
 }
 
 export interface SignInInput {
-  uid: string;
-  accessToken: string;
-  isNewUser: boolean;
-  displayName: string;
+  id: string;
+  token: string;
+  name: string;
   email: string;
   photoURL: string;
-  providerId: string;
+  provider: string;
 }
 
 export interface SignInArgs {

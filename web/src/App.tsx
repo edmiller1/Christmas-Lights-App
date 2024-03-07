@@ -73,19 +73,21 @@ function App() {
   }, []);
 
   useEffect(() => {
-    const sessionData = {
-      input: {
-        result: {
-          id: session?.user.id,
-          token: session?.access_token,
-          name: session?.user.user_metadata.full_name,
-          email: session?.user.email,
-          photoURL: session?.user.user_metadata.picture,
-          provider: session?.user.app_metadata.provider,
+    if (session) {
+      const sessionData = {
+        input: {
+          result: {
+            id: session?.user.id,
+            token: session?.access_token,
+            name: session?.user.user_metadata.full_name as string,
+            email: session?.user.email as string,
+            photoURL: session?.user.user_metadata.picture as string,
+            provider: session?.user.app_metadata.provider as string,
+          },
         },
-      },
-    };
-    signIn({ variables: { input: sessionData.input } });
+      };
+      signIn({ variables: { input: sessionData.input } });
+    }
   }, []);
 
   return (

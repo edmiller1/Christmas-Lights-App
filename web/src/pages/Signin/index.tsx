@@ -26,36 +26,6 @@ export const SignIn = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
 
-  const [signIn, { loading: signInLoading }] = useMutation<
-    SignInData,
-    SignInArgs
-  >(SIGN_IN, {
-    onCompleted(data) {
-      if (data && data.signIn) {
-        toast({
-          variant: "success",
-          title: "Success 🎉",
-          description: "Signed In successfully!",
-        });
-        if (data.signIn.token) {
-          sessionStorage.setItem("token", data.signIn.token);
-        }
-        setTimeout(() => {
-          navigate(-1);
-        }, 3000);
-      } else {
-        sessionStorage.removeItem("token");
-      }
-    },
-    onError: () => {
-      toast({
-        variant: "destructive",
-        title: "Error 😬",
-        description: "Failed to sign in. Please try again.",
-      });
-    },
-  });
-
   const signInWithDiscord = async () => {
     const { error } = await supabase.auth.signInWithOAuth({
       provider: "discord",
@@ -74,18 +44,6 @@ export const SignIn = () => {
       });
     }
   };
-
-  if (signInLoading) {
-    return (
-      <div className="min-h-screen flex flex-col justify-center items-center">
-        <CircleNotch
-          size={60}
-          className="animate-spin text-ch-dark dark:text-ch-light"
-        />
-        <p className="text-2xl">Logging In...</p>
-      </div>
-    );
-  }
 
   if (currentUser) {
     navigate("/");

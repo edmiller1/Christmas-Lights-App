@@ -1,11 +1,12 @@
-import { useMutation, useQuery } from "@apollo/client";
+import { useLazyQuery, useMutation, useQuery } from "@apollo/client";
 import { GET_USER } from "./graphql/queries";
 import {
   GetUser as GetUserData,
   GetUserArgs,
+  Get_User,
 } from "./graphql/queries/getUser/types";
 import { AppHeader } from "./components";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { AppHeaderLoading } from "./components/AppHeader/components";
 import "mapbox-gl/dist/mapbox-gl.css";
 import { AuthProvider, useAuth, useUserData } from "./lib/hooks";
@@ -22,6 +23,8 @@ function App() {
   console.log(currentUser);
   console.log(session);
 
+  const [user, setUser] = useState<Get_User | null>(null);
+
   const [signIn, { loading: signInLoading }] = useMutation<
     SignInData,
     SignInArgs
@@ -30,6 +33,7 @@ function App() {
       if (data && data.signIn) {
         if (data.signIn.token) {
           sessionStorage.setItem("token", data.signIn.token);
+          getUser();
         }
       } else {
         sessionStorage.removeItem("token");
@@ -40,16 +44,15 @@ function App() {
     },
   });
 
-  const { data: getUserData, loading: getUserLoading } = useQuery<
+  const [getUser, { loading: getUserLoading }] = useLazyQuery<
     GetUserData,
     GetUserArgs
   >(GET_USER, {
-    //@ts-ignore
-    variables: { input: { id: currentUser ? currentUser.uid : "" } },
-    skip: !currentUser,
+    variables: { input: { id: currentUser ? currentUser.id : "" } },
+    onCompleted: (data) => {
+      setUser(data.getUser);
+    },
   });
-
-  const user = getUserData?.getUser ? getUserData.getUser : null;
 
   const getCoords = async () => {
     if (navigator.geolocation) {

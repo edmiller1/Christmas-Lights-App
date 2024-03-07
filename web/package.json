@@ -31,6 +31,7 @@
     "@supabase/supabase-js": "^2.38.0",
     "@types/mapbox-gl": "^2.7.19",
     "@vercel/analytics": "^1.2.2",
+    "@vercel/speed-insights": "^1.0.10",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.0.0",
     "deck.gl": "^8.9.34",

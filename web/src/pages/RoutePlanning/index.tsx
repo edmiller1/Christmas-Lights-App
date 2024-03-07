@@ -77,7 +77,7 @@ import {
 } from "./components";
 import { MenuItems, ThemeToggle } from "@/components/AppHeader/components";
 import { useAuth } from "@/lib/hooks";
-import { auth } from "@/lib/firebase";
+import { supabase } from "@/lib/supabaseClient";
 import { useToast } from "@/components/ui/use-toast";
 import { Decoration, Route, Step, ViewState } from "@/lib/types";
 import { MapRef } from "react-map-gl";
@@ -494,7 +494,7 @@ export const RoutePlanning = () => {
   };
 
   const signOut = async () => {
-    await auth
+    await supabase.auth
       .signOut()
       .then(() => {
         sessionStorage.removeItem("token");

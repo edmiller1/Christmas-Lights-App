@@ -24,8 +24,8 @@ import {
 import { Get_User } from "@/graphql/queries/getUser/types";
 import { useState } from "react";
 import { useToast } from "../ui/use-toast";
-import { auth } from "@/lib/firebase";
 import { useNavigate } from "react-router-dom";
+import { supabase } from "@/lib/supabaseClient";
 
 interface Props {
   user: Get_User | null;
@@ -63,7 +63,7 @@ export const AppHeader = ({ user, searchQuery }: Props) => {
   };
 
   const signOut = async () => {
-    await auth
+    await supabase.auth
       .signOut()
       .then(() => {
         sessionStorage.removeItem("token");

@@ -23,11 +23,11 @@ import {
   Star,
 } from "@phosphor-icons/react";
 import { Link, useNavigate } from "react-router-dom";
-import { User } from "firebase/auth";
 import { Get_Decorations_By_Rating } from "@/graphql/queries/getDecorationsByRating/types";
 import { Search_For_Decorations } from "@/graphql/queries/searchForDecorations/types";
 import { useToast } from "@/components/ui/use-toast";
 import { ToastAction } from "@/components/ui/toast";
+import { User } from "@supabase/supabase-js";
 
 interface Props {
   index: number;

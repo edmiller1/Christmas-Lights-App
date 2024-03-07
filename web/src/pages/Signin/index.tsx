@@ -1,13 +1,5 @@
-import { useMutation } from "@apollo/client";
-import { SIGN_IN } from "@/graphql/mutations/signIn";
-import {
-  SignIn as SignInData,
-  SignInArgs,
-} from "@/graphql/mutations/signIn/types";
 import { Link, useNavigate } from "react-router-dom";
 import { supabase } from "@/lib/supabaseClient";
-import { auth, googleAuthProvider } from "../../lib/firebase";
-import { useUserData } from "../../lib/hooks";
 import logo from "../../assets/ChristmasLights-House-Logo.png";
 import { Button } from "@/components/ui/button";
 import {
@@ -19,10 +11,10 @@ import {
   FaDiscord,
 } from "react-icons/fa";
 import { useToast } from "@/components/ui/use-toast";
-import { CircleNotch } from "@phosphor-icons/react";
+import { useAuth } from "@/lib/hooks";
 
 export const SignIn = () => {
-  const currentUser = useUserData();
+  const { currentUser } = useAuth();
   const navigate = useNavigate();
   const { toast } = useToast();
 

@@ -17,10 +17,10 @@ import { Separator } from "@/components/ui/separator";
 import { useState } from "react";
 import { PersonalInfoLoading } from "../PersonalInfo/components";
 import { Breadcrumbs } from "@/components";
-import { useUserData } from "@/lib/hooks";
+import { useAuth } from "@/lib/hooks";
 
 export const NotificationSettings = () => {
-  const currentUser = useUserData();
+  const { currentUser } = useAuth();
   const { state } = useLocation();
   const navigate = useNavigate();
   const [user, setUser] = useState<Get_User | null>(null);
@@ -30,7 +30,7 @@ export const NotificationSettings = () => {
     refetch: refetchUser,
     networkStatus: getUserNetworkStatus,
   } = useQuery<GetUserData, GetUserArgs>(GET_USER, {
-    variables: { input: { id: state ? state : currentUser?.uid } },
+    variables: { input: { id: state ? state : currentUser?.id } },
     notifyOnNetworkStatusChange: true,
     onCompleted: (data) => {
       if (data) {

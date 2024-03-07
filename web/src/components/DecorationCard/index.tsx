@@ -24,10 +24,10 @@ import {
 } from "@phosphor-icons/react";
 import { Link, useNavigate } from "react-router-dom";
 import { useToast } from "../ui/use-toast";
-import { User } from "firebase/auth";
 import { ToastAction } from "../ui/toast";
 import { Get_Decorations_By_Rating } from "@/graphql/queries/getDecorationsByRating/types";
 import { Search_For_Decorations } from "@/graphql/queries/searchForDecorations/types";
+import { User } from "@supabase/supabase-js";
 
 interface Props {
   index: number;

@@ -2,7 +2,6 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Decoration } from "@/lib/types";
 import { MagnifyingGlass, Warning } from "@phosphor-icons/react";
-import { User } from "firebase/auth";
 import { DecorationCard, DecorationsLoading } from "..";
 import { Get_Decorations_Via_Country } from "@/graphql/queries/getDecorationsViaCountry/types";
 import { Get_Decorations_Via_Region } from "@/graphql/queries/getDecorationsViaRegion/types";
@@ -11,6 +10,7 @@ import { Search_User_Favourites } from "@/graphql/queries/searchUserFavourites/t
 import { useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { DrawerNavigation } from "../DrawerNavigation";
+import { User } from "@supabase/supabase-js";
 
 interface Props {
   activeDecoration:

@@ -12,10 +12,10 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { YourDecorationsLoading } from "../YourDecorations/components";
 import { DecorationCard, NoHistory } from "./components";
 import { Breadcrumbs } from "@/components";
-import { useUserData } from "@/lib/hooks";
+import { useAuth } from "@/lib/hooks";
 
 export const History = () => {
-  const currentUser = useUserData();
+  const { currentUser } = useAuth();
   const navigate = useNavigate();
   const { state } = useLocation();
   const [user, setUser] = useState<Get_User | null>(null);
@@ -24,7 +24,7 @@ export const History = () => {
     GetUserData,
     GetUserArgs
   >(GET_USER, {
-    variables: { input: { id: state ? state : currentUser?.uid } },
+    variables: { input: { id: state ? state : currentUser?.id } },
     notifyOnNetworkStatusChange: true,
     onCompleted: (data) => {
       if (data) {

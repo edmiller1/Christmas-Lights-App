@@ -25,10 +25,10 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { getBase64Value } from "@/lib/helpers";
 import { Breadcrumbs } from "@/components";
-import { useUserData } from "@/lib/hooks";
+import { useAuth } from "@/lib/hooks";
 
 export const PersonalInfo = () => {
-  const currentUser = useUserData();
+  const { currentUser } = useAuth();
   const { state } = useLocation();
   const navigate = useNavigate();
   const [user, setUser] = useState<Get_User | null>(null);
@@ -43,7 +43,7 @@ export const PersonalInfo = () => {
     refetch: refetchUser,
     networkStatus: getUserNetworkStatus,
   } = useQuery<GetUserData, GetUserArgs>(GET_USER, {
-    variables: { input: { id: state ? state : currentUser?.uid } },
+    variables: { input: { id: state ? state : currentUser?.id } },
     notifyOnNetworkStatusChange: true,
     onCompleted: (data) => {
       if (data) {

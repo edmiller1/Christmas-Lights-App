@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Get_User } from "@/graphql/queries/getUser/types";
 import { ShootingStar } from "@phosphor-icons/react";
-import { User } from "firebase/auth";
+import { User } from "@supabase/supabase-js";
 import { Link } from "react-router-dom";
 
 interface Props {

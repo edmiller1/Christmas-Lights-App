@@ -5,11 +5,11 @@ import { Get_Decorations_Via_Country } from "@/graphql/queries/getDecorationsVia
 import { Get_Decorations_Via_Region } from "@/graphql/queries/getDecorationsViaRegion/types";
 import { Decoration } from "@/lib/types";
 import { MagnifyingGlass, Warning } from "@phosphor-icons/react";
-import { User } from "firebase/auth";
 import { DecorationCard, DecorationsLoading } from "..";
 import { useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { DrawerNavigation } from "../DrawerNavigation";
+import { User } from "@supabase/supabase-js";
 
 interface Props {
   activeDecoration:

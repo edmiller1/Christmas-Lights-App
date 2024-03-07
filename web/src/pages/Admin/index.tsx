@@ -4,15 +4,15 @@ import { Login, SideNav } from "./components";
 import { useToast } from "@/components/ui/use-toast";
 import { Outlet, redirect } from "react-router-dom";
 import { CircleNotch } from "@phosphor-icons/react";
-import { useUserData } from "@/lib/hooks";
+import { useAuth } from "@/lib/hooks";
 
 export const Admin = () => {
-  const currentUser = useUserData();
+  const { currentUser } = useAuth();
   const { toast } = useToast();
   const [logoutLoading, setLogoutLoading] = useState<boolean>(false);
 
   useEffect(() => {
-    if (currentUser && currentUser?.providerData[0].providerId !== "password") {
+    if (currentUser && currentUser?.app_metadata.provider !== "password") {
       logOut();
     }
   }, []);
@@ -46,7 +46,7 @@ export const Admin = () => {
       });
   };
 
-  if (currentUser && currentUser.providerData[0].providerId !== "password") {
+  if (currentUser && currentUser.app_metadata.provider !== "password") {
     return <Login />;
   }
 

@@ -9,7 +9,6 @@ import { Decoration, Route } from "@/lib/types";
 import { Car, Path, Plus, X } from "@phosphor-icons/react";
 import { Button } from "@/components/ui/button";
 import { RoutesLoading } from "./components";
-import { User } from "firebase/auth";
 import { useToast } from "@/components/ui/use-toast";
 import { ToastAction } from "@/components/ui/toast";
 import { useNavigate } from "react-router-dom";
@@ -17,6 +16,7 @@ import { RouteCard } from "..";
 import { convertDistance, convertTime } from "@/lib/helpers";
 import { DrawerNavigation } from "../DrawerNavigation";
 import { AnimatePresence, motion } from "framer-motion";
+import { User } from "@supabase/supabase-js";
 
 interface Props {
   userRoutes: Route[] | undefined;

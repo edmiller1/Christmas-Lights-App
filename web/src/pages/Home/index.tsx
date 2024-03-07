@@ -14,10 +14,10 @@ import { DecorationCard } from "@/components";
 import { DecorationsLoading, HomeFooter, HomeMap } from "./components";
 import { useState } from "react";
 import { ListBullets, MapTrifold } from "@phosphor-icons/react";
-import { useUserData } from "@/lib/hooks";
+import { useAuth } from "@/lib/hooks";
 
 export const Home = () => {
-  const currentUser = useUserData();
+  const { currentUser } = useAuth();
 
   const [showMap, setShowMap] = useState<boolean>(false);
   const [mapLoading, setMapLoading] = useState<boolean>(false);
@@ -26,7 +26,7 @@ export const Home = () => {
     GetUserData,
     GetUserArgs
   >(GET_USER, {
-    variables: { input: { id: currentUser ? currentUser.uid : "" } },
+    variables: { input: { id: currentUser ? currentUser.id : "" } },
     notifyOnNetworkStatusChange: true,
   });
 

@@ -105,13 +105,13 @@ import {
 } from "@/components/ui/tooltip";
 import { useToast } from "@/components/ui/use-toast";
 import { AppHeader, Footer } from "@/components";
-import { useUserData } from "@/lib/hooks";
 import { AppHeaderLoading } from "@/components/AppHeader/components";
+import { useAuth } from "@/lib/hooks";
 
 export const Decoration = () => {
   const navigate = useNavigate();
   const { decorationId } = useParams();
-  const currentUser = useUserData();
+  const { currentUser } = useAuth();
   const { toast } = useToast();
   const [recommendedDecorations, setRecommendedDecorations] =
     useState<Get_Recommended_Decorations[]>();
@@ -122,7 +122,7 @@ export const Decoration = () => {
     loading: getUserLoading,
     refetch: getUserRefetch,
   } = useQuery<GetUserData, GetUserArgs>(GET_USER, {
-    variables: { input: { id: currentUser?.uid ? currentUser.uid : "" } },
+    variables: { input: { id: currentUser?.id ? currentUser.id : "" } },
   });
 
   const user = getUserData?.getUser ? getUserData.getUser : null;
@@ -698,7 +698,7 @@ export const Decoration = () => {
                 <CircleWavyCheck size={24} color="#E23737" weight="fill" />
               ) : null}
             </div>
-            {currentUser?.uid !== decoration?.creator_id ? (
+            {currentUser?.id !== decoration?.creator_id ? (
               <div className="flex justify-end">
                 <DecorationMenu
                   setIsReportDecorationOpen={setIsReportDecorationOpen}

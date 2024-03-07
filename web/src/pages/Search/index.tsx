@@ -30,7 +30,6 @@ import {
   SearchForDecorationsArgs,
   Search_For_Decorations,
 } from "@/graphql/queries/searchForDecorations/types";
-import { useUserData } from "@/lib/hooks";
 import { useQuery, useLazyQuery } from "@apollo/client";
 import { useLocation, useNavigate } from "react-router-dom";
 import { AppHeaderLoading } from "@/components/AppHeader/components";
@@ -47,6 +46,7 @@ import { Button } from "@/components/ui/button";
 import { Drawer, DrawerTrigger } from "@/components/ui/drawer";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { UserMenu } from "../RoutePlanning/components";
+import { useAuth } from "@/lib/hooks";
 
 const initialViewState = {
   latitude: 0,
@@ -58,7 +58,7 @@ const initialViewState = {
 
 export const Search = () => {
   const navigate = useNavigate();
-  const currentUser = useUserData();
+  const { currentUser } = useAuth();
   const location = useLocation();
   const searchQuery = new URLSearchParams(location.search).get("query");
 
@@ -127,7 +127,7 @@ export const Search = () => {
     loading: getUserLoading,
     refetch: refetchUser,
   } = useQuery<GetUserData, GetUserArgs>(GET_USER, {
-    variables: { input: { id: currentUser ? currentUser.uid : "" } },
+    variables: { input: { id: currentUser ? currentUser.id : "" } },
     skip: !currentUser,
   });
 

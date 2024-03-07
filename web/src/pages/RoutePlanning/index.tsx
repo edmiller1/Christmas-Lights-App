@@ -76,7 +76,7 @@ import {
   SecondaryNav,
 } from "./components";
 import { MenuItems, ThemeToggle } from "@/components/AppHeader/components";
-import { useUserData } from "@/lib/hooks";
+import { useAuth } from "@/lib/hooks";
 import { auth } from "@/lib/firebase";
 import { useToast } from "@/components/ui/use-toast";
 import { Decoration, Route, Step, ViewState } from "@/lib/types";
@@ -106,7 +106,7 @@ const initialViewState = {
 
 export const RoutePlanning = () => {
   const { toast } = useToast();
-  const currentUser = useUserData();
+  const { currentUser } = useAuth();
   const navigate = useNavigate();
 
   const mapRef = useRef<MapRef>();
@@ -176,7 +176,7 @@ export const RoutePlanning = () => {
     loading: getUserLoading,
     refetch: refetchUser,
   } = useQuery<GetUserData, GetUserArgs>(GET_USER, {
-    variables: { input: { id: currentUser?.uid ? currentUser.uid : "" } },
+    variables: { input: { id: currentUser?.id ? currentUser.id : "" } },
   });
 
   const [

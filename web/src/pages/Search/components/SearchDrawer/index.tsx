@@ -5,7 +5,7 @@ import { Search_For_Decorations } from "@/graphql/queries/searchForDecorations/t
 import { Warning } from "@phosphor-icons/react";
 import { DecorationCard, DecorationsLoading, Pagi } from "..";
 import { AnimatePresence, motion } from "framer-motion";
-import { User } from "firebase/auth";
+import { User } from "@supabase/supabase-js";
 
 interface Props {
   searchQuery: string | null;

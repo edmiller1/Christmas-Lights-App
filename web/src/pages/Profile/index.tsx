@@ -24,14 +24,14 @@ import { ProfileLoading } from "./components";
 import { useToast } from "@/components/ui/use-toast";
 import { useTheme } from "@/components/ui/theme-provider";
 import { Switch } from "@/components/ui/switch";
-import { useUserData } from "@/lib/hooks";
 import { auth } from "@/lib/firebase";
 import { AppHeaderLoading } from "@/components/AppHeader/components";
 import { AppHeader } from "@/components";
+import { useAuth } from "@/lib/hooks";
 
 export const Profile = () => {
   const navigate = useNavigate();
-  const currentUser = useUserData();
+  const { currentUser } = useAuth();
   const { toast } = useToast();
   const { setTheme } = useTheme();
   const [currentTheme, setCurrentTheme] = useState<string | null>(
@@ -43,7 +43,7 @@ export const Profile = () => {
   const { loading: getUserLoading } = useQuery<GetUserData, GetUserArgs>(
     GET_USER,
     {
-      variables: { input: { id: currentUser ? currentUser.uid : "" } },
+      variables: { input: { id: currentUser ? currentUser.id : "" } },
       onCompleted: (data) => {
         if (data) {
           setUser(data.getUser);

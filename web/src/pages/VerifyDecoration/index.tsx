@@ -20,11 +20,11 @@ import { NotFound } from "..";
 import { getBase64Value } from "@/lib/helpers";
 import { AlreadySubmittedModal, VerifyDecorationLoading } from "./components";
 import { useToast } from "@/components/ui/use-toast";
-import { useUserData } from "@/lib/hooks";
+import { useAuth } from "@/lib/hooks";
 
 export const VerifyDecoration = () => {
   const { decorationId } = useParams();
-  const currentUser = useUserData();
+  const { currentUser } = useAuth();
   const { toast } = useToast();
   const navigate = useNavigate();
 
@@ -93,7 +93,7 @@ export const VerifyDecoration = () => {
   };
 
   if (
-    (decoration && currentUser && decoration.creator_id !== currentUser.uid) ||
+    (decoration && currentUser && decoration.creator_id !== currentUser.id) ||
     getDecorationError
   ) {
     return <NotFound />;

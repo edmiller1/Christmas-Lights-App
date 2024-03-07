@@ -16,13 +16,13 @@ import { CircleNotch, Notification } from "@phosphor-icons/react";
 import { NotificationItem, NotificationsLoading } from "./components";
 import { useToast } from "@/components/ui/use-toast";
 import { AllNotificationsMenu } from "@/components/AppHeader/components/NotificationsMenu/components";
-import { useUserData } from "@/lib/hooks";
 import { AppHeaderLoading } from "@/components/AppHeader/components";
 import { AppHeader } from "@/components";
+import { useAuth } from "@/lib/hooks";
 
 export const Notifications = () => {
   const { toast } = useToast();
-  const currentUser = useUserData();
+  const { currentUser } = useAuth();
 
   const [deleteAllNotifications, { loading: deleteAllNotificationsLoading }] =
     useMutation<DeleteAllNotificationsData>(DELETE_ALL_NOTIFICATIONS, {
@@ -54,7 +54,7 @@ export const Notifications = () => {
     GetUserData,
     GetUserArgs
   >(GET_USER, {
-    variables: { input: { id: currentUser?.uid ? currentUser.uid : "" } },
+    variables: { input: { id: currentUser?.id ? currentUser.id : "" } },
   });
 
   const user = getUserData?.getUser ? getUserData.getUser : null;

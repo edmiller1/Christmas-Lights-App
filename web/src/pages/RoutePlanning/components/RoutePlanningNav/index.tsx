@@ -18,8 +18,8 @@ import { Get_Decorations_Via_Country } from "@/graphql/queries/getDecorationsVia
 import { Get_Decorations_Via_Region } from "@/graphql/queries/getDecorationsViaRegion/types";
 import { Get_Decorations_Via_Search } from "@/graphql/queries/getDecorationsViaSearch/types";
 import { Decoration, Route } from "@/lib/types";
-import { User } from "firebase/auth";
 import { useState } from "react";
+import { User } from "@supabase/supabase-js";
 
 function classNames(...classes: any) {
   return classes.filter(Boolean).join(" ");

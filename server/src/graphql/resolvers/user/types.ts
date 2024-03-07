@@ -1,15 +1,15 @@
-export interface FirebaseAuthResult {
-  uid: string;
+export interface SupabaseAuthResult {
+  id: string;
   accessToken: string;
   isNewUser: boolean;
-  displayName: string;
+  name: string;
   email: string;
   photoURL: string;
-  providerId: string;
+  provider: string;
 }
 
 export interface SignInArgs {
-  input: { result: FirebaseAuthResult };
+  input: { result: SupabaseAuthResult };
 }
 
 export interface CreateUserArgs {

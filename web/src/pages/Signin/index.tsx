@@ -5,6 +5,7 @@ import {
   SignInArgs,
 } from "@/graphql/mutations/signIn/types";
 import { Link, useNavigate } from "react-router-dom";
+import { supabase } from "@/lib/supabaseClient";
 import { auth, googleAuthProvider } from "../../lib/firebase";
 import { useUserData } from "../../lib/hooks";
 import logo from "../../assets/ChristmasLights-House-Logo.png";
@@ -55,32 +56,23 @@ export const SignIn = () => {
     },
   });
 
-  const signInWIthGoogle = async () => {
-    await auth
-      .signInWithPopup(googleAuthProvider)
-      .then((googleData: any) => {
-        const resultData: SignInArgs = {
-          input: {
-            result: {
-              uid: googleData.user.uid,
-              isNewUser: googleData.additionalUserInfo.isNewUser,
-              accessToken: googleData.credential.idToken,
-              displayName: googleData.user.displayName,
-              email: googleData.user.email,
-              photoURL: googleData.user.photoURL,
-              providerId: googleData.user.providerData[0].providerId,
-            },
-          },
-        };
-        signIn({ variables: { input: resultData.input } });
-      })
-      .catch(() => {
-        toast({
-          variant: "destructive",
-          title: "Error 😬",
-          description: "Failed to sign in. Please try again.",
-        });
+  const signInWithDiscord = async () => {
+    const { error } = await supabase.auth.signInWithOAuth({
+      provider: "discord",
+    });
+    if (error) {
+      toast({
+        variant: "destructive",
+        title: "Error 😬",
+        description: "Failed to sign in. Please try again.",
       });
+    } else {
+      toast({
+        variant: "success",
+        title: "Success 🥳",
+        description: "Signed in successfully",
+      });
+    }
   };
 
   if (signInLoading) {
@@ -119,7 +111,6 @@ export const SignIn = () => {
               <Button
                 variant="outline"
                 className="inline-flex items-center py-6 text-base"
-                onClick={signInWIthGoogle}
               >
                 <FaGoogle className="mr-2 text-lg" />
                 Google
@@ -148,6 +139,7 @@ export const SignIn = () => {
               <Button
                 variant="outline"
                 className="inline-flex items-center py-6 text-base"
+                onClick={signInWithDiscord}
               >
                 <FaDiscord className="mr-2 text-lg" />
                 Discord

@@ -1,4 +1,4 @@
-import { useQuery } from "@apollo/client";
+import { useMutation, useQuery } from "@apollo/client";
 import { GET_USER } from "./graphql/queries";
 import {
   GetUser as GetUserData,
@@ -8,17 +8,43 @@ import { AppHeader } from "./components";
 import { useEffect } from "react";
 import { AppHeaderLoading } from "./components/AppHeader/components";
 import "mapbox-gl/dist/mapbox-gl.css";
-import { useUserData } from "./lib/hooks";
+import { AuthProvider, useAuth, useUserData } from "./lib/hooks";
 import { UserContext } from "./lib/context";
 import { Home } from "./pages";
+import { SIGN_IN } from "./graphql/mutations/signIn";
+import {
+  SignIn as SignInData,
+  SignInArgs,
+} from "./graphql/mutations/signIn/types";
 
 function App() {
-  const currentUser = useUserData();
+  const { currentUser, session } = useAuth();
+  console.log(currentUser);
+  console.log(session);
+
+  const [signIn, { loading: signInLoading }] = useMutation<
+    SignInData,
+    SignInArgs
+  >(SIGN_IN, {
+    onCompleted(data) {
+      if (data && data.signIn) {
+        if (data.signIn.token) {
+          sessionStorage.setItem("token", data.signIn.token);
+        }
+      } else {
+        sessionStorage.removeItem("token");
+      }
+    },
+    onError: () => {
+      //
+    },
+  });
 
   const { data: getUserData, loading: getUserLoading } = useQuery<
     GetUserData,
     GetUserArgs
   >(GET_USER, {
+    //@ts-ignore
     variables: { input: { id: currentUser ? currentUser.uid : "" } },
     skip: !currentUser,
   });
@@ -47,16 +73,30 @@ function App() {
   }, []);
 
   useEffect(() => {
-    if (!currentUser) {
-      sessionStorage.removeItem("token");
-    }
-  }, [currentUser]);
+    const sessionData = {
+      input: {
+        result: {
+          id: session?.user.id,
+          token: session?.access_token,
+          name: session?.user.user_metadata.full_name,
+          email: session?.user.email,
+          photoURL: session?.user.user_metadata.picture,
+          provider: session?.user.app_metadata.provider,
+        },
+      },
+    };
+    signIn({ variables: { input: sessionData.input } });
+  }, []);
 
   return (
-    <UserContext.Provider value={currentUser}>
-      {getUserLoading ? <AppHeaderLoading /> : <AppHeader user={user} />}
+    <>
+      {getUserLoading || signInLoading ? (
+        <AppHeaderLoading />
+      ) : (
+        <AppHeader user={user} />
+      )}
       <Home />
-    </UserContext.Provider>
+    </>
   );
 }
 

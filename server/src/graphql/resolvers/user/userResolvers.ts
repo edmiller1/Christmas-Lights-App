@@ -170,17 +170,21 @@ export const userResolvers = {
     ): Promise<User | null> => {
       try {
         let user: User | null = null;
-        const isNewUser = input.result.isNewUser;
+        const isNewUser = await prisma.user.findFirst({
+          where: {
+            id: input.result.id,
+          },
+        });
 
-        if (isNewUser) {
+        if (!isNewUser) {
           user = await prisma.user.create({
             data: {
-              id: input.result.uid,
+              id: input.result.id,
               email: input.result.email,
               image: input.result.photoURL,
-              name: input.result.displayName,
+              name: input.result.name,
               token: input.result.accessToken,
-              provider: input.result.providerId,
+              provider: input.result.provider,
               notifications_by_email_rating: true,
               notifications_by_email_verification: true,
               notifications_on_app_rating: true,
@@ -189,11 +193,7 @@ export const userResolvers = {
             },
           });
         } else {
-          user = await prisma.user.findFirst({
-            where: {
-              id: input.result.uid,
-            },
-          });
+          user = isNewUser;
         }
         return user;
       } catch (error) {

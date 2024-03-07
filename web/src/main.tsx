@@ -31,6 +31,7 @@ import {
   PersonalInfo,
   YourDecorations,
 } from "./pages/Profile/pages/index.ts";
+import { AuthProvider } from "./lib/hooks.tsx";
 
 const hasSession = sessionStorage.getItem("token");
 console.log(hasSession);
@@ -125,7 +126,7 @@ const authLink = setContext((_, { headers }) => {
 });
 
 const httpLink = createHttpLink({
-  uri: "https://christmas-lights-app-server-fwjab.ondigitalocean.app/",
+  uri: import.meta.env.VITE_CLA_SERVER_URL,
 });
 
 const client = new ApolloClient({
@@ -138,12 +139,14 @@ const client = new ApolloClient({
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
     <ApolloProvider client={client}>
-      <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
-        <div className="h-full dark:bg-ch-dark dark:text-white bg-ch-light">
-          <Toaster />
-          <RouterProvider router={router} />
-        </div>
-      </ThemeProvider>
+      <AuthProvider>
+        <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
+          <div className="h-full dark:bg-ch-dark dark:text-white bg-ch-light">
+            <Toaster />
+            <RouterProvider router={router} />
+          </div>
+        </ThemeProvider>
+      </AuthProvider>
     </ApolloProvider>
   </React.StrictMode>
 );

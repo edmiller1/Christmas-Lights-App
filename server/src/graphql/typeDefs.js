@@ -112,7 +112,7 @@ exports.typeDefs = (0, graphql_tag_1.gql) `
   #input
   input SupabaseAuthResult {
     id: String!
-    accessToken: String!
+    token: String!
     name: String!
     email: String!
     photoURL: String!

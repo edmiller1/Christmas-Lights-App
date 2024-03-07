@@ -32,6 +32,7 @@ import {
   YourDecorations,
 } from "./pages/Profile/pages/index.ts";
 import { AuthProvider } from "./lib/hooks.tsx";
+import { Analytics } from "@vercel/analytics/react";
 
 const hasSession = sessionStorage.getItem("token");
 console.log(hasSession);
@@ -138,6 +139,7 @@ const client = new ApolloClient({
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
+    <Analytics />
     <ApolloProvider client={client}>
       <AuthProvider>
         <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">

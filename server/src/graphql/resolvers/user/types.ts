@@ -1,6 +1,6 @@
 export interface SupabaseAuthResult {
   id: string;
-  accessToken: string;
+  token: string;
   name: string;
   email: string;
   photoURL: string;

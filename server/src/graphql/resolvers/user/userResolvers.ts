@@ -183,7 +183,7 @@ export const userResolvers = {
               email: input.result.email,
               image: input.result.photoURL,
               name: input.result.name,
-              token: input.result.accessToken,
+              token: input.result.token,
               provider: input.result.provider,
               notifications_by_email_rating: true,
               notifications_by_email_verification: true,

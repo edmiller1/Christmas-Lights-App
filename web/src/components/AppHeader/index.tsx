@@ -13,7 +13,7 @@ import {
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
 import { Popover, PopoverTrigger } from "@/components/ui/popover";
-import { Link, redirect, useLocation } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import logo from "../../assets/ChristmasLights-House-Logo.png";
 import {
   CreateDecorationModal,

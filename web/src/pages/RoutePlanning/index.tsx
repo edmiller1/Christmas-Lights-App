@@ -63,7 +63,7 @@ import {
   RemoveDecorationFromRoute as RemoveDecorationFromRouteData,
   RemoveDecorationfromRouteArgs,
 } from "@/graphql/mutations/removeDecorationFromRoute/types";
-import { Link, redirect, useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { UserCircle } from "@phosphor-icons/react";
 import {
   CreateRouteModal,

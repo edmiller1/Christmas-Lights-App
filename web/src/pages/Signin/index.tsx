@@ -7,7 +7,7 @@ import {
   FaGoogle,
   FaGithub,
   FaApple,
-  FaMicrosoft,
+  FaTwitter,
   FaDiscord,
 } from "react-icons/fa";
 import { useToast } from "@/components/ui/use-toast";
@@ -28,11 +28,44 @@ export const SignIn = () => {
         title: "Error 😬",
         description: "Failed to sign in. Please try again.",
       });
-    } else {
+    }
+  };
+
+  const signInWithGoogle = async () => {
+    const { error } = await supabase.auth.signInWithOAuth({
+      provider: "google",
+    });
+    if (error) {
       toast({
-        variant: "success",
-        title: "Success 🥳",
-        description: "Signed in successfully",
+        variant: "destructive",
+        title: "Error 😬",
+        description: "Failed to sign in. Please try again.",
+      });
+    }
+  };
+
+  const signInWithGitub = async () => {
+    const { error } = await supabase.auth.signInWithOAuth({
+      provider: "github",
+    });
+    if (error) {
+      toast({
+        variant: "destructive",
+        title: "Error 😬",
+        description: "Failed to sign in. Please try again.",
+      });
+    }
+  };
+
+  const signInWithTwitter = async () => {
+    const { error } = await supabase.auth.signInWithOAuth({
+      provider: "twitter",
+    });
+    if (error) {
+      toast({
+        variant: "destructive",
+        title: "Error 😬",
+        description: "Failed to sign in. Please try again.",
       });
     }
   };
@@ -61,6 +94,7 @@ export const SignIn = () => {
               <Button
                 variant="outline"
                 className="inline-flex items-center py-6 text-base"
+                onClick={signInWithGoogle}
               >
                 <FaGoogle className="mr-2 text-lg" />
                 Google
@@ -82,9 +116,10 @@ export const SignIn = () => {
               <Button
                 variant="outline"
                 className="inline-flex items-center py-6 text-base"
+                onClick={signInWithTwitter}
               >
-                <FaMicrosoft className="mr-2 text-lg" />
-                Microsoft
+                <FaTwitter className="mr-2 text-lg" />
+                Twitter
               </Button>
               <Button
                 variant="outline"
@@ -97,6 +132,7 @@ export const SignIn = () => {
               <Button
                 variant="outline"
                 className="inline-flex items-center py-6 text-base"
+                onClick={signInWithGitub}
               >
                 <FaGithub className="mr-2 text-lg" />
                 Github

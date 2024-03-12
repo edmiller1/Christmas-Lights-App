@@ -16,11 +16,11 @@ import {
   SignIn as SignInData,
   SignInArgs,
 } from "./graphql/mutations/signIn/types";
+import { useToast } from "./components/ui/use-toast";
 
 function App() {
+  const { toast } = useToast();
   const { currentUser, session } = useAuth();
-  console.log(currentUser);
-  console.log(session);
 
   const [user, setUser] = useState<Get_User | null>(null);
 
@@ -31,6 +31,11 @@ function App() {
     onCompleted(data) {
       if (data && data.signIn) {
         if (data.signIn.token) {
+          toast({
+            variant: "success",
+            title: "Success 🥳",
+            description: "Successfully signed in.",
+          });
           sessionStorage.setItem("token", data.signIn.token);
           getUser();
         }
@@ -39,7 +44,11 @@ function App() {
       }
     },
     onError: () => {
-      //
+      toast({
+        variant: "destructive",
+        title: "Error 😬",
+        description: "Failed to sign in. Please try again.",
+      });
     },
   });
 

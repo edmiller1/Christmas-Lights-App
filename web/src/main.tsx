@@ -36,7 +36,6 @@ import { Analytics } from "@vercel/analytics/react";
 import { SpeedInsights } from "@vercel/speed-insights/react";
 
 const hasSession = sessionStorage.getItem("token");
-console.log(hasSession);
 
 const router = createBrowserRouter([
   {

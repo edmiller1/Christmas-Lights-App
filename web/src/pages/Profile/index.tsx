@@ -24,7 +24,6 @@ import { ProfileLoading } from "./components";
 import { useToast } from "@/components/ui/use-toast";
 import { useTheme } from "@/components/ui/theme-provider";
 import { Switch } from "@/components/ui/switch";
-import { auth } from "@/lib/firebase";
 import { AppHeaderLoading } from "@/components/AppHeader/components";
 import { AppHeader } from "@/components";
 import { useAuth } from "@/lib/hooks";
@@ -62,33 +61,33 @@ export const Profile = () => {
     }
   };
 
-  const logOut = async () => {
-    setLogoutLoading(true);
-    await auth
-      .signOut()
-      .then(() => {
-        sessionStorage.removeItem("token");
-        toast({
-          variant: "success",
-          title: "Success 🎉",
-          description: "Signed out successfully!",
-        });
-        setTimeout(() => {
-          setLogoutLoading(false);
-          navigate("/");
-        }, 2000);
-      })
-      .catch((error) => {
-        toast({
-          variant: "destructive",
-          title: "Error 😬",
-          description: `${error}`,
-        });
-        setTimeout(() => {
-          setLogoutLoading(false);
-        }, 2000);
-      });
-  };
+  // const logOut = async () => {
+  //   setLogoutLoading(true);
+  //   await auth
+  //     .signOut()
+  //     .then(() => {
+  //       sessionStorage.removeItem("token");
+  //       toast({
+  //         variant: "success",
+  //         title: "Success 🎉",
+  //         description: "Signed out successfully!",
+  //       });
+  //       setTimeout(() => {
+  //         setLogoutLoading(false);
+  //         navigate("/");
+  //       }, 2000);
+  //     })
+  //     .catch((error) => {
+  //       toast({
+  //         variant: "destructive",
+  //         title: "Error 😬",
+  //         description: `${error}`,
+  //       });
+  //       setTimeout(() => {
+  //         setLogoutLoading(false);
+  //       }, 2000);
+  //     });
+  // };
 
   if (getUserLoading) {
     return <ProfileLoading />;
@@ -241,7 +240,11 @@ export const Profile = () => {
         </div>
         {/* Footer */}
         <div className="mt-10 flex flex-col justify-center items-center">
-          <Button variant="outline" className="w-full" onClick={logOut}>
+          <Button
+            variant="outline"
+            className="w-full"
+            // onClick={logOut}
+          >
             Log out
           </Button>
           <div className="mt-5 flex justify-center items-center">

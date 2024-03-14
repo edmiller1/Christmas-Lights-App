@@ -24,34 +24,6 @@ function App() {
 
   const [user, setUser] = useState<Get_User | null>(null);
 
-  const [signIn, { loading: signInLoading }] = useMutation<
-    SignInData,
-    SignInArgs
-  >(SIGN_IN, {
-    onCompleted(data) {
-      if (data && data.signIn) {
-        if (data.signIn.token) {
-          toast({
-            variant: "success",
-            title: "Success 🥳",
-            description: "Successfully signed in.",
-          });
-          sessionStorage.setItem("token", data.signIn.token);
-          getUser();
-        }
-      } else {
-        sessionStorage.removeItem("token");
-      }
-    },
-    onError: () => {
-      toast({
-        variant: "destructive",
-        title: "Error 😬",
-        description: "Failed to sign in. Please try again.",
-      });
-    },
-  });
-
   const [getUser, { loading: getUserLoading }] = useLazyQuery<
     GetUserData,
     GetUserArgs
@@ -83,31 +55,9 @@ function App() {
     getCoords();
   }, []);
 
-  useEffect(() => {
-    if (session) {
-      const sessionData = {
-        input: {
-          result: {
-            id: session?.user.id,
-            token: session?.access_token,
-            name: session?.user.user_metadata.full_name as string,
-            email: session?.user.email as string,
-            photoURL: session?.user.user_metadata.picture as string,
-            provider: session?.user.app_metadata.provider as string,
-          },
-        },
-      };
-      signIn({ variables: { input: sessionData.input } });
-    }
-  }, []);
-
   return (
     <>
-      {getUserLoading || signInLoading ? (
-        <AppHeaderLoading />
-      ) : (
-        <AppHeader user={user} />
-      )}
+      {getUserLoading ? <AppHeaderLoading /> : <AppHeader user={user} />}
       <Home />
     </>
   );

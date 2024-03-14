@@ -107,6 +107,7 @@ export const SignIn = () => {
                 Facebook
               </Button>
               <Button
+                disabled
                 variant="outline"
                 className="inline-flex items-center py-6 text-base"
               >

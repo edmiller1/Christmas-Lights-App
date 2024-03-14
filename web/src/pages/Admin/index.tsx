@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import { auth } from "../../lib/firebase";
 import { Login, SideNav } from "./components";
 import { useToast } from "@/components/ui/use-toast";
 import { Outlet, redirect } from "react-router-dom";
@@ -13,38 +12,38 @@ export const Admin = () => {
 
   useEffect(() => {
     if (currentUser && currentUser?.app_metadata.provider !== "password") {
-      logOut();
+      //logOut();
     }
   }, []);
 
-  const logOut = async () => {
-    setLogoutLoading(true);
-    await auth
-      .signOut()
-      .then(() => {
-        sessionStorage.removeItem("token");
-        toast({
-          variant: "success",
-          title: "Success 🎉",
-          description: "Signed out successfully!",
-        });
-        sessionStorage.removeItem("token");
-        setTimeout(() => {
-          setLogoutLoading(false);
-          redirect("/admin");
-        }, 2000);
-      })
-      .catch((error) => {
-        toast({
-          variant: "destructive",
-          title: "Error 😬",
-          description: `${error}`,
-        });
-        setTimeout(() => {
-          setLogoutLoading(false);
-        }, 2000);
-      });
-  };
+  // const logOut = async () => {
+  //   setLogoutLoading(true);
+  //   await auth
+  //     .signOut()
+  //     .then(() => {
+  //       sessionStorage.removeItem("token");
+  //       toast({
+  //         variant: "success",
+  //         title: "Success 🎉",
+  //         description: "Signed out successfully!",
+  //       });
+  //       sessionStorage.removeItem("token");
+  //       setTimeout(() => {
+  //         setLogoutLoading(false);
+  //         redirect("/admin");
+  //       }, 2000);
+  //     })
+  //     .catch((error) => {
+  //       toast({
+  //         variant: "destructive",
+  //         title: "Error 😬",
+  //         description: `${error}`,
+  //       });
+  //       setTimeout(() => {
+  //         setLogoutLoading(false);
+  //       }, 2000);
+  //     });
+  // };
 
   if (currentUser && currentUser.app_metadata.provider !== "password") {
     return <Login />;
@@ -69,9 +68,9 @@ export const Admin = () => {
 
   return (
     <div className="min-h-screen">
-      {window.location.pathname.includes("login") ? null : (
+      {/* {window.location.pathname.includes("login") ? null : (
         <SideNav logOut={logOut} />
-      )}
+      )} */}
       <Outlet />
     </div>
   );

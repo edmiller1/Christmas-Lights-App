@@ -2,7 +2,6 @@ import * as z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
-import { auth } from "../../../../lib/firebase";
 import logo from "../../../../assets/ChristmasLights-House-Logo.png";
 import {
   Form,
@@ -39,36 +38,36 @@ export const Login = () => {
     },
   });
 
-  const login = async (email: string, password: string) => {
-    setLoginLoading(true);
-    await auth
-      .signInWithEmailAndPassword(email, password)
-      .then((res) => {
-        toast({
-          variant: "success",
-          title: "Success 🎉",
-          description: "Logged in successfully!",
-        });
-        sessionStorage.setItem("token", res.user!.refreshToken);
-        setTimeout(() => {
-          setLoginLoading(false);
-          navigate("/admin");
-        }, 2000);
-      })
-      .catch(() => {
-        toast({
-          variant: "destructive",
-          title: "Error 😬",
-          description: "Failed to login. Please try again.",
-        });
-        setTimeout(() => {
-          setLoginLoading(false);
-        }, 2000);
-      });
-  };
+  // const login = async (email: string, password: string) => {
+  //   setLoginLoading(true);
+  //   await auth
+  //     .signInWithEmailAndPassword(email, password)
+  //     .then((res) => {
+  //       toast({
+  //         variant: "success",
+  //         title: "Success 🎉",
+  //         description: "Logged in successfully!",
+  //       });
+  //       sessionStorage.setItem("token", res.user!.refreshToken);
+  //       setTimeout(() => {
+  //         setLoginLoading(false);
+  //         navigate("/admin");
+  //       }, 2000);
+  //     })
+  //     .catch(() => {
+  //       toast({
+  //         variant: "destructive",
+  //         title: "Error 😬",
+  //         description: "Failed to login. Please try again.",
+  //       });
+  //       setTimeout(() => {
+  //         setLoginLoading(false);
+  //       }, 2000);
+  //     });
+  // };
 
   const onSubmit = (values: z.infer<typeof formSchema>) => {
-    login(values.email, values.password);
+    //login(values.email, values.password);
   };
 
   if (loginLoading) {

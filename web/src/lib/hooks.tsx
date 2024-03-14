@@ -8,8 +8,6 @@ import {
 import { useMutation } from "@apollo/client";
 import { SIGN_IN } from "@/graphql/mutations/signIn";
 import { useToast } from "@/components/ui/use-toast";
-import { DeleteNewlyCreatedUserArgs } from "@/graphql/mutations/deleteNewlyCreatedUser/types";
-import { DELETE_NEWLY_CREATED_USER } from "@/graphql/mutations";
 
 const AuthContext = createContext<{
   session: Session | null | undefined;
@@ -22,13 +20,6 @@ export const AuthProvider = ({ children }: any) => {
   const [currentUser, setCurrentUser] = useState<User>();
   const [session, setSession] = useState<Session | null>();
   const [loading, setLoading] = useState(true);
-
-  const [deleteNewlyCreatedUser] = useMutation<DeleteNewlyCreatedUserArgs>(
-    DELETE_NEWLY_CREATED_USER,
-    {
-      variables: { input: { id: session?.user.id } },
-    }
-  );
 
   const [signIn] = useMutation<SignInData, SignInArgs>(SIGN_IN, {
     onCompleted(data) {
@@ -47,7 +38,6 @@ export const AuthProvider = ({ children }: any) => {
     },
     onError: async () => {
       if (session) {
-        deleteNewlyCreatedUser();
         await supabase.auth.admin.deleteUser(session?.user.id);
       }
       toast({

@@ -127,7 +127,7 @@ const authLink = setContext((_, { headers }) => {
 });
 
 const httpLink = createHttpLink({
-  uri: import.meta.env.VITE_CLA_SERVER_URL,
+  uri: "http://localhost:9000/api",
 });
 
 const client = new ApolloClient({

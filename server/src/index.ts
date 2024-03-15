@@ -1,4 +1,5 @@
 require("dotenv").config();
+//@ts-ignore
 const kindeNode = require("kinde-node");
 
 import { ApolloServer } from "@apollo/server";

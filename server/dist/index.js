@@ -10,6 +10,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 require("dotenv").config();
+//@ts-ignore
 const kindeNode = require("kinde-node");
 const server_1 = require("@apollo/server");
 const standalone_1 = require("@apollo/server/standalone");

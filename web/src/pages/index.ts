@@ -7,4 +7,5 @@ export * from "./Profile";
 export * from "./RoutePlanning";
 export * from "./Search";
 export * from "./Signin";
+export * from "./SSOCallback";
 export * from "./VerifyDecoration";

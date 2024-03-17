@@ -14,7 +14,7 @@ import { useNavigate } from "react-router-dom";
 interface Props {
   isCreateOpen: boolean;
   setIsCreateOpen: (isOpen: boolean) => void;
-  user: Get_User | null;
+  currentUser: Get_User | null;
 }
 
 const mbApiKey = import.meta.env.VITE_MAPBOX_API_KEY;
@@ -22,7 +22,7 @@ const mbApiKey = import.meta.env.VITE_MAPBOX_API_KEY;
 export const CreateDecorationModal = ({
   isCreateOpen,
   setIsCreateOpen,
-  user,
+  currentUser,
 }: Props) => {
   const navigate = useNavigate();
   const { toast } = useToast();
@@ -74,7 +74,7 @@ export const CreateDecorationModal = ({
   useEffect(() => {
     const imagesCopy = [...images];
     const filesCopy = [...files];
-    if (!user?.premium && images.length > 6) {
+    if (!currentUser?.premium && images.length > 6) {
       //@ts-ignore
       imagesCopy.forEach((image) => {
         if (imagesCopy.length > 6) {
@@ -88,7 +88,7 @@ export const CreateDecorationModal = ({
         title: "Error",
         description: "You can only upload a maximum of 6 images",
       });
-    } else if (user?.premium && images.length > 8) {
+    } else if (currentUser?.premium && images.length > 8) {
       //@ts-ignore
       imagesCopy.forEach((image) => {
         if (imagesCopy.length > 8) {
@@ -119,8 +119,8 @@ export const CreateDecorationModal = ({
     const filesArray: File[] = [];
 
     if (
-      (user?.premium && images.length > 8) ||
-      (user?.premium && Array.from(e.dataTransfer.files).length > 8)
+      (currentUser?.premium && images.length > 8) ||
+      (currentUser?.premium && Array.from(e.dataTransfer.files).length > 8)
     ) {
       toast({
         variant: "destructive",
@@ -129,8 +129,8 @@ export const CreateDecorationModal = ({
       });
       return;
     } else if (
-      (!user?.premium && images.length > 6) ||
-      (!user?.premium && Array.from(e.dataTransfer.files).length > 6)
+      (!currentUser?.premium && images.length > 6) ||
+      (!currentUser?.premium && Array.from(e.dataTransfer.files).length > 6)
     ) {
       const countCopy = count + 1;
       if (countCopy % 3 === 0) {
@@ -158,7 +158,10 @@ export const CreateDecorationModal = ({
           title: "Error",
           description: "Uploads must be of type image",
         });
-      } else if (!user?.premium && e.dataTransfer.files[index].size > 4194304) {
+      } else if (
+        !currentUser?.premium &&
+        e.dataTransfer.files[index].size > 4194304
+      ) {
         //toast invalid file size
         const countCopy = count + 1;
         if (countCopy % 3 === 0) {
@@ -177,7 +180,10 @@ export const CreateDecorationModal = ({
         }
 
         setCount(countCopy);
-      } else if (user?.premium && e.dataTransfer.files[index].size > 6291456) {
+      } else if (
+        currentUser?.premium &&
+        e.dataTransfer.files[index].size > 6291456
+      ) {
         //toast invalid file size
         toast({
           variant: "destructive",
@@ -210,8 +216,8 @@ export const CreateDecorationModal = ({
     const filesArray: File[] = [];
 
     if (
-      (user?.premium && images.length > 8) ||
-      (user?.premium && Array.from(e.target.files).length > 8)
+      (currentUser?.premium && images.length > 8) ||
+      (currentUser?.premium && Array.from(e.target.files).length > 8)
     ) {
       toast({
         variant: "destructive",
@@ -220,8 +226,8 @@ export const CreateDecorationModal = ({
       });
       return;
     } else if (
-      (!user?.premium && images.length > 6) ||
-      (!user?.premium && Array.from(e.target.files).length > 6)
+      (!currentUser?.premium && images.length > 6) ||
+      (!currentUser?.premium && Array.from(e.target.files).length > 6)
     ) {
       const countCopy = count + 1;
       if (countCopy % 3 === 0) {
@@ -250,7 +256,10 @@ export const CreateDecorationModal = ({
           title: "Error",
           description: "Uploads must be of type image",
         });
-      } else if (!user?.premium && e.target.files[index].size > 4194304) {
+      } else if (
+        !currentUser?.premium &&
+        e.target.files[index].size > 4194304
+      ) {
         //toast invalid file size
         const countCopy = count + 1;
         if (countCopy % 3 === 0) {
@@ -269,7 +278,7 @@ export const CreateDecorationModal = ({
         }
 
         setCount(countCopy);
-      } else if (user?.premium && e.target.files[index].size > 6291456) {
+      } else if (currentUser?.premium && e.target.files[index].size > 6291456) {
         //toast invalid file size
         toast({
           variant: "destructive",
@@ -454,7 +463,7 @@ export const CreateDecorationModal = ({
       discardDecoration={discardDecoration}
       closeUploadModal={closeUploadModal}
       images={images}
-      user={user}
+      currentUser={currentUser}
       handleDragOver={handleDragOver}
       handleDrop={handleDrop}
       handleImageSelect={handleImageSelect}

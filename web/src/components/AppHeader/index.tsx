@@ -28,11 +28,12 @@ import { useNavigate } from "react-router-dom";
 import { supabase } from "@/lib/supabaseClient";
 
 interface Props {
-  user: Get_User | null;
+  currentUser: Get_User | null;
   searchQuery?: string | null;
+  isSignedIn: boolean | undefined;
 }
 
-export const AppHeader = ({ user, searchQuery }: Props) => {
+export const AppHeader = ({ currentUser, searchQuery, isSignedIn }: Props) => {
   const navigate = useNavigate();
   const location = useLocation();
   const { toast } = useToast();
@@ -92,7 +93,7 @@ export const AppHeader = ({ user, searchQuery }: Props) => {
       <CreateDecorationModal
         isCreateOpen={isCreateOpen}
         setIsCreateOpen={setIsCreateOpen}
-        user={user}
+        currentUser={currentUser}
       />
 
       <div className="fixed z-50 w-full bg-white flex-col border-b dark:border-none md:flex dark:bg-zinc-900">
@@ -131,7 +132,7 @@ export const AppHeader = ({ user, searchQuery }: Props) => {
               </Button>
             </div>
             <div className="hidden sm:flex mx-6 items-center space-x-4">
-              {user ? (
+              {isSignedIn ? (
                 <>
                   <Button
                     variant="outline"
@@ -172,8 +173,8 @@ export const AppHeader = ({ user, searchQuery }: Props) => {
                   </Popover>
                 </>
               ) : null}
-              {user ? (
-                <MenuItems user={user} signOut={signOut} />
+              {isSignedIn ? (
+                <MenuItems currentUser={currentUser} signOut={signOut} />
               ) : (
                 <LoggedOutMenuItems />
               )}
@@ -204,7 +205,7 @@ export const AppHeader = ({ user, searchQuery }: Props) => {
               <span className="text-xs mt-1">Home</span>
             </Link>
 
-            {user ? (
+            {isSignedIn ? (
               <Link
                 to="/route-planning"
                 type="button"
@@ -235,7 +236,7 @@ export const AppHeader = ({ user, searchQuery }: Props) => {
               </Link>
             )}
 
-            {user ? (
+            {isSignedIn ? (
               <div
                 role="button"
                 className="flex flex-col flex-1 items-center p-4 text-center"
@@ -261,7 +262,7 @@ export const AppHeader = ({ user, searchQuery }: Props) => {
               </Link>
             )}
 
-            {!user ? (
+            {!isSignedIn ? (
               <Link
                 to="/signin"
                 type="button"
@@ -298,7 +299,7 @@ export const AppHeader = ({ user, searchQuery }: Props) => {
               </Link>
             )}
 
-            {!user ? (
+            {!isSignedIn ? (
               <Link
                 to="/signin"
                 type="button"

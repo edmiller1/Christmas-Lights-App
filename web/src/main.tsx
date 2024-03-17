@@ -21,6 +21,7 @@ import {
   RoutePlanning,
   Search,
   SignIn,
+  SSOCallback,
   VerifyDecoration,
 } from "./pages";
 import { Dashboard, Login } from "./pages/Admin/components/index.ts";
@@ -34,6 +35,13 @@ import {
 import { AuthProvider } from "./lib/hooks.tsx";
 import { Analytics } from "@vercel/analytics/react";
 import { SpeedInsights } from "@vercel/speed-insights/react";
+import { ClerkProvider } from "@clerk/clerk-react";
+
+const PUBLISHABLE_KEY = import.meta.env.VITE_CLERK_PUBLISHABLE_KEY;
+
+if (!PUBLISHABLE_KEY) {
+  throw new Error("Missing Publishable Key");
+}
 
 const hasSession = sessionStorage.getItem("token");
 
@@ -61,7 +69,7 @@ const router = createBrowserRouter([
   },
   {
     path: "/notifications",
-    element: <Notifications />,
+    element: hasSession ? <Notifications /> : <NotFound />,
   },
   {
     path: "/profile",
@@ -109,6 +117,10 @@ const router = createBrowserRouter([
     path: "*",
     element: <NotFound />,
   },
+  {
+    path: "/sso-callback",
+    element: <SSOCallback />,
+  },
 ]);
 
 //@ts-ignore
@@ -141,15 +153,17 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
     <Analytics />
     <SpeedInsights />
-    <ApolloProvider client={client}>
-      <AuthProvider>
-        <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
-          <div className="h-full dark:bg-ch-dark dark:text-white bg-ch-light">
-            <Toaster />
-            <RouterProvider router={router} />
-          </div>
-        </ThemeProvider>
-      </AuthProvider>
-    </ApolloProvider>
+    <ClerkProvider publishableKey={PUBLISHABLE_KEY}>
+      <ApolloProvider client={client}>
+        <AuthProvider>
+          <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
+            <div className="h-full dark:bg-ch-dark dark:text-white bg-ch-light">
+              <Toaster />
+              <RouterProvider router={router} />
+            </div>
+          </ThemeProvider>
+        </AuthProvider>
+      </ApolloProvider>
+    </ClerkProvider>
   </React.StrictMode>
 );

@@ -57,7 +57,6 @@ export const AuthProvider = ({ children }: any) => {
       if (error) throw error;
       setSession(session);
       setCurrentUser(session?.user);
-      console.log(session);
       if (session) {
         const sessionData = {
           input: {

@@ -1,5 +1,4 @@
 import { Link, useNavigate } from "react-router-dom";
-import { supabase } from "@/lib/supabaseClient";
 import logo from "../../assets/ChristmasLights-House-Logo.png";
 import { Button } from "@/components/ui/button";
 import {
@@ -11,68 +10,29 @@ import {
   FaDiscord,
 } from "react-icons/fa";
 import { useToast } from "@/components/ui/use-toast";
-import { useAuth } from "@/lib/hooks";
+import { OAuthStrategy } from "@clerk/types";
+import { useSignIn, useUser } from "@clerk/clerk-react";
+import { useEffect } from "react";
 
 export const SignIn = () => {
-  const { currentUser } = useAuth();
+  const { signIn } = useSignIn();
+  const { isSignedIn } = useUser();
   const navigate = useNavigate();
   const { toast } = useToast();
 
-  const signInWithDiscord = async () => {
-    const { error } = await supabase.auth.signInWithOAuth({
-      provider: "discord",
+  const signInWith = (strategy: OAuthStrategy) => {
+    return signIn?.authenticateWithRedirect({
+      strategy,
+      redirectUrl: "/sso-callback",
+      redirectUrlComplete: "/",
     });
-    if (error) {
-      toast({
-        variant: "destructive",
-        title: "Error 😬",
-        description: "Failed to sign in. Please try again.",
-      });
-    }
   };
 
-  const signInWithGoogle = async () => {
-    const { error } = await supabase.auth.signInWithOAuth({
-      provider: "google",
-    });
-    if (error) {
-      toast({
-        variant: "destructive",
-        title: "Error 😬",
-        description: "Failed to sign in. Please try again.",
-      });
+  useEffect(() => {
+    if (isSignedIn) {
+      navigate("/");
     }
-  };
-
-  const signInWithGitub = async () => {
-    const { error } = await supabase.auth.signInWithOAuth({
-      provider: "github",
-    });
-    if (error) {
-      toast({
-        variant: "destructive",
-        title: "Error 😬",
-        description: "Failed to sign in. Please try again.",
-      });
-    }
-  };
-
-  const signInWithTwitter = async () => {
-    const { error } = await supabase.auth.signInWithOAuth({
-      provider: "twitter",
-    });
-    if (error) {
-      toast({
-        variant: "destructive",
-        title: "Error 😬",
-        description: "Failed to sign in. Please try again.",
-      });
-    }
-  };
-
-  if (currentUser) {
-    navigate("/");
-  }
+  }, []);
 
   return (
     <div className="flex flex-col min-h-screen items-center justify-center space-y-8 py-12">
@@ -94,7 +54,6 @@ export const SignIn = () => {
               <Button
                 variant="outline"
                 className="inline-flex items-center py-6 text-base"
-                onClick={signInWithGoogle}
               >
                 <FaGoogle className="mr-2 text-lg" />
                 Google
@@ -117,7 +76,6 @@ export const SignIn = () => {
               <Button
                 variant="outline"
                 className="inline-flex items-center py-6 text-base"
-                onClick={signInWithTwitter}
               >
                 <FaTwitter className="mr-2 text-lg" />
                 Twitter
@@ -125,7 +83,7 @@ export const SignIn = () => {
               <Button
                 variant="outline"
                 className="inline-flex items-center py-6 text-base"
-                onClick={signInWithDiscord}
+                onClick={() => signInWith("oauth_discord")}
               >
                 <FaDiscord className="mr-2 text-lg" />
                 Discord
@@ -133,7 +91,6 @@ export const SignIn = () => {
               <Button
                 variant="outline"
                 className="inline-flex items-center py-6 text-base"
-                onClick={signInWithGitub}
               >
                 <FaGithub className="mr-2 text-lg" />
                 Github

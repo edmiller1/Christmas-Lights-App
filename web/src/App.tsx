@@ -1,36 +1,68 @@
 import { useLazyQuery, useMutation } from "@apollo/client";
 import { GET_USER } from "./graphql/queries";
+import { SIGN_IN } from "./graphql/mutations";
 import {
   GetUser as GetUserData,
   GetUserArgs,
   Get_User,
 } from "./graphql/queries/getUser/types";
-import { AppHeader } from "./components";
-import { useEffect, useState } from "react";
-import { AppHeaderLoading } from "./components/AppHeader/components";
-import "mapbox-gl/dist/mapbox-gl.css";
-import { useAuth } from "./lib/hooks";
-import { Home } from "./pages";
-import { SIGN_IN } from "./graphql/mutations/signIn";
 import {
   SignIn as SignInData,
   SignInArgs,
 } from "./graphql/mutations/signIn/types";
+import { AppHeader } from "./components";
+import { useEffect, useState } from "react";
+import { AppHeaderLoading } from "./components/AppHeader/components";
+import "mapbox-gl/dist/mapbox-gl.css";
+import { Home } from "./pages";
 import { useToast } from "./components/ui/use-toast";
+import { useAuth, useUser } from "@clerk/clerk-react";
 
 function App() {
   const { toast } = useToast();
-  const { currentUser, session } = useAuth();
+  const { user, isSignedIn } = useUser();
+  const { getToken } = useAuth();
+  console.log(user);
 
-  const [user, setUser] = useState<Get_User | null>(null);
+  const createUserAccount = async () => {
+    const token = await getToken();
+    if (token) {
+      signIn({
+        variables: {
+          input: {
+            result: {
+              email: user?.primaryEmailAddress?.emailAddress as string,
+              id: user?.id as string,
+              name: user?.fullName as string,
+              photoURL: user?.imageUrl as string,
+              provider: user?.externalAccounts[0].provider as string,
+              token: token,
+            },
+          },
+        },
+      });
+    }
+  };
+
+  const [currentUser, setCurrentUser] = useState<Get_User | null>(null);
 
   const [getUser, { loading: getUserLoading }] = useLazyQuery<
     GetUserData,
     GetUserArgs
   >(GET_USER, {
-    variables: { input: { id: currentUser ? currentUser.id : "" } },
+    variables: { input: { id: user ? user.id : "" } },
     onCompleted: (data) => {
-      setUser(data.getUser);
+      setCurrentUser(data.getUser);
+    },
+  });
+
+  const [signIn] = useMutation<SignInData, SignInArgs>(SIGN_IN, {
+    onCompleted: (data) => {
+      sessionStorage.setItem("token", data.signIn.token);
+      getUser();
+    },
+    onError: () => {
+      //error
     },
   });
 
@@ -52,12 +84,20 @@ function App() {
   };
 
   useEffect(() => {
+    createUserAccount();
+  }, []);
+
+  useEffect(() => {
     getCoords();
   }, []);
 
   return (
     <>
-      {getUserLoading ? <AppHeaderLoading /> : <AppHeader user={user} />}
+      {getUserLoading ? (
+        <AppHeaderLoading />
+      ) : (
+        <AppHeader currentUser={currentUser} isSignedIn={isSignedIn} />
+      )}
       <Home />
     </>
   );

@@ -102,14 +102,14 @@ export const userResolvers = {
           throw new Error("User cannot be found");
         }
 
-        const userNotificationsCount = await prisma.notification.count({
+        const userUnreadNotificationsCount = await prisma.notification.count({
           where: {
             user_id: user.id,
             unread: true,
           },
         });
 
-        return userNotificationsCount;
+        return userUnreadNotificationsCount;
       } catch (error) {
         throw new Error(`${error}`);
       }

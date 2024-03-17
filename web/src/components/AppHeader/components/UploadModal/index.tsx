@@ -14,7 +14,7 @@ interface Props {
   discardDecoration: () => void;
   closeUploadModal: () => void;
   images: Array<{ id: string; url: string }>;
-  user: Get_User | null;
+  currentUser: Get_User | null;
   handleImageSelect: (e: any) => void;
   handleDrop: (e: any) => void;
   handleDragOver: (e: any) => void;
@@ -28,7 +28,7 @@ export const UploadModal = ({
   discardDecoration,
   closeUploadModal,
   images,
-  user,
+  currentUser,
   handleDragOver,
   handleDrop,
   handleImageSelect,
@@ -101,7 +101,7 @@ export const UploadModal = ({
                       Select from computer
                     </label>
                     <span className="mb-3 text-sm text-gray-500">
-                      {user?.premium
+                      {currentUser?.premium
                         ? "Images up to 6MB, Max 8"
                         : "Images up to 4MB, Max 6"}
                     </span>

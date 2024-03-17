@@ -21,5 +21,6 @@ export * from "./rateDecoration";
 export * from "./removeDecorationFromHistory";
 export * from "./removeDecorationFromRoute";
 export * from "./reportDecoration";
+export * from "./signIn";
 export * from "./submitDecorationForVerification";
 export * from "./unfavouriteDecoration";

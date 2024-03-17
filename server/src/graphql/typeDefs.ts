@@ -108,7 +108,7 @@ export const typeDefs = gql`
   }
 
   #input
-  input SupabaseAuthResult {
+  input ClerkAuthResult {
     id: String!
     token: String!
     name: String!
@@ -118,7 +118,7 @@ export const typeDefs = gql`
   }
 
   input SignInInput {
-    result: SupabaseAuthResult!
+    result: ClerkAuthResult!
   }
 
   input CreateUserInput {

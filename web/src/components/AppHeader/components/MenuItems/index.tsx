@@ -15,10 +15,10 @@ import { useNavigate } from "react-router-dom";
 
 interface Props {
   currentUser: Get_User | null;
-  signOut: () => void;
+  signUserOut: () => void;
 }
 
-export const MenuItems = ({ currentUser, signOut }: Props) => {
+export const MenuItems = ({ currentUser, signUserOut }: Props) => {
   const navigate = useNavigate();
   return (
     <DropdownMenu>
@@ -70,7 +70,7 @@ export const MenuItems = ({ currentUser, signOut }: Props) => {
           <ThemeToggle />
         </DropdownMenuGroup>
         <DropdownMenuSeparator />
-        <DropdownMenuItem onClick={signOut}>Sign Out</DropdownMenuItem>
+        <DropdownMenuItem onClick={signUserOut}>Sign Out</DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
   );

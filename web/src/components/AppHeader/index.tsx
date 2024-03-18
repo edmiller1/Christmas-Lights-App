@@ -25,7 +25,7 @@ import { Get_User } from "@/graphql/queries/getUser/types";
 import { useState } from "react";
 import { useToast } from "../ui/use-toast";
 import { useNavigate } from "react-router-dom";
-import { supabase } from "@/lib/supabaseClient";
+import { useClerk } from "@clerk/clerk-react";
 
 interface Props {
   currentUser: Get_User | null;
@@ -36,6 +36,7 @@ interface Props {
 export const AppHeader = ({ currentUser, searchQuery, isSignedIn }: Props) => {
   const navigate = useNavigate();
   const location = useLocation();
+  const { signOut } = useClerk();
   const { toast } = useToast();
   const [isCreateOpen, setIsCreateOpen] = useState<boolean>(false);
   const [searchTerm, setSearchTerm] = useState<string>("");
@@ -63,25 +64,15 @@ export const AppHeader = ({ currentUser, searchQuery, isSignedIn }: Props) => {
     getUserNotificationsRefetch();
   };
 
-  const signOut = async () => {
-    await supabase.auth
-      .signOut()
-      .then(() => {
-        sessionStorage.removeItem("token");
-        toast({
-          variant: "success",
-          title: "Success 🎉",
-          description: "Signed out successfully!",
-        });
-        window.location.reload();
-      })
-      .catch(() => {
-        toast({
-          variant: "destructive",
-          title: "Error 😬",
-          description: "Failed to sign out. Please try again.",
-        });
-      });
+  const signUserOut = () => {
+    sessionStorage.removeItem("token");
+    toast({
+      variant: "success",
+      title: "Success 🎉",
+      description: "Signed out successfully!",
+    });
+    signOut();
+    navigate("/");
   };
 
   const userNotifications = getUserNotificationsData?.getUserNotifications
@@ -174,7 +165,10 @@ export const AppHeader = ({ currentUser, searchQuery, isSignedIn }: Props) => {
                 </>
               ) : null}
               {isSignedIn ? (
-                <MenuItems currentUser={currentUser} signOut={signOut} />
+                <MenuItems
+                  currentUser={currentUser}
+                  signUserOut={signUserOut}
+                />
               ) : (
                 <LoggedOutMenuItems />
               )}

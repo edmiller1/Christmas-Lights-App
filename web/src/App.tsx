@@ -26,7 +26,7 @@ function App() {
 
   const createUserAccount = async () => {
     const token = await getToken();
-    if (token) {
+    if (token && user) {
       signIn({
         variables: {
           input: {
@@ -85,7 +85,7 @@ function App() {
 
   useEffect(() => {
     createUserAccount();
-  }, []);
+  }, [user]);
 
   useEffect(() => {
     getCoords();

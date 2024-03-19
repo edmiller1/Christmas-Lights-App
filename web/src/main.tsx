@@ -15,6 +15,7 @@ import { Toaster } from "./components/ui/toaster.tsx";
 import {
   Admin,
   Decoration,
+  Home,
   NotFound,
   Notifications,
   Profile,
@@ -49,8 +50,8 @@ const router = createBrowserRouter([
   {
     path: "/",
     element: <App />,
-    children: [],
   },
+  { path: "/home", element: <Home /> },
   {
     path: "/search",
     element: <Search />,
@@ -156,7 +157,7 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
     <ClerkProvider publishableKey={PUBLISHABLE_KEY}>
       <ApolloProvider client={client}>
         <AuthProvider>
-          <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
+          <ThemeProvider defaultTheme="system" storageKey="vite-ui-theme">
             <div className="h-full dark:bg-ch-dark dark:text-white bg-ch-light">
               <Toaster />
               <RouterProvider router={router} />

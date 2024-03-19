@@ -132,7 +132,7 @@ export const NotificationSettings = () => {
       </div>
 
       {/* Desktop */}
-      <div className="hidden sm:block sm:min-h-screen sm:mx-96 sm:py-24">
+      <div className="hidden lg:ml-40 sm:block sm:min-h-screen xl:mx-96 sm:py-24">
         <Breadcrumbs firstWord="Profile" secondWord="Notification Settings" />
         <h1 className="mt-7 font-bold text-4xl">Notification Settings</h1>
         <span className="text-sm mb-7">

@@ -9,7 +9,6 @@ import {
   FaTwitter,
   FaDiscord,
 } from "react-icons/fa";
-import { useToast } from "@/components/ui/use-toast";
 import { OAuthStrategy } from "@clerk/types";
 import { useSignIn, useUser } from "@clerk/clerk-react";
 import { useEffect } from "react";

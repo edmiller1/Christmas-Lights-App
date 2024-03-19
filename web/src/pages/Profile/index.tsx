@@ -12,6 +12,7 @@ import {
   CaretRight,
   CircleNotch,
   ClockCounterClockwise,
+  Gauge,
   Heart,
   HouseLine,
   Moon,
@@ -26,26 +27,27 @@ import { useTheme } from "@/components/ui/theme-provider";
 import { Switch } from "@/components/ui/switch";
 import { AppHeaderLoading } from "@/components/AppHeader/components";
 import { AppHeader } from "@/components";
-import { useAuth } from "@/lib/hooks";
+import { useClerk, useUser } from "@clerk/clerk-react";
 
 export const Profile = () => {
   const navigate = useNavigate();
-  const { currentUser } = useAuth();
   const { toast } = useToast();
   const { setTheme } = useTheme();
+  const { user, isSignedIn } = useUser();
+  const { signOut } = useClerk();
   const [currentTheme, setCurrentTheme] = useState<string | null>(
     localStorage.getItem("vite-ui-theme")
   );
-  const [user, setUser] = useState<Get_User | null>(null);
+  const [currentUser, setCurrentUser] = useState<Get_User | null>(null);
   const [logoutLoading, setLogoutLoading] = useState<boolean>(false);
 
   const { loading: getUserLoading } = useQuery<GetUserData, GetUserArgs>(
     GET_USER,
     {
-      variables: { input: { id: currentUser ? currentUser.id : "" } },
+      variables: { input: { id: user ? user.id : "" } },
       onCompleted: (data) => {
         if (data) {
-          setUser(data.getUser);
+          setCurrentUser(data.getUser);
         }
       },
     }
@@ -61,33 +63,20 @@ export const Profile = () => {
     }
   };
 
-  // const logOut = async () => {
-  //   setLogoutLoading(true);
-  //   await auth
-  //     .signOut()
-  //     .then(() => {
-  //       sessionStorage.removeItem("token");
-  //       toast({
-  //         variant: "success",
-  //         title: "Success 🎉",
-  //         description: "Signed out successfully!",
-  //       });
-  //       setTimeout(() => {
-  //         setLogoutLoading(false);
-  //         navigate("/");
-  //       }, 2000);
-  //     })
-  //     .catch((error) => {
-  //       toast({
-  //         variant: "destructive",
-  //         title: "Error 😬",
-  //         description: `${error}`,
-  //       });
-  //       setTimeout(() => {
-  //         setLogoutLoading(false);
-  //       }, 2000);
-  //     });
-  // };
+  const signUserOut = () => {
+    setLogoutLoading(true);
+    sessionStorage.removeItem("token");
+    toast({
+      variant: "success",
+      title: "Success 🎉",
+      description: "Signed out successfully!",
+    });
+    signOut();
+    setTimeout(() => {
+      setLogoutLoading(false);
+    }, 2000);
+    navigate("/");
+  };
 
   if (getUserLoading) {
     return <ProfileLoading />;
@@ -110,15 +99,19 @@ export const Profile = () => {
     <>
       {/* Mobile */}
       <div className="px-8 pt-10 min-h-[110vh] h-full sm:hidden">
-        {getUserLoading ? <AppHeaderLoading /> : <AppHeader user={user} />}
+        {getUserLoading ? (
+          <AppHeaderLoading />
+        ) : (
+          <AppHeader currentUser={currentUser} isSignedIn={isSignedIn} />
+        )}
         <h1 className="text-3xl font-bold">Profile</h1>
         {/* User image & name */}
         <div className="my-5 flex space-x-5 items-center">
           <Avatar className="w-20 h-20">
-            <AvatarImage src={user?.image} />
-            <AvatarFallback>{user?.name[0]}</AvatarFallback>
+            <AvatarImage src={currentUser?.image} />
+            <AvatarFallback>{currentUser?.name[0]}</AvatarFallback>
           </Avatar>
-          <span className="text-xl">{user?.name}</span>
+          <span className="text-xl">{currentUser?.name}</span>
         </div>
         {/* Decoration Card */}
         {/* <div className="mt-5 rounded-lg border shadow-lg dark:border-black">
@@ -142,7 +135,7 @@ export const Profile = () => {
           <div
             className="my-7 flex items-center justify-between"
             onClick={() =>
-              navigate("/profile/personal-info", { state: user?.id })
+              navigate("/profile/personal-info", { state: currentUser?.id })
             }
           >
             <div className="flex items-center space-x-5">
@@ -158,7 +151,9 @@ export const Profile = () => {
           <div
             className="my-7 flex items-center justify-between"
             onClick={() =>
-              navigate("/profile/notification-settings", { state: user?.id })
+              navigate("/profile/notification-settings", {
+                state: currentUser?.id,
+              })
             }
           >
             <div className="flex items-center space-x-5">
@@ -179,7 +174,7 @@ export const Profile = () => {
           <div
             className="my-7 flex items-center justify-between"
             onClick={() =>
-              navigate("/profile/decorations", { state: user?.id })
+              navigate("/profile/decorations", { state: currentUser?.id })
             }
           >
             <div className="flex items-center space-x-5">
@@ -194,7 +189,9 @@ export const Profile = () => {
           </div>
           <div
             className="my-7 flex items-center justify-between"
-            onClick={() => navigate("/profile/history", { state: user?.id })}
+            onClick={() =>
+              navigate("/profile/history", { state: currentUser?.id })
+            }
           >
             <div className="flex items-center space-x-5">
               <ClockCounterClockwise
@@ -208,7 +205,9 @@ export const Profile = () => {
           </div>
           <div
             className="my-7 flex items-center justify-between"
-            onClick={() => navigate("/profile/favourites", { state: user?.id })}
+            onClick={() =>
+              navigate("/profile/favourites", { state: currentUser?.id })
+            }
           >
             <div className="flex items-center space-x-5">
               <Heart
@@ -240,11 +239,7 @@ export const Profile = () => {
         </div>
         {/* Footer */}
         <div className="mt-10 flex flex-col justify-center items-center">
-          <Button
-            variant="outline"
-            className="w-full"
-            // onClick={logOut}
-          >
+          <Button variant="outline" className="w-full" onClick={signUserOut}>
             Log out
           </Button>
           <div className="mt-5 flex justify-center items-center">
@@ -267,17 +262,21 @@ export const Profile = () => {
 
       {/* Desktop */}
       <div className="hidden sm:block">
-        {getUserLoading ? <AppHeaderLoading /> : <AppHeader user={user} />}
-        <div className="sm:mx-96 sm:py-24 sm:min-h-screen">
+        {getUserLoading ? (
+          <AppHeaderLoading />
+        ) : (
+          <AppHeader currentUser={currentUser} isSignedIn={isSignedIn} />
+        )}
+        <div className="lg:mx-28 xl:mx-96 py-24 sm:min-h-screen">
           <h1 className="text-4xl font-bold tracking-wide">Profile</h1>
           <h3 className="mt-2 text-lg">
-            {user?.name} - {user?.email}
+            {currentUser?.name} - {currentUser?.email}
           </h3>
           <div className="mt-10 grid grid-cols-2 gap-x-6 gap-y-10">
             <div
               className="profile-card flex flex-col rounded-lg p-2 space-y-3 shadow-lg cursor-pointer bg-white dark:bg-zinc-800"
               onClick={() =>
-                navigate("/profile/personal-info", { state: user?.id })
+                navigate("/profile/personal-info", { state: currentUser?.id })
               }
             >
               <UserCircle
@@ -292,9 +291,25 @@ export const Profile = () => {
               </div>
             </div>
             <div
+              className="profile-card flex flex-col rounded-lg p-2 space-y-3 shadow-lg cursor-pointer bg-white dark:bg-zinc-800"
+              onClick={() =>
+                navigate("/profile/dashboard", { state: currentUser?.id })
+              }
+            >
+              <Gauge size={36} className="text-ch-dark dark:text-ch-light" />
+              <div>
+                <h4 className="text-lg">Dashboard</h4>
+                <p className="text-sm text-gray-500 dark:text-zinc-400">
+                  View insights for your decorations
+                </p>
+              </div>
+            </div>
+            <div
               className="profile-card flex flex-col rounded-lg p-2 space-y-3 shadow-lg cursor-pointer dark:bg-zinc-800"
               onClick={() =>
-                navigate("/profile/notification-settings", { state: user?.id })
+                navigate("/profile/notification-settings", {
+                  state: currentUser?.id,
+                })
               }
             >
               <Bell size={36} className="text-ch-dark dark:text-ch-light" />
@@ -309,7 +324,7 @@ export const Profile = () => {
             <div
               className="profile-card flex flex-col rounded-lg p-2 space-y-3 shadow-lg cursor-pointer dark:bg-zinc-800"
               onClick={() =>
-                navigate("/profile/decorations", { state: user?.id })
+                navigate("/profile/decorations", { state: currentUser?.id })
               }
             >
               <HouseLine
@@ -325,7 +340,9 @@ export const Profile = () => {
             </div>
             <div
               className="profile-card flex flex-col rounded-lg p-2 space-y-3 shadow-lg cursor-pointer dark:bg-zinc-800"
-              onClick={() => navigate("/profile/history", { state: user?.id })}
+              onClick={() =>
+                navigate("/profile/history", { state: currentUser?.id })
+              }
             >
               <ClockCounterClockwise
                 size={36}
@@ -341,7 +358,7 @@ export const Profile = () => {
             <div
               className="profile-card flex flex-col rounded-lg p-2 space-y-3 shadow-lg cursor-pointer dark:bg-zinc-800"
               onClick={() =>
-                navigate("/profile/favourites", { state: user?.id })
+                navigate("/profile/favourites", { state: currentUser?.id })
               }
             >
               <Heart size={36} className="text-ch-dark dark:text-ch-light" />

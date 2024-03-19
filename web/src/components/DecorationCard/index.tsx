@@ -27,11 +27,11 @@ import { useToast } from "../ui/use-toast";
 import { ToastAction } from "../ui/toast";
 import { Get_Decorations_By_Rating } from "@/graphql/queries/getDecorationsByRating/types";
 import { Search_For_Decorations } from "@/graphql/queries/searchForDecorations/types";
-import { User } from "@supabase/supabase-js";
+import { Get_User } from "@/graphql/queries/getUser/types";
 
 interface Props {
   index: number;
-  currentUser: User | null | undefined;
+  currentUser: Get_User | null;
   decoration: Get_Decorations_By_City | Search_For_Decorations;
   decorations:
     | Get_Decorations_By_City[]

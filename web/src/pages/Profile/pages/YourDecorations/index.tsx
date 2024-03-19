@@ -83,7 +83,7 @@ export const YourDecorations = () => {
       </div>
 
       {/* Desktop */}
-      <div className="hidden sm:block sm:mx-96 sm:py-24">
+      <div className="hidden lg:ml-40 sm:block sm:min-h-screen xl:mx-96 sm:py-24">
         <Breadcrumbs firstWord="Profile" secondWord="Decorations" />
         <h1 className="mt-7 font-bold text-4xl">Your Decorations</h1>
         {user?.decorations && user.decorations.length > 0 ? (

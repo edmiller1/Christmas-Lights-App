@@ -1,42 +1,50 @@
-import { useQuery } from "@apollo/client";
+import { useLazyQuery, useMutation, useQuery } from "@apollo/client";
 import {
   GET_DECORATIONS_BY_CITY,
   GET_DECORATIONS_BY_RATING,
   GET_USER,
 } from "@/graphql/queries";
+import { SIGN_IN } from "@/graphql/mutations";
 import { GetDecorationsByCity as GetDecorationsByCityData } from "@/graphql/queries/getDecorationsByCity/types";
 import { GetDecorationByRating as GetDecorationsByRatingData } from "@/graphql/queries/getDecorationsByRating/types";
 import {
   GetUser as GetUserData,
   GetUserArgs,
+  Get_User,
 } from "@/graphql/queries/getUser/types";
-import { DecorationCard } from "@/components";
+import {
+  SignIn as SignInData,
+  SignInArgs,
+} from "../../graphql/mutations/signIn/types";
+import { AppHeader, DecorationCard } from "@/components";
 import { DecorationsLoading, HomeFooter, HomeMap } from "./components";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { ListBullets, MapTrifold } from "@phosphor-icons/react";
-import { useAuth } from "@/lib/hooks";
+import { useAuth, useUser } from "@clerk/clerk-react";
+import { AppHeaderLoading } from "@/components/AppHeader/components";
 
 export const Home = () => {
-  const { currentUser } = useAuth();
+  const { user, isSignedIn } = useUser();
+  const { getToken } = useAuth();
 
+  const [currentUser, setCurrentUser] = useState<Get_User | null>(null);
   const [showMap, setShowMap] = useState<boolean>(false);
   const [mapLoading, setMapLoading] = useState<boolean>(false);
 
-  const { data: getUserData, refetch: refetchUser } = useQuery<
-    GetUserData,
-    GetUserArgs
-  >(GET_USER, {
-    variables: { input: { id: currentUser ? currentUser.id : "" } },
-    notifyOnNetworkStatusChange: true,
-  });
+  const [getUser, { loading: getUserLoading, refetch: refetchUser }] =
+    useLazyQuery<GetUserData, GetUserArgs>(GET_USER, {
+      variables: { input: { id: user ? user.id : "" } },
+      notifyOnNetworkStatusChange: true,
+      onCompleted: (data) => {
+        setCurrentUser(data.getUser);
+      },
+    });
 
   const { data: decorationsByCityData, loading: decorationsByCityLoading } =
     useQuery<GetDecorationsByCityData>(GET_DECORATIONS_BY_CITY);
 
   const { data: decorationsByRatingData, loading: decorationsByRatingLoading } =
     useQuery<GetDecorationsByRatingData>(GET_DECORATIONS_BY_RATING);
-
-  const user = getUserData?.getUser ? getUserData.getUser : null;
 
   const decorationsByCity = decorationsByCityData?.getDecorationsByCity
     ? decorationsByCityData.getDecorationsByCity
@@ -46,9 +54,64 @@ export const Home = () => {
     ? decorationsByRatingData.getDecorationsByRating
     : null;
 
+  const [signIn] = useMutation<SignInData, SignInArgs>(SIGN_IN, {
+    onCompleted: (data) => {
+      sessionStorage.setItem("token", data.signIn.token);
+      getUser();
+    },
+    onError: () => {
+      //error
+    },
+  });
+
+  const createUserAccount = async () => {
+    const token = await getToken();
+    if (token && user) {
+      signIn({
+        variables: {
+          input: {
+            result: {
+              email: user?.primaryEmailAddress?.emailAddress as string,
+              id: user?.id as string,
+              name: user?.fullName as string,
+              photoURL: user?.imageUrl as string,
+              provider: user?.externalAccounts[0].provider as string,
+              token: token,
+            },
+          },
+        },
+      });
+    }
+  };
+
   const refetchUserData = () => {
     refetchUser();
   };
+
+  const getCoords = async () => {
+    if (navigator.geolocation) {
+      await navigator.geolocation.getCurrentPosition((position) => {
+        localStorage.setItem(
+          "latitude",
+          JSON.stringify(position.coords.latitude)
+        );
+        localStorage.setItem(
+          "longitude",
+          JSON.stringify(position.coords.longitude)
+        );
+      });
+    } else {
+      return;
+    }
+  };
+
+  useEffect(() => {
+    createUserAccount();
+  }, [user]);
+
+  useEffect(() => {
+    getCoords();
+  }, []);
 
   if (decorationsByCityLoading || decorationsByRatingLoading) {
     return <DecorationsLoading />;
@@ -57,11 +120,13 @@ export const Home = () => {
   return (
     <>
       {/* Mobile */}
-      <div className="sm:hidden">
+      <div className="sm:hidden min-h-screen">
         {showMap ? (
           <HomeMap
             setMapLoading={setMapLoading}
-            userFavourites={user?.favourites.map((favourite) => favourite.id)}
+            userFavourites={currentUser?.favourites.map(
+              (favourite) => favourite.id
+            )}
           />
         ) : (
           <div className="px-6 overflow-y-auto py-16">
@@ -74,7 +139,7 @@ export const Home = () => {
                     currentUser={currentUser}
                     decoration={decoration}
                     decorations={decorationsByCity}
-                    userFavourites={user?.favourites.map(
+                    userFavourites={currentUser?.favourites.map(
                       (favourite) => favourite.id
                     )}
                     refetchUserData={refetchUserData}
@@ -92,7 +157,7 @@ export const Home = () => {
                       currentUser={currentUser}
                       decoration={decoration}
                       decorations={decorationsByRating}
-                      userFavourites={user?.favourites.map(
+                      userFavourites={currentUser?.favourites.map(
                         (favourite) => favourite.id
                       )}
                       refetchUserData={refetchUserData}
@@ -135,10 +200,17 @@ export const Home = () => {
 
       {/* Desktop */}
       <div className="hidden sm:block min-h-screen">
+        {getUserLoading ? (
+          <AppHeaderLoading />
+        ) : (
+          <AppHeader currentUser={currentUser} isSignedIn={isSignedIn} />
+        )}
         {showMap ? (
           <HomeMap
             setMapLoading={setMapLoading}
-            userFavourites={user?.favourites.map((favourite) => favourite.id)}
+            userFavourites={currentUser?.favourites.map(
+              (favourite) => favourite.id
+            )}
           />
         ) : (
           <div className="px-32 overflow-y-auto py-24">
@@ -151,7 +223,7 @@ export const Home = () => {
                     currentUser={currentUser}
                     decoration={decoration}
                     decorations={decorationsByCity}
-                    userFavourites={user?.favourites.map(
+                    userFavourites={currentUser?.favourites.map(
                       (favourite) => favourite.id
                     )}
                     refetchUserData={refetchUserData}
@@ -169,7 +241,7 @@ export const Home = () => {
                       currentUser={currentUser}
                       decoration={decoration}
                       decorations={decorationsByRating}
-                      userFavourites={user?.favourites.map(
+                      userFavourites={currentUser?.favourites.map(
                         (favourite) => favourite.id
                       )}
                       refetchUserData={refetchUserData}

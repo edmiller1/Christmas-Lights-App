@@ -5,7 +5,9 @@ export const NoHistory = () => {
     <>
       <div className="min-h-[65vh] flex flex-col justify-center items-center space-y-5 text-center">
         <img src={snowman} alt="snowman" className="w-24" />
-        <h2 className="text-2xl font-semibold">No History Available</h2>
+        <h2 className="text-2xl font-semibold">
+          You haven't viewed any decorations yet.
+        </h2>
       </div>
     </>
   );

@@ -70,7 +70,7 @@ export const History = () => {
       </div>
 
       {/* Desktop */}
-      <div className="hidden sm:block sm:min-h-screen sm:mx-96 sm:py-24 sm:h-full">
+      <div className="hidden lg:ml-40 sm:block sm:min-h-screen xl:mx-96 sm:py-24">
         <Breadcrumbs firstWord="Profile" secondWord="History" />
         <h1 className="mt-7 font-bold text-4xl">History</h1>
         {user?.history && user.history.length > 0 ? (

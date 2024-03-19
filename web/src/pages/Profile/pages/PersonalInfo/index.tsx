@@ -291,7 +291,7 @@ export const PersonalInfo = () => {
       </div>
 
       {/* Desktop */}
-      <div className="hidden sm:block sm:mx-96 sm:py-24 sm:min-h-screen">
+      <div className="hidden lg:ml-40 sm:block sm:py-24 sm:min-h-screen xl:mx-96">
         <Breadcrumbs firstWord="Profile" secondWord="Personal Info" />
         <h1 className="my-7 font-bold text-4xl">Personal Info</h1>
         <div className="w-1/2 my-8 ml-1">

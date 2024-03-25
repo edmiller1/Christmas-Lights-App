@@ -180,6 +180,7 @@ export const userResolvers = {
           user = await prisma.user.create({
             data: {
               id: input.result.id,
+              stripe_customer_id: "",
               email: input.result.email,
               image: input.result.photoURL,
               name: input.result.name,
@@ -198,49 +199,6 @@ export const userResolvers = {
         return user;
       } catch (error) {
         throw new Error(`${error}`);
-      }
-    },
-    createUser: async (
-      _root: undefined,
-      { input }: CreateUserArgs,
-      { _, req, res }: { _: undefined; req: Request; res: Response }
-    ) => {
-      try {
-        const user = await prisma.user.findFirst({
-          where: {
-            id: input.id,
-          },
-        });
-
-        if (user) {
-          const updateUser = await prisma.user.update({
-            where: {
-              id: input.id,
-            },
-            data: {
-              token: input.token,
-            },
-          });
-          return updateUser;
-        } else {
-          return await prisma.user.create({
-            data: {
-              id: input.id,
-              email: input.email,
-              image: input.image,
-              name: input.name,
-              notifications_by_email_rating: true,
-              notifications_by_email_verification: true,
-              notifications_on_app_rating: true,
-              notifications_on_app_verification: true,
-              premium: false,
-              provider: input.provider,
-              token: input.token,
-            },
-          });
-        }
-      } catch (error) {
-        throw new Error(`Failed to create new user - ${error}`);
       }
     },
     editName: async (

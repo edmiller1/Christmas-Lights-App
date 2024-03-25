@@ -16,6 +16,7 @@ datasource db {
 model User {
   id String @id @default(cuid())
   token String @unique @db.Text()
+  stripe_customer_id String @unique
   name String
   imageId String?
   image String
@@ -34,6 +35,20 @@ model User {
   ratings Rating[]
   reports Report[]
   routes Route[]
+  subscription Subscription?
+}
+
+model Subscription {
+  stripe_subscription_id String   @id @unique
+  invterval            String
+  status               String
+  plan_id               String
+  current_period_start   Int
+  current_period_end     Int
+  created_at            DateTime @default(now())
+  updated_at            DateTime @updatedAt
+  user                 User     @relation(fields: [user_id], references: [id])
+  user_id               String   @unique
 }
 
 model Decoration {

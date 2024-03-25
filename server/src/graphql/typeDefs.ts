@@ -5,6 +5,7 @@ export const typeDefs = gql`
   type User {
     id: String!
     token: String!
+    stripe_customer_id: String
     name: String!
     email: String!
     imageId: String
@@ -22,6 +23,19 @@ export const typeDefs = gql`
     ratings: [Rating!]
     notifications: [Notification]!
     routes: [Route!]
+    subscription: Subscription
+  }
+
+  type Subscription {
+    stripe_subscription_id: String!
+    interval: String!
+    status: String!
+    plan_id: String!
+    current_perios_start: Int!
+    current_period_end: Int!
+    created_at: String!
+    updated_at: String!
+    user_id: String!
   }
 
   type Decoration {
@@ -108,7 +122,7 @@ export const typeDefs = gql`
   }
 
   #input
-  input ClerkAuthResult {
+  input KindeAuthResult {
     id: String!
     token: String!
     name: String!
@@ -118,17 +132,7 @@ export const typeDefs = gql`
   }
 
   input SignInInput {
-    result: ClerkAuthResult!
-  }
-
-  input CreateUserInput {
-    id: String!
-    token: String!
-    email: String!
-    name: String!
-    image: String!
-    provider: String!
-    createdAt: String!
+    result: KindeAuthResult!
   }
 
   input GetUserInput {
@@ -321,7 +325,6 @@ export const typeDefs = gql`
   type Mutation {
     # User
     signIn(input: SignInInput!): User!
-    createUser(input: CreateUserInput!): User!
     editAvatar(input: EditAvatarInput!): User!
     editName(input: EditNameInput!): User!
     mutateNotficationSettings(input: MutateNotificationSettingsInput!): User!

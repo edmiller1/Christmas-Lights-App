@@ -1,4 +1,4 @@
-export interface SupabaseAuthResult {
+export interface KindeAuthResult {
   id: string;
   token: string;
   name: string;
@@ -8,7 +8,7 @@ export interface SupabaseAuthResult {
 }
 
 export interface SignInArgs {
-  input: { result: SupabaseAuthResult };
+  input: { result: KindeAuthResult };
 }
 
 export interface CreateUserArgs {

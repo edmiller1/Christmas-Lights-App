@@ -4,7 +4,7 @@ import App from "./App.tsx";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import { KindeProvider } from "@kinde-oss/kinde-auth-react";
 import "./index.css";
-import { Home } from "./pages";
+import { Home, SignUp } from "./pages";
 import {
   ApolloClient,
   InMemoryCache,
@@ -20,6 +20,7 @@ const router = createBrowserRouter([
     element: <App />,
   },
   { path: "/home", element: <Home /> },
+  { path: "/signup", element: <SignUp /> },
 ]);
 
 //@ts-ignore
@@ -30,7 +31,7 @@ const authLink = setContext((_, { headers }) => {
 
   return {
     headers: {
-      "X-CSRF-TOKEN": token || "",
+      token: token || "",
       latitude: latitude || "",
       longitude: longitude || "",
     },
@@ -57,6 +58,10 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
       domain={import.meta.env.VITE_KINDE_DOMAIN}
       logoutUri="http://localhost:3000/home"
       redirectUri="http://localhost:3000/home"
+      onRedirectCallback={(user, app_state) => {
+        console.log(user);
+        console.log(app_state);
+      }}
       isDangerouslyUseLocalStorage
     >
       <ApolloProvider client={client}>

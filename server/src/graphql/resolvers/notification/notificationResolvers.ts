@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import { prisma } from "../../../database";
 import { Notification, User } from "@prisma/client";
-import { MutateNotificationArgs } from "./types";
+import { MutateAllNotificationsArgs, MutateNotificationArgs } from "./types";
 import { authorise } from "../../../lib/helpers";
 
 export const notificationResolvers = {
@@ -13,20 +13,31 @@ export const notificationResolvers = {
       { _, req, res }: { _: undefined; req: Request; res: Response }
     ): Promise<User> => {
       try {
-        const user = await authorise(req);
+        const token = await authorise(req);
 
-        if (!user) {
-          throw new Error("User cannot be found");
+        if (!token) {
+          throw new Error("Not authenticated");
         }
 
-        await prisma.notification.update({
-          where: {
-            id: input.id,
-          },
-          data: {
-            unread: false,
-          },
-        });
+        const [user] = await prisma.$transaction([
+          prisma.user.findFirst({
+            where: {
+              id: input.userId,
+            },
+          }),
+          prisma.notification.update({
+            where: {
+              id: input.id,
+            },
+            data: {
+              unread: false,
+            },
+          }),
+        ]);
+
+        if (!user) {
+          throw new Error("Failed to update notification");
+        }
 
         return user;
       } catch (error) {
@@ -39,20 +50,31 @@ export const notificationResolvers = {
       { _, req, res }: { _: undefined; req: Request; res: Response }
     ): Promise<User> => {
       try {
-        const user = await authorise(req);
+        const token = await authorise(req);
 
-        if (!user) {
-          throw new Error("User cannot be found");
+        if (!token) {
+          throw new Error("Not authenticated");
         }
 
-        await prisma.notification.update({
-          where: {
-            id: input.id,
-          },
-          data: {
-            unread: true,
-          },
-        });
+        const [user] = await prisma.$transaction([
+          prisma.user.findFirst({
+            where: {
+              id: input.userId,
+            },
+          }),
+          prisma.notification.update({
+            where: {
+              id: input.id,
+            },
+            data: {
+              unread: true,
+            },
+          }),
+        ]);
+
+        if (!user) {
+          throw new Error("Failed to update notification");
+        }
 
         return user;
       } catch (error) {
@@ -61,24 +83,35 @@ export const notificationResolvers = {
     },
     markAllNotificationsAsRead: async (
       _root: undefined,
-      {},
+      { input }: MutateAllNotificationsArgs,
       { _, req, res }: { _: undefined; req: Request; res: Response }
     ): Promise<User> => {
       try {
-        const user = await authorise(req);
+        const token = await authorise(req);
 
-        if (!user) {
-          throw new Error("User cannot be found");
+        if (!token) {
+          throw new Error("Not authenticated");
         }
 
-        await prisma.notification.updateMany({
-          where: {
-            user_id: user.id,
-          },
-          data: {
-            unread: false,
-          },
-        });
+        const [user] = await prisma.$transaction([
+          prisma.user.findFirst({
+            where: {
+              id: input.userId,
+            },
+          }),
+          prisma.notification.updateMany({
+            where: {
+              user_id: input.userId,
+            },
+            data: {
+              unread: false,
+            },
+          }),
+        ]);
+
+        if (!user) {
+          throw new Error("Failed to update notification");
+        }
 
         return user;
       } catch (error) {
@@ -91,17 +124,28 @@ export const notificationResolvers = {
       { _, req, res }: { _: undefined; req: Request; res: Response }
     ): Promise<User> => {
       try {
-        const user = await authorise(req);
+        const token = await authorise(req);
 
-        if (!user) {
-          throw new Error("User cannot be found");
+        if (!token) {
+          throw new Error("Not authenticated");
         }
 
-        await prisma.notification.delete({
-          where: {
-            id: input.id,
-          },
-        });
+        const [user] = await prisma.$transaction([
+          prisma.user.findFirst({
+            where: {
+              id: input.userId,
+            },
+          }),
+          prisma.notification.delete({
+            where: {
+              id: input.id,
+            },
+          }),
+        ]);
+
+        if (!user) {
+          throw new Error("Failed to update notification");
+        }
 
         return user;
       } catch (error) {
@@ -110,19 +154,29 @@ export const notificationResolvers = {
     },
     deleteAllNotifications: async (
       _root: undefined,
-      {},
+      { input }: MutateAllNotificationsArgs,
       { _, req, res }: { _: undefined; req: Request; res: Response }
     ): Promise<User> => {
       try {
-        const user = await authorise(req);
+        const token = await authorise(req);
+
+        if (!token) {
+          throw new Error("Not authenticated");
+        }
+
+        const user = await prisma.user.findFirst({
+          where: {
+            id: input.userId,
+          },
+        });
 
         if (!user) {
-          throw new Error("User cannot be found");
+          throw new Error("Must have an account to delete all notifications");
         }
 
         await prisma.notification.deleteMany({
           where: {
-            user_id: user.id,
+            user_id: input.userId,
           },
         });
 

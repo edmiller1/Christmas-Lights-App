@@ -6,7 +6,10 @@ import {
   EditNameArgs,
   GetUserArgs,
   SearchArgs,
+  SearchUserfavouritesArgs,
   SignInArgs,
+  getUnreadNotificationsArgs,
+  getUserNotificationsArgs,
   mutateNotficationSettingsArgs,
 } from "./types";
 import { Decoration, Notification, User } from "@prisma/client";
@@ -66,19 +69,19 @@ export const userResolvers = {
     },
     getUserNotifications: async (
       _root: undefined,
-      {},
+      { input }: getUserNotificationsArgs,
       { _, req, res }: { _: undefined; req: Request; res: Response }
     ): Promise<Notification[]> => {
       try {
-        const user = await authorise(req);
+        const token = await authorise(req);
 
-        if (!user) {
-          throw new Error("User cannot be found");
+        if (!token) {
+          throw new Error("Not authenticated");
         }
 
         const userNotifications = await prisma.notification.findMany({
           where: {
-            user_id: user.id,
+            user_id: input.id,
           },
           orderBy: {
             created_at: "desc",
@@ -92,19 +95,19 @@ export const userResolvers = {
     },
     getUnreadNotifications: async (
       _root: undefined,
-      {},
+      { input }: getUnreadNotificationsArgs,
       { _, req, res }: { _: undefined; req: Request; res: Response }
     ): Promise<number> => {
       try {
-        const user = await authorise(req);
+        const token = await authorise(req);
 
-        if (!user) {
-          throw new Error("User cannot be found");
+        if (!token) {
+          throw new Error("Not authenticated");
         }
 
         const userUnreadNotificationsCount = await prisma.notification.count({
           where: {
-            user_id: user.id,
+            user_id: input.id,
             unread: true,
           },
         });
@@ -116,21 +119,21 @@ export const userResolvers = {
     },
     searchUserFavourites: async (
       _root: undefined,
-      { input }: SearchArgs,
+      { input }: SearchUserfavouritesArgs,
       { _, req, res }: { _: undefined; req: Request; res: Response }
     ): Promise<Decoration[]> => {
       try {
-        const user = await authorise(req);
+        const token = await authorise(req);
 
-        if (!user) {
-          throw new Error("User cannot be found");
+        if (!token) {
+          throw new Error("Not authenticated");
         }
 
         const favourites = await prisma.decoration.findMany({
           where: {
             AND: [
               {
-                favourited_by_id: user.id,
+                favourited_by_id: input.userId,
               },
             ],
             OR: [
@@ -184,7 +187,6 @@ export const userResolvers = {
               email: input.result.email,
               image: input.result.photoURL,
               name: input.result.name,
-              token: input.result.token,
               provider: input.result.provider,
               notifications_by_email_rating: true,
               notifications_by_email_verification: true,
@@ -207,22 +209,33 @@ export const userResolvers = {
       { _, req, res }: { _: undefined; req: Request; res: Response }
     ): Promise<User> => {
       try {
-        const user = await authorise(req);
+        const token = await authorise(req);
 
-        if (!user) {
-          throw new Error("User cannot be found");
+        if (!token) {
+          throw new Error("Not authenticated");
         }
 
-        await prisma.user.update({
-          where: {
-            id: user.id,
-          },
-          data: {
-            name: input.name,
-          },
-        });
+        const [updatedUser] = await prisma.$transaction([
+          prisma.user.findFirst({
+            where: {
+              id: input.userId,
+            },
+          }),
+          prisma.user.update({
+            where: {
+              id: input.userId,
+            },
+            data: {
+              name: input.name,
+            },
+          }),
+        ]);
 
-        return user;
+        if (!updatedUser) {
+          throw new Error("Failed to find user");
+        }
+
+        return updatedUser;
       } catch (error) {
         throw new Error(`${error}`);
       }
@@ -233,10 +246,10 @@ export const userResolvers = {
       { _, req, res }: { _: undefined; req: Request; res: Response }
     ): Promise<User> => {
       try {
-        const user = await authorise(req);
+        const token = await authorise(req);
 
-        if (!user) {
-          throw new Error("User cannot be found");
+        if (!token) {
+          throw new Error("Not authenticated");
         }
 
         if (input.imageId !== null) {
@@ -245,9 +258,9 @@ export const userResolvers = {
 
         const newImage = await Cloudinary.uploadAvatar(input.image);
 
-        await prisma.user.update({
+        const user = await prisma.user.update({
           where: {
-            id: user.id,
+            id: input.userId,
           },
           data: {
             image: newImage.url,
@@ -264,45 +277,47 @@ export const userResolvers = {
       _root: undefined,
       { input }: mutateNotficationSettingsArgs,
       { _, req, res }: { _: undefined; req: Request; res: Response }
-    ): Promise<User> => {
+    ): Promise<User | null> => {
       try {
-        const user = await authorise(req);
+        const token = await authorise(req);
 
-        if (!user) {
-          throw new Error("User cannot be found");
+        if (!token) {
+          throw new Error("Not authenticated");
         }
 
+        let user = null;
+
         if (input.name === "onAppVerification") {
-          await prisma.user.update({
+          user = await prisma.user.update({
             where: {
-              id: user.id,
+              id: input.userId,
             },
             data: {
               notifications_on_app_verification: input.setting,
             },
           });
         } else if (input.name === "onAppRating") {
-          await prisma.user.update({
+          user = await prisma.user.update({
             where: {
-              id: user.id,
+              id: input.userId,
             },
             data: {
               notifications_on_app_rating: input.setting,
             },
           });
         } else if (input.name === "byEmailVerification") {
-          await prisma.user.update({
+          user = await prisma.user.update({
             where: {
-              id: user.id,
+              id: input.userId,
             },
             data: {
               notifications_by_email_verification: input.setting,
             },
           });
         } else if (input.name === "byEmailRating") {
-          await prisma.user.update({
+          user = await prisma.user.update({
             where: {
-              id: user.id,
+              id: input.userId,
             },
             data: {
               notifications_by_email_rating: input.setting,

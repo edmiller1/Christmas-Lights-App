@@ -35,7 +35,11 @@ export const decorationResolvers = {
       { _, req, res }: { _: undefined; req: Request; res: Response }
     ): Promise<Decoration> => {
       try {
-        const user = await authorise(req);
+        const user = await prisma.user.findFirst({
+          where: {
+            id: input.userId,
+          },
+        });
 
         const decoration = await prisma.decoration.findFirst({
           where: {
@@ -54,7 +58,7 @@ export const decorationResolvers = {
         }
 
         //rethink verified logic
-        if (user && decoration.creator_id !== user.id && !decoration.verified) {
+        if (user && !decoration.verified && decoration.creator_id !== user.id) {
           throw new Error("decoration is not verified");
         }
 
@@ -406,10 +410,10 @@ export const decorationResolvers = {
       try {
         let newDecoration = null;
 
-        const user = await authorise(req);
+        const token = await authorise(req);
 
-        if (!user) {
-          throw new Error("User cannot be found");
+        if (!token) {
+          throw new Error("Not authenticated");
         }
 
         // const regex = /\b\d{1,5}\s[\w\s'&.-]+,\s[\w\s'&.-]+\b/;
@@ -419,6 +423,16 @@ export const decorationResolvers = {
         // if (!isAddress) {
         //   throw new Error("Address provided is not valid.");
         // }
+
+        const user = await prisma.user.findFirst({
+          where: {
+            id: input.userId,
+          },
+        });
+
+        if (!user) {
+          throw new Error("Only users can create decorations");
+        }
 
         const images: { id: string; url: string }[] = [];
 
@@ -463,10 +477,10 @@ export const decorationResolvers = {
       { _, req, res }: { _: undefined; req: Request; res: Response }
     ): Promise<Decoration> => {
       try {
-        const user = await authorise(req);
+        const token = await authorise(req);
 
-        if (!user) {
-          throw new Error("User cannot be found");
+        if (!token) {
+          throw new Error("Not authenticated");
         }
 
         const newImages: { id: string; url: string }[] = [];
@@ -513,24 +527,35 @@ export const decorationResolvers = {
       { _, req, res }: { _: undefined; req: Request; res: Response }
     ): Promise<User> => {
       try {
-        const user = await authorise(req);
+        const token = await authorise(req);
 
-        if (!user) {
-          throw new Error("User cannot be found");
+        if (!token) {
+          throw new Error("Not authenticated");
         }
 
-        const updatedUser = await prisma.user.update({
-          where: {
-            id: user.id,
-          },
-          data: {
-            favourites: {
-              connect: {
-                id: input.id,
+        const [updatedUser] = await prisma.$transaction([
+          prisma.user.findFirst({
+            where: {
+              id: input.userId,
+            },
+          }),
+          prisma.user.update({
+            where: {
+              id: input.userId,
+            },
+            data: {
+              favourites: {
+                connect: {
+                  id: input.id,
+                },
               },
             },
-          },
-        });
+          }),
+        ]);
+
+        if (!updatedUser) {
+          throw new Error("Must have an account to favourite decorations");
+        }
 
         return updatedUser;
       } catch (error) {
@@ -543,24 +568,35 @@ export const decorationResolvers = {
       { _, req, res }: { _: undefined; req: Request; res: Response }
     ): Promise<User> => {
       try {
-        const user = await authorise(req);
+        const token = await authorise(req);
 
-        if (!user) {
-          throw new Error("User cannot be found");
+        if (!token) {
+          throw new Error("Not authenticated");
         }
 
-        const updatedUser = await prisma.user.update({
-          where: {
-            id: user.id,
-          },
-          data: {
-            favourites: {
-              disconnect: {
-                id: input.id,
+        const [updatedUser] = await prisma.$transaction([
+          prisma.user.findFirst({
+            where: {
+              id: input.userId,
+            },
+          }),
+          prisma.user.update({
+            where: {
+              id: input.userId,
+            },
+            data: {
+              favourites: {
+                connect: {
+                  id: input.id,
+                },
               },
             },
-          },
-        });
+          }),
+        ]);
+
+        if (!updatedUser) {
+          throw new Error("Must have an account to unfavourite decorations");
+        }
 
         return updatedUser;
       } catch (error) {
@@ -596,20 +632,31 @@ export const decorationResolvers = {
       { _, req, res }: { _: undefined; req: Request; res: Response }
     ): Promise<Decoration> => {
       try {
-        const user = await authorise(req);
+        const token = await authorise(req);
 
-        if (!user) {
-          throw new Error("User cannot be found");
+        if (!token) {
+          throw new Error("Not authenticated");
         }
 
-        const decoration = await prisma.decoration.findFirst({
-          where: {
-            id: input.id,
-          },
-        });
+        const [decoration, user] = await prisma.$transaction([
+          prisma.decoration.findFirst({
+            where: {
+              id: input.id,
+            },
+          }),
+          prisma.user.findFirst({
+            where: {
+              id: input.userId,
+            },
+          }),
+        ]);
 
         if (!decoration) {
           throw new Error("Decoration doesn't exist");
+        }
+
+        if (!user) {
+          throw new Error("Must have an account to rate decorations");
         }
 
         if (user.id === decoration.creator_id) {
@@ -682,20 +729,31 @@ export const decorationResolvers = {
       { _, req, res }: { _: undefined; req: Request; res: Response }
     ): Promise<User> => {
       try {
-        const user = await authorise(req);
+        const token = await authorise(req);
 
-        if (!user) {
-          throw new Error("User cannot be found");
+        if (!token) {
+          throw new Error("Not authenticated");
         }
 
-        await prisma.rating.update({
-          where: {
-            id: input.id,
-          },
-          data: {
-            rating: input.rating,
-          },
-        });
+        const [user] = await prisma.$transaction([
+          prisma.user.findFirst({
+            where: {
+              id: input.userId,
+            },
+          }),
+          prisma.rating.update({
+            where: {
+              id: input.id,
+            },
+            data: {
+              rating: input.rating,
+            },
+          }),
+        ]);
+
+        if (!user) {
+          throw new Error("Failed to edit rating");
+        }
 
         return user;
       } catch (error) {
@@ -708,17 +766,28 @@ export const decorationResolvers = {
       { _, req, res }: { _: undefined; req: Request; res: Response }
     ): Promise<User> => {
       try {
-        const user = await authorise(req);
+        const token = await authorise(req);
 
-        if (!user) {
+        if (!token) {
           throw new Error("User cannot be found");
         }
 
-        await prisma.rating.delete({
-          where: {
-            id: input.id,
-          },
-        });
+        const [user] = await prisma.$transaction([
+          prisma.user.findFirst({
+            where: {
+              id: input.userId,
+            },
+          }),
+          prisma.rating.delete({
+            where: {
+              id: input.id,
+            },
+          }),
+        ]);
+
+        if (!user) {
+          throw new Error("Failed to delete rating");
+        }
 
         return user;
       } catch (error) {
@@ -731,10 +800,20 @@ export const decorationResolvers = {
       { _, req, res }: { _: undefined; req: Request; res: Response }
     ): Promise<Decoration> => {
       try {
-        const user = await authorise(req);
+        const token = await authorise(req);
+
+        if (!token) {
+          throw new Error("Not authenticated");
+        }
+
+        const user = await prisma.user.findFirst({
+          where: {
+            id: input.userId,
+          },
+        });
 
         if (!user) {
-          throw new Error("User canot be found");
+          throw new Error("Must have an account to report a decoration");
         }
 
         const decoration = await prisma.decoration.findFirst({
@@ -761,7 +840,7 @@ export const decorationResolvers = {
         //Send email to CLA admin
         await resend.emails.send({
           from: "christmaslightsapp.com",
-          to: user.email,
+          to: "edmiller.me@gmail.com", //Change to admin email when deploying to prod
           subject: "New Decoration Report",
           html: `<p>New Decoration Report</p>
           <p>Reported by: ${user.name}</p>
@@ -805,19 +884,36 @@ export const decorationResolvers = {
       { _, req, res }: { _: undefined; req: Request; res: Response }
     ): Promise<Decoration> => {
       try {
-        const user = await authorise(req);
+        const token = await authorise(req);
 
-        if (!user) {
-          throw new Error("User cannot be found");
+        if (!token) {
+          throw new Error("Not authenticated");
         }
 
-        const decoration = await prisma.decoration.findFirst({
-          where: {
-            id: input.id,
-          },
-        });
+        const [user, decoration] = await prisma.$transaction([
+          prisma.user.findFirst({
+            where: {
+              id: input.userId,
+            },
+          }),
+          prisma.decoration.findFirst({
+            where: {
+              id: input.id,
+            },
+          }),
+        ]);
 
-        if (decoration?.verification_submitted || decoration?.verified) {
+        if (!user) {
+          throw new Error(
+            "Must have account to submit a decoration for verification"
+          );
+        }
+
+        if (!decoration) {
+          throw new Error("Decoration does not exist");
+        }
+
+        if (decoration.verification_submitted || decoration.verified) {
           throw new Error(
             "Decoration has already submitted a request for verification or is already verified"
           );
@@ -850,7 +946,7 @@ export const decorationResolvers = {
         //email admin about new verification_submitted
         await resend.emails.send({
           from: "christmaslightsapp.com",
-          to: user.email,
+          to: "edmiller.me@gmail.com", //TODO: Change to admin email when deploying to prod
           subject: "New Verification Request",
           html: `<h1>New Verification Request<h1>
                   <p>User:</p>
@@ -873,6 +969,7 @@ export const decorationResolvers = {
 
         //email user if they have allowed emails through notification settings
         if (user.notifications_by_email_verification) {
+          //TODO: send email to user
         }
 
         //create a notification for the user if they have allowed in app notifications
@@ -899,10 +996,23 @@ export const decorationResolvers = {
       { _, req, res }: { _: undefined; req: Request; res: Response }
     ): Promise<User> => {
       try {
-        const user = await authorise(req);
+        const token = await authorise(req);
+
+        if (!token) {
+          throw new Error("Not authenticated");
+        }
+
+        const user = await prisma.user.findFirst({
+          where: {
+            id: input.userId,
+          },
+          include: {
+            history: true,
+          },
+        });
 
         if (!user) {
-          throw new Error("User cannot be found");
+          throw new Error("Must have an account to access history");
         }
 
         const firstDecoration = user.history[0];
@@ -992,15 +1102,15 @@ export const decorationResolvers = {
       { _, req, res }: { _: undefined; req: Request; res: Response }
     ): Promise<User> => {
       try {
-        const user = await authorise(req);
+        const token = await authorise(req);
 
-        if (!user) {
-          throw new Error("User cannot be found.");
+        if (!token) {
+          throw new Error("Not authenticated");
         }
 
-        await prisma.user.update({
+        const user = await prisma.user.update({
           where: {
-            id: user.id,
+            id: input.userId,
           },
           data: {
             history: {

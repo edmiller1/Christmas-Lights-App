@@ -4,7 +4,6 @@ export const typeDefs = gql`
   #Types
   type User {
     id: String!
-    token: String!
     stripe_customer_id: String
     name: String!
     email: String!
@@ -124,7 +123,6 @@ export const typeDefs = gql`
   #input
   input KindeAuthResult {
     id: String!
-    token: String!
     name: String!
     email: String!
     photoURL: String!
@@ -140,6 +138,7 @@ export const typeDefs = gql`
   }
 
   input CreateDecorationInput {
+    userId: String!
     name: String!
     address: String!
     country: String!
@@ -151,6 +150,7 @@ export const typeDefs = gql`
   }
 
   input GetDecorationInput {
+    userId: String
     id: String!
   }
 
@@ -160,6 +160,7 @@ export const typeDefs = gql`
   }
 
   input EditDecorationInput {
+    userId: String!
     id: String!
     name: String!
     address: String!
@@ -173,10 +174,12 @@ export const typeDefs = gql`
   }
 
   input FavouriteDecorationInput {
+    userId: String!
     id: String!
   }
 
   input UnfavouriteDecorationInput {
+    userId: String!
     id: String!
   }
 
@@ -186,26 +189,31 @@ export const typeDefs = gql`
   }
 
   input RateDecorationInput {
+    userId: String!
     id: String!
     rating: Int!
   }
 
   input EditRatingInput {
+    userId: String!
     id: String!
     rating: Int!
   }
 
   input DeleteRatingInput {
+    userId: String!
     id: String!
   }
 
   input ReportDecorationInput {
+    userId: String!
     id: String!
     reportOptions: [String!]!
     additionalDetails: String
   }
 
   input SubmitDecorationForVerificationInput {
+    userId: String!
     id: String!
     document: String!
   }
@@ -216,21 +224,29 @@ export const typeDefs = gql`
   }
 
   input MutateNotificationInput {
+    userId: String!
     id: String!
   }
 
   input EditAvatarInput {
+    userId: String!
     image: String!
     imageId: String
   }
 
   input EditNameInput {
+    userId: String!
     name: String!
   }
 
   input MutateNotificationSettingsInput {
+    userId: String!
     setting: Boolean!
     name: String!
+  }
+
+  input MutateAllNotificationsInput {
+    userId: String!
   }
 
   input GetRecommendedDecorationsInput {
@@ -239,10 +255,12 @@ export const typeDefs = gql`
   }
 
   input AddDecorationToHistoryInput {
+    userId: String!
     id: String!
   }
 
   input RemoveDecorationFromHistoryInput {
+    userId: String!
     id: String!
   }
 
@@ -253,21 +271,25 @@ export const typeDefs = gql`
   }
 
   input CreateRouteInput {
+    userId: String!
     name: String!
     decorationId: String
   }
 
   input AddDecorationToRouteInput {
+    userId: String!
     routeId: String!
     decorationId: String!
   }
 
   input RemoveDecorationFromRouteInput {
+    userId: String!
     routeId: String!
     decorationId: String!
   }
 
   input DeleteRouteInput {
+    userId: String!
     routeId: String!
   }
 
@@ -290,7 +312,6 @@ export const typeDefs = gql`
     count: Int!
     type: String!
   }
-
   #Queries
   type Query {
     # App Queries
@@ -346,8 +367,8 @@ export const typeDefs = gql`
     # Notification
     markNotificationAsRead(input: MutateNotificationInput!): User!
     markNotificationAsUnread(input: MutateNotificationInput!): User!
-    markAllNotificationsAsRead: User!
-    deleteAllNotifications: User!
+    markAllNotificationsAsRead(input: MutateAllNotificationsInput!): User!
+    deleteAllNotifications(input: MutateAllNotificationsInput!): User!
     deleteNotification(input: MutateNotificationInput!): User!
     #Routes
     createRoute(input: CreateRouteInput!): User!

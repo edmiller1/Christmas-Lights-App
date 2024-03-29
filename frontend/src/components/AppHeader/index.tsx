@@ -19,15 +19,31 @@ import {
 import { useKindeAuth } from "@kinde-oss/kinde-auth-react";
 import { useToast } from "../ui/use-toast";
 import { Get_User } from "@/graphql/queries/getUser/types";
+import { useQuery } from "@apollo/client";
+import { GET_USER_NOTIFICATIONS } from "@/graphql/queries";
+import { GetUserNotifiactionsArgs } from "@/graphql/queries/getUserNotifications/types";
 
 interface Props {
   isAuthenticated: boolean;
-  user: Get_User | undefined;
+  currentUser: Get_User | undefined;
 }
 
-export const AppHeader = ({ isAuthenticated, user }: Props) => {
+export const AppHeader = ({ isAuthenticated, currentUser }: Props) => {
   const { toast } = useToast();
   const { logout } = useKindeAuth();
+
+  const {
+    data: getUserNotificationsData,
+    loading: getUserNotificationsLoading,
+  } = useQuery<GetUserNotifiactionsArgs>(GET_USER_NOTIFICATIONS, {
+    variables: { input: { userId: currentUser?.id } },
+  });
+
+  const userNotifications = getUserNotificationsData
+    ? getUserNotificationsData
+    : null;
+
+  console.log(userNotifications);
 
   const logUserOut = async () => {
     await logout();
@@ -64,9 +80,11 @@ export const AppHeader = ({ isAuthenticated, user }: Props) => {
             <div className="hidden sm:flex mx-6 items-center space-x-4">
               {isAuthenticated ? <CreateButton /> : null}
               {/* Notification Button */}
-              {isAuthenticated ? <NotificationButton /> : null}
-              {isAuthenticated && user ? (
-                <UserMenu user={user} logUserOut={logUserOut} />
+              {isAuthenticated ? (
+                <NotificationButton currentUser={currentUser} />
+              ) : null}
+              {isAuthenticated && currentUser ? (
+                <UserMenu currentUser={currentUser} logUserOut={logUserOut} />
               ) : (
                 <LoggedOutUserMenu />
               )}

@@ -3,8 +3,21 @@ import { prisma } from "../database";
 
 export const authorise = async (req: Request) => {
   const token = req.get("token");
+  const user = await prisma.user.findFirst({
+    where: {
+      token,
+    },
+    include: {
+      history: true,
+      routes: {
+        include: {
+          decorations: true,
+        },
+      },
+    },
+  });
 
-  return token;
+  return user;
 };
 
 export const calculateRating = async (

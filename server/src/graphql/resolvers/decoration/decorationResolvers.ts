@@ -35,11 +35,11 @@ export const decorationResolvers = {
       { _, req, res }: { _: undefined; req: Request; res: Response }
     ): Promise<Decoration> => {
       try {
-        const user = await prisma.user.findFirst({
-          where: {
-            id: input.userId,
-          },
-        });
+        const user = await authorise(req);
+
+        if (!user) {
+          throw new Error("Not authenticated");
+        }
 
         const decoration = await prisma.decoration.findFirst({
           where: {
@@ -410,9 +410,9 @@ export const decorationResolvers = {
       try {
         let newDecoration = null;
 
-        const token = await authorise(req);
+        const user = await authorise(req);
 
-        if (!token) {
+        if (!user) {
           throw new Error("Not authenticated");
         }
 
@@ -423,16 +423,6 @@ export const decorationResolvers = {
         // if (!isAddress) {
         //   throw new Error("Address provided is not valid.");
         // }
-
-        const user = await prisma.user.findFirst({
-          where: {
-            id: input.userId,
-          },
-        });
-
-        if (!user) {
-          throw new Error("Only users can create decorations");
-        }
 
         const images: { id: string; url: string }[] = [];
 
@@ -477,9 +467,9 @@ export const decorationResolvers = {
       { _, req, res }: { _: undefined; req: Request; res: Response }
     ): Promise<Decoration> => {
       try {
-        const token = await authorise(req);
+        const user = await authorise(req);
 
-        if (!token) {
+        if (!user) {
           throw new Error("Not authenticated");
         }
 
@@ -527,37 +517,26 @@ export const decorationResolvers = {
       { _, req, res }: { _: undefined; req: Request; res: Response }
     ): Promise<User> => {
       try {
-        const token = await authorise(req);
+        const user = await authorise(req);
 
-        if (!token) {
+        if (!user) {
           throw new Error("Not authenticated");
         }
 
-        const [updatedUser] = await prisma.$transaction([
-          prisma.user.findFirst({
-            where: {
-              id: input.userId,
-            },
-          }),
-          prisma.user.update({
-            where: {
-              id: input.userId,
-            },
-            data: {
-              favourites: {
-                connect: {
-                  id: input.id,
-                },
+        await prisma.user.update({
+          where: {
+            id: user.id,
+          },
+          data: {
+            favourites: {
+              connect: {
+                id: input.id,
               },
             },
-          }),
-        ]);
+          },
+        });
 
-        if (!updatedUser) {
-          throw new Error("Must have an account to favourite decorations");
-        }
-
-        return updatedUser;
+        return user;
       } catch (error) {
         throw new Error(`${error}`);
       }
@@ -568,37 +547,26 @@ export const decorationResolvers = {
       { _, req, res }: { _: undefined; req: Request; res: Response }
     ): Promise<User> => {
       try {
-        const token = await authorise(req);
+        const user = await authorise(req);
 
-        if (!token) {
+        if (!user) {
           throw new Error("Not authenticated");
         }
 
-        const [updatedUser] = await prisma.$transaction([
-          prisma.user.findFirst({
-            where: {
-              id: input.userId,
-            },
-          }),
-          prisma.user.update({
-            where: {
-              id: input.userId,
-            },
-            data: {
-              favourites: {
-                connect: {
-                  id: input.id,
-                },
+        await prisma.user.update({
+          where: {
+            id: user.id,
+          },
+          data: {
+            favourites: {
+              connect: {
+                id: input.id,
               },
             },
-          }),
-        ]);
+          },
+        });
 
-        if (!updatedUser) {
-          throw new Error("Must have an account to unfavourite decorations");
-        }
-
-        return updatedUser;
+        return user;
       } catch (error) {
         throw new Error(`${error}`);
       }
@@ -632,31 +600,20 @@ export const decorationResolvers = {
       { _, req, res }: { _: undefined; req: Request; res: Response }
     ): Promise<Decoration> => {
       try {
-        const token = await authorise(req);
+        const user = await authorise(req);
 
-        if (!token) {
+        if (!user) {
           throw new Error("Not authenticated");
         }
 
-        const [decoration, user] = await prisma.$transaction([
-          prisma.decoration.findFirst({
-            where: {
-              id: input.id,
-            },
-          }),
-          prisma.user.findFirst({
-            where: {
-              id: input.userId,
-            },
-          }),
-        ]);
+        const decoration = await prisma.decoration.findFirst({
+          where: {
+            id: input.id,
+          },
+        });
 
         if (!decoration) {
           throw new Error("Decoration doesn't exist");
-        }
-
-        if (!user) {
-          throw new Error("Must have an account to rate decorations");
         }
 
         if (user.id === decoration.creator_id) {
@@ -729,27 +686,20 @@ export const decorationResolvers = {
       { _, req, res }: { _: undefined; req: Request; res: Response }
     ): Promise<User> => {
       try {
-        const token = await authorise(req);
+        const user = await authorise(req);
 
-        if (!token) {
+        if (!user) {
           throw new Error("Not authenticated");
         }
 
-        const [user] = await prisma.$transaction([
-          prisma.user.findFirst({
-            where: {
-              id: input.userId,
-            },
-          }),
-          prisma.rating.update({
-            where: {
-              id: input.id,
-            },
-            data: {
-              rating: input.rating,
-            },
-          }),
-        ]);
+        await prisma.rating.update({
+          where: {
+            id: input.id,
+          },
+          data: {
+            rating: input.rating,
+          },
+        });
 
         if (!user) {
           throw new Error("Failed to edit rating");
@@ -766,28 +716,17 @@ export const decorationResolvers = {
       { _, req, res }: { _: undefined; req: Request; res: Response }
     ): Promise<User> => {
       try {
-        const token = await authorise(req);
+        const user = await authorise(req);
 
-        if (!token) {
+        if (!user) {
           throw new Error("User cannot be found");
         }
 
-        const [user] = await prisma.$transaction([
-          prisma.user.findFirst({
-            where: {
-              id: input.userId,
-            },
-          }),
-          prisma.rating.delete({
-            where: {
-              id: input.id,
-            },
-          }),
-        ]);
-
-        if (!user) {
-          throw new Error("Failed to delete rating");
-        }
+        await prisma.rating.delete({
+          where: {
+            id: input.id,
+          },
+        });
 
         return user;
       } catch (error) {
@@ -800,20 +739,10 @@ export const decorationResolvers = {
       { _, req, res }: { _: undefined; req: Request; res: Response }
     ): Promise<Decoration> => {
       try {
-        const token = await authorise(req);
-
-        if (!token) {
-          throw new Error("Not authenticated");
-        }
-
-        const user = await prisma.user.findFirst({
-          where: {
-            id: input.userId,
-          },
-        });
+        const user = await authorise(req);
 
         if (!user) {
-          throw new Error("Must have an account to report a decoration");
+          throw new Error("Not authenticated");
         }
 
         const decoration = await prisma.decoration.findFirst({
@@ -884,30 +813,17 @@ export const decorationResolvers = {
       { _, req, res }: { _: undefined; req: Request; res: Response }
     ): Promise<Decoration> => {
       try {
-        const token = await authorise(req);
+        const user = await authorise(req);
 
-        if (!token) {
+        if (!user) {
           throw new Error("Not authenticated");
         }
 
-        const [user, decoration] = await prisma.$transaction([
-          prisma.user.findFirst({
-            where: {
-              id: input.userId,
-            },
-          }),
-          prisma.decoration.findFirst({
-            where: {
-              id: input.id,
-            },
-          }),
-        ]);
-
-        if (!user) {
-          throw new Error(
-            "Must have account to submit a decoration for verification"
-          );
-        }
+        const decoration = await prisma.decoration.findFirst({
+          where: {
+            id: input.id,
+          },
+        });
 
         if (!decoration) {
           throw new Error("Decoration does not exist");
@@ -996,23 +912,10 @@ export const decorationResolvers = {
       { _, req, res }: { _: undefined; req: Request; res: Response }
     ): Promise<User> => {
       try {
-        const token = await authorise(req);
-
-        if (!token) {
-          throw new Error("Not authenticated");
-        }
-
-        const user = await prisma.user.findFirst({
-          where: {
-            id: input.userId,
-          },
-          include: {
-            history: true,
-          },
-        });
+        const user = await authorise(req);
 
         if (!user) {
-          throw new Error("Must have an account to access history");
+          throw new Error("Not authenticated");
         }
 
         const firstDecoration = user.history[0];
@@ -1102,15 +1005,15 @@ export const decorationResolvers = {
       { _, req, res }: { _: undefined; req: Request; res: Response }
     ): Promise<User> => {
       try {
-        const token = await authorise(req);
+        const user = await authorise(req);
 
-        if (!token) {
+        if (!user) {
           throw new Error("Not authenticated");
         }
 
-        const user = await prisma.user.update({
+        await prisma.user.update({
           where: {
-            id: input.userId,
+            id: user.id,
           },
           data: {
             history: {

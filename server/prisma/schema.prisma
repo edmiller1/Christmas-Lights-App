@@ -19,7 +19,8 @@ model User {
   name String
   imageId String?
   image String?
-  email String
+  token String @unique
+  email String @unique
   premium Boolean
   notifications_on_app_verification Boolean
   notifications_on_app_rating Boolean

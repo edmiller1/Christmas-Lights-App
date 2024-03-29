@@ -1,6 +1,5 @@
 export interface CreateRouteArgs {
   input: {
-    userId: string;
     name: string;
     decorationId?: string;
   };
@@ -8,7 +7,6 @@ export interface CreateRouteArgs {
 
 export interface AddDecorationToRouteArgs {
   input: {
-    userId: string;
     routeId: string;
     decorationId: string;
   };
@@ -16,7 +14,6 @@ export interface AddDecorationToRouteArgs {
 
 export interface RemoveDecorationFromRouteArgs {
   input: {
-    userId: string;
     routeId: string;
     decorationId: string;
   };
@@ -24,7 +21,6 @@ export interface RemoveDecorationFromRouteArgs {
 
 export interface DeleteRouteArgs {
   input: {
-    userId: string;
     routeId: string;
   };
 }

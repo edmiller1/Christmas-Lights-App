@@ -18,20 +18,10 @@ export const routeResolvers = {
       { _, req, res }: { _: undefined; req: Request; res: Response }
     ): Promise<User> => {
       try {
-        const token = await authorise(req);
-
-        if (!token) {
-          throw new Error("Not authenticated");
-        }
-
-        const user = await prisma.user.findFirst({
-          where: {
-            id: input.userId,
-          },
-        });
+        const user = await authorise(req);
 
         if (!user) {
-          throw new Error("Must have an account to create a route");
+          throw new Error("Not authenticated");
         }
 
         if (input.decorationId) {
@@ -66,15 +56,15 @@ export const routeResolvers = {
       { _, req, res }: { _: undefined; req: Request; res: Response }
     ): Promise<User> => {
       try {
-        const token = await authorise(req);
+        const user = await authorise(req);
 
-        if (!token) {
+        if (!user) {
           throw new Error("Not authenticated");
         }
 
-        const user = await prisma.user.findFirst({
+        await prisma.user.findFirst({
           where: {
-            id: input.userId,
+            id: user.id,
           },
           include: {
             routes: {
@@ -84,10 +74,6 @@ export const routeResolvers = {
             },
           },
         });
-
-        if (!user) {
-          throw new Error("Must have an account to create a route");
-        }
 
         const userDecorations = user.routes.map((item) => item.decorations);
 
@@ -123,20 +109,10 @@ export const routeResolvers = {
       { _, req, res }: { _: undefined; req: Request; res: Response }
     ): Promise<User> => {
       try {
-        const token = await authorise(req);
-
-        if (!token) {
-          throw new Error("Not authenticated");
-        }
-
-        const user = await prisma.user.findFirst({
-          where: {
-            id: input.userId,
-          },
-        });
+        const user = await authorise(req);
 
         if (!user) {
-          throw new Error("Must have an account to remove decorations");
+          throw new Error("Not authenticated");
         }
 
         await prisma.route.update({
@@ -163,20 +139,10 @@ export const routeResolvers = {
       { _, req, res }: { _: undefined; req: Request; res: Response }
     ): Promise<User> => {
       try {
-        const token = await authorise(req);
-
-        if (!token) {
-          throw new Error("User cannot be found");
-        }
-
-        const user = await prisma.user.findFirst({
-          where: {
-            id: input.userId,
-          },
-        });
+        const user = await authorise(req);
 
         if (!user) {
-          throw new Error("Must have an account to remove routes");
+          throw new Error("User cannot be found");
         }
 
         await prisma.route.delete({

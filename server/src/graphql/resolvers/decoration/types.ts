@@ -1,6 +1,5 @@
 export interface CreateDecorationArgs {
   input: {
-    userId: string;
     name: string;
     address: string;
     country: string;
@@ -14,7 +13,6 @@ export interface CreateDecorationArgs {
 
 export interface GetDecorationArgs {
   input: {
-    userId: string | undefined;
     id: string;
   };
 }
@@ -36,14 +34,12 @@ export interface EditDecorationArgs {
 
 export interface FavouriteDecorationArgs {
   input: {
-    userId: string;
     id: string;
   };
 }
 
 export interface unfavouriteDecorationArgs {
   input: {
-    userId: string;
     id: string;
   };
 }
@@ -57,7 +53,6 @@ export interface AddViewArgs {
 
 export interface RateDecorationArgs {
   input: {
-    userId: string;
     id: string;
     rating: number;
   };
@@ -65,7 +60,6 @@ export interface RateDecorationArgs {
 
 export interface EditRatingArgs {
   input: {
-    userId: string;
     id: string;
     rating: number;
   };
@@ -73,14 +67,12 @@ export interface EditRatingArgs {
 
 export interface DeleteRatingArgs {
   input: {
-    userId: string;
     id: string;
   };
 }
 
 export interface ReportDecorationArgs {
   input: {
-    userId: string;
     id: string;
     reportOptions: string[];
     additionalDetails?: string;
@@ -89,7 +81,6 @@ export interface ReportDecorationArgs {
 
 export interface SubmitDecorationForVerificationArgs {
   input: {
-    userId: string;
     id: string;
     document: string;
   };
@@ -104,14 +95,12 @@ export interface GetRecommendedDecorationsArgs {
 
 export interface AddDecorationToHistoryArgs {
   input: {
-    userId: string;
     id: string;
   };
 }
 
 export interface removeDecorationFromHistoryArgs {
   input: {
-    userId: string;
     id: string;
   };
 }

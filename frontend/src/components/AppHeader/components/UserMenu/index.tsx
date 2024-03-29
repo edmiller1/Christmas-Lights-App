@@ -15,10 +15,10 @@ import { Get_User } from "@/graphql/queries/getUser/types";
 
 interface Props {
   logUserOut: () => void;
-  user: Get_User;
+  currentUser: Get_User;
 }
 
-export const UserMenu = ({ logUserOut, user }: Props) => {
+export const UserMenu = ({ logUserOut, currentUser }: Props) => {
   const navigate = useNavigate();
 
   return (
@@ -26,8 +26,8 @@ export const UserMenu = ({ logUserOut, user }: Props) => {
       <DropdownMenuTrigger asChild>
         <Button variant="ghost" className="relative h-8 w-8 rounded-full">
           <Avatar className="w-9 h-9">
-            <AvatarImage src={user.image}></AvatarImage>
-            <AvatarFallback>{user.name[0]}</AvatarFallback>
+            <AvatarImage src={currentUser.image}></AvatarImage>
+            <AvatarFallback>{currentUser.name[0]}</AvatarFallback>
           </Avatar>
         </Button>
       </DropdownMenuTrigger>
@@ -35,13 +35,15 @@ export const UserMenu = ({ logUserOut, user }: Props) => {
         <DropdownMenuLabel className="font-normal">
           <div className="flex items-center space-x-3">
             <Avatar className="h-9 w-9">
-              <AvatarImage src={user.image}></AvatarImage>
-              <AvatarFallback>{user.name[0]}</AvatarFallback>
+              <AvatarImage src={currentUser.image}></AvatarImage>
+              <AvatarFallback>{currentUser.name[0]}</AvatarFallback>
             </Avatar>
             <div className="flex flex-col space-y-1">
-              <p className="text-sm font-medium leading-none">{user.name}</p>
+              <p className="text-sm font-medium leading-none">
+                {currentUser.name}
+              </p>
               <p className="text-muted-foreground text-xs leading-none">
-                {user.email}
+                {currentUser.email}
               </p>
             </div>
           </div>

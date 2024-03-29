@@ -6,8 +6,13 @@ import {
 } from "@/components/ui/popover";
 import { Separator } from "@/components/ui/separator";
 import { Bell } from "@phosphor-icons/react";
+import { Get_User } from "@/graphql/queries/getUser/types";
 
-export const NotificationButton = () => {
+interface Props {
+  currentUser: Get_User | undefined;
+}
+
+export const NotificationButton = ({ currentUser }: Props) => {
   return (
     <Popover>
       <PopoverTrigger>

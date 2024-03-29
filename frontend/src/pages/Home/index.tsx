@@ -2,7 +2,7 @@ import { AppHeader } from "@/components/AppHeader";
 import { useKindeAuth } from "@kinde-oss/kinde-auth-react";
 import { useLazyQuery, useMutation } from "@apollo/client";
 import { SIGN_IN } from "@/graphql/mutations";
-import { GET_USER } from "@/graphql/queries/getUser";
+import { GET_USER } from "@/graphql/queries";
 import {
   GetUser as GetUserData,
   GetUserArgs,
@@ -14,16 +14,20 @@ import {
 } from "@/graphql/mutations/signIn/types";
 import { useToast } from "@/components/ui/use-toast";
 import { useEffect, useState } from "react";
+import { AppHeaderLoading } from "@/components/AppHeader/components";
 
 export const Home = () => {
-  const { isAuthenticated } = useKindeAuth();
+  const { getToken, isAuthenticated, user } = useKindeAuth();
   const { toast } = useToast();
 
-  const [user, setUser] = useState<Get_User | undefined>();
+  const [currentUser, setCurrentUser] = useState<Get_User | undefined>();
 
-  const [getUser] = useLazyQuery<GetUserData, GetUserArgs>(GET_USER, {
+  const [getUser, { loading: getUserLoading }] = useLazyQuery<
+    GetUserData,
+    GetUserArgs
+  >(GET_USER, {
     onCompleted: (data) => {
-      setUser(data.getUser);
+      setCurrentUser(data.getUser);
     },
   });
 
@@ -37,8 +41,9 @@ export const Home = () => {
       getUser({ variables: { input: { id: data.signIn.id } } });
     },
   });
-
-  const signInUser = () => {
+  //ADD TOKEN BACK IN. It's easier.
+  const signInUser = async () => {
+    console.log(await getToken());
     const userString = localStorage.getItem("user");
     if (userString) {
       const user = JSON.parse(userString);
@@ -50,10 +55,24 @@ export const Home = () => {
             name: `${user.given_name} ${user.family_name}`,
             email: user.email,
             photoURL: user.picture,
+            token: await getToken(),
           },
         },
       };
 
+      signIn({ variables: { input: data.input } });
+    } else {
+      const data = {
+        input: {
+          result: {
+            id: user?.id as string,
+            name: `${user?.given_name} ${user?.family_name}`,
+            email: user?.email as string,
+            photoURL: user?.picture as string,
+            token: await getToken(),
+          },
+        },
+      };
       signIn({ variables: { input: data.input } });
     }
   };
@@ -62,5 +81,23 @@ export const Home = () => {
     signInUser();
   }, [localStorage.getItem("user")]);
 
-  return <AppHeader isAuthenticated={isAuthenticated} user={user} />;
+  useEffect(() => {
+    const userString = localStorage.getItem("user");
+    if (isAuthenticated && user && user.id && !userString) {
+      getUser({ variables: { input: { id: user.id } } });
+    }
+  }, [user]);
+
+  return (
+    <>
+      {getUserLoading ? (
+        <AppHeaderLoading />
+      ) : (
+        <AppHeader
+          isAuthenticated={isAuthenticated}
+          currentUser={currentUser}
+        />
+      )}
+    </>
+  );
 };

@@ -18,10 +18,9 @@ model User {
   stripe_customer_id String @unique
   name String
   imageId String?
-  image String
+  image String?
   email String
   premium Boolean
-  provider String
   notifications_on_app_verification Boolean
   notifications_on_app_rating Boolean
   notifications_by_email_verification Boolean

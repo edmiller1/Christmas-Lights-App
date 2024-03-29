@@ -20,7 +20,7 @@ export const ThemeToggle = () => {
   };
 
   return (
-    <div className="flex justify-between items-center px-2 my-1">
+    <div className="flex justify-between items-center px-2 my-2">
       <div className="flex items-center space-x-2">
         <Moon
           size={20}

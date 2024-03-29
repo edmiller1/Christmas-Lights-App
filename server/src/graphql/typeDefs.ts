@@ -8,9 +8,8 @@ export const typeDefs = gql`
     name: String!
     email: String!
     imageId: String
-    image: String!
+    image: String
     premium: Boolean
-    provider: String!
     notifications_on_app_verification: Boolean
     notifications_on_app_rating: Boolean
     notifications_by_email_verification: Boolean
@@ -125,8 +124,7 @@ export const typeDefs = gql`
     id: String!
     name: String!
     email: String!
-    photoURL: String!
-    provider: String!
+    photoURL: String
   }
 
   input SignInInput {
@@ -307,6 +305,10 @@ export const typeDefs = gql`
     skip: Int!
   }
 
+  input GetUserNotificationsInput {
+    userId: String!
+  }
+
   type SearchedDecorations {
     decorations: [Decoration!]!
     count: Int!
@@ -317,8 +319,8 @@ export const typeDefs = gql`
     # App Queries
     getUser(input: GetUserInput!): User!
     getDecoration(input: GetDecorationInput!): Decoration!
-    getUserNotifications: [Notification]!
-    getUnreadNotifications: Int!
+    getUserNotifications(input: GetUserNotificationsInput!): [Notification]!
+    getUnreadNotifications(input: GetUserNotificationsInput!): Int!
     getRecommendedDecorations(
       input: GetRecommendedDecorationsInput!
     ): [Decoration!]!

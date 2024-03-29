@@ -14,7 +14,7 @@ export interface CreateUserArgs {
   input: {
     id: string;
     email: string;
-    image: string;
+    image?: string;
     name: string;
     provider: string;
   };

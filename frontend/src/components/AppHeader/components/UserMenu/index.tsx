@@ -11,8 +11,14 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { useNavigate } from "react-router-dom";
 import { ThemeToggle } from "..";
+import { Get_User } from "@/graphql/queries/getUser/types";
 
-export const UserMenu = () => {
+interface Props {
+  logUserOut: () => void;
+  user: Get_User;
+}
+
+export const UserMenu = ({ logUserOut, user }: Props) => {
   const navigate = useNavigate();
 
   return (
@@ -20,8 +26,8 @@ export const UserMenu = () => {
       <DropdownMenuTrigger asChild>
         <Button variant="ghost" className="relative h-8 w-8 rounded-full">
           <Avatar className="w-9 h-9">
-            <AvatarImage src="https://github.com/shadcn.png"></AvatarImage>
-            <AvatarFallback>CN</AvatarFallback>
+            <AvatarImage src={user.image}></AvatarImage>
+            <AvatarFallback>{user.name[0]}</AvatarFallback>
           </Avatar>
         </Button>
       </DropdownMenuTrigger>
@@ -29,38 +35,55 @@ export const UserMenu = () => {
         <DropdownMenuLabel className="font-normal">
           <div className="flex items-center space-x-3">
             <Avatar className="h-9 w-9">
-              <AvatarImage src="https://github.com/shadcn.png"></AvatarImage>
-              <AvatarFallback>CN</AvatarFallback>
+              <AvatarImage src={user.image}></AvatarImage>
+              <AvatarFallback>{user.name[0]}</AvatarFallback>
             </Avatar>
             <div className="flex flex-col space-y-1">
-              <p className="text-sm font-medium leading-none">User name</p>
+              <p className="text-sm font-medium leading-none">{user.name}</p>
               <p className="text-muted-foreground text-xs leading-none">
-                email
+                {user.email}
               </p>
             </div>
           </div>
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
         <DropdownMenuGroup>
-          <DropdownMenuItem onClick={() => navigate("/profile")}>
+          <DropdownMenuItem
+            className="cursor-pointer"
+            onClick={() => navigate("/profile")}
+          >
             Profile
           </DropdownMenuItem>
-          <DropdownMenuItem onClick={() => navigate("/route-planning")}>
+          <DropdownMenuItem
+            className="cursor-pointer"
+            onClick={() => navigate("/route-planning")}
+          >
             Route Planning
           </DropdownMenuItem>
-          <DropdownMenuItem onClick={() => navigate("/profile/decorations")}>
+          <DropdownMenuItem
+            className="cursor-pointer"
+            onClick={() => navigate("/profile/decorations")}
+          >
             Decorations
           </DropdownMenuItem>
-          <DropdownMenuItem onClick={() => navigate("/profile/history")}>
+          <DropdownMenuItem
+            className="cursor-pointer"
+            onClick={() => navigate("/profile/history")}
+          >
             History
           </DropdownMenuItem>
-          <DropdownMenuItem onClick={() => navigate("/profile/favourites")}>
+          <DropdownMenuItem
+            className="cursor-pointer"
+            onClick={() => navigate("/profile/favourites")}
+          >
             Favourites
           </DropdownMenuItem>
           <ThemeToggle />
         </DropdownMenuGroup>
         <DropdownMenuSeparator />
-        <DropdownMenuItem>Sign Out</DropdownMenuItem>
+        <DropdownMenuItem className="cursor-pointer" onClick={logUserOut}>
+          Sign Out
+        </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
   );

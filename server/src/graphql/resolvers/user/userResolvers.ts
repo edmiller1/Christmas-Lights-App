@@ -187,7 +187,6 @@ export const userResolvers = {
               email: input.result.email,
               image: input.result.photoURL,
               name: input.result.name,
-              provider: input.result.provider,
               notifications_by_email_rating: true,
               notifications_by_email_verification: true,
               notifications_on_app_rating: true,

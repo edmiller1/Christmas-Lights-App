@@ -2,12 +2,12 @@ import { useKindeAuth } from "@kinde-oss/kinde-auth-react";
 import { Button } from "@/components/ui/button";
 import { Link, useLocation } from "react-router-dom";
 import collage from "../../assets/cat_collage.png";
-import { Label } from "@/components/ui/label";
-import { Input } from "@/components/ui/input";
+import { SignUpForm } from "./components";
 
 export const SignUp = () => {
-  const { login, register } = useKindeAuth();
+  const { register } = useKindeAuth();
   const location = useLocation();
+
   return (
     <div className="w-full lg:grid lg:min-h-[600px] lg:grid-cols-2 xl:min-h-[800px]">
       <div className="flex items-center justify-center py-12">
@@ -20,17 +20,8 @@ export const SignUp = () => {
           </div>
           <div className="grid gap-4">
             <div className="grid gap-2">
-              <Label htmlFor="email">Email</Label>
-              <Input
-                id="email"
-                type="email"
-                placeholder="m@example.com"
-                required
-              />
+              <SignUpForm />
             </div>
-            <Button type="submit" className="w-full">
-              Sign up
-            </Button>
             <Button
               variant="outline"
               className="w-full"
@@ -48,7 +39,7 @@ export const SignUp = () => {
                 })
               }
             >
-              Sign up with Google
+              Continue with Google
             </Button>
           </div>
           <div className="mt-4 text-center text-sm">

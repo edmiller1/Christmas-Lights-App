@@ -11,6 +11,7 @@
   },
   "dependencies": {
     "@apollo/client": "^3.9.9",
+    "@headlessui/react": "^1.7.18",
     "@hookform/resolvers": "^3.3.4",
     "@kinde-oss/kinde-auth-react": "^3.0.28",
     "@phosphor-icons/react": "^2.0.15",
@@ -22,6 +23,7 @@
     "@radix-ui/react-slot": "^1.0.2",
     "@radix-ui/react-switch": "^1.0.3",
     "@radix-ui/react-toast": "^1.1.5",
+    "@radix-ui/react-tooltip": "^1.0.7",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.0",
     "graphql": "^16.8.1",

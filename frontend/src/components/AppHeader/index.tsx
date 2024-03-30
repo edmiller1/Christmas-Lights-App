@@ -12,6 +12,7 @@ import {
 } from "@phosphor-icons/react";
 import {
   CreateButton,
+  CreateDecorationModal,
   LoggedOutUserMenu,
   NotificationButton,
   UserMenu,
@@ -19,6 +20,7 @@ import {
 import { useKindeAuth } from "@kinde-oss/kinde-auth-react";
 import { useToast } from "../ui/use-toast";
 import { Get_User } from "@/graphql/queries/getUser/types";
+import { useState } from "react";
 
 interface Props {
   isAuthenticated: boolean;
@@ -28,6 +30,9 @@ interface Props {
 export const AppHeader = ({ isAuthenticated, currentUser }: Props) => {
   const { toast } = useToast();
   const { logout } = useKindeAuth();
+
+  const [isCreateOpen, setIsCreateOpen] = useState<boolean>(false);
+  const [searchTerm, setSearchTerm] = useState<string>("");
 
   const logUserOut = async () => {
     await logout();
@@ -39,6 +44,11 @@ export const AppHeader = ({ isAuthenticated, currentUser }: Props) => {
 
   return (
     <>
+      <CreateDecorationModal
+        isCreateOpen={isCreateOpen}
+        setIsCreateOpen={setIsCreateOpen}
+        currentUser={currentUser}
+      />
       <div className="z-50 w-full flex-col border-b dark:border-none md:flex">
         <div
           className={`${
@@ -63,7 +73,9 @@ export const AppHeader = ({ isAuthenticated, currentUser }: Props) => {
               </Button>
             </div>
             <div className="hidden sm:flex mx-6 items-center space-x-4">
-              {isAuthenticated ? <CreateButton /> : null}
+              {isAuthenticated ? (
+                <CreateButton setIsCreateOpen={setIsCreateOpen} />
+              ) : null}
               {/* Notification Button */}
               {isAuthenticated ? (
                 <NotificationButton currentUser={currentUser} />

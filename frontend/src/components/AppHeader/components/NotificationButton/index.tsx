@@ -34,9 +34,10 @@ export const NotificationButton = ({ currentUser }: Props) => {
       variables: { input: { userId: currentUser?.id } },
     });
 
-  const { data: getUnreadNotificationsData } = useQuery(
-    GET_UNREAD_NOTIFICATIONS
-  );
+  const {
+    data: getUnreadNotificationsData,
+    refetch: refetchUnreadNotifications,
+  } = useQuery(GET_UNREAD_NOTIFICATIONS);
 
   const [deleteAllNotifications, { loading: deleteAllNotificationsLoading }] =
     useMutation<DeleteAllNotificationsData>(DELETE_ALL_NOTIFICATIONS, {
@@ -127,6 +128,7 @@ export const NotificationButton = ({ currentUser }: Props) => {
                       notification={notification}
                       notifications={userNotifications}
                       refetchUserNotifications={refetchUserNotifications}
+                      refetchUnreadNotifications={refetchUnreadNotifications}
                     />
                   ))}
                 </>

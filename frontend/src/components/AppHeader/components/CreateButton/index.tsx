@@ -1,9 +1,17 @@
 import { Button } from "@/components/ui/button";
 import { HouseLine } from "@phosphor-icons/react";
 
-export const CreateButton = () => {
+interface Props {
+  setIsCreateOpen: (isCreateOpen: boolean) => void;
+}
+
+export const CreateButton = ({ setIsCreateOpen }: Props) => {
   return (
-    <Button variant="outline" className="rounded-lg">
+    <Button
+      variant="outline"
+      className="rounded-lg"
+      onClick={() => setIsCreateOpen(true)}
+    >
       <HouseLine
         size={20}
         weight="bold"

@@ -27,6 +27,7 @@ interface Props {
   notification: Get_User_Notifications;
   notifications: Get_User_Notifications[];
   refetchUserNotifications: () => void;
+  refetchUnreadNotifications: () => void;
 }
 
 export const NotificationItem = ({
@@ -34,6 +35,7 @@ export const NotificationItem = ({
   notification,
   notifications,
   refetchUserNotifications,
+  refetchUnreadNotifications,
 }: Props) => {
   const { toast } = useToast();
 
@@ -83,6 +85,7 @@ export const NotificationItem = ({
     {
       onCompleted: () => {
         refetchUserNotifications();
+        refetchUnreadNotifications();
       },
       onError: () => {
         toast({

@@ -10,11 +10,3 @@ export interface Get_User_Notifications {
 export interface GetUserNotifications {
   getUserNotifications: Get_User_Notifications[];
 }
-
-export interface GetUserNotificationsInput {
-  userId: string;
-}
-
-export interface GetUserNotifiactionsArgs {
-  input: GetUserNotificationsInput;
-}

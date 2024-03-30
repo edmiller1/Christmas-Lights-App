@@ -10,6 +10,7 @@ export const typeDefs = gql`
     imageId: String
     image: String
     premium: Boolean
+    token: String!
     notifications_on_app_verification: Boolean
     notifications_on_app_rating: Boolean
     notifications_by_email_verification: Boolean
@@ -341,7 +342,7 @@ export const typeDefs = gql`
     removeDecorationFromHistory(input: RemoveDecorationFromHistoryInput!): User!
     # Notification
     markNotificationAsRead(input: MutateNotificationInput!): User!
-    markNotificationAsUnread: User!
+    markNotificationAsUnread(input: MutateNotificationInput!): User!
     markAllNotificationsAsRead: User!
     deleteAllNotifications: User!
     deleteNotification(input: MutateNotificationInput!): User!

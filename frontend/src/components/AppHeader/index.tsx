@@ -19,9 +19,6 @@ import {
 import { useKindeAuth } from "@kinde-oss/kinde-auth-react";
 import { useToast } from "../ui/use-toast";
 import { Get_User } from "@/graphql/queries/getUser/types";
-import { useQuery } from "@apollo/client";
-import { GET_USER_NOTIFICATIONS } from "@/graphql/queries";
-import { GetUserNotifiactionsArgs } from "@/graphql/queries/getUserNotifications/types";
 
 interface Props {
   isAuthenticated: boolean;
@@ -32,21 +29,9 @@ export const AppHeader = ({ isAuthenticated, currentUser }: Props) => {
   const { toast } = useToast();
   const { logout } = useKindeAuth();
 
-  const {
-    data: getUserNotificationsData,
-    loading: getUserNotificationsLoading,
-  } = useQuery<GetUserNotifiactionsArgs>(GET_USER_NOTIFICATIONS, {
-    variables: { input: { userId: currentUser?.id } },
-  });
-
-  const userNotifications = getUserNotificationsData
-    ? getUserNotificationsData
-    : null;
-
-  console.log(userNotifications);
-
   const logUserOut = async () => {
     await logout();
+    sessionStorage.removeItem("token");
     toast({
       title: "Signed out successfully!",
     });

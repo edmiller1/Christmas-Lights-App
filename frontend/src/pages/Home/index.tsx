@@ -37,13 +37,13 @@ export const Home = () => {
         variant: "default",
         title: "Signed in Successfully!",
       });
+      sessionStorage.setItem("token", data.signIn.token);
       localStorage.removeItem("user");
       getUser({ variables: { input: { id: data.signIn.id } } });
     },
   });
   //ADD TOKEN BACK IN. It's easier.
   const signInUser = async () => {
-    console.log(await getToken());
     const userString = localStorage.getItem("user");
     if (userString) {
       const user = JSON.parse(userString);
@@ -55,7 +55,7 @@ export const Home = () => {
             name: `${user.given_name} ${user.family_name}`,
             email: user.email,
             photoURL: user.picture,
-            token: await getToken(),
+            token: (await getToken()) as string,
           },
         },
       };
@@ -69,7 +69,7 @@ export const Home = () => {
             name: `${user?.given_name} ${user?.family_name}`,
             email: user?.email as string,
             photoURL: user?.picture as string,
-            token: await getToken(),
+            token: (await getToken()) as string,
           },
         },
       };

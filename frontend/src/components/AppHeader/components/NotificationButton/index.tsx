@@ -1,3 +1,15 @@
+import { useMutation, useQuery } from "@apollo/client";
+import {
+  GET_UNREAD_NOTIFICATIONS,
+  GET_USER_NOTIFICATIONS,
+} from "@/graphql/queries";
+import {
+  DELETE_ALL_NOTIFICATIONS,
+  MARK_ALL_NOTIFICATIONS_AS_READ,
+} from "@/graphql/mutations";
+import { GetUserNotifications as GetUserNotificationsData } from "@/graphql/queries/getUserNotifications/types";
+import { DeleteAllNotifications as DeleteAllNotificationsData } from "@/graphql/mutations/deleteAllNotifications/types";
+import { MarkAllNotificationsAsRead as MarkAllNotificationsAsReadData } from "@/graphql/mutations/markAllNotificationsARead/types";
 import { Button } from "@/components/ui/button";
 import {
   Popover,
@@ -5,14 +17,69 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { Separator } from "@/components/ui/separator";
-import { Bell } from "@phosphor-icons/react";
+import { Bell, CircleNotch, Notification } from "@phosphor-icons/react";
 import { Get_User } from "@/graphql/queries/getUser/types";
+import { AllNotificationsMenu, NotificationItem } from "..";
+import { useToast } from "@/components/ui/use-toast";
 
 interface Props {
   currentUser: Get_User | undefined;
 }
 
 export const NotificationButton = ({ currentUser }: Props) => {
+  const { toast } = useToast();
+
+  const { data: getUserNotificationsData, refetch: refetchUserNotifications } =
+    useQuery<GetUserNotificationsData>(GET_USER_NOTIFICATIONS, {
+      variables: { input: { userId: currentUser?.id } },
+    });
+
+  const { data: getUnreadNotificationsData } = useQuery(
+    GET_UNREAD_NOTIFICATIONS
+  );
+
+  const [deleteAllNotifications, { loading: deleteAllNotificationsLoading }] =
+    useMutation<DeleteAllNotificationsData>(DELETE_ALL_NOTIFICATIONS, {
+      onCompleted: () => {
+        refetchUserNotifications();
+      },
+    });
+
+  const [
+    markAllNotificationsAsRead,
+    { loading: markAllNotificationsAsReadLoading },
+  ] = useMutation<MarkAllNotificationsAsReadData>(
+    MARK_ALL_NOTIFICATIONS_AS_READ,
+    {
+      onCompleted: () => {
+        refetchUserNotifications();
+      },
+      onError: (error) => {
+        toast({
+          variant: "destructive",
+          title: "Uh oh!",
+          description: `Failed to mark all notifications as read. ${error}`,
+        });
+      },
+    }
+  );
+
+  const markAllNotifications = () => {
+    markAllNotificationsAsRead();
+  };
+
+  const deleteAllTheNotifications = () => {
+    deleteAllNotifications();
+  };
+
+  const userNotifications = getUserNotificationsData
+    ? getUserNotificationsData.getUserNotifications
+    : null;
+
+  const unreadNotificationsCount = getUnreadNotificationsData
+    ? getUnreadNotificationsData.getUnreadNotifications
+    : null;
+
   return (
     <Popover>
       <PopoverTrigger>
@@ -22,17 +89,59 @@ export const NotificationButton = ({ currentUser }: Props) => {
             weight="bold"
             className="text-ch-dark dark:text-ch-light"
           />
-          <div className="absolute top-1 right-2 w-4 h-4 bg-red-600 rounded-full text-xs text-white">
-            3
-          </div>
+          {unreadNotificationsCount > 0 ? (
+            <div className="absolute top-1 right-2 w-4 h-4 bg-red-600 rounded-full text-xs text-white">
+              {unreadNotificationsCount}
+            </div>
+          ) : null}
         </Button>
       </PopoverTrigger>
       <PopoverContent className="absolute -right-2 top-2 p-0 w-80">
         <div className="flex justify-between items-center px-4">
           <span className="py-2 text-lg font-semibold">Notifications</span>
+          {userNotifications && userNotifications.length > 0 ? (
+            <AllNotificationsMenu
+              markAllNotifications={markAllNotifications}
+              deleteAllTheNotifications={deleteAllTheNotifications}
+            />
+          ) : null}
         </div>
         <Separator />
-        <div className="py-1"></div>
+        <div className="p-1">
+          {userNotifications && userNotifications.length > 0 ? (
+            <>
+              {markAllNotificationsAsReadLoading ||
+              deleteAllNotificationsLoading ? (
+                <div className="h-52 flex justify-center items-center">
+                  <CircleNotch
+                    size={80}
+                    className="text-ch-dark dark:text-ch-light animate-spin"
+                  />
+                </div>
+              ) : (
+                <>
+                  {userNotifications.map((notification, index) => (
+                    <NotificationItem
+                      key={notification.id}
+                      index={index}
+                      notification={notification}
+                      notifications={userNotifications}
+                      refetchUserNotifications={refetchUserNotifications}
+                    />
+                  ))}
+                </>
+              )}
+            </>
+          ) : (
+            <div className="h-72 flex flex-col justify-center items-center">
+              <Notification
+                size={40}
+                className="text-ch-dark dark:text-ch-light"
+              />
+              <span className="mt-2">No notifications</span>
+            </div>
+          )}
+        </div>
       </PopoverContent>
     </Popover>
   );

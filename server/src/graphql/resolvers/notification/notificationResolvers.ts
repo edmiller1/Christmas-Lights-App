@@ -74,7 +74,7 @@ export const notificationResolvers = {
         if (!user) {
           throw new Error("Not authenticated");
         }
-        prisma.notification.updateMany({
+        await prisma.notification.updateMany({
           where: {
             user_id: user.id,
           },

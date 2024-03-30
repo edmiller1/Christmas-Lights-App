@@ -9,6 +9,7 @@ export interface Get_User {
   image: string;
   provider: string;
   premium: boolean;
+  token: string;
   ratings: Rating[];
   decorations: Decoration[];
   favourites: Decoration[];

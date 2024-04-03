@@ -1,8 +1,8 @@
 import { gql } from "@apollo/client";
 
-export const CREATE_ROUTE = gql`
-  mutation createRoute($input: CreateRouteInput!) {
-    createRoute(input: $input) {
+export const DELETE_ROUTE = gql`
+  mutation deleteRoute($input: DeleteRouteInput!) {
+    deleteRoute(input: $input) {
       id
     }
   }

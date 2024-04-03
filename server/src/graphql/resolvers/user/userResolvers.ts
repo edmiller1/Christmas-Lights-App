@@ -179,7 +179,7 @@ export const userResolvers = {
           user = await prisma.user.create({
             data: {
               id: input.result.id,
-              stripe_customer_id: "",
+              stripe_customer_id: null,
               email: input.result.email,
               image: input.result.photoURL,
               name: input.result.name,

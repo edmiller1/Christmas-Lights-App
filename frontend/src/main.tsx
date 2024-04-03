@@ -4,7 +4,7 @@ import App from "./App.tsx";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import { KindeProvider } from "@kinde-oss/kinde-auth-react";
 import "./index.css";
-import { Home, SignIn, SignUp } from "./pages";
+import { Decoration, Home, SignIn, SignUp } from "./pages";
 import {
   ApolloClient,
   InMemoryCache,
@@ -23,6 +23,10 @@ const router = createBrowserRouter([
   { path: "/home", element: <Home /> },
   { path: "/signup", element: <SignUp /> },
   { path: "/signin", element: <SignIn /> },
+  {
+    path: "/decoration/:decorationId",
+    element: <Decoration />,
+  },
 ]);
 
 //@ts-ignore

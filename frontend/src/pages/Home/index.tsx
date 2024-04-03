@@ -20,7 +20,7 @@ export const Home = () => {
   const { getToken, isAuthenticated, user } = useKindeAuth();
   const { toast } = useToast();
 
-  const [currentUser, setCurrentUser] = useState<Get_User | undefined>();
+  const [currentUser, setCurrentUser] = useState<Get_User | null>(null);
 
   const [getUser, { loading: getUserLoading }] = useLazyQuery<
     GetUserData,

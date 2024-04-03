@@ -21,10 +21,16 @@ import { useKindeAuth } from "@kinde-oss/kinde-auth-react";
 import { useToast } from "../ui/use-toast";
 import { Get_User } from "@/graphql/queries/getUser/types";
 import { useState } from "react";
+import {
+  GET_UNREAD_NOTIFICATIONS,
+  GET_USER_NOTIFICATIONS,
+} from "@/graphql/queries";
+import { GetUserNotifications as GetUserNotificationsData } from "@/graphql/queries/getUserNotifications/types";
+import { useQuery } from "@apollo/client";
 
 interface Props {
   isAuthenticated: boolean;
-  currentUser: Get_User | undefined;
+  currentUser: Get_User | null;
 }
 
 export const AppHeader = ({ isAuthenticated, currentUser }: Props) => {
@@ -33,6 +39,32 @@ export const AppHeader = ({ isAuthenticated, currentUser }: Props) => {
 
   const [isCreateOpen, setIsCreateOpen] = useState<boolean>(false);
   const [searchTerm, setSearchTerm] = useState<string>("");
+
+  const { data: getUserNotificationsData, refetch: refetchUserNotifications } =
+    useQuery<GetUserNotificationsData>(GET_USER_NOTIFICATIONS, {
+      variables: { input: { userId: currentUser?.id } },
+    });
+
+  const {
+    data: getUnreadNotificationsData,
+    refetch: refetchUnreadNotifications,
+  } = useQuery(GET_UNREAD_NOTIFICATIONS);
+
+  const userNotifications = getUserNotificationsData
+    ? getUserNotificationsData.getUserNotifications
+    : null;
+
+  const unreadNotificationsCount = getUnreadNotificationsData
+    ? getUnreadNotificationsData.getUnreadNotifications
+    : null;
+
+  const refetchNotifications = () => {
+    refetchUserNotifications();
+  };
+
+  const refetchUnreadNotificationsCount = () => {
+    refetchUnreadNotifications();
+  };
 
   const logUserOut = async () => {
     await logout();
@@ -78,7 +110,14 @@ export const AppHeader = ({ isAuthenticated, currentUser }: Props) => {
               ) : null}
               {/* Notification Button */}
               {isAuthenticated ? (
-                <NotificationButton currentUser={currentUser} />
+                <NotificationButton
+                  refetchNotifications={refetchNotifications}
+                  refetchUnreadNotificationsCount={
+                    refetchUnreadNotificationsCount
+                  }
+                  unreadNotificationsCount={unreadNotificationsCount}
+                  userNotifications={userNotifications}
+                />
               ) : null}
               {isAuthenticated && currentUser ? (
                 <UserMenu currentUser={currentUser} logUserOut={logUserOut} />
@@ -148,7 +187,7 @@ export const AppHeader = ({ isAuthenticated, currentUser }: Props) => {
               <div
                 role="button"
                 className="flex flex-col flex-1 items-center p-4 text-center"
-                // onClick={() => setIsCreateOpen(true)}
+                onClick={() => setIsCreateOpen(true)}
               >
                 <PlusSquare
                   size={24}
@@ -198,12 +237,11 @@ export const AppHeader = ({ isAuthenticated, currentUser }: Props) => {
                   }`}
                 />
                 <span className="text-xs mt-1">Inbox</span>
-                {/* {userNotifications?.filter((not) => not.unread).length ===
-                0 ? null : (
-                  <div className="absolute top-2 right-7 w-4 h-4 bg-red-600 rounded-full text-xs text-white">
-                    {userNotifications?.filter((not) => not.unread).length}
+                {unreadNotificationsCount > 0 ? (
+                  <div className="absolute top-2 right-6 w-4 h-4 bg-red-600 rounded-full text-xs text-white">
+                    {unreadNotificationsCount}
                   </div>
-                )} */}
+                ) : null}
               </Link>
             )}
 

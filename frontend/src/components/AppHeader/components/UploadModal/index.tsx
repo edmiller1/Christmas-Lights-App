@@ -2,8 +2,8 @@ import { Fragment } from "react";
 import { Dialog, Transition } from "@headlessui/react";
 import { CheckCircle, ImagesSquare, X } from "@phosphor-icons/react";
 import { Button } from "@/components/ui/button";
-import { CancelModal } from "..";
 import { Get_User } from "@/graphql/queries/getUser/types";
+import { CancelModal } from "@/components";
 
 interface Props {
   isCreateOpen: boolean;
@@ -14,7 +14,7 @@ interface Props {
   discardDecoration: () => void;
   closeUploadModal: () => void;
   images: Array<{ id: string; url: string }>;
-  currentUser: Get_User | undefined;
+  currentUser: Get_User | null;
   handleImageSelect: (e: any) => void;
   handleDrop: (e: any) => void;
   handleDragOver: (e: any) => void;

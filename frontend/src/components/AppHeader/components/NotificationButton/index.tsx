@@ -1,13 +1,8 @@
-import { useMutation, useQuery } from "@apollo/client";
-import {
-  GET_UNREAD_NOTIFICATIONS,
-  GET_USER_NOTIFICATIONS,
-} from "@/graphql/queries";
+import { useMutation } from "@apollo/client";
 import {
   DELETE_ALL_NOTIFICATIONS,
   MARK_ALL_NOTIFICATIONS_AS_READ,
 } from "@/graphql/mutations";
-import { GetUserNotifications as GetUserNotificationsData } from "@/graphql/queries/getUserNotifications/types";
 import { DeleteAllNotifications as DeleteAllNotificationsData } from "@/graphql/mutations/deleteAllNotifications/types";
 import { MarkAllNotificationsAsRead as MarkAllNotificationsAsReadData } from "@/graphql/mutations/markAllNotificationsARead/types";
 import { Button } from "@/components/ui/button";
@@ -18,31 +13,29 @@ import {
 } from "@/components/ui/popover";
 import { Separator } from "@/components/ui/separator";
 import { Bell, CircleNotch, Notification } from "@phosphor-icons/react";
-import { Get_User } from "@/graphql/queries/getUser/types";
 import { AllNotificationsMenu, NotificationItem } from "..";
 import { useToast } from "@/components/ui/use-toast";
+import { Get_User_Notifications } from "@/graphql/queries/getUserNotifications/types";
 
 interface Props {
-  currentUser: Get_User | undefined;
+  refetchNotifications: () => void;
+  refetchUnreadNotificationsCount: () => void;
+  unreadNotificationsCount: any;
+  userNotifications: Get_User_Notifications[] | null;
 }
 
-export const NotificationButton = ({ currentUser }: Props) => {
+export const NotificationButton = ({
+  refetchNotifications,
+  refetchUnreadNotificationsCount,
+  unreadNotificationsCount,
+  userNotifications,
+}: Props) => {
   const { toast } = useToast();
-
-  const { data: getUserNotificationsData, refetch: refetchUserNotifications } =
-    useQuery<GetUserNotificationsData>(GET_USER_NOTIFICATIONS, {
-      variables: { input: { userId: currentUser?.id } },
-    });
-
-  const {
-    data: getUnreadNotificationsData,
-    refetch: refetchUnreadNotifications,
-  } = useQuery(GET_UNREAD_NOTIFICATIONS);
 
   const [deleteAllNotifications, { loading: deleteAllNotificationsLoading }] =
     useMutation<DeleteAllNotificationsData>(DELETE_ALL_NOTIFICATIONS, {
       onCompleted: () => {
-        refetchUserNotifications();
+        refetchNotifications();
       },
     });
 
@@ -53,7 +46,7 @@ export const NotificationButton = ({ currentUser }: Props) => {
     MARK_ALL_NOTIFICATIONS_AS_READ,
     {
       onCompleted: () => {
-        refetchUserNotifications();
+        refetchNotifications();
       },
       onError: (error) => {
         toast({
@@ -72,14 +65,6 @@ export const NotificationButton = ({ currentUser }: Props) => {
   const deleteAllTheNotifications = () => {
     deleteAllNotifications();
   };
-
-  const userNotifications = getUserNotificationsData
-    ? getUserNotificationsData.getUserNotifications
-    : null;
-
-  const unreadNotificationsCount = getUnreadNotificationsData
-    ? getUnreadNotificationsData.getUnreadNotifications
-    : null;
 
   return (
     <Popover>
@@ -127,8 +112,10 @@ export const NotificationButton = ({ currentUser }: Props) => {
                       index={index}
                       notification={notification}
                       notifications={userNotifications}
-                      refetchUserNotifications={refetchUserNotifications}
-                      refetchUnreadNotifications={refetchUnreadNotifications}
+                      refetchUserNotifications={refetchNotifications}
+                      refetchUnreadNotifications={
+                        refetchUnreadNotificationsCount
+                      }
                     />
                   ))}
                 </>

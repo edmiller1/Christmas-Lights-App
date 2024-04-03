@@ -1,3 +1,5 @@
+import { cloudinary } from "./cloudinary";
+
 export const generateUID = (): string => {
   let firstPart: number | string = (Math.random() * 46656) | 0;
   let secondPart: number | string = (Math.random() * 46656) | 0;
@@ -43,4 +45,10 @@ export const convertStepDistance = (distance: number) => {
       : distance.toFixed(0) + "m"
   }`;
   return formattedDistance;
+};
+
+export const optimizeImage = (id: string) => {
+  const image = cloudinary.image(id).format("auto").quality("auto");
+
+  return image.toURL();
 };

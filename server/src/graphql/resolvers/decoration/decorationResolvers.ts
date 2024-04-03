@@ -451,7 +451,7 @@ export const decorationResolvers = {
               images: {
                 create: images,
               },
-              route_id: "",
+              route_id: null,
             },
           });
         }

@@ -1,4 +1,4 @@
-import { Fragment } from "react";
+import { Fragment, useRef } from "react";
 import { Dialog, Transition } from "@headlessui/react";
 import { CaretLeft, CaretRight, X } from "@phosphor-icons/react";
 import { Button } from "@/components/ui/button";
@@ -8,8 +8,8 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { CancelModal } from "..";
 import { RemoveImageModal } from "..";
+import { CancelModal } from "@/components";
 
 interface Props {
   isCreateOpen: boolean;
@@ -28,6 +28,7 @@ interface Props {
   showRemove: boolean;
   isRemoveImageOpen: boolean;
   setIsRemoveImageOpen: (isRemoveImageOpen: boolean) => void;
+  setImages: (images: Array<{ id: string; url: string }>) => void;
 }
 
 export const ImagesModal = ({
@@ -47,7 +48,21 @@ export const ImagesModal = ({
   showRemove,
   isRemoveImageOpen,
   setIsRemoveImageOpen,
+  setImages,
 }: Props) => {
+  const dragImage = useRef<number>(0);
+  const draggedOverImage = useRef<number>(0);
+
+  const handleSortImages = () => {
+    if (images) {
+      const imagesCopy = [...images];
+      const temp = imagesCopy[dragImage.current];
+      imagesCopy[dragImage.current] = imagesCopy[draggedOverImage.current];
+      imagesCopy[draggedOverImage.current] = temp;
+      setImages(imagesCopy);
+    }
+  };
+
   return (
     <Transition appear show={isCreateOpen} as={Fragment}>
       <Dialog
@@ -171,6 +186,24 @@ export const ImagesModal = ({
                     className="w-[400px] h-[400px] rounded-lg object-cover bg-ch-turquoise"
                   />
                 </div>
+                {/* reorder section */}
+                <div className="drag-images-container flex items-center border mt-3 px-1 w-full h-24 overflow-x-auto overflow-y-hidden rounded-lg">
+                  {images.map((image, index) => (
+                    <img
+                      key={image.id}
+                      src={image.url}
+                      className="max-h-16 max-w-16 mx-2 mt-2 rounded-md cursor-pointer object-center"
+                      draggable
+                      onDragStart={() => (dragImage.current = index)}
+                      onDragEnter={() => (draggedOverImage.current = index)}
+                      onDragEnd={handleSortImages}
+                      onDragOver={(e) => e.preventDefault()}
+                    />
+                  ))}
+                </div>
+                <span className="text-xs mb-3">
+                  Drag images to reorder them
+                </span>
                 <div className="mt-4 flex items-center justify-between">
                   <Button variant="secondary" onClick={() => setCurrentStep(1)}>
                     Back

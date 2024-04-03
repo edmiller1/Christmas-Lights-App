@@ -9,12 +9,12 @@ import { generateUID } from "@/lib/helpers";
 import { Get_User } from "@/graphql/queries/getUser/types";
 import { useToast } from "@/components/ui/use-toast";
 import { useNavigate } from "react-router-dom";
-import { ImagesModal, UploadModal } from "..";
+import { DetailsModal, ImagesModal, UploadModal } from "..";
 
 interface Props {
   isCreateOpen: boolean;
   setIsCreateOpen: (isOpen: boolean) => void;
-  currentUser: Get_User | undefined;
+  currentUser: Get_User | null;
 }
 
 const mbApiKey = import.meta.env.VITE_MAPBOX_API_KEY;
@@ -427,6 +427,7 @@ export const CreateDecorationModal = ({
         removeImage={removeImage}
         setCurrentStep={setCurrentStep}
         setIsCancelOpen={setIsCancelOpen}
+        setImages={setImages}
         setIsRemoveImageOpen={setIsRemoveImageOpen}
         showArrows={showArrows}
         showImageTools={showImageTools}
@@ -436,7 +437,20 @@ export const CreateDecorationModal = ({
   }
 
   if (currentStep === 3) {
-    return <></>;
+    return (
+      <DetailsModal
+        countryAbbrev={countryAbbrev}
+        createDecorationLoading={createDecorationLoading}
+        createNewDecoration={createNewDecoration}
+        discardDecoration={discardDecoration}
+        files={files}
+        images={images}
+        isCancelOpen={isCancelOpen}
+        isCreateOpen={isCreateOpen}
+        setCurrentStep={setCurrentStep}
+        setIsCancelOpen={setIsCancelOpen}
+      />
+    );
   }
 
   return (

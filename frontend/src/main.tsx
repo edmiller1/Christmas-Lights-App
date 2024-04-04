@@ -1,10 +1,14 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
 import App from "./App.tsx";
-import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import {
+  createBrowserRouter,
+  RouterProvider,
+  redirect,
+} from "react-router-dom";
 import { KindeProvider } from "@kinde-oss/kinde-auth-react";
 import "./index.css";
-import { Decoration, Home, SignIn, SignUp } from "./pages";
+import { Admin, Decoration, Home, SignIn, SignUp } from "./pages";
 import {
   ApolloClient,
   InMemoryCache,
@@ -14,6 +18,7 @@ import {
 import { setContext } from "@apollo/client/link/context";
 import { ThemeProvider } from "./components/ui/theme-provider.tsx";
 import { Toaster } from "./components/ui/toaster.tsx";
+import { Dashboard } from "./pages/Admin/components/index.ts";
 
 const router = createBrowserRouter([
   {
@@ -26,6 +31,16 @@ const router = createBrowserRouter([
   {
     path: "/decoration/:decorationId",
     element: <Decoration />,
+  },
+  {
+    path: "/admin",
+    element: <Admin />,
+    children: [
+      {
+        path: "/admin",
+        element: <Dashboard />,
+      },
+    ],
   },
 ]);
 
@@ -72,6 +87,9 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
         ) {
           user.given_name = app_state.firstname;
           user.family_name = app_state.lastname;
+        }
+        if (app_state.type === "admin") {
+          redirect("/admin");
         }
         console.log(user);
         const userObj = JSON.stringify(user);

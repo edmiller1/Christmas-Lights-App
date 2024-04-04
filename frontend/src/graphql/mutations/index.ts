@@ -12,7 +12,7 @@ export * from "./editDecoration";
 export * from "./editName";
 export * from "./editRating";
 export * from "./favouriteDecoration";
-export * from "./markAllNotificationsARead";
+export * from "./markAllNotificationsAsRead";
 export * from "./markNotificationAsRead";
 export * from "./markNotificationAsUnread";
 export * from "./rateDecoration";

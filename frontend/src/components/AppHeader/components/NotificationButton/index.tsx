@@ -4,7 +4,7 @@ import {
   MARK_ALL_NOTIFICATIONS_AS_READ,
 } from "@/graphql/mutations";
 import { DeleteAllNotifications as DeleteAllNotificationsData } from "@/graphql/mutations/deleteAllNotifications/types";
-import { MarkAllNotificationsAsRead as MarkAllNotificationsAsReadData } from "@/graphql/mutations/markAllNotificationsARead/types";
+import { MarkAllNotificationsAsRead as MarkAllNotificationsAsReadData } from "@/graphql/mutations/markAllNotificationsAsRead/types";
 import { Button } from "@/components/ui/button";
 import {
   Popover,

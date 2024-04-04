@@ -8,7 +8,14 @@ import {
 } from "react-router-dom";
 import { KindeProvider } from "@kinde-oss/kinde-auth-react";
 import "./index.css";
-import { Admin, Decoration, Home, SignIn, SignUp } from "./pages";
+import {
+  Admin,
+  Decoration,
+  Home,
+  Notifications,
+  SignIn,
+  SignUp,
+} from "./pages";
 import {
   ApolloClient,
   InMemoryCache,
@@ -32,6 +39,7 @@ const router = createBrowserRouter([
     path: "/decoration/:decorationId",
     element: <Decoration />,
   },
+  { path: "/notifications", element: <Notifications /> },
   {
     path: "/admin",
     element: <Admin />,

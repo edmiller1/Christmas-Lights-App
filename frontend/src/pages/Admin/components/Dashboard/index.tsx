@@ -62,7 +62,7 @@ export const Dashboard = () => {
         <div className="mt-8">
           <div className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
             <h2 className="text-lg font-medium leading-6">Overview</h2>
-            <div className="mt-2 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
+            <div className="mt-2 grid grid-cols-1 gap-5 sm:grid-cols-2">
               {/* Card */}
               <UnresolvedReportsCard
                 unresolvedReports={unresolvedReports}

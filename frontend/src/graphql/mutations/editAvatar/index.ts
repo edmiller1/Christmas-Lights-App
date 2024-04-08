@@ -1,16 +1,9 @@
-export interface Delete_Route {
-  __typename: "User";
-  id: string;
-}
+import { gql } from "@apollo/client";
 
-export interface DeleteRoute {
-  deleteRoute: Delete_Route;
-}
-
-export interface DeleteRouteInput {
-  routeId: string;
-}
-
-export interface DeleteRouteArgs {
-  input: DeleteRouteInput;
-}
+export const EDIT_AVATAR = gql`
+  mutation editAvatar($input: EditAvatarInput!) {
+    editAvatar(input: $input) {
+      id
+    }
+  }
+`;

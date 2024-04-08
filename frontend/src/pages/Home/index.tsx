@@ -42,7 +42,7 @@ export const Home = () => {
       getUser({ variables: { input: { id: data.signIn.id } } });
     },
   });
-  //ADD TOKEN BACK IN. It's easier.
+
   const signInUser = async () => {
     const userString = localStorage.getItem("user");
     if (userString) {
@@ -77,6 +77,13 @@ export const Home = () => {
     }
   };
 
+  const hasSession = async () => {
+    const token = await getToken();
+    if (!token) {
+      sessionStorage.removeItem("token");
+    }
+  };
+
   useEffect(() => {
     signInUser();
   }, [localStorage.getItem("user")]);
@@ -87,6 +94,10 @@ export const Home = () => {
       getUser({ variables: { input: { id: user.id } } });
     }
   }, [user]);
+
+  useEffect(() => {
+    hasSession();
+  }, [getToken]);
 
   return (
     <>

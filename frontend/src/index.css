@@ -58,6 +58,10 @@
   }
 }
 
+* {
+  font-family: "Nunito", sans-serif;
+}
+
 input[type="file"] {
   display: none;
 }

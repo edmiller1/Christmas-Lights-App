@@ -81,7 +81,7 @@ export const AppHeader = ({ isAuthenticated, currentUser }: Props) => {
         setIsCreateOpen={setIsCreateOpen}
         currentUser={currentUser}
       />
-      <div className="z-50 w-full flex-col border-b dark:border-none md:flex">
+      <div className="z-50 w-full flex-col sm:border-b dark:border-none md:flex">
         <div
           className={`${
             window.location.pathname.includes("notification") ||
@@ -130,7 +130,7 @@ export const AppHeader = ({ isAuthenticated, currentUser }: Props) => {
       </div>
       {/* Mobile bottom menu */}
       {!location.pathname.includes("search") ? (
-        <nav className="fixed shadow w-full max-w-[560px] h-18 bottom-0 left-0 right-0 z-50 flex items-center border-t sm:hidden">
+        <nav className="bg-background fixed shadow w-full max-w-[560px] h-18 bottom-0 left-0 right-0 z-[99] flex items-center border-t sm:hidden">
           <div className="flex flex-auto items-start justify-center">
             <Link
               to="/"

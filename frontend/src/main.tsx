@@ -12,7 +12,9 @@ import {
   Admin,
   Decoration,
   Home,
+  NotFound,
   Notifications,
+  Profile,
   SignIn,
   SignUp,
 } from "./pages";
@@ -26,6 +28,15 @@ import { setContext } from "@apollo/client/link/context";
 import { ThemeProvider } from "./components/ui/theme-provider.tsx";
 import { Toaster } from "./components/ui/toaster.tsx";
 import { Dashboard } from "./pages/Admin/components/index.ts";
+import {
+  Favourites,
+  History,
+  NotificationSettings,
+  PersonalInfo,
+  YourDecorations,
+} from "./pages/Profile/pages/index.ts";
+
+const isAuthenticated = sessionStorage.getItem("token");
 
 const router = createBrowserRouter([
   {
@@ -39,7 +50,19 @@ const router = createBrowserRouter([
     path: "/decoration/:decorationId",
     element: <Decoration />,
   },
-  { path: "/notifications", element: <Notifications /> },
+  {
+    path: "/notifications",
+    element: isAuthenticated ? <Notifications /> : <SignIn />,
+  },
+  {
+    path: "/profile",
+    element: isAuthenticated ? <Profile /> : <SignIn />,
+  },
+  { path: "/profile/personal-info", element: <PersonalInfo /> },
+  { path: "/profile/notification-settings", element: <NotificationSettings /> },
+  { path: "/profile/decorations", element: <YourDecorations /> },
+  { path: "/profile/history", element: <History /> },
+  { path: "/profile/favourites", element: <Favourites /> },
   {
     path: "/admin",
     element: <Admin />,
@@ -49,6 +72,10 @@ const router = createBrowserRouter([
         element: <Dashboard />,
       },
     ],
+  },
+  {
+    path: "*",
+    element: <NotFound />,
   },
 ]);
 

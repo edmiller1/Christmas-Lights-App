@@ -1,16 +1,17 @@
-export interface Delete_Route {
+export interface Edit_Avatar {
   __typename: "User";
   id: string;
 }
 
-export interface DeleteRoute {
-  deleteRoute: Delete_Route;
+export interface EditAvatar {
+  editAvatar: Edit_Avatar;
 }
 
-export interface DeleteRouteInput {
-  routeId: string;
+export interface EditAvatarInput {
+  image: string;
+  imageId: string | null;
 }
 
-export interface DeleteRouteArgs {
-  input: DeleteRouteInput;
+export interface EditAvatarArgs {
+  input: EditAvatarInput;
 }

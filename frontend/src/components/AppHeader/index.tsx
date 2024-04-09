@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import logo from "../../assets/logo.png";
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
@@ -31,14 +31,34 @@ import { useQuery } from "@apollo/client";
 interface Props {
   isAuthenticated: boolean;
   currentUser: Get_User | null;
+  searchQuery?: string | null;
 }
 
-export const AppHeader = ({ isAuthenticated, currentUser }: Props) => {
+export const AppHeader = ({
+  isAuthenticated,
+  currentUser,
+  searchQuery,
+}: Props) => {
   const { toast } = useToast();
   const { logout } = useKindeAuth();
+  const navigate = useNavigate();
 
   const [isCreateOpen, setIsCreateOpen] = useState<boolean>(false);
   const [searchTerm, setSearchTerm] = useState<string>("");
+
+  const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchTerm(e.target.value);
+  };
+
+  const searchViaKey = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter" && searchTerm) {
+      navigate(`/search?query=${searchTerm}`);
+    }
+  };
+
+  const searchViaClick = () => {
+    navigate(`/search?query=${searchTerm}`);
+  };
 
   const { data: getUserNotificationsData, refetch: refetchUserNotifications } =
     useQuery<GetUserNotificationsData>(GET_USER_NOTIFICATIONS, {
@@ -95,8 +115,20 @@ export const AppHeader = ({ isAuthenticated, currentUser }: Props) => {
               <img src={logo} alt="logo" className="h-12" />
             </Link>
             <div className="flex w-full max-w-sm items-center justify-center space-x-2">
-              <Input type="text" placeholder="Search" value="" />
-              <Button variant="outline" size="icon" type="submit">
+              <Input
+                type="text"
+                placeholder="Search"
+                value={searchQuery ? searchQuery : searchTerm}
+                onChange={(e) => handleSearch(e)}
+                onKeyDown={(e) => searchViaKey(e)}
+              />
+              <Button
+                variant="outline"
+                size="icon"
+                type="submit"
+                disabled={!searchTerm}
+                onClick={searchViaClick}
+              >
                 <MagnifyingGlass
                   size={16}
                   weight="bold"

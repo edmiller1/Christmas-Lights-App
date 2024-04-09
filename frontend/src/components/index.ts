@@ -3,6 +3,7 @@ export * from "./Breadcrumbs";
 export * from "./CancelModal";
 export * from "./CustomMarker";
 export * from "./DecorationCard";
+export * from "./DecorationCardLoading";
 export * from "./Footer";
 export * from "./Paginate";
 export * from "./PopupCard";

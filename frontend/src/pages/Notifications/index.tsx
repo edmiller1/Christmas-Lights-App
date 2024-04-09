@@ -21,10 +21,11 @@ import {
 } from "@/components/AppHeader/components";
 import { AppHeader } from "@/components";
 import { useKindeAuth } from "@kinde-oss/kinde-auth-react";
+import { useEffect } from "react";
 
 export const Notifications = () => {
   const { toast } = useToast();
-  const { isAuthenticated, user } = useKindeAuth();
+  const { getToken, isAuthenticated, user } = useKindeAuth();
 
   const [deleteAllNotifications, { loading: deleteAllNotificationsLoading }] =
     useMutation<DeleteAllNotificationsData>(DELETE_ALL_NOTIFICATIONS, {
@@ -83,6 +84,17 @@ export const Notifications = () => {
   const deleteAllTheNotifications = () => {
     deleteAllNotifications();
   };
+
+  const hasSession = async () => {
+    const token = await getToken();
+    if (!token) {
+      sessionStorage.removeItem("token");
+    }
+  };
+
+  useEffect(() => {
+    hasSession();
+  }, [getToken]);
 
   if (getUserNotificationsLoading || getUserLoading) {
     return <NotificationsLoading />;

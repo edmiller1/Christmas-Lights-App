@@ -14,13 +14,13 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { CaretLeft } from "@phosphor-icons/react";
 import { Switch } from "@/components/ui/switch";
 import { Separator } from "@/components/ui/separator";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Breadcrumbs } from "@/components";
 import { useKindeAuth } from "@kinde-oss/kinde-auth-react";
 import { PersonalInfoLoading } from "../../components";
 
 export const NotificationSettings = () => {
-  const { user } = useKindeAuth();
+  const { getToken, user } = useKindeAuth();
   const { state } = useLocation();
   const navigate = useNavigate();
   const [currentUser, setCurrentUser] = useState<Get_User | null>(null);
@@ -53,6 +53,17 @@ export const NotificationSettings = () => {
       variables: { input: { name: name, setting: checked } },
     });
   };
+
+  const hasSession = async () => {
+    const token = await getToken();
+    if (!token) {
+      sessionStorage.removeItem("token");
+    }
+  };
+
+  useEffect(() => {
+    hasSession();
+  }, [getToken]);
 
   if (getUserLoading || getUserNetworkStatus === NetworkStatus.refetch) {
     return <PersonalInfoLoading />;

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useQuery } from "@apollo/client";
 import { GET_USER } from "@/graphql/queries";
 
@@ -19,7 +19,7 @@ import {
 import reindeer from "../../../../assets/Reindeer.png";
 
 export const History = () => {
-  const { user } = useKindeAuth();
+  const { getToken, user } = useKindeAuth();
   const navigate = useNavigate();
   const { state } = useLocation();
   const [currentUser, setCurrentUser] = useState<Get_User | null>(null);
@@ -40,6 +40,17 @@ export const History = () => {
   const refetchUserData = () => {
     refetchUser();
   };
+
+  const hasSession = async () => {
+    const token = await getToken();
+    if (!token) {
+      sessionStorage.removeItem("token");
+    }
+  };
+
+  useEffect(() => {
+    hasSession();
+  }, [getToken]);
 
   if (getUserLoading) {
     return <YourDecorationsLoading />;

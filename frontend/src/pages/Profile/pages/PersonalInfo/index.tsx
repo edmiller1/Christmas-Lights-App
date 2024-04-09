@@ -18,7 +18,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { CaretLeft, CircleNotch } from "@phosphor-icons/react";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { toast } from "@/components/ui/use-toast";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -28,7 +28,7 @@ import { useKindeAuth } from "@kinde-oss/kinde-auth-react";
 import { PersonalInfoLoading } from "../../components";
 
 export const PersonalInfo = () => {
-  const { user } = useKindeAuth();
+  const { getToken, user } = useKindeAuth();
   const { state } = useLocation();
   const navigate = useNavigate();
   const [currentUser, setCurrentUser] = useState<Get_User | null>(null);
@@ -124,6 +124,17 @@ export const PersonalInfo = () => {
       setBase64Value(imageBase64Value);
     });
   };
+
+  const hasSession = async () => {
+    const token = await getToken();
+    if (!token) {
+      sessionStorage.removeItem("token");
+    }
+  };
+
+  useEffect(() => {
+    hasSession();
+  }, [getToken]);
 
   if (getUserLoading || getUserNetworkStatus === NetworkStatus.refetch) {
     return <PersonalInfoLoading />;

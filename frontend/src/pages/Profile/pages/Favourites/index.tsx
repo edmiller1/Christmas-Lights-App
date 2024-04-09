@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useQuery } from "@apollo/client";
 import { GET_USER } from "@/graphql/queries";
 import {
@@ -18,7 +18,7 @@ import {
 import penguin from "../../../../assets/Penguin.png";
 
 export const Favourites = () => {
-  const { user } = useKindeAuth();
+  const { getToken, user } = useKindeAuth();
   const navigate = useNavigate();
   const { state } = useLocation();
 
@@ -40,6 +40,17 @@ export const Favourites = () => {
   const refetchUserData = () => {
     refetchUser();
   };
+
+  const hasSession = async () => {
+    const token = await getToken();
+    if (!token) {
+      sessionStorage.removeItem("token");
+    }
+  };
+
+  useEffect(() => {
+    hasSession();
+  }, [getToken]);
 
   if (getUserLoading) {
     return <YourDecorationsLoading />;

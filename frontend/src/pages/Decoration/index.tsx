@@ -117,7 +117,7 @@ import { AppHeader, Footer } from "@/components";
 export const Decoration = () => {
   const navigate = useNavigate();
   const { decorationId } = useParams();
-  const { isAuthenticated, user } = useKindeAuth();
+  const { getToken, isAuthenticated, user } = useKindeAuth();
   const { toast } = useToast();
   const [recommendedDecorations, setRecommendedDecorations] =
     useState<Get_Recommended_Decorations[]>();
@@ -447,6 +447,17 @@ export const Decoration = () => {
       },
     });
   };
+
+  const hasSession = async () => {
+    const token = await getToken();
+    if (!token) {
+      sessionStorage.removeItem("token");
+    }
+  };
+
+  useEffect(() => {
+    hasSession();
+  }, [getToken]);
 
   useEffect(() => {
     if (decoration) {

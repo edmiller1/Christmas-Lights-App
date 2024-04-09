@@ -15,7 +15,7 @@ import logo from "../../assets/ChristmasLights-House-Logo.png";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { CircleNotch, Files } from "@phosphor-icons/react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { NotFound } from "..";
 import { getBase64Value } from "@/lib/helpers";
 import { AlreadySubmittedModal, VerifyDecorationLoading } from "./components";
@@ -24,7 +24,7 @@ import { useKindeAuth } from "@kinde-oss/kinde-auth-react";
 
 export const VerifyDecoration = () => {
   const { decorationId } = useParams();
-  const { user } = useKindeAuth();
+  const { getToken, user } = useKindeAuth();
   const { toast } = useToast();
   const navigate = useNavigate();
 
@@ -90,6 +90,17 @@ export const VerifyDecoration = () => {
       variables: { input: { document: base64Value, id: decorationId! } },
     });
   };
+
+  const hasSession = async () => {
+    const token = await getToken();
+    if (!token) {
+      sessionStorage.removeItem("token");
+    }
+  };
+
+  useEffect(() => {
+    hasSession();
+  }, [getToken]);
 
   if (
     (decoration && user && decoration.creator_id !== user.id) ||

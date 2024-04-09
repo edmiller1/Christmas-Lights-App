@@ -7,14 +7,14 @@ import {
 } from "@/graphql/queries/getUser/types";
 import { CaretLeft, Star } from "@phosphor-icons/react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Breadcrumbs } from "@/components";
 import { useKindeAuth } from "@kinde-oss/kinde-auth-react";
 import { EmptyState, YourDecorationsLoading } from "../../components";
 import snowman from "../../../../assets/Snowman.png";
 
 export const YourDecorations = () => {
-  const { user } = useKindeAuth();
+  const { getToken, user } = useKindeAuth();
   const { state } = useLocation();
   const navigate = useNavigate();
   const [currentUser, setCurrentUser] = useState<Get_User | null>(null);
@@ -31,6 +31,17 @@ export const YourDecorations = () => {
       },
     }
   );
+
+  const hasSession = async () => {
+    const token = await getToken();
+    if (!token) {
+      sessionStorage.removeItem("token");
+    }
+  };
+
+  useEffect(() => {
+    hasSession();
+  }, [getToken]);
 
   if (getUserLoading) {
     return <YourDecorationsLoading />;

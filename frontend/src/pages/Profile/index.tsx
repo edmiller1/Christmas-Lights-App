@@ -6,7 +6,7 @@ import {
   Get_User,
 } from "@/graphql/queries/getUser/types";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Bell,
   CaretRight,
@@ -35,7 +35,7 @@ export const Profile = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
   const { setTheme } = useTheme();
-  const { isAuthenticated, logout, user } = useKindeAuth();
+  const { getToken, isAuthenticated, logout, user } = useKindeAuth();
   const [currentTheme, setCurrentTheme] = useState<string | null>(
     localStorage.getItem("vite-ui-theme")
   );
@@ -77,6 +77,17 @@ export const Profile = () => {
     }, 2000);
     navigate("/");
   };
+
+  const hasSession = async () => {
+    const token = await getToken();
+    if (!token) {
+      sessionStorage.removeItem("token");
+    }
+  };
+
+  useEffect(() => {
+    hasSession();
+  }, [getToken]);
 
   if (getUserLoading) {
     return <ProfileLoading />;

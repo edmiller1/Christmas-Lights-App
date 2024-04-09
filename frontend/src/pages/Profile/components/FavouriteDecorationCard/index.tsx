@@ -17,7 +17,7 @@ interface Props {
   refetchUserData: () => void;
 }
 
-export const DecorationCard = ({
+export const FavouriteDecorationCard = ({
   decoration,
   decorations,
   index,
@@ -33,6 +33,10 @@ export const DecorationCard = ({
       UNFAVOURITE_DECORATION,
       {
         onCompleted: () => {
+          toast({
+            title: "Success 🎉",
+            description: "Decoration removed from favourites!",
+          });
           refetchUserData();
         },
         onError: () => {

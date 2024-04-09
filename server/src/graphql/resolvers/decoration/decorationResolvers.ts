@@ -559,7 +559,7 @@ export const decorationResolvers = {
           },
           data: {
             favourites: {
-              connect: {
+              disconnect: {
                 id: input.id,
               },
             },

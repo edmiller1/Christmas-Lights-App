@@ -11,8 +11,8 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { useKindeAuth } from "@kinde-oss/kinde-auth-react";
 import { Breadcrumbs } from "@/components";
 import {
-  DecorationCard,
   EmptyState,
+  FavouriteDecorationCard,
   YourDecorationsLoading,
 } from "../../components";
 import penguin from "../../../../assets/Penguin.png";
@@ -70,7 +70,7 @@ export const Favourites = () => {
         {currentUser?.favourites && currentUser?.favourites.length > 0 ? (
           <div className="grid grid-cols-1 gap-x-6 gap-y-10 my-8">
             {currentUser?.favourites.map((decoration, index) => (
-              <DecorationCard
+              <FavouriteDecorationCard
                 key={decoration.id}
                 decoration={decoration}
                 decorations={currentUser.favourites}
@@ -94,7 +94,7 @@ export const Favourites = () => {
         {currentUser?.favourites && currentUser.favourites.length > 0 ? (
           <div className="grid grid-cols-4 gap-x-6 gap-y-8 my-8">
             {currentUser.favourites.map((decoration, index) => (
-              <DecorationCard
+              <FavouriteDecorationCard
                 key={decoration.id}
                 decoration={decoration}
                 decorations={currentUser.favourites}

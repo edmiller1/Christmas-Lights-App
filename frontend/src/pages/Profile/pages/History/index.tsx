@@ -12,8 +12,8 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { Breadcrumbs } from "@/components";
 import { useKindeAuth } from "@kinde-oss/kinde-auth-react";
 import {
-  DecorationCard,
   EmptyState,
+  HistoryDecorationCard,
   YourDecorationsLoading,
 } from "../../components";
 import reindeer from "../../../../assets/Reindeer.png";
@@ -70,7 +70,7 @@ export const History = () => {
         {currentUser?.history && currentUser?.history.length > 0 ? (
           <div className="grid grid-cols-1 gap-x-6 gap-y-10 my-8">
             {currentUser?.history.map((decoration, index) => (
-              <DecorationCard
+              <HistoryDecorationCard
                 key={decoration.id}
                 decoration={decoration}
                 decorations={currentUser.history}
@@ -94,7 +94,7 @@ export const History = () => {
         {currentUser?.history && currentUser.history.length > 0 ? (
           <div className="grid grid-cols-4 gap-x-6 gap-y-8 my-8">
             {currentUser.history.map((decoration, index) => (
-              <DecorationCard
+              <HistoryDecorationCard
                 key={decoration.id}
                 decoration={decoration}
                 decorations={currentUser.history}

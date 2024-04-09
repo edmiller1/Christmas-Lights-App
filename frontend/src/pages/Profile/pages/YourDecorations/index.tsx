@@ -61,7 +61,7 @@ export const YourDecorations = () => {
         {currentUser?.decorations && currentUser.decorations.length > 0 ? (
           <div className="grid grid-cols-1 gap-x-6 gap-y-10 my-8">
             {currentUser?.decorations.map((decoration) => (
-              <Link to={`/decoration/${decoration.id}`}>
+              <Link key={decoration.id} to={`/decoration/${decoration.id}`}>
                 <div className="group">
                   <div className="w-full h-3/5 overflow-hidden rounded-lg bg-gray-200">
                     <img
@@ -104,7 +104,7 @@ export const YourDecorations = () => {
         {currentUser?.decorations && currentUser.decorations.length > 0 ? (
           <div className="grid grid-cols-4 gap-x-6 gap-y-10 my-8">
             {currentUser.decorations.map((decoration) => (
-              <Link to={`/decoration/${decoration.id}`} key={decoration.id}>
+              <Link key={decoration.id} to={`/decoration/${decoration.id}`}>
                 <div className="group">
                   <div className="w-full h-3/5 overflow-hidden rounded-lg bg-gray-200">
                     <img

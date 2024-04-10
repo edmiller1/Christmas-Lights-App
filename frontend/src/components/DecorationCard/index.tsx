@@ -89,7 +89,7 @@ export const DecorationCard = ({
         onCompleted: () => {
           toast({
             title: "Success 🎉",
-            description: "Decoration removed from favourites ❤️",
+            description: "Decoration removed from favourites 💔",
           });
           refetchUserData();
         },
@@ -299,27 +299,28 @@ export const DecorationCard = ({
       </div>
 
       {/* Desktop */}
-      <div className="hidden sm:group sm:block">
+      <div className="hidden sm:group sm:block cursor-pointer">
         <div
-          className="overflow-hidden rounded-xl relative"
+          className="overflow-hidden rounded-xl relative h-64 w-64"
           onMouseOver={showArrows}
           onMouseLeave={hideArrows}
         >
-          <Link to={`/decoration/${decoration.id}`}>
-            <div
-              className="flex transition-transform ease-out duration-500"
-              style={{ transform: `translateX(-${currentIndex * 100}%)` }}
-            >
-              {decoration.images.map((image) => (
-                <img
-                  key={image.id}
-                  src={image.url}
-                  className="decoration-card-image object-cover w-56 h-80"
-                />
-              ))}
-            </div>
+          <div
+            className="flex transition-transform ease-out duration-500"
+            style={{ transform: `translateX(-${currentIndex * 100}%)` }}
+          >
+            {decoration.images.map((image) => (
+              <img
+                key={image.id}
+                src={image.url}
+                className="decoration-card-image object-cover h-80 w-80"
+              />
+            ))}
+          </div>
+          <Link to={`/decoration/${decoration.id}`} target="_blank">
+            <div className="absolute inset-0 flex items-start justify-end p-2"></div>
           </Link>
-          <div className="absolute inset-0 flex items-start justify-end p-2">
+          <div className="absolute top-2 right-2 z-10">
             {userFavourites?.includes(decoration.id) ? (
               <>
                 {unFavouriteDecorationLoading &&
@@ -327,7 +328,7 @@ export const DecorationCard = ({
                   <CircleNotch
                     size={32}
                     weight="bold"
-                    color="#000000"
+                    color="#FFFFFF"
                     className="animate-spin"
                   />
                 ) : (
@@ -350,7 +351,7 @@ export const DecorationCard = ({
                   <CircleNotch
                     size={32}
                     weight="bold"
-                    color="#000000"
+                    color="#FFFFFF"
                     className="animate-spin"
                   />
                 ) : (
@@ -404,7 +405,7 @@ export const DecorationCard = ({
             </div>
           ) : null}
         </div>
-        <div className="flex items-center justify-between">
+        <div className="flex items-center justify-between w-64">
           <span className="mt-2 font-semibold">{decoration.name}</span>
           <div className="flex items-center space-x-1 mt-1">
             <Star
@@ -412,21 +413,16 @@ export const DecorationCard = ({
               weight="fill"
               className="text-ch-dark dark:text-ch-light"
             />
-            <span>{decoration.rating.toFixed(1)}</span>
+            <span>
+              {decoration.rating.toFixed(1) === "0.0"
+                ? "New"
+                : decoration.rating.toFixed(1)}
+            </span>
           </div>
         </div>
-        <div className="flex items-center justify-between">
-          <span className="text-sm text-gray-400 dark:text-zinc-400">
-            {decoration.city}, {decoration.country}
-          </span>
-          <Link to={`/decoration/${decoration.id}`}>
-            <ArrowUpRight
-              size={20}
-              weight="bold"
-              className="more-arrow text-ch-dark dark:text-ch-light"
-            />
-          </Link>
-        </div>
+        <span className="text-sm text-gray-400 dark:text-zinc-400">
+          {decoration.city}, {decoration.country}
+        </span>
       </div>
     </>
   );

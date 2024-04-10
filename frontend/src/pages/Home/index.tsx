@@ -1,8 +1,14 @@
-import { AppHeader } from "@/components/AppHeader";
+import { AppHeader, DecorationCard } from "@/components";
 import { useKindeAuth } from "@kinde-oss/kinde-auth-react";
-import { useLazyQuery, useMutation } from "@apollo/client";
+import { useLazyQuery, useMutation, useQuery } from "@apollo/client";
 import { SIGN_IN } from "@/graphql/mutations";
-import { GET_USER } from "@/graphql/queries";
+import {
+  GET_DECORATIONS_BY_CITY,
+  GET_DECORATIONS_BY_RATING,
+  GET_USER,
+} from "@/graphql/queries";
+import { GetDecorationsByCity as GetDecorationsByCityData } from "@/graphql/queries/getDecorationsByCity/types";
+import { GetDecorationByRating as GetDecorationsByRatingData } from "@/graphql/queries/getDecorationsByRating/types";
 import {
   GetUser as GetUserData,
   GetUserArgs,
@@ -15,28 +21,48 @@ import {
 import { useToast } from "@/components/ui/use-toast";
 import { useEffect, useState } from "react";
 import { AppHeaderLoading } from "@/components/AppHeader/components";
+import { ListBullets, MapTrifold } from "@phosphor-icons/react";
+import { DecorationsLoading, HomeFooter, HomeMap } from "./components";
 
 export const Home = () => {
   const { getToken, isAuthenticated, user } = useKindeAuth();
   const { toast } = useToast();
 
   const [currentUser, setCurrentUser] = useState<Get_User | null>(null);
+  const [showMap, setShowMap] = useState<boolean>(false);
+  const [mapLoading, setMapLoading] = useState<boolean>(false);
 
-  const [getUser, { loading: getUserLoading }] = useLazyQuery<
-    GetUserData,
-    GetUserArgs
-  >(GET_USER, {
-    onCompleted: (data) => {
-      setCurrentUser(data.getUser);
-    },
-  });
+  const [getUser, { loading: getUserLoading, refetch: refetchUser }] =
+    useLazyQuery<GetUserData, GetUserArgs>(GET_USER, {
+      variables: { input: { id: user?.id ? user.id : "" } },
+      notifyOnNetworkStatusChange: true,
+      onCompleted: (data) => {
+        setCurrentUser(data.getUser);
+      },
+    });
+
+  const { data: decorationsByCityData, loading: decorationsByCityLoading } =
+    useQuery<GetDecorationsByCityData>(GET_DECORATIONS_BY_CITY);
+
+  const { data: decorationsByRatingData, loading: decorationsByRatingLoading } =
+    useQuery<GetDecorationsByRatingData>(GET_DECORATIONS_BY_RATING);
+
+  const decorationsByCity = decorationsByCityData?.getDecorationsByCity
+    ? decorationsByCityData.getDecorationsByCity
+    : null;
+
+  const decorationsByRating = decorationsByRatingData?.getDecorationsByRating
+    ? decorationsByRatingData.getDecorationsByRating
+    : null;
 
   const [signIn] = useMutation<SignInData, SignInArgs>(SIGN_IN, {
     onCompleted: (data) => {
-      toast({
-        variant: "default",
-        title: "Signed in Successfully!",
-      });
+      if (localStorage.getItem("user")) {
+        toast({
+          variant: "default",
+          title: "Signed in Successfully!",
+        });
+      }
       sessionStorage.setItem("token", data.signIn.token);
       localStorage.removeItem("user");
       getUser({ variables: { input: { id: data.signIn.id } } });
@@ -77,12 +103,37 @@ export const Home = () => {
     }
   };
 
+  const refetchUserData = () => {
+    refetchUser();
+  };
+
+  const getCoords = async () => {
+    if (navigator.geolocation) {
+      await navigator.geolocation.getCurrentPosition((position) => {
+        localStorage.setItem(
+          "latitude",
+          JSON.stringify(position.coords.latitude)
+        );
+        localStorage.setItem(
+          "longitude",
+          JSON.stringify(position.coords.longitude)
+        );
+      });
+    } else {
+      return;
+    }
+  };
+
   const hasSession = async () => {
     const token = await getToken();
     if (!token) {
       sessionStorage.removeItem("token");
     }
   };
+
+  useEffect(() => {
+    getCoords();
+  }, []);
 
   useEffect(() => {
     signInUser();
@@ -99,16 +150,185 @@ export const Home = () => {
     hasSession();
   }, [getToken]);
 
+  if (decorationsByCityLoading || decorationsByRatingLoading) {
+    return <DecorationsLoading />;
+  }
+
   return (
     <>
-      {getUserLoading ? (
-        <AppHeaderLoading />
-      ) : (
-        <AppHeader
-          isAuthenticated={isAuthenticated}
-          currentUser={currentUser}
-        />
-      )}
+      {/* Mobile */}
+      <div className="sm:hidden min-h-screen">
+        {getUserLoading ? (
+          <AppHeaderLoading />
+        ) : (
+          <AppHeader
+            currentUser={currentUser}
+            isAuthenticated={isAuthenticated}
+          />
+        )}
+        {showMap ? (
+          <HomeMap
+            setMapLoading={setMapLoading}
+            userFavourites={currentUser?.favourites.map(
+              (favourite) => favourite.id
+            )}
+          />
+        ) : (
+          <div className="px-6 overflow-y-auto py-16">
+            {decorationsByCity && decorationsByCity.length > 0 ? (
+              <div className="grid grid-cols-1 gap-x-6 gap-y-8 my-8">
+                {decorationsByCity.map((decoration, index) => (
+                  <DecorationCard
+                    key={decoration.id}
+                    index={index}
+                    isAuthenticated={isAuthenticated}
+                    decoration={decoration}
+                    decorations={decorationsByCity}
+                    userFavourites={currentUser?.favourites.map(
+                      (favourite) => favourite.id
+                    )}
+                    refetchUserData={refetchUserData}
+                  />
+                ))}
+              </div>
+            ) : null}
+            <>
+              {decorationsByRating && decorationsByRating.length > 0 ? (
+                <div className="grid grid-cols-1 gap-x-6 gap-y-8 my-8">
+                  {decorationsByRating.map((decoration, index) => (
+                    <DecorationCard
+                      key={decoration.id}
+                      index={index}
+                      isAuthenticated={isAuthenticated}
+                      decoration={decoration}
+                      decorations={decorationsByRating}
+                      userFavourites={currentUser?.favourites.map(
+                        (favourite) => favourite.id
+                      )}
+                      refetchUserData={refetchUserData}
+                    />
+                  ))}
+                </div>
+              ) : null}
+            </>
+          </div>
+        )}
+        {!showMap ? (
+          <div className="fixed bottom-24 left-[41%] z-20">
+            <button
+              onClick={() => setShowMap(true)}
+              className="flex items-center text-sm py-2 px-3 font-semibold rounded-full shadow-lg text-white bg-ch-green z-50 hover:scale-110 transition-all"
+            >
+              Map
+              <MapTrifold
+                size={24}
+                weight="fill"
+                color="#ffffff"
+                className="ml-2"
+              />
+            </button>
+          </div>
+        ) : (
+          <div className="fixed bottom-24 left-[41%] z-20">
+            <button
+              disabled={mapLoading}
+              onClick={() => setShowMap(false)}
+              className="flex items-center text-sm py-2 px-3 font-semibold rounded-full shadow-lg text-white bg-ch-green z-[98] hover:scale-110 transition-all"
+            >
+              List
+              <ListBullets size={24} color="#ffffff" className="ml-2" />
+            </button>
+          </div>
+        )}
+      </div>
+
+      {/* Desktop */}
+      <div className="hidden sm:block min-h-screen">
+        {getUserLoading ? (
+          <AppHeaderLoading />
+        ) : (
+          <AppHeader
+            currentUser={currentUser}
+            isAuthenticated={isAuthenticated}
+          />
+        )}
+        {showMap ? (
+          <HomeMap
+            setMapLoading={setMapLoading}
+            userFavourites={currentUser?.favourites.map(
+              (favourite) => favourite.id
+            )}
+          />
+        ) : (
+          <div className="md:px-10 xl:px-24 2xl:px-32 overflow-y-auto py-12">
+            {decorationsByCity && decorationsByCity.length > 0 ? (
+              <div className="grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 xl:gap-x-8 gap-y-10 my-8">
+                {decorationsByCity.map((decoration, index) => (
+                  <DecorationCard
+                    key={decoration.id}
+                    index={index}
+                    isAuthenticated={isAuthenticated}
+                    decoration={decoration}
+                    decorations={decorationsByCity}
+                    userFavourites={currentUser?.favourites.map(
+                      (favourite) => favourite.id
+                    )}
+                    refetchUserData={refetchUserData}
+                  />
+                ))}
+              </div>
+            ) : null}
+            <>
+              {decorationsByRating && decorationsByRating.length > 0 ? (
+                <div className="grid grid-cols-6 gap-x-6 gap-y-10 my-8">
+                  {decorationsByRating.map((decoration, index) => (
+                    <DecorationCard
+                      key={decoration.id}
+                      index={index}
+                      isAuthenticated={isAuthenticated}
+                      decoration={decoration}
+                      decorations={decorationsByRating}
+                      userFavourites={currentUser?.favourites.map(
+                        (favourite) => favourite.id
+                      )}
+                      refetchUserData={refetchUserData}
+                    />
+                  ))}
+                </div>
+              ) : null}
+            </>
+          </div>
+        )}
+
+        {!showMap ? (
+          <div className="fixed bottom-24 left-[47.5%] z-20">
+            <button
+              onClick={() => setShowMap(true)}
+              className="flex items-center text-sm py-2 px-3 font-semibold rounded-full shadow-lg text-white bg-ch-green hover:scale-110 transition-all"
+            >
+              Map
+              <MapTrifold
+                size={24}
+                weight="fill"
+                color="#ffffff"
+                className="ml-2"
+              />
+            </button>
+          </div>
+        ) : (
+          <div className="fixed bottom-24 left-[47.5%] z-20">
+            <button
+              disabled={mapLoading}
+              onClick={() => setShowMap(false)}
+              className="flex items-center text-sm py-2 px-3 font-semibold rounded-full shadow-lg text-white bg-ch-green hover:scale-110 transition-all"
+            >
+              List
+              <ListBullets size={24} color="#ffffff" className="ml-2" />
+            </button>
+          </div>
+        )}
+      </div>
+      <HomeFooter />
     </>
   );
 };

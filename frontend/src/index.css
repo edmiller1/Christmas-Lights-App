@@ -70,6 +70,25 @@
   }
 }
 
+.snowflake {
+  position: absolute;
+  background-color: #ffffff; /* Color of the snowflakes */
+  border-radius: 50%;
+  pointer-events: none;
+  animation: snowfall 5s linear infinite;
+}
+
+@keyframes snowfall {
+  0% {
+    opacity: 0;
+    transform: translateY(-50px) rotate(0deg);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(100vh) rotate(360deg);
+  }
+}
+
 * {
   font-family: "Nunito", sans-serif;
 }
@@ -102,11 +121,6 @@ input[type="file"] {
   box-shadow: 0 1rem 2rem 0 rgba(0, 0, 0, 0.2);
   user-select: none;
   cursor: pointer;
-}
-
-.drag-images-container::-webkit-scrollbar {
-  width: 0px;
-  background: transparent;
 }
 
 .image-grid {

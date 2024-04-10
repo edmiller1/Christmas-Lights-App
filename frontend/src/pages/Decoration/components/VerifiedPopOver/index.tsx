@@ -17,7 +17,7 @@ export const VerifiedPopOver = ({ decorationId }: Props) => {
             <Info
               size={28}
               weight="bold"
-              className="mt-2 cursor-pointer text-ch-red"
+              className="mt-2 cursor-pointer text-primary"
             />
           </Popover.Button>
           <Transition
@@ -44,7 +44,7 @@ export const VerifiedPopOver = ({ decorationId }: Props) => {
                   You can submit your decoration for verification{" "}
                   <Link
                     to={`/verify-decoration/${decorationId}`}
-                    className="text-ch-red underline"
+                    className="text-primary underline"
                   >
                     here.
                   </Link>

@@ -98,7 +98,7 @@ export const EditImagesModal = ({
                   {images?.length === 0 ? (
                     <div className="mt-3 flex flex-col items-center justify-center rounded-xl border border-dashed border-gray-500">
                       <ImagesSquare size={120} color="#ffffff" weight="thin" />
-                      <label className="bg-ch-red mb-3 w-2/3 text-sm text-center cursor-pointer rounded-lg px-4 py-2 text-white hover:opacity-90 sm:w-1/2 sm:text-base">
+                      <label className="bg-primary mb-3 w-2/3 text-sm text-center cursor-pointer rounded-lg px-4 py-2 text-white hover:opacity-90 sm:w-1/2 sm:text-base">
                         <input
                           type="file"
                           multiple
@@ -158,7 +158,7 @@ export const EditImagesModal = ({
                         </button>
 
                         <div className="absolute bottom-5 left-1/4 sm:left-[28%]">
-                          <label className="bg-ch-red mb-3 w-2/3 text-sm text-center cursor-pointer rounded-lg px-4 py-2 text-white hover:opacity-90 sm:w-1/2 sm:text-base">
+                          <label className="bg-primary mb-3 w-2/3 text-sm text-center cursor-pointer rounded-lg px-4 py-2 text-white hover:opacity-90 sm:w-1/2 sm:text-base">
                             <input
                               type="file"
                               multiple

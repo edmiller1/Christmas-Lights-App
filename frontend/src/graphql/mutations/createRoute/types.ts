@@ -1,9 +1,17 @@
-import { gql } from "@apollo/client";
+export interface Create_Route {
+  __typename: "User";
+  id: string;
+}
 
-export const CREATE_ROUTE = gql`
-  mutation createRoute($input: CreateRouteInput!) {
-    createRoute(input: $input) {
-      id
-    }
-  }
-`;
+export interface CreateRoute {
+  createRoute: Create_Route;
+}
+
+export interface CreateRouteInput {
+  name: string;
+  decorationId?: string;
+}
+
+export interface CreateRouteArgs {
+  input: CreateRouteInput;
+}

@@ -159,7 +159,7 @@ export const HomeMap = ({ setMapLoading, userFavourites }: Props) => {
 
   return (
     <>
-      <div className="sm:hidden pt-16 min-h-screen -pb-24 absolute rounded-lg">
+      <div className="sm:hidden min-h-screen -pb-24 absolute rounded-lg">
         <Map
           {...viewState}
           //@ts-ignore
@@ -268,7 +268,7 @@ export const HomeMap = ({ setMapLoading, userFavourites }: Props) => {
         ) : null}
       </div>
 
-      <div className="absolute pt-16 h-full w-full">
+      <div className="absolute h-full w-full">
         <Map
           {...viewState}
           //@ts-ignore

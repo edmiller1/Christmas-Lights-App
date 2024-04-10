@@ -157,7 +157,7 @@ export const Home = () => {
   return (
     <>
       {/* Mobile */}
-      <div className="sm:hidden min-h-screen">
+      <div className="sm:hidden min-h-screen min-w-full">
         {getUserLoading ? (
           <AppHeaderLoading />
         ) : (

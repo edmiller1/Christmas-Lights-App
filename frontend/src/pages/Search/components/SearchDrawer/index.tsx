@@ -73,7 +73,7 @@ export const SearchDrawer = ({
             searchForDecorationsLoading ? (
               <DecorationsLoading />
             ) : searchedDecorations && searchedDecorations.length === 0 ? (
-              <div className="mt-44 text-center flex flex-col justify-center items-center text-xl text-ch-red">
+              <div className="mt-44 text-center flex flex-col justify-center items-center text-xl text-primary">
                 <Warning size={40} weight="bold" />
                 <span>
                   Could not find any decorations for search term:{" "}

@@ -1,6 +1,7 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
 import App from "./App.tsx";
+import "mapbox-gl/dist/mapbox-gl.css";
 import {
   createBrowserRouter,
   RouterProvider,
@@ -15,6 +16,7 @@ import {
   NotFound,
   Notifications,
   Profile,
+  RoutePlanning,
   SignIn,
   SignUp,
 } from "./pages";
@@ -63,6 +65,7 @@ const router = createBrowserRouter([
   { path: "/profile/decorations", element: <YourDecorations /> },
   { path: "/profile/history", element: <History /> },
   { path: "/profile/favourites", element: <Favourites /> },
+  { path: "/route-planning", element: <RoutePlanning /> },
   {
     path: "/admin",
     element: <Admin />,

@@ -169,7 +169,7 @@ export const AppHeader = ({
               type="button"
               className={`${
                 location.pathname === "/"
-                  ? "flex flex-col flex-1 items-center p-4 text-center text-ch-red"
+                  ? "flex flex-col flex-1 items-center p-4 text-center text-primary"
                   : "flex flex-col flex-1 items-center p-4 text-center"
               }`}
             >
@@ -177,7 +177,7 @@ export const AppHeader = ({
                 size={24}
                 className={`${
                   location.pathname === "/"
-                    ? "text-ch-red"
+                    ? "text-primary"
                     : "text-ch-dark dark:text-ch-light"
                 }`}
               />
@@ -190,7 +190,7 @@ export const AppHeader = ({
                 type="button"
                 className={`${
                   location.pathname === "/route-planning"
-                    ? "flex flex-col flex-1 items-center p-4 text-center text-ch-red"
+                    ? "flex flex-col flex-1 items-center p-4 text-center text-primary"
                     : "flex flex-col flex-1 items-center p-4 text-center"
                 }`}
               >
@@ -198,7 +198,7 @@ export const AppHeader = ({
                   size={24}
                   className={`${
                     location.pathname === "/route-planning"
-                      ? "text-ch-red"
+                      ? "text-primary"
                       : "text-ch-dark dark:text-ch-light"
                   }`}
                 />
@@ -256,7 +256,7 @@ export const AppHeader = ({
                 type="button"
                 className={`${
                   location.pathname === "/notifications"
-                    ? "relative flex flex-col flex-1 items-center p-4 text-center text-ch-red"
+                    ? "relative flex flex-col flex-1 items-center p-4 text-center text-primary"
                     : "relative flex flex-col flex-1 items-center p-4 text-center"
                 }`}
               >
@@ -264,7 +264,7 @@ export const AppHeader = ({
                   size={24}
                   className={`${
                     location.pathname === "/notifications"
-                      ? "text-ch-red"
+                      ? "text-primary"
                       : "text-ch-dark dark:text-ch-light"
                   }`}
                 />
@@ -295,7 +295,7 @@ export const AppHeader = ({
                 type="button"
                 className={`${
                   location.pathname.includes("/profile")
-                    ? "relative flex flex-col flex-1 items-center p-4 text-center text-ch-red"
+                    ? "relative flex flex-col flex-1 items-center p-4 text-center text-primary"
                     : "relative flex flex-col flex-1 items-center p-4 text-center"
                 }`}
               >
@@ -303,7 +303,7 @@ export const AppHeader = ({
                   size={24}
                   className={`${
                     location.pathname.includes("/profile")
-                      ? "text-ch-red"
+                      ? "text-primary"
                       : "text-ch-dark dark:text-ch-light"
                   }`}
                 />

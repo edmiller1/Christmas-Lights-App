@@ -40,9 +40,7 @@ export const UnresolvedReportsCard = ({
       <div className="bg-zinc-800 h-full px-5 py-3">
         <div className="text-sm">
           <Link to="/">
-            <span className="underline font-medium text-ch-red hover:text-ch-red-hover">
-              View all
-            </span>
+            <span className="underline font-medium text-primary">View all</span>
           </Link>
         </div>
       </div>

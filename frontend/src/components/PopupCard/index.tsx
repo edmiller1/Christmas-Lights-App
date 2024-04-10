@@ -201,7 +201,7 @@ export const PopupCard = ({
               <span className="text-sm text-gray-500">
                 {activeDecoration?.city}, {activeDecoration?.country}
               </span>
-              <div className="mt-1 p-1 bg-ch-red opacity-80 rounded-full hover:opacity-100 transition-all">
+              <div className="mt-1 p-1 bg-primary opacity-80 rounded-full hover:opacity-100 transition-all">
                 <Link
                   to={`/decoration/${activeDecoration?.id}`}
                   target="_blank"

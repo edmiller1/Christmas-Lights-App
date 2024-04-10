@@ -19,5 +19,6 @@ export * from "./RecommendedDecorationsLoading";
 export * from "./ReportDecorationModal";
 export * from "./SaveButton";
 export * from "./ShareDecoration";
+export * from "./ShareDecorationModal";
 export * from "./VerifiedPopOver";
 export * from "./VerifiedSection";

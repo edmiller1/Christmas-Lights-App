@@ -101,6 +101,7 @@ import {
   ReportDecorationModal,
   SaveButton,
   ShareDecoration,
+  ShareDecorationModal,
   VerifiedPopOver,
   VerifiedSection,
 } from "./components";
@@ -113,6 +114,7 @@ import {
 } from "@cloudinary/react";
 import { AppHeaderLoading } from "@/components/AppHeader/components";
 import { AppHeader, Footer } from "@/components";
+import { ToastAction } from "@/components/ui/toast";
 
 export const Decoration = () => {
   const navigate = useNavigate();
@@ -412,7 +414,20 @@ export const Decoration = () => {
   };
 
   const addtoFavourites = () => {
-    favouriteDecoration({ variables: { input: { id: decorationId! } } });
+    if (isAuthenticated) {
+      favouriteDecoration({ variables: { input: { id: decorationId! } } });
+    } else {
+      toast({
+        variant: "default",
+        title: "Not currently signed in.",
+        description: "Create an account to like decorations.",
+        action: (
+          <ToastAction altText="Sign Up" onClick={() => navigate("/signin")}>
+            Sign Up
+          </ToastAction>
+        ),
+      });
+    }
   };
 
   const removeFromFavourites = () => {
@@ -420,9 +435,22 @@ export const Decoration = () => {
   };
 
   const addRating = (rating: number) => {
-    rateDecoration({
-      variables: { input: { id: decorationId, rating: rating } },
-    });
+    if (isAuthenticated) {
+      rateDecoration({
+        variables: { input: { id: decorationId, rating: rating } },
+      });
+    } else {
+      toast({
+        variant: "default",
+        title: "Not currently signed in.",
+        description: "Create an account to like decorations.",
+        action: (
+          <ToastAction altText="Sign Up" onClick={() => navigate("/signin")}>
+            Sign Up
+          </ToastAction>
+        ),
+      });
+    }
   };
 
   const updateRating = (rating: number | undefined) => {
@@ -763,7 +791,6 @@ export const Decoration = () => {
             />
             <SaveButton
               currentUser={currentUser}
-              isAuthenticated={isAuthenticated}
               decorationId={decorationId}
               addtoFavourites={addtoFavourites}
               removeFromFavourites={removeFromFavourites}
@@ -844,6 +871,14 @@ export const Decoration = () => {
           setShowFullImageOverlay={setShowFullImageOverlay}
         />
       ) : null}
+      <ShareDecorationModal
+        decorationCity={decoration?.city}
+        decorationCountry={decoration?.country}
+        decorationImage={decoration?.images[0]}
+        decorationName={decoration?.name}
+        isShareModalOpen={isShareModalOpen}
+        setIsShareModalOpen={setIsShareModalOpen}
+      />
     </>
   );
 };

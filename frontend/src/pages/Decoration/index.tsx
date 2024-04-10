@@ -167,7 +167,9 @@ export const Decoration = () => {
     error: getDecorationError,
     refetch: getDecorationRefetch,
   } = useQuery<GetDecorationData, GetDecorationArgs>(GET_DECORATION, {
-    variables: { input: { id: decorationId! } },
+    variables: {
+      input: { id: decorationId!, userId: user?.id ? user.id : "" },
+    },
     onCompleted: (data) => {
       setCurrentImage(data.getDecoration.images[0]);
     },
@@ -707,7 +709,11 @@ export const Decoration = () => {
               <div className="flex items-center">
                 <Star size={16} weight="fill" className="text-ch-light" />
                 &nbsp;
-                <span>{decoration?.rating.toFixed(1)}</span>
+                <span>
+                  {decoration?.rating === 0
+                    ? "New"
+                    : decoration?.rating.toFixed(1)}
+                </span>
                 &nbsp; &middot; &nbsp;
                 <span
                   className="underline cursor-pointer"

@@ -35,11 +35,11 @@ export const decorationResolvers = {
       { _, req, res }: { _: undefined; req: Request; res: Response }
     ): Promise<Decoration> => {
       try {
-        const user = await authorise(req);
-
-        if (!user) {
-          throw new Error("Not authenticated");
-        }
+        const user = await prisma.user.findFirst({
+          where: {
+            id: input.userId,
+          },
+        });
 
         const decoration = await prisma.decoration.findFirst({
           where: {

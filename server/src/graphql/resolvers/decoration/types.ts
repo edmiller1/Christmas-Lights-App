@@ -14,6 +14,7 @@ export interface CreateDecorationArgs {
 export interface GetDecorationArgs {
   input: {
     id: string;
+    userId: string;
   };
 }
 

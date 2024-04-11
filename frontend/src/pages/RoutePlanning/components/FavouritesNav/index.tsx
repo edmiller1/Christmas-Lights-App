@@ -70,7 +70,7 @@ export const FavouritesNav = ({
       <div className="sm:hidden">
         <AnimatePresence>
           <motion.div
-            className="fixed shadow w-full max-w-[560px] z-50 h-[70%] bottom-0 left-0 right-0 flex flex-col px-3 rounded-t-[10px] bg-slate-50 dark:bg-zinc-900 border-t dark:border-black sm:hidden"
+            className="fixed shadow w-full max-w-[560px] z-50 h-[70%] bottom-0 left-0 right-0 flex flex-col px-3 rounded-t-[10px] bg-background dark:bg-zinc-900 border-t dark:border-black sm:hidden"
             initial={{ y: 1000 }}
             animate={{ y: 0 }}
             transition={{
@@ -153,7 +153,7 @@ export const FavouritesNav = ({
       </div>
       {/* Desktop */}
       <aside className="hidden sm:block fixed bottom-0 left-20 top-0 w-96 overflow-y-auto border-r dark:border-black">
-        <div className="bg-zinc-800 p-8 dark:border-b dark:border-black">
+        <div className="p-8 border-b dark:border-black">
           <h1 className="text-xl font-semibold">Favourites</h1>
           <div className="flex items-center space-x-4 my-5">
             <Input
@@ -161,8 +161,14 @@ export const FavouritesNav = ({
               placeholder="Search Favourites"
               value={searchWord}
               onChange={(e) => handleSearchWord(e)}
+              className="bg-gray-100"
             />
-            <Button variant="outline" onClick={filterUserFavourites}>
+            <Button
+              disabled={!searchWord}
+              variant="outline"
+              onClick={filterUserFavourites}
+              className="bg-gray-100"
+            >
               <MagnifyingGlass
                 size={16}
                 weight="bold"

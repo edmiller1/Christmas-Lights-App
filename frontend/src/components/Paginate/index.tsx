@@ -31,7 +31,11 @@ export const Paginate = ({
     if (totalPages <= visiblePages) {
       for (let i = 1; i <= totalPages; i++) {
         pageNumbers.push(
-          <PaginationItem key={i} onClick={() => setPageNumber(i)}>
+          <PaginationItem
+            key={i}
+            onClick={() => setPageNumber(i)}
+            className="cursor-pointer"
+          >
             <PaginationLink isActive={i === pageNumber}>{i}</PaginationLink>
           </PaginationItem>
         );
@@ -42,7 +46,7 @@ export const Paginate = ({
 
       if (startPage > 1) {
         pageNumbers.push(
-          <PaginationItem>
+          <PaginationItem className="cursor-pointer">
             <PaginationEllipsis />
           </PaginationItem>
         );
@@ -50,7 +54,11 @@ export const Paginate = ({
 
       for (let i = startPage; i <= endPage; i++) {
         pageNumbers.push(
-          <PaginationItem key={i} onClick={() => setPageNumber(i)}>
+          <PaginationItem
+            key={i}
+            onClick={() => setPageNumber(i)}
+            className="cursor-pointer"
+          >
             <PaginationLink isActive={i === pageNumber}>{i}</PaginationLink>
           </PaginationItem>
         );
@@ -58,7 +66,7 @@ export const Paginate = ({
 
       if (endPage < totalPages) {
         pageNumbers.push(
-          <PaginationItem>
+          <PaginationItem className="cursor-pointer">
             <PaginationEllipsis />
           </PaginationItem>
         );
@@ -71,11 +79,11 @@ export const Paginate = ({
   return (
     <Pagination>
       <PaginationContent>
-        <PaginationItem onClick={previousPage}>
+        <PaginationItem onClick={previousPage} className="cursor-pointer">
           <PaginationPrevious></PaginationPrevious>
         </PaginationItem>
         {renderPageNumbers()}
-        <PaginationItem onClick={nextPage}>
+        <PaginationItem onClick={nextPage} className="cursor-pointer">
           <PaginationNext></PaginationNext>
         </PaginationItem>
       </PaginationContent>

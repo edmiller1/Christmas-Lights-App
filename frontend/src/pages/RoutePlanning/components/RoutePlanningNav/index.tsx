@@ -234,7 +234,7 @@ export const RoutePlanningNav = ({
       {/* Desktop */}
       <div className="hidden sm:block fixed inset-y-0 left-0 z-50 w-20 overflow-y-auto border-r border-secondary pb-4">
         <div className="flex h-16 shrink-0 items-center justify-center">
-          <button onClick={() => navigate("/")}>
+          <button onClick={() => navigate("/home")}>
             <CaretLeft
               size={32}
               weight="bold"

@@ -111,7 +111,7 @@ export const RoutesNav = ({
       <div className="sm:hidden">
         <AnimatePresence>
           <motion.div
-            className="fixed shadow w-full max-w-[560px] z-50 h-3/4 bottom-0 left-0 right-0 flex flex-col px-3 rounded-t-[10px] bg-slate-50 dark:bg-zinc-900 border-t dark:border-black sm:hidden"
+            className="fixed shadow w-full max-w-[560px] z-50 h-3/4 bottom-0 left-0 right-0 flex flex-col px-3 rounded-t-[10px] bg-background dark:bg-zinc-900 border-t dark:border-black sm:hidden"
             initial={{ y: 1000 }}
             animate={{ y: 0 }}
             transition={{
@@ -122,7 +122,7 @@ export const RoutesNav = ({
           >
             <div className="flex justify-center my-2 w-screen">
               <button
-                className="w-1/4 bg-zinc-700 h-3 rounded-full"
+                className="w-1/4 bg-zinc-300 dark:bg-zinc-700 h-3 rounded-full"
                 onClick={() => setMobileMenuOpen!(false)}
               ></button>
             </div>
@@ -136,19 +136,13 @@ export const RoutesNav = ({
                   Routes
                 </span>
                 {isEditing ? (
-                  <button
-                    className="mt-1 text-sm text-primary hover:underline"
-                    onClick={() => setIsEditing(false)}
-                  >
+                  <Button variant="link" onClick={() => setIsEditing(false)}>
                     Cancel
-                  </button>
+                  </Button>
                 ) : (
-                  <button
-                    className="mt-1 text-sm text-primary hover:underline"
-                    onClick={() => setIsEditing(true)}
-                  >
+                  <Button variant="link" onClick={() => setIsEditing(true)}>
                     Edit
-                  </button>
+                  </Button>
                 )}
               </div>
               <div className="grid grid-cols-4 gap-x-4 gap-y-5 my-5">
@@ -195,10 +189,10 @@ export const RoutesNav = ({
               <div className="full">
                 <Button
                   variant="outline"
-                  className="flex items-center justify-center w-full dark:bg-primary dark:hover:bg-primary"
+                  className="flex items-center justify-center w-full bg-primary"
                   onClick={addRoute}
                 >
-                  <span className="font-semibold">New Route</span>
+                  <span className="font-semibold text-white">New Route</span>
                 </Button>
               </div>
               {!isAuthenticated ? (
@@ -297,7 +291,7 @@ export const RoutesNav = ({
 
       {/* Desktop */}
       <aside className="hidden sm:block fixed bottom-0 left-20 top-0 w-96 overflow-y-auto border-r dark:border-black">
-        <div className="bg-zinc-800 p-8 dark:border-b dark:border-black">
+        <div className="p-8 border-b dark:border-black">
           <div className="flex items-center justify-between">
             <h1 className="text-xl font-semibold">Routes</h1>
             {isEditing ? (
@@ -308,12 +302,9 @@ export const RoutesNav = ({
                 Cancel
               </button>
             ) : (
-              <button
-                className="mt-1 text-xs text-primary hover:underline"
-                onClick={() => setIsEditing(true)}
-              >
+              <Button variant="link" onClick={() => setIsEditing(true)}>
                 Edit
-              </button>
+              </Button>
             )}
           </div>
           <div className="grid grid-cols-4 gap-x-4 gap-y-5 my-5">

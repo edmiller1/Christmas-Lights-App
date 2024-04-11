@@ -75,7 +75,11 @@ import {
   RoutePlanningNav,
   SecondaryNav,
 } from "./components";
-import { ThemeToggle, UserMenu } from "@/components/AppHeader/components";
+import {
+  LoggedOutUserMenu,
+  ThemeToggle,
+  UserMenu,
+} from "@/components/AppHeader/components";
 import { useToast } from "@/components/ui/use-toast";
 import { Decoration, Route, Step, ViewState } from "@/lib/types";
 import { MapRef } from "react-map-gl";
@@ -875,7 +879,7 @@ export const RoutePlanning = () => {
         />
 
         {/* Main column */}
-        <main className="ml-[29rem] w-[75.8vw] h-screen relative">
+        <main className="ml-[29rem] xl:w-[70vw] 2xl:w-[75.8vw] h-screen relative">
           <RouteMap
             setViewState={setViewState}
             viewState={viewState}
@@ -907,21 +911,7 @@ export const RoutePlanning = () => {
           {currentUser ? (
             <UserMenu logUserOut={logUserOut} currentUser={currentUser} />
           ) : (
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <UserCircle
-                  size={40}
-                  weight="fill"
-                  className="cursor-pointer text-ch-dark"
-                />
-              </DropdownMenuTrigger>
-              <DropdownMenuContent className="mt-1 w-56" align="end" forceMount>
-                <ThemeToggle />
-                <Link to="/signin">
-                  <DropdownMenuItem>Log in / Sign up</DropdownMenuItem>
-                </Link>
-              </DropdownMenuContent>
-            </DropdownMenu>
+            <LoggedOutUserMenu />
           )}
         </div>
         {activeDecoration ? (

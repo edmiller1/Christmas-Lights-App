@@ -100,7 +100,9 @@ export const DecorationPopup = ({
           <div className="flex items-center text-xs space-x-2">
             <Star size={16} weight="fill" color="#1acd81" />
             <span className="font-semibold">
-              {activeDecoration?.rating.toFixed(1)}
+              {activeDecoration?.rating === 0
+                ? "New"
+                : activeDecoration?.rating.toFixed(1)}
             </span>
           </div>
         </div>
@@ -117,7 +119,7 @@ export const DecorationPopup = ({
           {!isAuthenticated ? (
             <Button
               variant="default"
-              className="w-4/5 dark:bg-ch-green dark:hover:bg-ch-green-hover"
+              className="w-4/5 bg-ch-green hover:bg-ch-green-hover"
               onClick={() =>
                 toast({
                   variant: "default",
@@ -127,7 +129,7 @@ export const DecorationPopup = ({
                   action: (
                     <ToastAction
                       altText="Sign Up"
-                      onClick={() => navigate("/signin")}
+                      onClick={() => navigate("/signup")}
                     >
                       Sign Up
                     </ToastAction>

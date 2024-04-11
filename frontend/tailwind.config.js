@@ -20,7 +20,7 @@ module.exports = {
       colors: {
         "ch-pink": "#FF647F",
         "ch-green": "#1acd81",
-        "ch-green-hover": "#0b905b",
+        "ch-green-hover": "#3acd89",
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
         ring: "hsl(var(--ring))",

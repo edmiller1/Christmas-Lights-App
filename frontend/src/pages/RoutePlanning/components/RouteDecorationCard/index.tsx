@@ -54,8 +54,8 @@ export const RouteDecorationCard = ({
           ref={refs[decoration.id]}
           className={`${
             activeDecoration?.id === decoration.id
-              ? "flex h-28 cursor-pointer dark:bg-ch-green transition-all"
-              : "flex h-28 cursor-pointer dark:bg-zinc-800 hover:dark:bg-zinc-700 transition-all"
+              ? "flex h-28 cursor-pointer rounded-lg dark:bg-ch-green transition-all"
+              : "flex h-28 cursor-pointer rounded-lg bg-gray-100 dark:bg-zinc-800 hover:dark:bg-zinc-700 transition-all"
           }`}
           onClick={() => handleDecorationSelect(decoration)}
         >
@@ -112,7 +112,7 @@ export const RouteDecorationCard = ({
           className={`${
             activeDecoration?.id === decoration.id
               ? "flex rounded-lg h-28 cursor-pointer dark:bg-ch-green transition-all"
-              : "flex rounded-lg h-28 cursor-pointer dark:bg-zinc-800 hover:dark:bg-zinc-700 transition-all"
+              : "flex rounded-lg h-28 cursor-pointer bg-gray-100 hover:bg-gray-50 dark:bg-zinc-800 hover:dark:bg-zinc-700 transition-all"
           }`}
           onClick={() => handleDecorationSelect(decoration)}
         >

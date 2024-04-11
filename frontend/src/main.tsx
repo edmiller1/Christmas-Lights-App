@@ -19,6 +19,8 @@ import {
   RoutePlanning,
   SignIn,
   SignUp,
+  SiteMap,
+  VerifyDecoration,
 } from "./pages";
 import {
   ApolloClient,
@@ -53,6 +55,10 @@ const router = createBrowserRouter([
     element: <Decoration />,
   },
   {
+    path: "/verify-decoration/:decorationId",
+    element: isAuthenticated ? <VerifyDecoration /> : <NotFound />,
+  },
+  {
     path: "/notifications",
     element: isAuthenticated ? <Notifications /> : <SignIn />,
   },
@@ -66,6 +72,7 @@ const router = createBrowserRouter([
   { path: "/profile/history", element: <History /> },
   { path: "/profile/favourites", element: <Favourites /> },
   { path: "/route-planning", element: <RoutePlanning /> },
+  { path: "/sitemap", element: <SiteMap /> },
   {
     path: "/admin",
     element: <Admin />,

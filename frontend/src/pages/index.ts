@@ -7,3 +7,5 @@ export * from "./Profile";
 export * from "./RoutePlanning";
 export * from "./SignIn";
 export * from "./SignUp";
+export * from "./SiteMap";
+export * from "./VerifyDecoration";

@@ -11,7 +11,7 @@ import {
   GetDecorationArgs,
 } from "@/graphql/queries/getDecoration/types";
 import { Link, useNavigate, useParams } from "react-router-dom";
-import logo from "../../assets/ChristmasLights-House-Logo.png";
+import logo from "../../assets/logo.png";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { CircleNotch, Files } from "@phosphor-icons/react";

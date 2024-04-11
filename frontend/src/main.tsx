@@ -15,6 +15,7 @@ import {
   Home,
   NotFound,
   Notifications,
+  PrivacyPolicy,
   Profile,
   RoutePlanning,
   SignIn,
@@ -75,6 +76,7 @@ const router = createBrowserRouter([
   { path: "/route-planning", element: <RoutePlanning /> },
   { path: "/sitemap", element: <SiteMap /> },
   { path: "/terms", element: <Terms /> },
+  { path: "/privacy-policy", element: <PrivacyPolicy /> },
   {
     path: "/admin",
     element: <Admin />,

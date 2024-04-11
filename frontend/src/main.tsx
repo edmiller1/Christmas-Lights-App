@@ -20,6 +20,7 @@ import {
   SignIn,
   SignUp,
   SiteMap,
+  Terms,
   VerifyDecoration,
 } from "./pages";
 import {
@@ -73,6 +74,7 @@ const router = createBrowserRouter([
   { path: "/profile/favourites", element: <Favourites /> },
   { path: "/route-planning", element: <RoutePlanning /> },
   { path: "/sitemap", element: <SiteMap /> },
+  { path: "/terms", element: <Terms /> },
   {
     path: "/admin",
     element: <Admin />,

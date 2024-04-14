@@ -92,6 +92,7 @@ import {
 import { ToastAction } from "@/components/ui/toast";
 import { MobileDecorationPopup } from "./components/MobileDecorationPopup";
 import { useKindeAuth } from "@kinde-oss/kinde-auth-react";
+import { SEO } from "@/components";
 
 const mbApiKey = import.meta.env.VITE_MAPBOX_API_KEY;
 
@@ -712,6 +713,12 @@ export const RoutePlanning = () => {
 
   return (
     <>
+      <SEO
+        description="Plan, create and go on routes."
+        name="Route Planning"
+        title="Route Planning"
+        type="Route Planning"
+      />
       {/* Mobile */}
       <div className="sm:hidden h-screen w-full">
         <RoutePlanningNav

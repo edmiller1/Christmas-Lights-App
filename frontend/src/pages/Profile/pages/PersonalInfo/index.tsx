@@ -23,7 +23,7 @@ import { toast } from "@/components/ui/use-toast";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { getBase64Value } from "@/lib/helpers";
-import { Breadcrumbs } from "@/components";
+import { Breadcrumbs, SEO } from "@/components";
 import { useKindeAuth } from "@kinde-oss/kinde-auth-react";
 import { PersonalInfoLoading } from "../../components";
 
@@ -142,6 +142,12 @@ export const PersonalInfo = () => {
 
   return (
     <>
+      <SEO
+        description="Profile Settings"
+        name="Profile Settings"
+        title={`${currentUser?.name}`}
+        type="Profile Settings"
+      />
       {/* Mobile */}
       <div className="px-8 py-5 h-screen sm:hidden">
         <div role="button" className="pb-12" onClick={() => navigate(-1)}>

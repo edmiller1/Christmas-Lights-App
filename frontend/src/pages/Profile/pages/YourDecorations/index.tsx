@@ -8,7 +8,7 @@ import {
 import { CaretLeft, Star } from "@phosphor-icons/react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { Breadcrumbs } from "@/components";
+import { Breadcrumbs, SEO } from "@/components";
 import { useKindeAuth } from "@kinde-oss/kinde-auth-react";
 import { EmptyState, YourDecorationsLoading } from "../../components";
 import snowman from "../../../../assets/Snowman.png";
@@ -49,6 +49,12 @@ export const YourDecorations = () => {
 
   return (
     <>
+      <SEO
+        description={`${currentUser?.name} Decorations`}
+        name={`${currentUser?.name} Decorations`}
+        title={`${currentUser?.name} Decorations`}
+        type={`${currentUser?.name} Decorations`}
+      />
       <div className="px-8 py-5 sm:hidden">
         <div role="button" className="pb-12" onClick={() => navigate(-1)}>
           <CaretLeft

@@ -24,10 +24,13 @@ export const DecorationUserMenu = ({ setIsEditOpen }: Props) => {
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent className="mr-24">
-        <DropdownMenuItem onClick={() => setIsEditOpen(true)}>
+        <DropdownMenuItem
+          className="cursor-pointer"
+          onClick={() => setIsEditOpen(true)}
+        >
           Edit
         </DropdownMenuItem>
-        <DropdownMenuItem>Delete</DropdownMenuItem>
+        <DropdownMenuItem className="cursor-pointer">Delete</DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
   );

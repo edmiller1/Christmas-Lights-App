@@ -9,7 +9,7 @@ import {
 import { CaretLeft } from "@phosphor-icons/react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useKindeAuth } from "@kinde-oss/kinde-auth-react";
-import { Breadcrumbs } from "@/components";
+import { Breadcrumbs, SEO } from "@/components";
 import {
   EmptyState,
   FavouriteDecorationCard,
@@ -58,6 +58,12 @@ export const Favourites = () => {
 
   return (
     <>
+      <SEO
+        description={`${currentUser?.name} Favourites`}
+        name={`${currentUser?.name} Favourites`}
+        title={`${currentUser?.name} Favourites`}
+        type="Favourites"
+      />
       <div className="px-8 py-5 min-h-screen sm:hidden">
         <div role="button" className="pb-12" onClick={() => navigate(-1)}>
           <CaretLeft

@@ -25,7 +25,7 @@ import { useToast } from "@/components/ui/use-toast";
 import { useTheme } from "@/components/ui/theme-provider";
 import { Switch } from "@/components/ui/switch";
 import { AppHeaderLoading } from "@/components/AppHeader/components";
-import { AppHeader } from "@/components";
+import { AppHeader, SEO } from "@/components";
 import { useKindeAuth } from "@kinde-oss/kinde-auth-react";
 import { ProfileLoading } from "./components";
 import { Card } from "@/components/ui/card";
@@ -108,6 +108,12 @@ export const Profile = () => {
 
   return (
     <>
+      <SEO
+        description={`Profile for ${currentUser?.name}`}
+        name={`${currentUser?.name} Profile`}
+        title={`${currentUser?.name} Profile`}
+        type={`Profile for ${currentUser?.name}`}
+      />
       {/* Mobile */}
       <div className="px-8 pt-10 min-h-[110vh] h-full sm:hidden">
         {getUserLoading ? (

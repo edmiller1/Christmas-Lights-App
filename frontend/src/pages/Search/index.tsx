@@ -2,6 +2,7 @@ import {
   AppHeader,
   DecorationCard,
   Paginate,
+  SEO,
   UserMenuDrawer,
 } from "@/components";
 import {
@@ -287,6 +288,12 @@ export const Search = () => {
 
   return (
     <>
+      <SEO
+        description="View decorations based on search"
+        name={searchQuery!}
+        title={searchQuery!}
+        type={searchQuery!}
+      />
       {/* Mobile */}
       <div className="sm:hidden h-screen">
         {getUserLoading ? (

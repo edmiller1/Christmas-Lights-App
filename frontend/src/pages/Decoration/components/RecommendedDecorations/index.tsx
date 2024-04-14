@@ -94,8 +94,8 @@ export const RecommendedDecorations = ({
             ))}
           </div>
         ) : (
-          <div className="mx-24 mt-10 flex flex-col justify-center items-center border-2 p-8 rounded-lg border-primary bg-zinc-950">
-            <Warning size={40} className="text-red-700" />
+          <div className="mt-10 flex flex-col justify-center items-center text-red-700 border-2 p-8 rounded-lg border-primary">
+            <Warning size={40} />
             <p>An error occurred when retrieving recommended decorations</p>
           </div>
         )}

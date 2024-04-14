@@ -113,7 +113,7 @@ import {
   placeholder,
 } from "@cloudinary/react";
 import { AppHeaderLoading } from "@/components/AppHeader/components";
-import { AppHeader, Footer } from "@/components";
+import { AppHeader, Footer, SEO } from "@/components";
 import { ToastAction } from "@/components/ui/toast";
 
 export const Decoration = () => {
@@ -532,6 +532,12 @@ export const Decoration = () => {
 
   return (
     <>
+      <SEO
+        title={decoration.name}
+        description="Christmas Decoration"
+        name={decoration.name}
+        type="Christmas Decoration"
+      />
       {/* Mobile */}
       <div className="overflow-y-auto h-[70rem] sm:hidden">
         {showImageOverlay ? (

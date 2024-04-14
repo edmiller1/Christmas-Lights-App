@@ -9,7 +9,7 @@ import {
 } from "@/graphql/queries/getUser/types";
 import { CaretLeft } from "@phosphor-icons/react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { Breadcrumbs } from "@/components";
+import { Breadcrumbs, SEO } from "@/components";
 import { useKindeAuth } from "@kinde-oss/kinde-auth-react";
 import {
   EmptyState,
@@ -58,6 +58,12 @@ export const History = () => {
 
   return (
     <>
+      <SEO
+        description={`${currentUser?.name} History`}
+        name={`${currentUser?.name} History`}
+        title={`${currentUser?.name} History`}
+        type={`${currentUser?.name} History`}
+      />
       <div className="px-8 py-5 min-h-screen sm:hidden">
         <div role="button" className="pb-12" onClick={() => navigate(-1)}>
           <CaretLeft

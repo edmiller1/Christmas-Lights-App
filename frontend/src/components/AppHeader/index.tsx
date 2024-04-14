@@ -111,7 +111,7 @@ export const AppHeader = ({
           }`}
         >
           <div className="flex h-16 items-center justify-between px-10">
-            <Link to="/" className="hidden sm:block">
+            <Link to="/home" className="hidden sm:block">
               <img src={logo} alt="logo" className="h-12" />
             </Link>
             <div className="flex w-full max-w-sm items-center justify-center space-x-2">

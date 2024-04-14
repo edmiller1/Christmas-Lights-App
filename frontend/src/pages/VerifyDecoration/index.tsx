@@ -21,6 +21,7 @@ import { getBase64Value } from "@/lib/helpers";
 import { AlreadySubmittedModal, VerifyDecorationLoading } from "./components";
 import { useToast } from "@/components/ui/use-toast";
 import { useKindeAuth } from "@kinde-oss/kinde-auth-react";
+import { SEO } from "@/components";
 
 export const VerifyDecoration = () => {
   const { decorationId } = useParams();
@@ -123,6 +124,12 @@ export const VerifyDecoration = () => {
   }
   return (
     <>
+      <SEO
+        description={`Verify Decoration - ${decoration?.name}`}
+        name="Verify Decoration"
+        title={`Verify Decoration - ${decoration?.name}`}
+        type="Verify Decoration"
+      />
       <AlreadySubmittedModal
         alreadySubmitted={alreadySubmitted}
         setAlreadySubmitted={setAlreadySubmitted}

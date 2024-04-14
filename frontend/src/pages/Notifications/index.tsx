@@ -19,7 +19,7 @@ import {
   AllNotificationsMenu,
   AppHeaderLoading,
 } from "@/components/AppHeader/components";
-import { AppHeader } from "@/components";
+import { AppHeader, SEO } from "@/components";
 import { useKindeAuth } from "@kinde-oss/kinde-auth-react";
 import { useEffect } from "react";
 
@@ -102,6 +102,12 @@ export const Notifications = () => {
 
   return (
     <>
+      <SEO
+        description="Notifications"
+        name="Notifications"
+        title="Notifications"
+        type="Notifications"
+      />
       <div className="hidden sm:block">
         <NotFound />
       </div>

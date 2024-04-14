@@ -7,6 +7,7 @@ import {
   RouterProvider,
   redirect,
 } from "react-router-dom";
+import { HelmetProvider } from "react-helmet-async";
 import { KindeProvider } from "@kinde-oss/kinde-auth-react";
 import "./index.css";
 import {
@@ -148,8 +149,10 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
     >
       <ApolloProvider client={client}>
         <ThemeProvider defaultTheme="system" storageKey="vite-ui-theme">
-          <Toaster />
-          <RouterProvider router={router} />
+          <HelmetProvider>
+            <Toaster />
+            <RouterProvider router={router} />
+          </HelmetProvider>
         </ThemeProvider>
       </ApolloProvider>
     </KindeProvider>

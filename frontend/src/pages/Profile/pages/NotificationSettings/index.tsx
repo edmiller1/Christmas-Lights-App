@@ -15,7 +15,7 @@ import { CaretLeft } from "@phosphor-icons/react";
 import { Switch } from "@/components/ui/switch";
 import { Separator } from "@/components/ui/separator";
 import { useEffect, useState } from "react";
-import { Breadcrumbs } from "@/components";
+import { Breadcrumbs, SEO } from "@/components";
 import { useKindeAuth } from "@kinde-oss/kinde-auth-react";
 import { PersonalInfoLoading } from "../../components";
 
@@ -71,6 +71,12 @@ export const NotificationSettings = () => {
 
   return (
     <>
+      <SEO
+        description="Notification Settings"
+        name="Notification Settings"
+        title={`${currentUser?.name} Notification Settings`}
+        type="Notification Settings"
+      />
       <div className="px-8 py-5 min-h-screen sm:hidden">
         <div role="button" className="pb-12" onClick={() => navigate(-1)}>
           <CaretLeft

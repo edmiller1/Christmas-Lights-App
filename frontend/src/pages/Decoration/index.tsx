@@ -361,13 +361,15 @@ export const Decoration = () => {
     DeleteDecorationArgs
   >(DELETE_DECORATION, {
     onCompleted: () => {
-      //toast success
       toast({
         title: "Success 🎉",
         description: "Decoration was deleted successfully!",
       });
       setIsDeleteOpen(false);
-      navigate("/profile");
+      getUserRefetch();
+      setTimeout(() => {
+        navigate("/profile");
+      }, 2000);
     },
     onError: () => {
       toast({

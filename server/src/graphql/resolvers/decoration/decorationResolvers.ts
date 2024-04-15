@@ -6,6 +6,7 @@ import {
   AddViewArgs,
   CreateDecorationArgs,
   DecorationsViaMapArgs,
+  DeleteDecorationArgs,
   DeleteRatingArgs,
   EditDecorationArgs,
   EditRatingArgs,
@@ -1025,6 +1026,73 @@ export const decorationResolvers = {
         });
 
         return user;
+      } catch (error) {
+        throw new Error(`${error}`);
+      }
+    },
+    deleteDecoration: async (
+      _root: undefined,
+      { input }: DeleteDecorationArgs,
+      { _, req, res }: { _: undefined; req: Request; res: Response }
+    ): Promise<String> => {
+      try {
+        const user = await authorise(req);
+
+        if (!user) {
+          throw new Error("Not authenticated");
+        }
+
+        const decoration = await prisma.decoration.findFirst({
+          where: {
+            id: input.decorationId,
+          },
+          include: {
+            images: true,
+          },
+        });
+
+        const decorationImages = decoration?.images;
+
+        const deleteViews = prisma.view.deleteMany({
+          where: {
+            decoration_id: input.decorationId,
+          },
+        });
+
+        const deleteRatings = prisma.rating.deleteMany({
+          where: {
+            decoration_id: input.decorationId,
+          },
+        });
+
+        const deleteImages = prisma.decorationImage.deleteMany({
+          where: {
+            decoration_id: input.decorationId,
+          },
+        });
+
+        const deleteDecoration = prisma.decoration.delete({
+          where: {
+            id: input.decorationId,
+          },
+        });
+
+        const transaction = await prisma.$transaction([
+          deleteViews,
+          deleteRatings,
+          deleteImages,
+          deleteDecoration,
+        ]);
+
+        if (!transaction) {
+          throw new Error("An error occurred deleting the decoration");
+        }
+
+        decorationImages?.forEach((image) => {
+          Cloudinary.destroy(image.id);
+        });
+
+        return "Success";
       } catch (error) {
         throw new Error(`${error}`);
       }

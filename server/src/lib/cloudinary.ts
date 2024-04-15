@@ -43,4 +43,12 @@ export const Cloudinary = {
       resource_type: "image",
     });
   },
+  optimize: async (id: string) => {
+    const image = await cloudinary.v2.image(id, {
+      quality: "auto",
+      fetch_format: "auto",
+    });
+
+    return image;
+  },
 };

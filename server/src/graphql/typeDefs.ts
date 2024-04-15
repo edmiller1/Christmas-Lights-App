@@ -120,6 +120,12 @@ export const typeDefs = gql`
     user_id: String!
   }
 
+  type SearchedDecorations {
+    decorations: [Decoration!]!
+    count: Int!
+    type: String!
+  }
+
   #input
   input KindeAuthResult {
     id: String!
@@ -284,11 +290,10 @@ export const typeDefs = gql`
     skip: Int!
   }
 
-  type SearchedDecorations {
-    decorations: [Decoration!]!
-    count: Int!
-    type: String!
+  input DeleteDecorationInput {
+    decorationId: String!
   }
+
   #Queries
   type Query {
     # App Queries
@@ -341,6 +346,7 @@ export const typeDefs = gql`
     ): Decoration!
     addDecorationToHistory(input: AddDecorationToHistoryInput!): User!
     removeDecorationFromHistory(input: RemoveDecorationFromHistoryInput!): User!
+    deleteDecoration(input: DeleteDecorationInput!): String!
     # Notification
     markNotificationAsRead(input: MutateNotificationInput!): User!
     markNotificationAsUnread(input: MutateNotificationInput!): User!

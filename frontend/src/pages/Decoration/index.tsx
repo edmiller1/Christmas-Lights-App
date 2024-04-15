@@ -105,15 +105,8 @@ import {
   VerifiedPopOver,
   VerifiedSection,
 } from "./components";
-import {
-  AdvancedImage,
-  lazyload,
-  accessibility,
-  responsive,
-  placeholder,
-} from "@cloudinary/react";
 import { AppHeaderLoading } from "@/components/AppHeader/components";
-import { AppHeader, Footer, SEO } from "@/components";
+import { AppHeader, CloudinaryImage, Footer, SEO } from "@/components";
 import { ToastAction } from "@/components/ui/toast";
 
 export const Decoration = () => {
@@ -626,7 +619,7 @@ export const Decoration = () => {
             loading="lazy"
             src={currentImage?.url}
             alt="decoration image"
-            className="h-64 w-full object-cover bg-ch-turquoise"
+            className="h-64 w-full object-cover"
             onClick={() => setShowImageOverlay(true)}
           />
         </div>

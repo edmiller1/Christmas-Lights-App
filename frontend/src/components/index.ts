@@ -1,6 +1,7 @@
 export * from "./AppHeader";
 export * from "./Breadcrumbs";
 export * from "./CancelModal";
+export * from "./CloudinaryImage";
 export * from "./CustomMarker";
 export * from "./DecorationCard";
 export * from "./DecorationCardLoading";

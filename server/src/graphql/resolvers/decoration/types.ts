@@ -127,3 +127,9 @@ export interface SearchForDecorationsArgs {
     skip: number;
   };
 }
+
+export interface DeleteDecorationArgs {
+  input: {
+    decorationId: string;
+  };
+}

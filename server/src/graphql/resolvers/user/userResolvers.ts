@@ -394,6 +394,12 @@ export const userResolvers = {
           }
         });
 
+        const deletedNotifications = prisma.notification.deleteMany({
+          where: {
+            user_id: user.id,
+          },
+        });
+
         const deletedDecorations = prisma.decoration.deleteMany({
           where: {
             creator_id: user.id,
@@ -413,6 +419,7 @@ export const userResolvers = {
         //delete user decorations + user account
         const transaction = await prisma.$transaction([
           deletedDecorations,
+          deletedNotifications,
           deletedUser,
         ]);
 

@@ -1,5 +1,4 @@
 import { useMutation, useQuery } from "@apollo/client";
-import { DELETE_ACCOUNT } from "@/graphql/mutations";
 import { GET_USER } from "@/graphql/queries";
 import {
   GetUser as GetUserData,
@@ -51,19 +50,6 @@ export const Profile = () => {
         if (data) {
           setCurrentUser(data.getUser);
         }
-      },
-    }
-  );
-
-  const [deleteAccount, { loading: deleteAccountLoading }] = useMutation(
-    DELETE_ACCOUNT,
-    {
-      onCompleted: () => {
-        toast({
-          title: "Success 🎉",
-          description:
-            "Account deleted successfully! Although we're sad to see you go. 🥺",
-        });
       },
     }
   );

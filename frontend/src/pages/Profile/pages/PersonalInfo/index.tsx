@@ -5,7 +5,7 @@ import {
   GetUserArgs,
   Get_User,
 } from "@/graphql/queries/getUser/types";
-import { EDIT_AVATAR, EDIT_NAME } from "@/graphql/mutations";
+import { DELETE_ACCOUNT, EDIT_AVATAR, EDIT_NAME } from "@/graphql/mutations";
 import {
   EditName as EditNameData,
   EditNameArgs,
@@ -25,10 +25,10 @@ import { Label } from "@/components/ui/label";
 import { getBase64Value } from "@/lib/helpers";
 import { Breadcrumbs, SEO } from "@/components";
 import { useKindeAuth } from "@kinde-oss/kinde-auth-react";
-import { PersonalInfoLoading } from "../../components";
+import { DeleteAccountModal, PersonalInfoLoading } from "../../components";
 
 export const PersonalInfo = () => {
-  const { getToken, user } = useKindeAuth();
+  const { getToken, logout, user } = useKindeAuth();
   const { state } = useLocation();
   const navigate = useNavigate();
   const [currentUser, setCurrentUser] = useState<Get_User | null>(null);
@@ -37,6 +37,7 @@ export const PersonalInfo = () => {
   const [isEditingAvatar, setIsEditingAvatar] = useState<boolean>(false);
   const [newImage, setNewImage] = useState<string>("");
   const [base64Value, setBase64Value] = useState<string>("");
+  const [isDeleteOpen, setIsDeleteOpen] = useState<boolean>(false);
 
   const {
     loading: getUserLoading,
@@ -93,6 +94,28 @@ export const PersonalInfo = () => {
     },
   });
 
+  const [deleteAccount, { loading: deleteAccountLoading }] = useMutation(
+    DELETE_ACCOUNT,
+    {
+      onCompleted: () => {
+        sessionStorage.removeItem("token");
+        setIsDeleteOpen(false);
+        toast({
+          title: "Success 🎉",
+          description:
+            "Account deleted successfully! Although we're sad to see you go. 🥺",
+        });
+        setTimeout(() => {
+          navigate("/home");
+        }, 2000);
+      },
+    }
+  );
+
+  const deleteUserAccount = () => {
+    deleteAccount();
+  };
+
   const editUserName = (name: string) => {
     setIsEditingName(false);
     editName({ variables: { input: { name: name } } });
@@ -140,8 +163,23 @@ export const PersonalInfo = () => {
     return <PersonalInfoLoading />;
   }
 
+  if (deleteAccountLoading) {
+    return (
+      <div className="min-h-screen bg-background flex flex-col space-y-5 justify-center items-center">
+        <CircleNotch size={96} className="animate-spin" />
+        <span className="text-xl font-semibold">Deleting Account...</span>
+      </div>
+    );
+  }
+
   return (
     <>
+      <DeleteAccountModal
+        deleteAccountLoading={deleteAccountLoading}
+        deleteUserAccount={deleteUserAccount}
+        isDeleteOpen={isDeleteOpen}
+        setIsDeleteOpen={setIsDeleteOpen}
+      />
       <SEO
         description="Profile Settings"
         name="Profile Settings"
@@ -299,7 +337,11 @@ export const PersonalInfo = () => {
         </div>
         <Separator />
         <div className="flex h-[26rem] justify-center items-end w-full">
-          <Button variant="default" className="w-full py-6">
+          <Button
+            variant="default"
+            className="w-full py-6"
+            onClick={() => setIsDeleteOpen(true)}
+          >
             Delete Account
           </Button>
         </div>
@@ -457,7 +499,11 @@ export const PersonalInfo = () => {
           <Separator />
         </div>
         <div className="flex h-full mt-32 justify-center items-end w-1/2">
-          <Button variant="default" className="w-full py-6">
+          <Button
+            variant="default"
+            className="w-full py-6"
+            onClick={() => setIsDeleteOpen(true)}
+          >
             Delete Account
           </Button>
         </div>

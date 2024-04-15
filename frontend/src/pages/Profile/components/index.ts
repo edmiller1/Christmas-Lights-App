@@ -1,3 +1,4 @@
+export * from "./DeleteAccountModal";
 export * from "./FavouriteDecorationCard";
 export * from "./EmptyState";
 export * from "./HistoryDecorationCard";

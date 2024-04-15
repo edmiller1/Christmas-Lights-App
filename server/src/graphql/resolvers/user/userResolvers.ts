@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import { prisma } from "../../../database";
 import {
+  DeleteAccountArgs,
   EditAvatarArgs,
   EditNameArgs,
   GetUserArgs,
@@ -11,6 +12,9 @@ import {
 import { Decoration, Notification, User } from "@prisma/client";
 import { authorise } from "../../../lib/helpers";
 import { Cloudinary } from "../../../lib/cloudinary";
+import { Resend } from "resend";
+
+const resend = new Resend(process.env.RESEND_API_KEY);
 
 export const userResolvers = {
   Query: {
@@ -309,6 +313,115 @@ export const userResolvers = {
         }
 
         return user;
+      } catch (error) {
+        throw new Error(`${error}`);
+      }
+    },
+    deleteAccount: async (
+      _root: undefined,
+      {},
+      { _, req, res }: { _: undefined; req: Request; res: Response }
+    ): Promise<String> => {
+      try {
+        const user = await authorise(req);
+
+        if (!user) {
+          throw new Error("Not authenticated");
+        }
+
+        //Send email to admin so they can delete user from Kinde
+        await resend.emails.send({
+          from: "'Acme <onboarding@resend.dev>'",
+          to: "edmiller.me@gmail.com",
+          subject: "Account Deletion",
+          html: `<p>User ${user.name} wishes to have their account deleted.</p>
+          <p>Please log into the Kinde authentication portal and delete user.</p>
+          &nbsp;
+          <p>Please make sure to check Supabase DB for the user and any decorations the user may have before deleting from Kinde.</p>
+          &nbsp;
+          <ul>
+            <li>User Id: ${user.id}</li>
+            <li>User name: ${user.name}</li>
+            <li>User email: ${user.email}</li>
+          </ul>
+          `,
+        });
+
+        //Get User Decorations
+        const decorations = await prisma.decoration.findMany({
+          where: {
+            creator_id: user.id,
+          },
+          include: {
+            images: true,
+          },
+        });
+
+        //Delete Voews, Ratings and Images from each decoration
+        decorations.forEach(async (decoration) => {
+          const decorationImages = decoration.images;
+
+          const deletedViews = prisma.view.deleteMany({
+            where: {
+              decoration_id: decoration.id,
+            },
+          });
+
+          const deletedRatings = prisma.rating.deleteMany({
+            where: {
+              decoration_id: decoration.id,
+            },
+          });
+
+          const deletedImages = prisma.decorationImage.deleteMany({
+            where: {
+              decoration_id: decoration.id,
+            },
+          });
+
+          decorationImages?.forEach((image) => {
+            Cloudinary.destroy(image.id);
+          });
+
+          const transaction = await prisma.$transaction([
+            deletedViews,
+            deletedImages,
+            deletedRatings,
+          ]);
+
+          if (!transaction) {
+            throw new Error("Failed to delete account");
+          }
+        });
+
+        const deletedDecorations = prisma.decoration.deleteMany({
+          where: {
+            creator_id: user.id,
+          },
+        });
+
+        const deletedUser = prisma.user.delete({
+          where: {
+            id: user.id,
+          },
+        });
+
+        if (user.imageId) {
+          Cloudinary.destroy(user.imageId);
+        }
+
+        //delete user decorations + user account
+        const transaction = await prisma.$transaction([
+          deletedDecorations,
+          deletedUser,
+        ]);
+
+        if (!transaction) {
+          throw new Error("Failed to delete account.");
+        }
+
+        //If all goes well, we return a string
+        return "Success";
       } catch (error) {
         throw new Error(`${error}`);
       }

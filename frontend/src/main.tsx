@@ -45,6 +45,8 @@ import {
 
 const isAuthenticated = sessionStorage.getItem("token");
 
+console.log(isAuthenticated);
+
 const router = createBrowserRouter([
   {
     path: "/",

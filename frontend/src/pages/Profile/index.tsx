@@ -1,4 +1,5 @@
-import { useQuery } from "@apollo/client";
+import { useMutation, useQuery } from "@apollo/client";
+import { DELETE_ACCOUNT } from "@/graphql/mutations";
 import { GET_USER } from "@/graphql/queries";
 import {
   GetUser as GetUserData,
@@ -50,6 +51,19 @@ export const Profile = () => {
         if (data) {
           setCurrentUser(data.getUser);
         }
+      },
+    }
+  );
+
+  const [deleteAccount, { loading: deleteAccountLoading }] = useMutation(
+    DELETE_ACCOUNT,
+    {
+      onCompleted: () => {
+        toast({
+          title: "Success 🎉",
+          description:
+            "Account deleted successfully! Although we're sad to see you go. 🥺",
+        });
       },
     }
   );
@@ -115,7 +129,7 @@ export const Profile = () => {
         type={`Profile for ${currentUser?.name}`}
       />
       {/* Mobile */}
-      <div className="px-8 pt-10 min-h-[110vh] h-full sm:hidden">
+      <div className="px-8 pt-10 min-h-[118vh] h-full sm:hidden">
         {getUserLoading ? (
           <AppHeaderLoading />
         ) : (
@@ -185,6 +199,20 @@ export const Profile = () => {
               <span>Notifications</span>
             </div>
             <CaretRight size={24} className="text-ch-dark dark:text-ch-light" />
+          </div>
+          <Separator />
+        </div>
+        {/* Dashboard */}
+        <div className="my-10 ml-1">
+          <div className="my-7 flex items-center justify-between">
+            <div className="flex items-center space-x-20">
+              <div className="flex items-center space-x-5">
+                <Gauge size={32} weight="thin" />
+                <span>Dashboard</span>
+              </div>
+              <Badge variant="secondary">Coming Soon</Badge>
+            </div>
+            <CaretRight size={24} />
           </div>
           <Separator />
         </div>
@@ -272,7 +300,7 @@ export const Profile = () => {
             </Link>
           </div>
           <div>
-            <span className="text-gray-400 text-xs font-light">
+            <span className="dark:text-gray-400 text-xs font-light">
               &copy; {new Date().getFullYear()} Christmas Lights App. All Rights
               Reserved.
             </span>

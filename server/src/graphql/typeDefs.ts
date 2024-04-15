@@ -331,6 +331,7 @@ export const typeDefs = gql`
     editAvatar(input: EditAvatarInput!): User!
     editName(input: EditNameInput!): User!
     mutateNotficationSettings(input: MutateNotificationSettingsInput!): User!
+    deleteAccount: String!
     # Decoration
     createDecoration(input: CreateDecorationInput!): Decoration!
     editDecoration(input: EditDecorationInput!): Decoration!

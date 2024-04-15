@@ -26,7 +26,7 @@ import { Cloudinary } from "../../../lib/cloudinary";
 import { Resend } from "resend";
 import fetch from "node-fetch";
 
-const resend = new Resend("re_H1GDoBf9_Kwqwhasy8MZsLo6Tn3ej8bBc");
+const resend = new Resend(process.env.RESEND_API_KEY);
 
 export const decorationResolvers = {
   Query: {
@@ -1045,6 +1045,7 @@ export const decorationResolvers = {
         const decoration = await prisma.decoration.findFirst({
           where: {
             id: input.decorationId,
+            creator_id: user.id,
           },
           include: {
             images: true,

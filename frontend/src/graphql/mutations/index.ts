@@ -3,6 +3,7 @@ export * from "./addDecorationToRoute";
 export * from "./addView";
 export * from "./createDecoration";
 export * from "./createRoute";
+export * from "./deleteAccount";
 export * from "./deleteAllNotifications";
 export * from "./deleteDecoration";
 export * from "./deleteNotification";

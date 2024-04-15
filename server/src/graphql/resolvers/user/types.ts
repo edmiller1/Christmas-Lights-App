@@ -54,3 +54,9 @@ export interface SearchArgs {
     searchTerm: string;
   };
 }
+
+export interface DeleteAccountArgs {
+  input: {
+    userId: string;
+  };
+}

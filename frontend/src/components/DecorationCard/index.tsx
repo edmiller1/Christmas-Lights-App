@@ -188,8 +188,11 @@ export const DecorationCard = ({
               />
             ))}
           </div>
+          <Link to={`/decoration/${decoration.id}`}>
+            <div className="absolute inset-0 flex items-start justify-end p-2"></div>
+          </Link>
 
-          <div className="absolute inset-0 flex items-start justify-end p-2 z-10">
+          <div className="absolute top-2 right-2 z-10">
             {userFavourites?.includes(decoration.id) ? (
               <>
                 {unFavouriteDecorationLoading &&
@@ -288,13 +291,6 @@ export const DecorationCard = ({
           <span className="text-sm text-gray-400 dark:text-zinc-400">
             {decoration.city}, {decoration.country}
           </span>
-          <Link to={`/decoration/${decoration.id}`}>
-            <ArrowUpRight
-              size={20}
-              weight="bold"
-              className="more-arrow text-ch-dark dark:text-ch-light"
-            />
-          </Link>
         </div>
       </div>
 
@@ -317,7 +313,7 @@ export const DecorationCard = ({
               />
             ))}
           </div>
-          <Link to={`/decoration/${decoration.id}`} target="_blank">
+          <Link to={`/decoration/${decoration.id}`}>
             <div className="absolute inset-0 flex items-start justify-end p-2"></div>
           </Link>
           <div className="absolute top-2 right-2 z-10">

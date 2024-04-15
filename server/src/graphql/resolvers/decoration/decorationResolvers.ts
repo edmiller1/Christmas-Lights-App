@@ -1034,7 +1034,7 @@ export const decorationResolvers = {
       _root: undefined,
       { input }: DeleteDecorationArgs,
       { _, req, res }: { _: undefined; req: Request; res: Response }
-    ): Promise<String> => {
+    ): Promise<User> => {
       try {
         const user = await authorise(req);
 
@@ -1092,7 +1092,7 @@ export const decorationResolvers = {
           Cloudinary.destroy(image.id);
         });
 
-        return "Success";
+        return user;
       } catch (error) {
         throw new Error(`${error}`);
       }

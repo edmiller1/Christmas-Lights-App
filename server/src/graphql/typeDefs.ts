@@ -346,7 +346,7 @@ export const typeDefs = gql`
     ): Decoration!
     addDecorationToHistory(input: AddDecorationToHistoryInput!): User!
     removeDecorationFromHistory(input: RemoveDecorationFromHistoryInput!): User!
-    deleteDecoration(input: DeleteDecorationInput!): String!
+    deleteDecoration(input: DeleteDecorationInput!): User!
     # Notification
     markNotificationAsRead(input: MutateNotificationInput!): User!
     markNotificationAsUnread(input: MutateNotificationInput!): User!

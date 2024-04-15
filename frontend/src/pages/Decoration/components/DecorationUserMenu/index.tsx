@@ -9,9 +9,13 @@ import { DotsThreeVertical } from "@phosphor-icons/react";
 
 interface Props {
   setIsEditOpen: (isEditOpen: boolean) => void;
+  setIsDeleteOpen: (isDeleteOpen: boolean) => void;
 }
 
-export const DecorationUserMenu = ({ setIsEditOpen }: Props) => {
+export const DecorationUserMenu = ({
+  setIsEditOpen,
+  setIsDeleteOpen,
+}: Props) => {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -30,7 +34,12 @@ export const DecorationUserMenu = ({ setIsEditOpen }: Props) => {
         >
           Edit
         </DropdownMenuItem>
-        <DropdownMenuItem className="cursor-pointer">Delete</DropdownMenuItem>
+        <DropdownMenuItem
+          className="cursor-pointer"
+          onClick={() => setIsDeleteOpen(true)}
+        >
+          Delete
+        </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
   );

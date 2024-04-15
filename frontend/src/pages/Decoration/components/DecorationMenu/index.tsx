@@ -29,7 +29,7 @@ export const DecorationMenu = ({ setIsReportDecorationOpen }: Props) => {
               />
             </Button>
           </DropdownMenuTrigger>
-          <DropdownMenuContent className="mr-8">
+          <DropdownMenuContent className="mr-5">
             <DropdownMenuItem
               className="cursor-pointer"
               onClick={() => setIsReportDecorationOpen(true)}
@@ -55,7 +55,7 @@ export const DecorationMenu = ({ setIsReportDecorationOpen }: Props) => {
               />
             </Button>
           </DropdownMenuTrigger>
-          <DropdownMenuContent className="mr-24">
+          <DropdownMenuContent className="mr-24 cursor-pointer">
             <DropdownMenuItem onClick={() => setIsReportDecorationOpen(true)}>
               Report
             </DropdownMenuItem>

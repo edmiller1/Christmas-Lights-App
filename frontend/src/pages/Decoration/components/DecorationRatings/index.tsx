@@ -103,7 +103,7 @@ export const DecorationRatings = ({
         onClick={() => setShowRatings(false)}
       />
       <motion.div
-        className="fixed bottom-0 left-0 right-0 h-[75%] w-full z-50 rounded-tl-2xl rounded-tr-2xl dark:bg-[#202023]"
+        className="fixed bottom-0 left-0 right-0 h-[75%] w-full z-50 rounded-tl-2xl rounded-tr-2xl bg-background dark:bg-zinc-900"
         initial={{ y: 1000 }}
         animate={{ y: 0 }}
         transition={{

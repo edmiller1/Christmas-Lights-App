@@ -37,7 +37,7 @@ export const HeartButton = ({
             <button
               role="button"
               className="absolute right-3 top-3 px-1 py-1 bg-white rounded-full shadow-lg"
-              onClick={() => removeFromFavourites}
+              onClick={removeFromFavourites}
             >
               <Heart size={24} weight="fill" className="text-ch-pink" />
             </button>

@@ -109,15 +109,15 @@ export const FullImagesOverlay = ({
         }}
       >
         <div className="w-full">
-          <div className="px-5 py-5 h-16 flex justify-between">
-            <Button variant="ghost">
+          <div className="px-5 py-5 h-16 flex justify-between rounded-full">
+            <button>
               <CaretLeft
                 size={24}
                 weight="bold"
                 color="#FFFFFF"
                 onClick={closeOverlays}
               />
-            </Button>
+            </button>
 
             <span>
               {getImageIndex(currentImage?.id)} / {decorationImages?.length}

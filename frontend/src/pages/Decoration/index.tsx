@@ -8,6 +8,7 @@ import {
 import {
   ADD_DECORATION_TO_HISTORY,
   ADD_VIEW,
+  DELETE_DECORATION,
   DELETE_RATING,
   EDIT_DECORATION,
   EDIT_RATING,
@@ -70,6 +71,10 @@ import {
   DeleteRatingArgs,
 } from "@/graphql/mutations/deleteRating/types";
 import {
+  DeleteDecoration as DeleteDecorationData,
+  DeleteDecorationArgs,
+} from "@/graphql/mutations/deleteDecoration/types";
+import {
   EditDecoration as EditDecorationData,
   EditDecorationArgs,
 } from "@/graphql/mutations/editDecoration/types";
@@ -91,6 +96,7 @@ import {
   DecorationMenu,
   DecorationRatings,
   DecorationUserMenu,
+  DeleteDecorationModal,
   EditDecorationModal,
   FullImagesOverlay,
   HeartButton,
@@ -128,6 +134,7 @@ export const Decoration = () => {
   //Both
   const [showImageOverlay, setShowImageOverlay] = useState<boolean>(false);
   const [isEditOpen, setIsEditOpen] = useState<boolean>(false);
+  const [isDeleteOpen, setIsDeleteOpen] = useState<boolean>(false);
   const [currentImage, setCurrentImage] = useState<
     { id: string; url: string } | undefined
   >();
@@ -349,6 +356,28 @@ export const Decoration = () => {
     },
   });
 
+  const [deleteDecoration, { loading: deleteDecorationLoading }] = useMutation<
+    DeleteDecorationData,
+    DeleteDecorationArgs
+  >(DELETE_DECORATION, {
+    onCompleted: () => {
+      //toast success
+      toast({
+        title: "Success 🎉",
+        description: "Decoration was deleted successfully!",
+      });
+      setIsDeleteOpen(false);
+      navigate("/profile");
+    },
+    onError: () => {
+      toast({
+        variant: "destructive",
+        title: "Uh oh!",
+        description: `Failed to delete decoration. Please try again. If problem persists reach out to support.`,
+      });
+    },
+  });
+
   const getImageIndex = (id: string | undefined) => {
     const index = decoration?.images.findIndex((image) => image.id === id);
     return index! + 1;
@@ -476,6 +505,10 @@ export const Decoration = () => {
     if (!token) {
       sessionStorage.removeItem("token");
     }
+  };
+
+  const deleteUserDecoration = (decorationId: string) => {
+    deleteDecoration({ variables: { input: { decorationId: decorationId } } });
   };
 
   useEffect(() => {
@@ -623,8 +656,8 @@ export const Decoration = () => {
             onClick={() => setShowImageOverlay(true)}
           />
         </div>
-        <div className="px-5 py-3">
-          <div className="flex items-center justofy-between space-x-2">
+        <div className="pl-5 pr-2 py-3">
+          <div className="flex items-center justify-between space-x-2">
             <div className="flex items-center space-x-2">
               <h1 className="font-semibold text-3xl">{decoration?.name}</h1>
               {decoration?.verified ? (
@@ -705,7 +738,7 @@ export const Decoration = () => {
               </Button>
             </div>
             <div>
-              <Button>Delete</Button>
+              <Button onClick={() => setIsDeleteOpen(true)}>Delete</Button>
             </div>
           </div>
         ) : null}
@@ -767,7 +800,10 @@ export const Decoration = () => {
                 !decoration?.verification_submitted ? (
                   <VerifiedPopOver decorationId={decorationId} />
                 ) : null}
-                <DecorationUserMenu setIsEditOpen={setIsEditOpen} />
+                <DecorationUserMenu
+                  setIsEditOpen={setIsEditOpen}
+                  setIsDeleteOpen={setIsDeleteOpen}
+                />
               </div>
             ) : (
               <DecorationMenu
@@ -878,6 +914,15 @@ export const Decoration = () => {
         isShareModalOpen={isShareModalOpen}
         setIsShareModalOpen={setIsShareModalOpen}
       />
+      {decorationId ? (
+        <DeleteDecorationModal
+          deleteDecorationLoading={deleteDecorationLoading}
+          deleteUserDecoration={deleteUserDecoration}
+          isDeleteOpen={isDeleteOpen}
+          setIsDeleteOpen={setIsDeleteOpen}
+          decorationId={decorationId}
+        />
+      ) : null}
     </>
   );
 };

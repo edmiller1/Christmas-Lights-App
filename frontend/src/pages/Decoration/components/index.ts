@@ -3,6 +3,7 @@ export * from "./DecorationLoading";
 export * from "./DecorationMenu";
 export * from "./DecorationRatings";
 export * from "./DecorationUserMenu";
+export * from "./DeleteDecorationModal";
 export * from "./DeleteRatingModal";
 export * from "./EditDecorationForm";
 export * from "./EditDecorationModal";

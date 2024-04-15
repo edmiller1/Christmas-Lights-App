@@ -26,7 +26,7 @@ export const ImagesOverlay = ({
     <>
       {/* Mobile */}
       <motion.div
-        className="sticky top-0 overflow-y-auto w-full h-screen z-40 bg-ch-light dark:bg-ch-dark sm:hidden"
+        className="sticky top-0 overflow-y-auto w-full h-screen z-50 bg-background sm:hidden"
         initial={{ y: 1000 }}
         animate={{ y: 0 }}
         transition={{
@@ -81,7 +81,7 @@ export const ImagesOverlay = ({
 
       {/* Desktop */}
       <motion.div
-        className="sm:block sm:overflow-y-auto sm:fixed sm:bottom-0 sm:left-0 sm:right-0 sm:top-0 sm:w-full sm:h-screen sm:z-50 bg-ch-light dark:bg-ch-dark"
+        className="sm:block sm:overflow-y-auto sm:fixed sm:bottom-0 sm:left-0 sm:right-0 sm:top-0 sm:w-full sm:h-screen sm:z-50 bg-background"
         initial={{ y: 1000 }}
         animate={{ y: 0 }}
         transition={{
@@ -91,7 +91,7 @@ export const ImagesOverlay = ({
         }}
       >
         <div className="w-full">
-          <div className="sticky top-0 flex justify-between items-center px-5 py-5 h-16 bg-ch-light dark:bg-ch-dark">
+          <div className="sticky top-0 flex justify-between items-center px-5 py-5 h-16 border-b">
             <Button variant="ghost">
               <CaretLeft
                 size={28}

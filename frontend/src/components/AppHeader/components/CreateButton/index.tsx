@@ -12,11 +12,7 @@ export const CreateButton = ({ setIsCreateOpen }: Props) => {
       className="rounded-lg"
       onClick={() => setIsCreateOpen(true)}
     >
-      <HouseLine
-        size={20}
-        weight="bold"
-        className="text-ch-dark dark:text-ch-light"
-      />
+      <HouseLine size={20} weight="bold" />
       <span className="ml-1">Create</span>
     </Button>
   );

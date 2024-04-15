@@ -4,6 +4,7 @@ export * from "./addView";
 export * from "./createDecoration";
 export * from "./createRoute";
 export * from "./deleteAllNotifications";
+export * from "./deleteDecoration";
 export * from "./deleteNotification";
 export * from "./deleteRating";
 export * from "./deleteRoute";

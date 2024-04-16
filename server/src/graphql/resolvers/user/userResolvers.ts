@@ -331,7 +331,7 @@ export const userResolvers = {
 
         //Send email to admin so they can delete user from Kinde
         await resend.emails.send({
-          from: "'Acme <onboarding@resend.dev>'",
+          from: "'Christmas Lights App <christmaslightsapp.com>'",
           to: "edmiller.me@gmail.com",
           subject: "Account Deletion",
           html: `<p>User ${user.name} wishes to have their account deleted.</p>

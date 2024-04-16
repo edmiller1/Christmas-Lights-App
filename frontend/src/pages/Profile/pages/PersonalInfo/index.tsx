@@ -105,6 +105,7 @@ export const PersonalInfo = () => {
           description:
             "Account deleted successfully! Although we're sad to see you go. 🥺",
         });
+        logout();
         setTimeout(() => {
           navigate("/home");
         }, 2000);

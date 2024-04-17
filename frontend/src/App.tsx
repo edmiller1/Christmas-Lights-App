@@ -56,12 +56,12 @@ function App() {
             ))}
           </div>
           <div className="hidden lg:flex lg:flex-1 lg:justify-end">
-            <a
-              href="#"
+            <Link
+              to="/signup"
               className="text-sm font-semibold leading-6 text-gray-900 dark:text-white"
             >
               Get Started <span aria-hidden="true">&rarr;</span>
-            </a>
+            </Link>
           </div>
         </nav>
         <Dialog
@@ -73,7 +73,7 @@ function App() {
           <div className="fixed inset-0 z-50" />
           <Dialog.Panel className="fixed inset-y-0 right-0 z-50 w-full overflow-y-auto bg-background px-6 py-6 sm:max-w-sm sm:ring-1 sm:ring-gray-900/10">
             <div className="flex items-center justify-between">
-              <a href="#" className="-m-1.5 p-1.5">
+              <a href="#home" className="-m-1.5 p-1.5">
                 <span className="sr-only">Your Company</span>
                 <img
                   className="h-8 w-auto"
@@ -104,18 +104,18 @@ function App() {
                   ))}
                 </div>
                 <div className="py-6">
-                  <a
-                    href="#"
+                  <Link
+                    to="/signin"
                     className="-mx-3 block rounded-lg px-3 py-2.5 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50 dark:text-white"
                   >
                     Sign in
-                  </a>
-                  <a
-                    href="#"
+                  </Link>
+                  <Link
+                    to="signup"
                     className="-mx-3 block rounded-lg px-3 py-2.5 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50 dark:text-white"
                   >
                     Sign up
-                  </a>
+                  </Link>
                 </div>
               </div>
             </div>
@@ -123,7 +123,10 @@ function App() {
         </Dialog>
       </header>
 
-      <section className="relative bg-[url(https://images.unsplash.com/photo-1664289342468-fa99588e60b8?q=80&w=3270&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D)] bg-cover bg-center bg-no-repeat">
+      <section
+        id="home"
+        className="relative bg-[url(https://images.unsplash.com/photo-1664289342468-fa99588e60b8?q=80&w=3270&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D)] bg-cover bg-center bg-no-repeat"
+      >
         <div className="absolute bottom-0 left-0 right-0 top-0 h-full w-full overflow-hidden bg-black bg-fixed opacity-70"></div>
 
         <div className="relative mx-auto max-w-screen-xl px-4 py-32 sm:px-6 lg:flex lg:h-screen lg:items-center lg:px-8">
@@ -145,7 +148,7 @@ function App() {
               </Link>
 
               <a
-                href="#"
+                href="#features"
                 className="block w-full rounded bg-ch-green px-12 py-3 text-sm font-medium text-white shadow hover:bg-ch-green-alt focus:outline-none focus:ring sm:w-auto"
               >
                 Learn More
@@ -176,7 +179,8 @@ function App() {
                     <br />
                     It's been something my family has done since I can remember,
                     and I wanted to make an easier way for people to find these
-                    Christmas decorations even if you don't live close by.
+                    Christmas decorations even if you don't live close by. It's
+                    kinda like Airbnb but for Christmas Decorations.
                   </p>
                 </div>
               </div>
@@ -442,6 +446,16 @@ function App() {
                     >
                       {" "}
                       Contact{" "}
+                    </a>
+                  </li>
+                  <li>
+                    <a
+                      href="https://forms.gle/PiVwU8agfDNAh6WP6"
+                      target="_blank"
+                      className="text-gray-700 transition hover:opacity-75"
+                    >
+                      {" "}
+                      Feedback{" "}
                     </a>
                   </li>
                 </ul>

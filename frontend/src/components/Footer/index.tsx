@@ -101,6 +101,16 @@ export const Footer = () => {
                     Contact{" "}
                   </a>
                 </li>
+                <li>
+                  <a
+                    href="https://forms.gle/PiVwU8agfDNAh6WP6"
+                    target="_blank"
+                    className="text-gray-700 transition hover:opacity-75"
+                  >
+                    {" "}
+                    Feedback{" "}
+                  </a>
+                </li>
               </ul>
             </div>
             <div>

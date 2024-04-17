@@ -3,8 +3,8 @@ import ReactDOM from "react-dom/client";
 import App from "./App.tsx";
 import "mapbox-gl/dist/mapbox-gl.css";
 import {
-  createBrowserRouter,
   RouterProvider,
+  createBrowserRouter,
   redirect,
 } from "react-router-dom";
 import { HelmetProvider } from "react-helmet-async";
@@ -13,6 +13,7 @@ import "./index.css";
 import {
   Admin,
   Decoration,
+  Error,
   Home,
   NotFound,
   Notifications,
@@ -52,47 +53,78 @@ const router = createBrowserRouter([
     path: "/",
     element: <App />,
   },
-  { path: "/home", element: <Home /> },
-  { path: "/signup", element: <SignUp /> },
-  { path: "/signin", element: <SignIn /> },
+  { path: "/home", element: <Home />, errorElement: <Error /> },
+  { path: "/signup", element: <SignUp />, errorElement: <Error /> },
+  { path: "/signin", element: <SignIn />, errorElement: <Error /> },
   {
     path: "/decoration/:decorationId",
     element: <Decoration />,
+    errorElement: <Error />,
   },
   {
     path: "/verify-decoration/:decorationId",
     element: isAuthenticated ? <VerifyDecoration /> : <NotFound />,
+    errorElement: <Error />,
   },
   {
     path: "/notifications",
     element: isAuthenticated ? <Notifications /> : <SignIn />,
+    errorElement: <Error />,
   },
   {
     path: "/profile",
     element: isAuthenticated ? <Profile /> : <SignIn />,
+    errorElement: <Error />,
   },
-  { path: "/profile/personal-info", element: <PersonalInfo /> },
-  { path: "/profile/notification-settings", element: <NotificationSettings /> },
-  { path: "/profile/decorations", element: <YourDecorations /> },
-  { path: "/profile/history", element: <History /> },
-  { path: "/profile/favourites", element: <Favourites /> },
-  { path: "/route-planning", element: <RoutePlanning /> },
-  { path: "/sitemap", element: <SiteMap /> },
-  { path: "/terms", element: <Terms /> },
-  { path: "/privacy-policy", element: <PrivacyPolicy /> },
+  {
+    path: "/profile/personal-info",
+    element: <PersonalInfo />,
+    errorElement: <Error />,
+  },
+  {
+    path: "/profile/notification-settings",
+    element: <NotificationSettings />,
+    errorElement: <Error />,
+  },
+  {
+    path: "/profile/decorations",
+    element: <YourDecorations />,
+    errorElement: <Error />,
+  },
+  { path: "/profile/history", element: <History />, errorElement: <Error /> },
+  {
+    path: "/profile/favourites",
+    element: <Favourites />,
+    errorElement: <Error />,
+  },
+  {
+    path: "/route-planning",
+    element: <RoutePlanning />,
+    errorElement: <Error />,
+  },
+  { path: "/sitemap", element: <SiteMap />, errorElement: <Error /> },
+  { path: "/terms", element: <Terms />, errorElement: <Error /> },
+  {
+    path: "/privacy-policy",
+    element: <PrivacyPolicy />,
+    errorElement: <Error />,
+  },
   {
     path: "/admin",
     element: <Admin />,
+    errorElement: <Error />,
     children: [
       {
         path: "/admin",
         element: <Dashboard />,
+        errorElement: <Error />,
       },
     ],
   },
   {
     path: "*",
     element: <NotFound />,
+    errorElement: <Error />,
   },
 ]);
 

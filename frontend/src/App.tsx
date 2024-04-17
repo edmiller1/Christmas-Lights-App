@@ -262,6 +262,11 @@ function App() {
             ))}
           </ul>
         </div>
+        <div className="text-black">
+          <span className="text-xs">
+            Decorations above are examples only. *
+          </span>
+        </div>
       </section>
 
       <section

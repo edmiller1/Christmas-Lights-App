@@ -1,9 +1,9 @@
 import { useKindeAuth } from "@kinde-oss/kinde-auth-react";
 import { Button } from "@/components/ui/button";
 import { Link, useLocation } from "react-router-dom";
-import collage from "../../assets/cat_collage.png";
 import { SignUpForm } from "./components";
 import { SEO } from "@/components";
+import signUpImage from "../../assets/christmas fireplace.webp";
 
 export const SignUp = () => {
   const { register } = useKindeAuth();
@@ -60,9 +60,9 @@ export const SignUp = () => {
         </div>
         <div className="hidden bg-muted lg:block">
           <img
-            src={collage}
+            src={signUpImage}
             alt="Image"
-            className="min-h-screen w-full object-cover dark:brightness-[0.7] dark:grayscale"
+            className="min-h-screen w-full object-cover"
           />
         </div>
       </div>

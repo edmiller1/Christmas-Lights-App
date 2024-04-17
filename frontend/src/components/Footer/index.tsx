@@ -17,6 +17,16 @@ export const Footer = () => {
 
             <ul className="mt-8 flex gap-6">
               <li>
+                <Link to="https://ko-fi.com/Q5Q1WYOK1" target="_blank">
+                  <img
+                    height="36"
+                    style={{ border: "0px", height: "36px" }}
+                    src="https://storage.ko-fi.com/cdn/kofi4.png?v=3"
+                    alt="Buy Me a Coffee at ko-fi.com"
+                  />
+                </Link>
+              </li>
+              {/* <li>
                 <Link
                   to="/instagram"
                   rel="noreferrer"
@@ -62,7 +72,7 @@ export const Footer = () => {
                     />
                   </svg>
                 </Link>
-              </li>
+              </li> */}
             </ul>
           </div>
 
@@ -100,16 +110,17 @@ export const Footer = () => {
 
               <ul className="mt-6 space-y-4 text-sm">
                 <li>
-                  <a
-                    href="#"
+                  <Link
+                    to="https://ko-fi.com/christmaslightsapp"
+                    target="_blank"
                     className="text-gray-700 transition hover:opacity-75 dark:text-zinc-300"
                   >
                     {" "}
                     Donate{" "}
-                  </a>
+                  </Link>
                 </li>
 
-                <li>
+                {/* <li>
                   <a
                     href="#"
                     className="text-gray-700 transition hover:opacity-75 dark:text-zinc-300"
@@ -117,7 +128,7 @@ export const Footer = () => {
                     {" "}
                     Product Hunt{" "}
                   </a>
-                </li>
+                </li> */}
               </ul>
             </div>
 

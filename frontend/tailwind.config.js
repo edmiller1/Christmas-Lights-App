@@ -21,6 +21,7 @@ module.exports = {
         "ch-pink": "#FF647F",
         "ch-green": "#1acd81",
         "ch-green-hover": "#3acd89",
+        "ch-green-alt": "#0b905b",
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
         ring: "hsl(var(--ring))",

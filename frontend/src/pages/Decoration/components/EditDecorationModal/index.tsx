@@ -8,7 +8,6 @@ interface Props {
   isEditOpen: boolean;
   setIsEditOpen: (isEditOpen: boolean) => void;
   decorationImages: { id: string; url: string }[] | undefined;
-  userPremium: boolean | undefined;
   decoration: Get_Decoration | null;
   updateDecoration: (
     id: string,
@@ -33,7 +32,6 @@ export const EditDecorationModal = ({
   isEditOpen,
   setIsEditOpen,
   decorationImages,
-  userPremium,
   decoration,
   updateDecoration,
   editDecorationLoading,
@@ -69,35 +67,14 @@ export const EditDecorationModal = ({
     const base64Array: string[] = [];
 
     if (
-      (userPremium && images && images?.length > 8) ||
-      (userPremium && Array.from(e.target.files).length > 8)
+      (images && images?.length > 16) ||
+      Array.from(e.target.files).length > 16
     ) {
       toast({
         variant: "destructive",
         title: "Error",
-        description: "You can only upload a maximum of 8 images",
+        description: "You can only upload a maximum of 16 images",
       });
-      return;
-    } else if (
-      (!userPremium && images && images.length > 6) ||
-      (!userPremium && Array.from(e.target.files).length > 6)
-    ) {
-      const countCopy = count + 1;
-      if (countCopy % 3 === 0) {
-        toast({
-          variant: "destructive",
-          title: "Error",
-          description:
-            "You can only upload a maximum of 6 images. Upgrade to premium to upload larger/more files",
-        });
-        setCount(countCopy);
-      } else {
-        toast({
-          variant: "destructive",
-          title: "Error",
-          description: "You can only upload a maximum of 6 images",
-        });
-      }
       return;
     }
 
@@ -109,15 +86,14 @@ export const EditDecorationModal = ({
           title: "Error",
           description: "Uploads must be of type image",
         });
-      } else if (userPremium && e.target.files[index].size > 4194304) {
+      } else if (e.target.files[index].size > 4194304) {
         //toast invalid file size
         const countCopy = count + 1;
         if (countCopy % 3 === 0) {
           toast({
             variant: "destructive",
             title: "Error",
-            description:
-              "Images must be 4MB or less. Upgrade to premium to upload larger/more files",
+            description: "Images must be 4MB or less.",
           });
         } else {
           toast({
@@ -128,13 +104,6 @@ export const EditDecorationModal = ({
         }
 
         setCount(countCopy);
-      } else if (userPremium && e.target.files[index].size > 6291456) {
-        //toast invalid file size
-        toast({
-          variant: "destructive",
-          title: "Error",
-          description: "Images must be 6MB or less",
-        });
       } else {
         const image = {
           id: generateUID(),
@@ -267,7 +236,6 @@ export const EditDecorationModal = ({
       removeImage={removeImage}
       isRemoveImageOpen={isRemoveImageOpen}
       setIsRemoveImageOpen={setIsRemoveImageOpen}
-      userPremium={userPremium}
       isCancelOpen={isCancelOpen}
       setIsCancelOpen={setIsCancelOpen}
       discardEdits={discardEdits}

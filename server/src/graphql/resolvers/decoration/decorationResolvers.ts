@@ -931,68 +931,35 @@ export const decorationResolvers = {
           return user;
         }
 
-        if (user.premium && !exists) {
-          if (userHistoryCount < 24) {
-            await prisma.user.update({
-              where: {
-                id: user.id,
-              },
-              data: {
-                history: {
-                  connect: {
-                    id: input.id,
-                  },
+        if (userHistoryCount === 24) {
+          await prisma.user.update({
+            where: {
+              id: user.id,
+            },
+            data: {
+              history: {
+                disconnect: {
+                  id: firstDecoration.id,
+                },
+                connect: {
+                  id: input.id,
                 },
               },
-            });
-          } else if (userHistoryCount === 24) {
-            await prisma.user.update({
-              where: {
-                id: user.id,
-              },
-              data: {
-                history: {
-                  disconnect: {
-                    id: firstDecoration.id,
-                  },
-                  connect: {
-                    id: input.id,
-                  },
+            },
+          });
+        } else {
+          await prisma.user.update({
+            where: {
+              id: user.id,
+            },
+            data: {
+              history: {
+                connect: {
+                  id: input.id,
                 },
               },
-            });
-          }
-        } else if (!user.premium && !exists) {
-          if (userHistoryCount < 12) {
-            await prisma.user.update({
-              where: {
-                id: user.id,
-              },
-              data: {
-                history: {
-                  connect: {
-                    id: input.id,
-                  },
-                },
-              },
-            });
-          } else {
-            await prisma.user.update({
-              where: {
-                id: user.id,
-              },
-              data: {
-                history: {
-                  disconnect: {
-                    id: firstDecoration.id,
-                  },
-                  connect: {
-                    id: input.id,
-                  },
-                },
-              },
-            });
-          }
+            },
+          });
         }
 
         return user;

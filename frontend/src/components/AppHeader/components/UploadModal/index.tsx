@@ -2,7 +2,6 @@ import { Fragment } from "react";
 import { Dialog, Transition } from "@headlessui/react";
 import { CheckCircle, ImagesSquare, X } from "@phosphor-icons/react";
 import { Button } from "@/components/ui/button";
-import { Get_User } from "@/graphql/queries/getUser/types";
 import { CancelModal } from "@/components";
 
 interface Props {
@@ -14,7 +13,6 @@ interface Props {
   discardDecoration: () => void;
   closeUploadModal: () => void;
   images: Array<{ id: string; url: string }>;
-  currentUser: Get_User | null;
   handleImageSelect: (e: any) => void;
   handleDrop: (e: any) => void;
   handleDragOver: (e: any) => void;
@@ -28,7 +26,6 @@ export const UploadModal = ({
   discardDecoration,
   closeUploadModal,
   images,
-  currentUser,
   handleDragOver,
   handleDrop,
   handleImageSelect,
@@ -103,9 +100,7 @@ export const UploadModal = ({
                       </label>
                     </Button>
                     <span className="mb-3 text-sm text-gray-500">
-                      {currentUser?.premium
-                        ? "Images up to 6MB, Max 8"
-                        : "Images up to 4MB, Max 6"}
+                      Images up to 4MB, Max 16
                     </span>
                   </div>
                 ) : (

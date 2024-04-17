@@ -16,7 +16,6 @@ interface Props {
   removeImage: (id: string | undefined) => void;
   isRemoveImageOpen: boolean;
   setIsRemoveImageOpen: (isRemoveImageOpen: boolean) => void;
-  userPremium: boolean | undefined;
   isCancelOpen: boolean;
   setIsCancelOpen: (isCancelOpen: boolean) => void;
   discardEdits: () => void;
@@ -34,7 +33,6 @@ export const EditImagesModal = ({
   removeImage,
   isRemoveImageOpen,
   setIsRemoveImageOpen,
-  userPremium,
   isCancelOpen,
   setIsCancelOpen,
   discardEdits,
@@ -108,9 +106,7 @@ export const EditImagesModal = ({
                         Select from computer
                       </label>
                       <span className="mb-3 text-sm text-gray-500">
-                        {userPremium
-                          ? "Images up to 6MB, Max 8"
-                          : "Images up to 4MB, Max 6"}
+                        Images up to 4MB, Max 16
                       </span>
                     </div>
                   ) : (

@@ -34,13 +34,11 @@ import {
   AddDecorationToHistory as AddDecorationToHistoryData,
   AddDecorationToHistoryArgs,
 } from "@/graphql/mutations/addDecorationToHistory/types";
-import { Link, useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import {
   CaretLeft,
   CaretRight,
-  CircleNotch,
   CircleWavyCheck,
-  Heart,
   Share,
   Star,
 } from "@phosphor-icons/react";
@@ -112,7 +110,7 @@ import {
   VerifiedSection,
 } from "./components";
 import { AppHeaderLoading } from "@/components/AppHeader/components";
-import { AppHeader, CloudinaryImage, Footer, SEO } from "@/components";
+import { AppHeader, Footer, SEO } from "@/components";
 import { ToastAction } from "@/components/ui/toast";
 
 export const Decoration = () => {
@@ -128,6 +126,7 @@ export const Decoration = () => {
   const [showShareOptions, setShowShareOptions] = useState<boolean>(false);
 
   //Desktop
+  //@ts-ignore
   const [isRatingModalOpen, setIsRatingModalOpen] = useState<boolean>(false);
   const [isShareModalOpen, setIsShareModalOpen] = useState<boolean>(false);
 
@@ -891,7 +890,6 @@ export const Decoration = () => {
         isEditOpen={isEditOpen}
         setIsEditOpen={setIsEditOpen}
         decorationImages={decoration?.images}
-        userPremium={currentUser?.premium}
         decoration={decoration}
         updateDecoration={updateDecoration}
         editDecorationLoading={editDecorationLoading}

@@ -99,7 +99,6 @@ export const AppHeader = ({
       <CreateDecorationModal
         isCreateOpen={isCreateOpen}
         setIsCreateOpen={setIsCreateOpen}
-        currentUser={currentUser}
       />
       <div className="z-50 w-full flex-col sm:border-b dark:border-none md:flex">
         <div

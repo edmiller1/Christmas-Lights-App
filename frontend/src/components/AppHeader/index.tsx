@@ -110,9 +110,14 @@ export const AppHeader = ({
           }`}
         >
           <div className="flex h-16 items-center justify-between px-10">
-            <Link to="/home" className="hidden sm:block">
-              <img src={logo} alt="logo" className="h-12" />
-            </Link>
+            <div className="flex items-center space-x-5">
+              <Link to="/" className="hidden sm:block">
+                <img src={logo} alt="logo" className="h-12" />
+              </Link>
+              <Link to="/" className="hidden sm:block">
+                <span className="text-sm">Explore</span>
+              </Link>
+            </div>
             <div className="flex w-full max-w-sm items-center justify-center space-x-2">
               <Input
                 type="text"
@@ -136,6 +141,12 @@ export const AppHeader = ({
               </Button>
             </div>
             <div className="hidden sm:flex mx-6 items-center space-x-4">
+              <Button
+                className="rounded-full"
+                onClick={() => navigate("/get-premium")}
+              >
+                Get Premium
+              </Button>
               {isAuthenticated ? (
                 <CreateButton setIsCreateOpen={setIsCreateOpen} />
               ) : null}

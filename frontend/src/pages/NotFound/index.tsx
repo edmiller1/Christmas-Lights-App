@@ -19,7 +19,7 @@ export const NotFound = () => {
           page you were looking for!
         </p>
         <div className="mt-10">
-          <Link to="/home" className="underline text-primary">
+          <Link to="/" className="underline text-primary">
             Go back home
           </Link>
         </div>

@@ -37,7 +37,7 @@ export const UserMenuDrawer = ({ currentUser }: Props) => {
           <div
             role="button"
             className="flex items-center space-x-2 p-3"
-            onClick={() => navigate("/home")}
+            onClick={() => navigate("/")}
           >
             <House size={28} weight="fill" className="dark:text-ch-light" />
             <span className="text-xl">Home</span>

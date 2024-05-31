@@ -7,7 +7,7 @@ export const Footer = () => {
       <div className="mx-auto max-w-screen-xl space-y-8 px-4 py-16 sm:px-6 lg:space-y-16 lg:px-8">
         <div className="grid grid-cols-1 gap-8 lg:grid-cols-3">
           <div>
-            <Link to="/home">
+            <Link to="/">
               <img src={logo} alt="logo" className="w-16 h-16" />
             </Link>
 
@@ -105,7 +105,7 @@ export const Footer = () => {
                   <a
                     href="https://forms.gle/PiVwU8agfDNAh6WP6"
                     target="_blank"
-                    className="text-gray-700 transition hover:opacity-75"
+                    className="text-gray-700 transition hover:opacity-75 dark:text-zinc-300"
                   >
                     {" "}
                     Feedback{" "}

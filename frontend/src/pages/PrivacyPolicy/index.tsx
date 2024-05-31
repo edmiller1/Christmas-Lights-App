@@ -12,7 +12,7 @@ export const PrivacyPolicy = () => {
         type="Privacy Policy"
       />
       <div className="mx-5 mt-3 mb-10 2xl:mx-96 md:mx-72">
-        <Link to="/home">
+        <Link to="/">
           <img src={logo} alt="logo" className="w-10 h-10" />
         </Link>
         <div className="mt-16">

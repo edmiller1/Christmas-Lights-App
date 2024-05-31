@@ -12,7 +12,7 @@ export const SiteMap = () => {
         type="SiteMap"
       />
       <div className="mx-5 my-3 md:mx-72">
-        <Link to="/home">
+        <Link to="/">
           <img src={logo} alt="logo" className="w-10 h-10" />
         </Link>
         <div className="mt-16">
@@ -21,7 +21,7 @@ export const SiteMap = () => {
             <Link to="/">
               <span className="underline">Landing Page</span>
             </Link>
-            <Link to="/home">
+            <Link to="/">
               <span className="underline">Home</span>
             </Link>
             <Link to="/signup">

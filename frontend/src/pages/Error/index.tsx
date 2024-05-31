@@ -19,7 +19,7 @@ export const Error = () => {
               Report error
             </a>
           </Button>
-          <Link to="/home">
+          <Link to="/">
             <Button variant="secondary">Go back home</Button>
           </Link>
         </div>

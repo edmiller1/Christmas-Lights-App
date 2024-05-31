@@ -107,7 +107,7 @@ export const PersonalInfo = () => {
         });
         logout();
         setTimeout(() => {
-          navigate("/home");
+          navigate("/");
         }, 2000);
       },
     }

@@ -15,6 +15,7 @@ import { RouteCard, RoutesLoading } from "..";
 import { convertDistance, convertTime } from "@/lib/helpers";
 import { DrawerNavigation } from "../DrawerNavigation";
 import { AnimatePresence, motion } from "framer-motion";
+import { Get_User } from "@/graphql/queries/getUser/types";
 
 interface Props {
   userRoutes: Route[] | undefined;
@@ -41,6 +42,7 @@ interface Props {
   selectedIcon: string;
   changeRoute: (icon: string) => void;
   setMobileMenuOpen?: (mobileMenuOpen: boolean) => void;
+  currentUser: Get_User | null;
 }
 
 export const RoutesNav = ({
@@ -68,12 +70,13 @@ export const RoutesNav = ({
   selectedIcon,
   changeRoute,
   setMobileMenuOpen,
+  currentUser,
 }: Props) => {
   const { toast } = useToast();
   const navigate = useNavigate();
 
   const addRoute = () => {
-    if (!isAuthenticated) {
+    if (!isAuthenticated && !currentUser) {
       toast({
         variant: "default",
         title: "Not currently signed in.",
@@ -195,7 +198,7 @@ export const RoutesNav = ({
                   <span className="font-semibold text-white">New Route</span>
                 </Button>
               </div>
-              {!isAuthenticated ? (
+              {!isAuthenticated && !currentUser ? (
                 <div className="p-5 flex justify-center items-center text-center flex-col text-primary">
                   <span className="mt-3 text-lg">
                     You must have an account to create routes.
@@ -379,7 +382,7 @@ export const RoutesNav = ({
           </TooltipProvider>
         </div>
         <div>
-          {!isAuthenticated ? (
+          {!isAuthenticated && !currentUser ? (
             <div className="p-5 flex justify-center items-center text-center flex-col text-primary">
               <span className="mt-3 text-lg">
                 You must have an account to create routes.

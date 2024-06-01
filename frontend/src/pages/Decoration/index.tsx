@@ -437,7 +437,7 @@ export const Decoration = () => {
   };
 
   const addtoFavourites = () => {
-    if (isAuthenticated) {
+    if (isAuthenticated && currentUser) {
       favouriteDecoration({ variables: { input: { id: decorationId! } } });
     } else {
       toast({
@@ -458,7 +458,7 @@ export const Decoration = () => {
   };
 
   const addRating = (rating: number) => {
-    if (isAuthenticated) {
+    if (isAuthenticated && currentUser) {
       rateDecoration({
         variables: { input: { id: decorationId, rating: rating } },
       });

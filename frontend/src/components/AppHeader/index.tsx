@@ -17,7 +17,6 @@ import {
   NotificationButton,
   UserMenu,
 } from "./components";
-import { useKindeAuth } from "@kinde-oss/kinde-auth-react";
 import { useToast } from "../ui/use-toast";
 import { Get_User } from "@/graphql/queries/getUser/types";
 import { useState } from "react";
@@ -27,6 +26,7 @@ import {
 } from "@/graphql/queries";
 import { GetUserNotifications as GetUserNotificationsData } from "@/graphql/queries/getUserNotifications/types";
 import { useQuery } from "@apollo/client";
+import { useKindeAuth } from "@kinde-oss/kinde-auth-react";
 
 interface Props {
   isAuthenticated: boolean;
@@ -42,6 +42,8 @@ export const AppHeader = ({
   const { toast } = useToast();
   const { logout } = useKindeAuth();
   const navigate = useNavigate();
+
+  const { login } = useKindeAuth();
 
   const [isCreateOpen, setIsCreateOpen] = useState<boolean>(false);
   const [searchTerm, setSearchTerm] = useState<string>("");
@@ -147,11 +149,11 @@ export const AppHeader = ({
               >
                 Get Premium
               </Button>
-              {isAuthenticated ? (
+              {isAuthenticated && currentUser ? (
                 <CreateButton setIsCreateOpen={setIsCreateOpen} />
               ) : null}
               {/* Notification Button */}
-              {isAuthenticated ? (
+              {isAuthenticated && currentUser ? (
                 <NotificationButton
                   refetchNotifications={refetchNotifications}
                   refetchUnreadNotificationsCount={
@@ -194,7 +196,7 @@ export const AppHeader = ({
               <span className="text-xs mt-1">Home</span>
             </Link>
 
-            {isAuthenticated ? (
+            {isAuthenticated && currentUser ? (
               <Link
                 to="/route-planning"
                 type="button"
@@ -215,17 +217,17 @@ export const AppHeader = ({
                 <span className="text-xs mt-1">Route</span>
               </Link>
             ) : (
-              <Link
-                to="/signin"
-                type="button"
+              <div
+                role="button"
                 className="flex flex-col flex-1 items-center p-4 text-center"
+                onClick={() => login()}
               >
                 <Path size={24} className="text-ch-dark dark:text-ch-light" />
                 <span className="text-xs mt-1">Route</span>
-              </Link>
+              </div>
             )}
 
-            {isAuthenticated ? (
+            {isAuthenticated && currentUser ? (
               <div
                 role="button"
                 className="flex flex-col flex-1 items-center p-4 text-center"
@@ -238,28 +240,28 @@ export const AppHeader = ({
                 <span className="text-xs mt-1">Create</span>
               </div>
             ) : (
-              <Link
-                to="/signin"
-                type="button"
+              <div
+                role="button"
                 className="flex flex-col flex-1 items-center p-4 text-center"
+                onClick={() => login()}
               >
                 <PlusSquare
                   size={24}
                   className="text-ch-dark dark:text-ch-light"
                 />
                 <span className="text-xs mt-1">Create</span>
-              </Link>
+              </div>
             )}
 
-            {!isAuthenticated ? (
-              <Link
-                to="/signin"
-                type="button"
+            {!isAuthenticated && !currentUser ? (
+              <div
+                role="button"
                 className="flex flex-col flex-1 items-center p-4 text-center"
+                onClick={() => login()}
               >
                 <Bell size={24} className="text-ch-dark dark:text-ch-light" />
                 <span className="text-xs mt-1">Inbox</span>
-              </Link>
+              </div>
             ) : (
               <Link
                 to="/notifications"
@@ -287,18 +289,18 @@ export const AppHeader = ({
               </Link>
             )}
 
-            {!isAuthenticated ? (
-              <Link
-                to="/signin"
-                type="button"
+            {!isAuthenticated && !currentUser ? (
+              <div
+                role="button"
                 className="flex flex-col flex-1 items-center p-4 text-center"
+                onClick={() => login()}
               >
                 <UserCircle
                   size={24}
                   className="text-ch-dark dark:text-ch-light"
                 />
                 <span className="text-xs mt-1">Profile</span>
-              </Link>
+              </div>
             ) : (
               <Link
                 to="/profile"

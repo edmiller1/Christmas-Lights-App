@@ -14,7 +14,6 @@ import {
   Admin,
   Decoration,
   Error,
-  Home,
   NotFound,
   Notifications,
   PrivacyPolicy,
@@ -62,17 +61,28 @@ const router = createBrowserRouter([
   },
   {
     path: "/verify-decoration/:decorationId",
-    element: isAuthenticated ? <VerifyDecoration /> : <NotFound />,
+    element:
+      isAuthenticated && isAuthenticated.length > 0 ? (
+        <VerifyDecoration />
+      ) : (
+        <NotFound />
+      ),
     errorElement: <Error />,
   },
   {
     path: "/notifications",
-    element: isAuthenticated ? <Notifications /> : <SignIn />,
+    element:
+      isAuthenticated && isAuthenticated.length > 0 ? (
+        <Notifications />
+      ) : (
+        <SignIn />
+      ),
     errorElement: <Error />,
   },
   {
     path: "/profile",
-    element: isAuthenticated ? <Profile /> : <SignIn />,
+    element:
+      isAuthenticated && isAuthenticated.length > 0 ? <Profile /> : <SignIn />,
     errorElement: <Error />,
   },
   {
@@ -160,23 +170,14 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
     <KindeProvider
       clientId={import.meta.env.VITE_KINDE_CLIENT_ID}
       domain={import.meta.env.VITE_KINDE_DOMAIN}
-      logoutUri="http://localhost:3000/home"
-      redirectUri="http://localhost:3000/home"
+      logoutUri="http://localhost:3000/"
+      redirectUri="http://localhost:3000/"
       onRedirectCallback={(user, app_state: any) => {
-        if (
-          !user.given_name &&
-          !user.family_name &&
-          app_state.type === "register"
-        ) {
-          user.given_name = app_state.firstname;
-          user.family_name = app_state.lastname;
-        }
-        if (app_state.type === "admin") {
+        localStorage.setItem("user", JSON.stringify(user));
+        console.log(user);
+        if (app_state && app_state.type === "admin") {
           redirect("/admin");
         }
-        console.log(user);
-        const userObj = JSON.stringify(user);
-        localStorage.setItem("user", userObj);
       }}
       isDangerouslyUseLocalStorage
     >

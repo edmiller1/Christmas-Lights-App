@@ -68,7 +68,7 @@ export const NotificationButton = ({
 
   return (
     <Popover>
-      <PopoverTrigger>
+      <PopoverTrigger asChild>
         <Button variant="ghost" className="relative">
           <Bell
             size={20}

@@ -9,6 +9,7 @@ import { RouteDecorationCard, DecorationsLoading } from "..";
 import { useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { DrawerNavigation } from "../DrawerNavigation";
+import { Get_User } from "@/graphql/queries/getUser/types";
 
 interface Props {
   activeDecoration:
@@ -31,6 +32,7 @@ interface Props {
   setMobileMenuOpen?: (mobileMenuOpen: boolean) => void;
   selectedIcon: string;
   changeRoute: (icon: string) => void;
+  currentUser: Get_User | null;
 }
 
 export const FavouritesNav = ({
@@ -43,6 +45,7 @@ export const FavouritesNav = ({
   setMobileMenuOpen,
   selectedIcon,
   changeRoute,
+  currentUser,
 }: Props) => {
   const [searchWord, setSearchWord] = useState<string>("");
   const [filteredList, setFilteredList] = useState<Decoration[] | undefined>(
@@ -118,7 +121,7 @@ export const FavouritesNav = ({
                     favourites.
                   </span>
                 </div>
-              ) : !isAuthenticated ? (
+              ) : !isAuthenticated && !currentUser ? (
                 <div className="p-5 flex justify-center items-center text-center flex-col text-primary">
                   <Warning size={32} />
                   <span className="mt-3">
@@ -187,7 +190,7 @@ export const FavouritesNav = ({
               Clicking the heart icon will add decoratiosn to your favourites.
             </span>
           </div>
-        ) : !isAuthenticated ? (
+        ) : !isAuthenticated && !currentUser ? (
           <div className="p-5 flex justify-center items-center text-center flex-col text-primary">
             <Warning size={32} />
             <span className="mt-3">Create an account to like decorations.</span>

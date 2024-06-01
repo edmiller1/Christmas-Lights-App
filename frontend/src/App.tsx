@@ -81,37 +81,28 @@ function App() {
   });
 
   const signInUser = async () => {
-    const userString = localStorage.getItem("user");
-    if (userString) {
-      const user = JSON.parse(userString);
+    const hasToken = (await getToken()) ?? "";
+    if (hasToken) {
+      const userString = localStorage.getItem("user");
+      if (userString) {
+        const user = JSON.parse(userString);
 
-      const data = {
-        input: {
-          result: {
-            id: user.id,
-            name: `${user.given_name} ${user.family_name}`,
-            email: user.email,
-            photoURL: user.picture,
-            token: (await getToken()) as string,
+        const data = {
+          input: {
+            result: {
+              id: user.id,
+              name: `${user.given_name} ${user.family_name}`,
+              email: user.email,
+              photoURL: user.picture,
+              token: (await getToken()) as string,
+            },
           },
-        },
-      };
+        };
 
-      signIn({ variables: { input: data.input } });
-    } else {
-      const data = {
-        input: {
-          result: {
-            id: user?.id as string,
-            name: `${user?.given_name} ${user?.family_name}`,
-            email: user?.email as string,
-            photoURL: user?.picture as string,
-            token: (await getToken()) as string,
-          },
-        },
-      };
-      signIn({ variables: { input: data.input } });
+        signIn({ variables: { input: data.input } });
+      }
     }
+    localStorage.removeItem("user");
   };
 
   const refetchUserData = () => {
@@ -159,7 +150,7 @@ function App() {
 
   useEffect(() => {
     signInUser();
-  }, [localStorage.getItem("user")]);
+  }, [localStorage.getItem("user"), getToken()]);
 
   useEffect(() => {
     const userString = localStorage.getItem("user");
@@ -216,7 +207,7 @@ function App() {
               >
                 <CarouselContent>
                   {Array.from([1, 2, 3, 4]).map((item) => (
-                    <CarouselItem>
+                    <CarouselItem key={item}>
                       <img
                         src={hero}
                         alt="image"
@@ -336,7 +327,7 @@ function App() {
               >
                 <CarouselContent>
                   {Array.from([1, 2, 3, 4]).map((item) => (
-                    <CarouselItem>
+                    <CarouselItem key={item}>
                       <img
                         src={hero}
                         alt="image"

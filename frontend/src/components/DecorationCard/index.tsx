@@ -15,7 +15,6 @@ import {
 import { Get_Decorations_By_City } from "@/graphql/queries/getDecorationsByCity/types";
 import { DecorationImage } from "@/lib/types";
 import {
-  ArrowUpRight,
   CaretLeft,
   CaretRight,
   CircleNotch,
@@ -27,6 +26,7 @@ import { Get_Decorations_By_Rating } from "@/graphql/queries/getDecorationsByRat
 import { Search_For_Decorations } from "@/graphql/queries/searchForDecorations/types";
 import { useToast } from "@/components/ui/use-toast";
 import { ToastAction } from "@/components/ui/toast";
+import { Get_User } from "@/graphql/queries/getUser/types";
 
 interface Props {
   index: number;
@@ -38,6 +38,7 @@ interface Props {
     | Search_For_Decorations[];
   userFavourites: string[] | undefined;
   refetchUserData: () => void;
+  currentUser: Get_User | null;
 }
 
 export const DecorationCard = ({
@@ -47,6 +48,7 @@ export const DecorationCard = ({
   decorations,
   userFavourites,
   refetchUserData,
+  currentUser,
 }: Props) => {
   const navigate = useNavigate();
   const { toast } = useToast();
@@ -105,7 +107,7 @@ export const DecorationCard = ({
     );
 
   const addDecorationToFavourites = (decorationId: string) => {
-    if (isAuthenticated) {
+    if (isAuthenticated && currentUser) {
       const decorationIndex = decorations.findIndex(
         (decoration) => decoration.id === decorationId
       );

@@ -1,4 +1,5 @@
 import { Helmet } from "react-helmet-async";
+import logo from "../../assets/logo.png";
 
 interface Props {
   title: string;
@@ -10,6 +11,7 @@ interface Props {
 export const SEO = ({ description, name, title, type }: Props) => {
   return (
     <Helmet>
+      <link rel="icon" type="image/svg+xml" href={logo} />
       {/* Standard metadata tags */}
       <title>{title}</title>
       <meta name="description" content={description} />

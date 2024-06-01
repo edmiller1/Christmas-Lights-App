@@ -4,11 +4,12 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Link } from "react-router-dom";
 import { UserCircle } from "@phosphor-icons/react";
 import { ThemeToggle } from "..";
+import { useKindeAuth } from "@kinde-oss/kinde-auth-react";
 
 export const LoggedOutUserMenu = () => {
+  const { login, register } = useKindeAuth();
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -19,16 +20,18 @@ export const LoggedOutUserMenu = () => {
         />
       </DropdownMenuTrigger>
       <DropdownMenuContent className="mt-1 w-56" align="end" forceMount>
-        <Link to="/signin">
-          <DropdownMenuItem className="my-1 cursor-pointer">
-            Log in
-          </DropdownMenuItem>
-        </Link>
-        <Link to="/signup">
-          <DropdownMenuItem className="my-1 cursor-pointer">
-            Sign up
-          </DropdownMenuItem>
-        </Link>
+        <DropdownMenuItem
+          className="my-1 cursor-pointer"
+          onClick={() => login()}
+        >
+          Log in
+        </DropdownMenuItem>
+        <DropdownMenuItem
+          className="my-1 cursor-pointer"
+          onClick={() => register()}
+        >
+          Sign up
+        </DropdownMenuItem>
         <ThemeToggle />
       </DropdownMenuContent>
     </DropdownMenu>

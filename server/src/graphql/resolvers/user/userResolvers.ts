@@ -13,6 +13,7 @@ import { Decoration, Notification, User } from "@prisma/client";
 import { authorise } from "../../../lib/helpers";
 import { Cloudinary } from "../../../lib/cloudinary";
 import { Resend } from "resend";
+import { welcomeEmail } from "../../../lib/emailTemplates";
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
@@ -173,13 +174,13 @@ export const userResolvers = {
     ): Promise<User | null> => {
       try {
         let user: User | null = null;
-        const isNewUser = await prisma.user.findFirst({
+        const alreadyHasAccount = await prisma.user.findFirst({
           where: {
             id: input.result.id,
           },
         });
 
-        if (!isNewUser) {
+        if (!alreadyHasAccount) {
           user = await prisma.user.create({
             data: {
               id: input.result.id,
@@ -195,8 +196,15 @@ export const userResolvers = {
               premium: false,
             },
           });
+
+          await resend.emails.send({
+            from: "onboarding@resend.dev",
+            to: "edmiller.me@gmail.com",
+            subject: "Welcome to Christmas Lights App",
+            html: welcomeEmail,
+          });
         } else {
-          user = isNewUser;
+          user = alreadyHasAccount;
         }
         return user;
       } catch (error) {

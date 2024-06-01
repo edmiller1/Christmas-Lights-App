@@ -18,6 +18,7 @@ import {
 import { useToast } from "@/components/ui/use-toast";
 import { ToastAction } from "@/components/ui/toast";
 import { useNavigate } from "react-router-dom";
+import { Get_User } from "@/graphql/queries/getUser/types";
 
 interface Props {
   activeDecoration:
@@ -46,6 +47,7 @@ interface Props {
   addDecorationToRouteLoading: boolean;
   showActiveDecoration: boolean;
   setShowActiveDecoration: (showActiveDecoreation: boolean) => void;
+  currentUser: Get_User | null;
 }
 
 export const MobileDecorationPopup = ({
@@ -63,6 +65,7 @@ export const MobileDecorationPopup = ({
   addDecorationToRouteLoading,
   setShowActiveDecoration,
   showActiveDecoration,
+  currentUser,
 }: Props) => {
   const { toast } = useToast();
   const navigate = useNavigate();
@@ -150,7 +153,7 @@ export const MobileDecorationPopup = ({
                         unFavouriteDecorationLoading
                       }
                     />
-                    {!isAuthenticated ? (
+                    {!isAuthenticated && !currentUser ? (
                       <Button
                         variant="default"
                         className="w-4/5 bg-ch-green hover:bg-ch-green-hover"

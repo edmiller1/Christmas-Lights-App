@@ -188,6 +188,7 @@ export const Home = () => {
                       (favourite) => favourite.id
                     )}
                     refetchUserData={refetchUserData}
+                    currentUser={currentUser}
                   />
                 ))}
               </div>
@@ -206,6 +207,7 @@ export const Home = () => {
                         (favourite) => favourite.id
                       )}
                       refetchUserData={refetchUserData}
+                      currentUser={currentUser}
                     />
                   ))}
                 </div>
@@ -274,6 +276,7 @@ export const Home = () => {
                       (favourite) => favourite.id
                     )}
                     refetchUserData={refetchUserData}
+                    currentUser={currentUser}
                   />
                 ))}
               </div>
@@ -292,6 +295,7 @@ export const Home = () => {
                         (favourite) => favourite.id
                       )}
                       refetchUserData={refetchUserData}
+                      currentUser={currentUser}
                     />
                   ))}
                 </div>

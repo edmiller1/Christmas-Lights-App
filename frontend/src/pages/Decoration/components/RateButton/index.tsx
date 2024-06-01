@@ -18,7 +18,7 @@ export const RateButton = ({
 }: Props) => {
   return (
     <>
-      {isAuthenticated ? (
+      {isAuthenticated && currentUser ? (
         <>
           {currentUser?.ratings.some(
             (rating) => rating.decoration_id === decorationId

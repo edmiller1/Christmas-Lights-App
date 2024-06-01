@@ -12,10 +12,10 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { Outlet, useNavigate } from "react-router-dom";
-import { Login, SideNav } from "./components";
+import { SideNav } from "./components";
 
 export const Admin = () => {
-  const { logout, isAuthenticated, user } = useKindeAuth();
+  const { logout, user } = useKindeAuth();
   const navigate = useNavigate();
 
   const [notAdmin, setNotAdmin] = useState<boolean>(false);

@@ -10,6 +10,7 @@ import { Search_User_Favourites } from "@/graphql/queries/searchUserFavourites/t
 import { useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { DrawerNavigation } from "../DrawerNavigation";
+import { Get_User } from "@/graphql/queries/getUser/types";
 
 interface Props {
   activeDecoration:
@@ -33,6 +34,7 @@ interface Props {
   setMobileMenuOpen?: (mobileMenuOpen: boolean) => void;
   selectedIcon: string;
   changeRoute: (icon: string) => void;
+  currentUser: Get_User | null;
 }
 
 export const HistoryNav = ({
@@ -46,6 +48,7 @@ export const HistoryNav = ({
   selectedIcon,
   changeRoute,
   setMobileMenuOpen,
+  currentUser,
 }: Props) => {
   const [searchWord, setSearchWord] = useState<string>("");
   const [filteredList, setFilteredList] = useState<Decoration[] | undefined>(
@@ -119,7 +122,7 @@ export const HistoryNav = ({
                     Visiting decorations will add them to your history.
                   </span>
                 </div>
-              ) : !isAuthenticated ? (
+              ) : !isAuthenticated && !currentUser ? (
                 <div className="p-5 flex justify-center items-center text-center flex-col text-primary">
                   <Warning size={32} />
                   <span className="mt-3">
@@ -188,7 +191,7 @@ export const HistoryNav = ({
               Visiting decorations will add them to your history.
             </span>
           </div>
-        ) : !isAuthenticated ? (
+        ) : !isAuthenticated && !currentUser ? (
           <div className="p-5 flex justify-center items-center text-center flex-col text-primary">
             <Warning size={32} />
             <span className="mt-3">

@@ -63,8 +63,7 @@ import {
   RemoveDecorationFromRoute as RemoveDecorationFromRouteData,
   RemoveDecorationfromRouteArgs,
 } from "@/graphql/mutations/removeDecorationFromRoute/types";
-import { Link, useNavigate } from "react-router-dom";
-import { UserCircle } from "@phosphor-icons/react";
+import { useNavigate } from "react-router-dom";
 import {
   CreateRouteModal,
   DecorationPopup,
@@ -75,20 +74,10 @@ import {
   RoutePlanningNav,
   SecondaryNav,
 } from "./components";
-import {
-  LoggedOutUserMenu,
-  ThemeToggle,
-  UserMenu,
-} from "@/components/AppHeader/components";
+import { LoggedOutUserMenu, UserMenu } from "@/components/AppHeader/components";
 import { useToast } from "@/components/ui/use-toast";
 import { Decoration, Route, Step, ViewState } from "@/lib/types";
 import { MapRef } from "react-map-gl";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 import { ToastAction } from "@/components/ui/toast";
 import { MobileDecorationPopup } from "./components/MobileDecorationPopup";
 import { useKindeAuth } from "@kinde-oss/kinde-auth-react";
@@ -458,7 +447,7 @@ export const RoutePlanning = () => {
   };
 
   const addDecorationToFavourites = (decorationId: string) => {
-    if (!isAuthenticated) {
+    if (!isAuthenticated && !currentUser) {
       toast({
         variant: "default",
         title: "Not currently signed in.",
@@ -475,7 +464,7 @@ export const RoutePlanning = () => {
   };
 
   const removeDecorationFromFavourites = (decorationId: string) => {
-    if (!isAuthenticated) {
+    if (!isAuthenticated && !currentUser) {
       toast({
         variant: "default",
         title: "Not currently signed in.",
@@ -937,6 +926,7 @@ export const RoutePlanning = () => {
             setIsCreateRouteOpen={setIsCreateRouteOpen}
             addDecorationToARoute={addDecorationToARoute}
             addDecorationToRouteLoading={addDecorationToRouteLoading}
+            currentUser={currentUser}
           />
         ) : null}
         <CreateRouteModal
@@ -981,6 +971,7 @@ export const RoutePlanning = () => {
           addDecorationToRouteLoading={addDecorationToRouteLoading}
           showActiveDecoration={showActiveDecoration}
           setShowActiveDecoration={setShowActiveDecoration}
+          currentUser={currentUser}
         />
       </div>
     </>

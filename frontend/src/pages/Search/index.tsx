@@ -289,9 +289,9 @@ export const Search = () => {
     <>
       <SEO
         description="View decorations based on search"
-        name={searchQuery!}
-        title={searchQuery!}
-        type={searchQuery!}
+        name={`Results for: ${searchQuery!}`}
+        title={`Results for: ${searchQuery!}`}
+        type={`Results for: ${searchQuery!}`}
       />
       {/* Mobile */}
       <div className="sm:hidden h-screen">

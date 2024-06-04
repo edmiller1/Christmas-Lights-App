@@ -145,7 +145,7 @@ export const decorationResolvers = {
               images: true,
             },
             skip: 0,
-            take: 18,
+            take: 10,
           });
         } else {
           decorations = await prisma.decoration.findMany({
@@ -164,7 +164,7 @@ export const decorationResolvers = {
               images: true,
             },
             skip: 0,
-            take: 18,
+            take: 10,
           });
         }
 
@@ -190,7 +190,7 @@ export const decorationResolvers = {
             images: true,
           },
           skip: 0,
-          take: 18,
+          take: 10,
         });
 
         return decorations;

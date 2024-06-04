@@ -32,12 +32,14 @@ interface Props {
   isAuthenticated: boolean;
   currentUser: Get_User | null;
   searchQuery?: string | null;
+  currentPlace?: string;
 }
 
 export const AppHeader = ({
   isAuthenticated,
   currentUser,
   searchQuery,
+  currentPlace,
 }: Props) => {
   const { toast } = useToast();
   const { logout } = useKindeAuth();
@@ -116,7 +118,10 @@ export const AppHeader = ({
               <Link to="/" className="hidden sm:block">
                 <img src={logo} alt="logo" className="h-12" />
               </Link>
-              <Link to="/" className="hidden sm:block">
+              <Link
+                to={`/search?query=${currentPlace}`}
+                className="hidden sm:block"
+              >
                 <span className="text-sm">Explore</span>
               </Link>
             </div>

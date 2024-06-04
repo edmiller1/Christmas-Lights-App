@@ -21,7 +21,7 @@ import {
 import { useToast } from "@/components/ui/use-toast";
 import { useEffect, useState } from "react";
 import { AppHeaderLoading } from "@/components/AppHeader/components";
-import { ListBullets, MapTrifold } from "@phosphor-icons/react";
+import { ListBullets, MapTrifold, Plus } from "@phosphor-icons/react";
 import { DecorationsLoading, HomeMap } from "./pages/Home/components";
 import {
   Carousel,
@@ -31,6 +31,7 @@ import {
 import hero from "./assets/hero image.jpg";
 import Autoplay from "embla-carousel-autoplay";
 import { Link } from "react-router-dom";
+import { Button } from "./components/ui/button";
 
 const mbApiKey = import.meta.env.VITE_MAPBOX_API_KEY;
 
@@ -177,6 +178,7 @@ function App() {
           <AppHeader
             currentUser={currentUser}
             isAuthenticated={isAuthenticated}
+            currentPlace={currentPlace}
           />
         )}
         {showMap ? (
@@ -192,7 +194,9 @@ function App() {
               <h1 className="text-2xl font-bold">
                 Explore amazing Christmas decorations
               </h1>
-              <h3 className="mt-10 text-lg">Search by name, city or address</h3>
+              <h3 className="mt-10 text-lg">
+                Search by name, city, address or explore via map
+              </h3>
               <Link to={`/search?query=${currentPlace}`}>
                 <h3 className="mt-10 underline">Explore now</h3>
               </Link>
@@ -219,6 +223,7 @@ function App() {
               </Carousel>
             </div>
             <div className="px-6 overflow-y-auto py-16">
+              <h1 className="text-3xl font-bold">Explore Nearby Decorations</h1>
               {decorationsByCity && decorationsByCity.length > 0 ? (
                 <div className="grid grid-cols-1 gap-x-6 gap-y-8 my-8">
                   {decorationsByCity.map((decoration, index) => (
@@ -232,6 +237,7 @@ function App() {
                         (favourite) => favourite.id
                       )}
                       refetchUserData={refetchUserData}
+                      currentUser={currentUser}
                     />
                   ))}
                 </div>
@@ -250,11 +256,44 @@ function App() {
                           (favourite) => favourite.id
                         )}
                         refetchUserData={refetchUserData}
+                        currentUser={currentUser}
                       />
                     ))}
                   </div>
                 ) : null}
               </>
+              <div className="w-full flex flex-col mt-20 mb-24">
+                <div className="w-full">
+                  <img
+                    src="https://images.unsplash.com/photo-1543598098-622a5e218f43?q=80&w=3270&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+                    alt="image"
+                    className="rounded-t-2xl h-[29rem] object-cover"
+                  />
+                </div>
+                <div className="w-full h-full rounded-b-xl p-5 dark:bg-zinc-800">
+                  <div className="flex items-center space-x-2">
+                    <h2 className="flex text-3xl font-bold my-3">
+                      Christmas Lights App
+                      <Plus
+                        color="#DC2626"
+                        weight="bold"
+                        size={28}
+                        className="ml-2 mt-2"
+                      />
+                    </h2>
+                  </div>
+                  <h3 className="text-2xl my-3 font-semibold">
+                    Explore and create more
+                  </h3>
+                  <p className="text-lg my-3 font-semibold">
+                    Upload larger and more images, save more decorations, create
+                    more routes and visit more decorations.
+                  </p>
+                  <Button className="mt-20 bg-ch-green hover:bg-ch-green-alt">
+                    Get Premium
+                  </Button>
+                </div>
+              </div>
             </div>
           </div>
         )}
@@ -295,6 +334,7 @@ function App() {
           <AppHeader
             currentUser={currentUser}
             isAuthenticated={isAuthenticated}
+            currentPlace={currentPlace}
           />
         )}
         {showMap ? (
@@ -311,7 +351,7 @@ function App() {
                 Explore amazing Christmas decorations
               </h1>
               <h3 className="mt-10 text-2xl">
-                Search by name, city or address
+                Search by name, city, address or explore via map
               </h3>
               <Link to={`/search?query=${currentPlace}`}>
                 <h3 className="mt-10 underline text-xl">Explore now</h3>
@@ -338,9 +378,10 @@ function App() {
                 </CarouselContent>
               </Carousel>
             </div>
-            <div className="md:px-10 xl:px-24 2xl:px-32 overflow-y-auto py-12">
+            <div className="md:px-10 xl:px-24 2xl:px-32 py-12">
+              <h1 className="text-4xl font-bold">Explore Nearby Decorations</h1>
               {decorationsByCity && decorationsByCity.length > 0 ? (
-                <div className="grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 xl:gap-x-8 gap-y-10 my-8">
+                <div className="grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-5 xl:gap-x-8 gap-y-10 my-8">
                   {decorationsByCity.map((decoration, index) => (
                     <DecorationCard
                       key={decoration.id}
@@ -352,13 +393,14 @@ function App() {
                         (favourite) => favourite.id
                       )}
                       refetchUserData={refetchUserData}
+                      currentUser={currentUser}
                     />
                   ))}
                 </div>
               ) : null}
               <>
                 {decorationsByRating && decorationsByRating.length > 0 ? (
-                  <div className="grid grid-cols-6 gap-x-6 gap-y-10 my-8">
+                  <div className="grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-5 xl:gap-x-8 gap-y-10 my-8">
                     {decorationsByRating.map((decoration, index) => (
                       <DecorationCard
                         key={decoration.id}
@@ -370,11 +412,39 @@ function App() {
                           (favourite) => favourite.id
                         )}
                         refetchUserData={refetchUserData}
+                        currentUser={currentUser}
                       />
                     ))}
                   </div>
                 ) : null}
               </>
+              <div className="w-full flex mt-20 mb-40">
+                <div className="w-1/2 ">
+                  <img
+                    src="https://images.unsplash.com/photo-1543598098-622a5e218f43?q=80&w=3270&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+                    alt="image"
+                    className="rounded-l-2xl h-[29rem] object-cover"
+                  />
+                </div>
+                <div className="w-1/2 h-[29rem] rounded-r-xl px-24 py-10 dark:bg-zinc-800">
+                  <div className="flex items-center space-x-2">
+                    <h2 className="text-3xl font-bold my-3">
+                      Christmas Lights App Premium
+                    </h2>
+                    <Plus color="#DC2626" weight="bold" size={24} />
+                  </div>
+                  <h3 className="text-2xl my-3 font-semibold">
+                    Explore and create more
+                  </h3>
+                  <p className="text-lg mr-32 my-3 font-semibold">
+                    Upload larger and more images, save more decorations, create
+                    more routes and visit more decorations.
+                  </p>
+                  <Button className="mt-20 bg-ch-green hover:bg-ch-green-alt">
+                    Get Premium
+                  </Button>
+                </div>
+              </div>
             </div>
           </div>
         )}

@@ -30,6 +30,7 @@ import { useKindeAuth } from "@kinde-oss/kinde-auth-react";
 import { ProfileLoading } from "./components";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { SignIn } from "../SignIn";
 
 export const Profile = () => {
   const navigate = useNavigate();
@@ -91,6 +92,10 @@ export const Profile = () => {
 
   if (getUserLoading) {
     return <ProfileLoading />;
+  }
+
+  if (!currentUser) {
+    return <SignIn />;
   }
 
   if (logoutLoading) {

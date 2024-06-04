@@ -7,6 +7,7 @@ export * from "./Notifications";
 export * from "./PrivacyPolicy";
 export * from "./Profile";
 export * from "./RoutePlanning";
+export * from "./Search";
 export * from "./SignIn";
 export * from "./SignUp";
 export * from "./SiteMap";

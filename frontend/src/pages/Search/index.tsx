@@ -48,9 +48,9 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useKindeAuth } from "@kinde-oss/kinde-auth-react";
 
 const initialViewState = {
-  latitude: 0,
-  longitude: 0,
-  zoom: 14,
+  latitude: localStorage.getItem("latitude") || 0,
+  longitude: localStorage.getItem("longitude") || 0,
+  zoom: 10,
   bearing: 0,
   pitch: 0,
 };
@@ -250,7 +250,6 @@ export const Search = () => {
     if (viewState && viewState.zoom !== 14) {
       const getDecorationData = setTimeout(() => {
         if (viewState && viewState.zoom <= 6) {
-          console.log("HUH!!");
           getDecorationsViaCountry({
             variables: {
               input: {
@@ -439,6 +438,7 @@ export const Search = () => {
                       userFavourites={currentUser?.favourites.map(
                         (item) => item.id
                       )}
+                      currentUser={currentUser}
                     />
                   ))}
                 </div>

@@ -19,6 +19,7 @@ import {
   PrivacyPolicy,
   Profile,
   RoutePlanning,
+  Search,
   SignIn,
   SignUp,
   SiteMap,
@@ -51,6 +52,11 @@ const router = createBrowserRouter([
   {
     path: "/",
     element: <App />,
+  },
+  {
+    path: "/Search",
+    element: <Search />,
+    errorElement: <Error />,
   },
   { path: "/signup", element: <SignUp />, errorElement: <Error /> },
   { path: "/signin", element: <SignIn />, errorElement: <Error /> },

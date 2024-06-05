@@ -20,6 +20,7 @@ interface Props {
   setIsCancelOpen: (isCancelOpen: boolean) => void;
   discardEdits: () => void;
   handleImageSelect: (e: any) => void;
+  userPremium: boolean | undefined;
 }
 
 export const EditImagesModal = ({

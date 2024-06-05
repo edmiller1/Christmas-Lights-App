@@ -914,52 +914,81 @@ export const decorationResolvers = {
     ): Promise<User> => {
       try {
         const user = await authorise(req);
-
         if (!user) {
           throw new Error("Not authenticated");
         }
-
         const firstDecoration = user.history[0];
         const userHistoryCount = user.history.length;
-
         const exists = user.history.some(
           (item: Decoration) => item.id === input.id
         );
-
         //decoration already exists in user history
         if (exists) {
           return user;
         }
 
-        if (userHistoryCount === 24) {
-          await prisma.user.update({
-            where: {
-              id: user.id,
-            },
-            data: {
-              history: {
-                disconnect: {
-                  id: firstDecoration.id,
-                },
-                connect: {
-                  id: input.id,
+        if (user.premium && !exists) {
+          if (userHistoryCount < 24) {
+            await prisma.user.update({
+              where: {
+                id: user.id,
+              },
+              data: {
+                history: {
+                  connect: {
+                    id: input.id,
+                  },
                 },
               },
-            },
-          });
-        } else {
-          await prisma.user.update({
-            where: {
-              id: user.id,
-            },
-            data: {
-              history: {
-                connect: {
-                  id: input.id,
+            });
+          } else if (userHistoryCount === 24) {
+            await prisma.user.update({
+              where: {
+                id: user.id,
+              },
+              data: {
+                history: {
+                  disconnect: {
+                    id: firstDecoration.id,
+                  },
+                  connect: {
+                    id: input.id,
+                  },
                 },
               },
-            },
-          });
+            });
+          }
+        } else if (!user.premium && !exists) {
+          if (userHistoryCount < 12) {
+            await prisma.user.update({
+              where: {
+                id: user.id,
+              },
+              data: {
+                history: {
+                  connect: {
+                    id: input.id,
+                  },
+                },
+              },
+            });
+          } else {
+            await prisma.user.update({
+              where: {
+                id: user.id,
+              },
+              data: {
+                history: {
+                  disconnect: {
+                    id: firstDecoration.id,
+                  },
+                  connect: {
+                    id: input.id,
+                  },
+                },
+              },
+            });
+          }
         }
 
         return user;

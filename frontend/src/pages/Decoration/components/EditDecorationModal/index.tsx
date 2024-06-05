@@ -3,11 +3,11 @@ import { useToast } from "@/components/ui/use-toast";
 import { generateUID, getBase64Value } from "@/lib/helpers";
 import { Get_Decoration } from "@/graphql/queries/getDecoration/types";
 import { EditDetailsModal, EditImagesModal } from "..";
-
 interface Props {
   isEditOpen: boolean;
   setIsEditOpen: (isEditOpen: boolean) => void;
   decorationImages: { id: string; url: string }[] | undefined;
+  userPremium: boolean | undefined;
   decoration: Get_Decoration | null;
   updateDecoration: (
     id: string,
@@ -25,13 +25,12 @@ interface Props {
   currentStep: number;
   setCurrentStep: (currentStep: number) => void;
 }
-
 const mbApiKey = import.meta.env.VITE_MAPBOX_API_KEY;
-
 export const EditDecorationModal = ({
   isEditOpen,
   setIsEditOpen,
   decorationImages,
+  userPremium,
   decoration,
   updateDecoration,
   editDecorationLoading,
@@ -53,28 +52,46 @@ export const EditDecorationModal = ({
   const [deletedImages, setDeletedImages] = useState<
     { id: string; url: string }[]
   >([]);
-
   const [isRemoveImageOpen, setIsRemoveImageOpen] = useState<boolean>(false);
   const [isCancelOpen, setIsCancelOpen] = useState<boolean>(false);
   const [count, setCount] = useState<number>(0);
-
   const handleImageSelect = (e: any) => {
     e.preventDefault();
     e.stopPropagation();
-
     const imagesArray: { id: string; url: string }[] = [];
     const filesArray: File[] = [];
     const base64Array: string[] = [];
 
     if (
-      (images && images?.length > 16) ||
-      Array.from(e.target.files).length > 16
+      (userPremium && images && images?.length > 8) ||
+      (userPremium && Array.from(e.target.files).length > 8)
     ) {
       toast({
         variant: "destructive",
         title: "Error",
-        description: "You can only upload a maximum of 16 images",
+        description: "You can only upload a maximum of 8 images",
       });
+      return;
+    } else if (
+      (!userPremium && images && images.length > 6) ||
+      (!userPremium && Array.from(e.target.files).length > 6)
+    ) {
+      const countCopy = count + 1;
+      if (countCopy % 3 === 0) {
+        toast({
+          variant: "destructive",
+          title: "Error",
+          description:
+            "You can only upload a maximum of 6 images. Upgrade to premium to upload larger/more files",
+        });
+        setCount(countCopy);
+      } else {
+        toast({
+          variant: "destructive",
+          title: "Error",
+          description: "You can only upload a maximum of 6 images",
+        });
+      }
       return;
     }
 
@@ -86,14 +103,15 @@ export const EditDecorationModal = ({
           title: "Error",
           description: "Uploads must be of type image",
         });
-      } else if (e.target.files[index].size > 4194304) {
+      } else if (userPremium && e.target.files[index].size > 4194304) {
         //toast invalid file size
         const countCopy = count + 1;
         if (countCopy % 3 === 0) {
           toast({
             variant: "destructive",
             title: "Error",
-            description: "Images must be 4MB or less.",
+            description:
+              "Images must be 4MB or less. Upgrade to premium to upload larger/more files",
           });
         } else {
           toast({
@@ -104,6 +122,13 @@ export const EditDecorationModal = ({
         }
 
         setCount(countCopy);
+      } else if (userPremium && e.target.files[index].size > 6291456) {
+        //toast invalid file size
+        toast({
+          variant: "destructive",
+          title: "Error",
+          description: "Images must be 6MB or less",
+        });
       } else {
         const image = {
           id: generateUID(),
@@ -116,7 +141,6 @@ export const EditDecorationModal = ({
         imagesArray.push(image);
       }
     });
-
     const imagesCopy = [...images!];
     console.log(imagesCopy.concat(imagesArray));
     setImages(imagesCopy.concat(imagesArray));
@@ -125,21 +149,17 @@ export const EditDecorationModal = ({
     setFiles(filesCopy.concat(filesArray));
     setCurrentImage(imagesArray[imagesArray.length - 1]);
   };
-
   const removeImage = (id: string | undefined) => {
     const imagesCopy = [...images!];
     const deletedImagesCopy = [...deletedImages];
     const filesCopy = [...(files as File[])];
-
     const selectedIndex = imagesCopy.findIndex((image) => image.id === id);
     const selectedImage = imagesCopy.find((image) => image.id === id);
-
     if (selectedImage?.id.includes("CLA_Assets")) {
       deletedImagesCopy.push(selectedImage);
     }
     imagesCopy.splice(selectedIndex, 1);
     filesCopy.splice(selectedIndex, 1);
-
     setCurrentImage(imagesCopy[0]);
     setImages(imagesCopy);
     setFiles(filesCopy as File[]);
@@ -149,7 +169,6 @@ export const EditDecorationModal = ({
       })
     );
   };
-
   const nextImage = () => {
     if (currentImage && images) {
       const currentImageIndex = images.indexOf(currentImage);
@@ -160,7 +179,6 @@ export const EditDecorationModal = ({
       }
     }
   };
-
   const prevImage = () => {
     if (currentImage && images) {
       const currentImageIndex = images.indexOf(currentImage);
@@ -171,7 +189,6 @@ export const EditDecorationModal = ({
       }
     }
   };
-
   const getCountryAbbrev = async (latitude: string, longitude: string) => {
     const response = await fetch(
       `https://api.mapbox.com/geocoding/v5/mapbox.places/${longitude},${latitude}.json?access_token=${mbApiKey}`
@@ -182,7 +199,6 @@ export const EditDecorationModal = ({
     );
     setCountryAbbrev(country.properties.short_code);
   };
-
   useEffect(() => {
     if (
       localStorage.getItem("latitude") !== null &&
@@ -194,7 +210,6 @@ export const EditDecorationModal = ({
       );
     }
   }, []);
-
   const discardEdits = () => {
     setImages(decorationImages);
     setFiles([]);
@@ -204,7 +219,6 @@ export const EditDecorationModal = ({
     setIsCancelOpen(false);
     setIsEditOpen(false);
   };
-
   if (currentStep === 2) {
     return (
       <EditDetailsModal
@@ -223,7 +237,6 @@ export const EditDecorationModal = ({
       />
     );
   }
-
   return (
     <EditImagesModal
       isEditOpen={isEditOpen}
@@ -236,6 +249,7 @@ export const EditDecorationModal = ({
       removeImage={removeImage}
       isRemoveImageOpen={isRemoveImageOpen}
       setIsRemoveImageOpen={setIsRemoveImageOpen}
+      userPremium={userPremium}
       isCancelOpen={isCancelOpen}
       setIsCancelOpen={setIsCancelOpen}
       discardEdits={discardEdits}

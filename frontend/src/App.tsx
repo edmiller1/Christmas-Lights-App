@@ -32,6 +32,12 @@ import hero from "./assets/hero image.jpg";
 import Autoplay from "embla-carousel-autoplay";
 import { Link } from "react-router-dom";
 import { Button } from "./components/ui/button";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "./components/ui/accordion";
 
 const mbApiKey = import.meta.env.VITE_MAPBOX_API_KEY;
 
@@ -294,6 +300,43 @@ function App() {
                   </Button>
                 </div>
               </div>
+              <div>
+                <h2 className="text-3xl font-bold">FAQ's</h2>
+                <div>
+                  <Accordion type="single" collapsible className="w-full">
+                    <AccordionItem value="item-1">
+                      <AccordionTrigger>
+                        Where is Christmas Lights App available?
+                      </AccordionTrigger>
+                      <AccordionContent>
+                        At this time, we are only available in Australia and New
+                        Zealand. We do have plans for the future to expand to
+                        other countries.
+                      </AccordionContent>
+                    </AccordionItem>
+                    <AccordionItem value="item-2">
+                      <AccordionTrigger>
+                        How much is Christmas Lights App premium?
+                      </AccordionTrigger>
+                      <AccordionContent>
+                        Premium is currently $9 paid annually. This is due to
+                        the service only being used mainly 2 months out of the
+                        year.
+                      </AccordionContent>
+                    </AccordionItem>
+                    <AccordionItem value="item-3">
+                      <AccordionTrigger>
+                        Is the app free to use?
+                      </AccordionTrigger>
+                      <AccordionContent>
+                        Yes! You can use the app for free, but there are
+                        limitions to the number of decorations you can create,
+                        save and the number of images you can upload.
+                      </AccordionContent>
+                    </AccordionItem>
+                  </Accordion>
+                </div>
+              </div>
             </div>
           </div>
         )}
@@ -418,7 +461,7 @@ function App() {
                   </div>
                 ) : null}
               </>
-              <div className="w-full flex mt-20 mb-40">
+              <div className="w-full flex mt-20 mb-32">
                 <div className="w-1/2 ">
                   <img
                     src="https://images.unsplash.com/photo-1543598098-622a5e218f43?q=80&w=3270&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
@@ -443,6 +486,43 @@ function App() {
                   <Button className="mt-20 bg-ch-green hover:bg-ch-green-alt">
                     Get Premium
                   </Button>
+                </div>
+              </div>
+              <div>
+                <h2 className="text-3xl font-bold">FAQ's</h2>
+                <div className="mr-48">
+                  <Accordion type="single" collapsible className="w-full">
+                    <AccordionItem value="item-1">
+                      <AccordionTrigger>
+                        Where is Christmas Lights App available?
+                      </AccordionTrigger>
+                      <AccordionContent>
+                        At this time, we are only available in Australia and New
+                        Zealand. We do have plans for the future to expand to
+                        other countries.
+                      </AccordionContent>
+                    </AccordionItem>
+                    <AccordionItem value="item-2">
+                      <AccordionTrigger>
+                        How much is Christmas Lights App premium?
+                      </AccordionTrigger>
+                      <AccordionContent>
+                        Premium is currently $9 paid annually. This is due to
+                        the service only being used mainly 2 months out of the
+                        year.
+                      </AccordionContent>
+                    </AccordionItem>
+                    <AccordionItem value="item-3">
+                      <AccordionTrigger>
+                        Is the app free to use?
+                      </AccordionTrigger>
+                      <AccordionContent>
+                        Yes! You can use the app for free, but there are
+                        limitions to the number of decorations you can create,
+                        save and the number of images you can upload.
+                      </AccordionContent>
+                    </AccordionItem>
+                  </Accordion>
                 </div>
               </div>
             </div>

@@ -895,6 +895,7 @@ export const Decoration = () => {
         editDecorationLoading={editDecorationLoading}
         currentStep={currentStep}
         setCurrentStep={setCurrentStep}
+        userPremium={currentUser?.premium}
       />
       {showFullImageOverlay ? (
         <FullImagesOverlay

@@ -34,7 +34,7 @@ export const UploadModal = ({
 }: Props) => {
   return (
     <Transition.Root appear show={isCreateOpen} as={Fragment}>
-      <Dialog as="div" className="relative z-10" onClose={closeUploadModal}>
+      <Dialog as="div" className="relative z-50" onClose={closeUploadModal}>
         <Transition.Child
           as={Fragment}
           enter="ease-out duration-300"

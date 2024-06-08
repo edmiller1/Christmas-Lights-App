@@ -6,6 +6,7 @@ export * from "./CreateDecorationModal";
 export * from "./DetailsModal";
 export * from "./ImagesModal";
 export * from "./LoggedOutUserMenu";
+export * from "./NameSuggestionsModal";
 export * from "./NotificationButton";
 export * from "./NotificationItem";
 export * from "./RemoveImageModal";

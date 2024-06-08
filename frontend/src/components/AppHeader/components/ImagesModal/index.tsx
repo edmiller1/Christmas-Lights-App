@@ -67,7 +67,7 @@ export const ImagesModal = ({
     <Transition appear show={isCreateOpen} as={Fragment}>
       <Dialog
         as="div"
-        className="relative z-10"
+        className="relative z-50"
         onClose={() => setIsCancelOpen(true)}
       >
         <Transition.Child

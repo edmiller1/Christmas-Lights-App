@@ -103,6 +103,7 @@ export const AppHeader = ({
       <CreateDecorationModal
         isCreateOpen={isCreateOpen}
         setIsCreateOpen={setIsCreateOpen}
+        currentUser={currentUser}
       />
       <div className="z-50 w-full flex-col sm:border-b dark:border-none md:flex">
         <div
@@ -148,12 +149,14 @@ export const AppHeader = ({
               </Button>
             </div>
             <div className="hidden sm:flex mx-6 items-center space-x-4">
-              <Button
-                className="rounded-full"
-                onClick={() => navigate("/get-premium")}
-              >
-                Get Premium
-              </Button>
+              {!currentUser?.premium ? (
+                <Button
+                  className="rounded-full"
+                  onClick={() => navigate("/get-premium")}
+                >
+                  Get Premium
+                </Button>
+              ) : null}
               {isAuthenticated && currentUser ? (
                 <CreateButton setIsCreateOpen={setIsCreateOpen} />
               ) : null}

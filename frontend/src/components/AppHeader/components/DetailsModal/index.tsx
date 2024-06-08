@@ -1,8 +1,8 @@
-import { Fragment } from "react";
+import { Fragment, useState } from "react";
 import { Dialog, Transition } from "@headlessui/react";
 import { CircleNotch, X } from "@phosphor-icons/react";
 import { Button } from "@/components/ui/button";
-import { CreateDecorationForm } from "..";
+import { CreateDecorationForm, NameSuggestionsModal } from "..";
 import { CancelModal } from "@/components";
 
 interface Props {
@@ -38,11 +38,18 @@ export const DetailsModal = ({
   createDecorationLoading,
   countryAbbrev,
 }: Props) => {
+  const [nameSuggestions, setNameSuggestions] = useState<string | undefined>(
+    undefined
+  );
+  const [selectedName, setSelectedName] = useState<string | undefined>(
+    undefined
+  );
+
   return (
     <Transition appear show={isCreateOpen} as={Fragment}>
       <Dialog
         as="div"
-        className="relative z-10"
+        className="relative z-50"
         onClose={() => setIsCancelOpen(true)}
       >
         <Transition.Child
@@ -106,6 +113,9 @@ export const DetailsModal = ({
                       files={files}
                       createNewDecoration={createNewDecoration}
                       countryAbbrev={countryAbbrev}
+                      setNameSuggestions={setNameSuggestions}
+                      selectedName={selectedName}
+                      setSelectedName={setSelectedName}
                     />
                   )}
                 </div>
@@ -118,6 +128,12 @@ export const DetailsModal = ({
                   discardFunction={discardDecoration}
                   isCancelOpen={isCancelOpen}
                   setIsCancelOpen={setIsCancelOpen}
+                />
+                <NameSuggestionsModal
+                  nameSuggestions={nameSuggestions}
+                  setNameSuggestions={setNameSuggestions}
+                  selectedName={selectedName}
+                  setSelectedName={setSelectedName}
                 />
               </Dialog.Panel>
             </Transition.Child>

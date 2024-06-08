@@ -195,8 +195,8 @@ function App() {
             )}
           />
         ) : (
-          <div>
-            <div className="absolute top-1/4 left-3 z-40 text-white text-center">
+          <div className="z-10">
+            <div className="absolute top-1/4 left-3 z-10 text-white text-center">
               <h1 className="text-2xl font-bold">
                 Explore amazing Christmas decorations
               </h1>

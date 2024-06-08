@@ -204,7 +204,14 @@ export const userResolvers = {
             html: welcomeEmail,
           });
         } else {
-          user = alreadyHasAccount;
+          user = await prisma.user.update({
+            where: {
+              id: input.result.id,
+            },
+            data: {
+              token: input.result.token,
+            },
+          });
         }
         return user;
       } catch (error) {

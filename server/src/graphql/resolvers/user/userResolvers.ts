@@ -13,7 +13,7 @@ import { Decoration, Notification, User } from "@prisma/client";
 import { authorise } from "../../../lib/helpers";
 import { Cloudinary } from "../../../lib/cloudinary";
 import { Resend } from "resend";
-import { welcomeEmail } from "../../../lib/emailTemplates";
+import { welcomeEmail } from "../../../lib/emails/welcome";
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 

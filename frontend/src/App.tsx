@@ -295,9 +295,7 @@ function App() {
                     Upload larger and more images, save more decorations, create
                     more routes and visit more decorations.
                   </p>
-                  <Button className="mt-20 bg-ch-green hover:bg-ch-green-alt">
-                    Get Premium
-                  </Button>
+                  <Button className="mt-20">Get Premium</Button>
                 </div>
               </div>
               <div>
@@ -332,6 +330,16 @@ function App() {
                         Yes! You can use the app for free, but there are
                         limitions to the number of decorations you can create,
                         save and the number of images you can upload.
+                      </AccordionContent>
+                    </AccordionItem>
+                    <AccordionItem value="item-4">
+                      <AccordionTrigger>
+                        Is there a mobile app?
+                      </AccordionTrigger>
+                      <AccordionContent>
+                        We do not currently offer a mobile app. But we have
+                        plans to release one in the future for both iOS and
+                        Android.
                       </AccordionContent>
                     </AccordionItem>
                   </Accordion>
@@ -483,9 +491,7 @@ function App() {
                     Upload larger and more images, save more decorations, create
                     more routes and visit more decorations.
                   </p>
-                  <Button className="mt-20 bg-ch-green hover:bg-ch-green-alt">
-                    Get Premium
-                  </Button>
+                  <Button className="mt-20">Get Premium</Button>
                 </div>
               </div>
               <div>
@@ -520,6 +526,16 @@ function App() {
                         Yes! You can use the app for free, but there are
                         limitions to the number of decorations you can create,
                         save and the number of images you can upload.
+                      </AccordionContent>
+                    </AccordionItem>
+                    <AccordionItem value="item-4">
+                      <AccordionTrigger>
+                        Is there a mobile app?
+                      </AccordionTrigger>
+                      <AccordionContent>
+                        We do not currently offer a mobile app. But we have
+                        plans to release one in the future for both iOS and
+                        Android.
                       </AccordionContent>
                     </AccordionItem>
                   </Accordion>

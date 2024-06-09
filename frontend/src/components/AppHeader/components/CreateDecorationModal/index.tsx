@@ -80,10 +80,10 @@ export const CreateDecorationModal = ({
   useEffect(() => {
     const imagesCopy = [...images];
     const filesCopy = [...files];
-    if (!currentUser?.premium && images.length > 6) {
+    if (!currentUser?.premium && images.length > 12) {
       //@ts-ignore
       imagesCopy.forEach((image) => {
-        if (imagesCopy.length > 6) {
+        if (imagesCopy.length > 12) {
           imagesCopy.pop();
           filesCopy.pop();
         }
@@ -92,9 +92,9 @@ export const CreateDecorationModal = ({
       toast({
         variant: "destructive",
         title: "Error",
-        description: "You can only upload a maximum of 6 images",
+        description: "You can only upload a maximum of 12 images",
       });
-    } else if (currentUser?.premium && images.length > 8) {
+    } else if (currentUser?.premium && images.length > 16) {
       //@ts-ignore
       imagesCopy.forEach((image) => {
         if (imagesCopy.length > 8) {
@@ -108,7 +108,7 @@ export const CreateDecorationModal = ({
       toast({
         variant: "destructive",
         title: "Error",
-        description: "You can only upload a maximum of 8 images",
+        description: "You can only upload a maximum of 16 images",
       });
     }
   }, [images]);
@@ -122,18 +122,18 @@ export const CreateDecorationModal = ({
     const filesArray: File[] = [];
 
     if (
-      (currentUser?.premium && images.length > 8) ||
-      (currentUser?.premium && Array.from(e.dataTransfer.files).length > 8)
+      (currentUser?.premium && images.length > 16) ||
+      (currentUser?.premium && Array.from(e.dataTransfer.files).length > 16)
     ) {
       toast({
         variant: "destructive",
         title: "Error",
-        description: "You can only upload a maximum of 8 images",
+        description: "You can only upload a maximum of 16 images",
       });
       return;
     } else if (
-      (!currentUser?.premium && images.length > 6) ||
-      (!currentUser?.premium && Array.from(e.dataTransfer.files).length > 6)
+      (!currentUser?.premium && images.length > 12) ||
+      (!currentUser?.premium && Array.from(e.dataTransfer.files).length > 12)
     ) {
       const countCopy = count + 1;
       if (countCopy % 3 === 0) {
@@ -141,13 +141,13 @@ export const CreateDecorationModal = ({
           variant: "destructive",
           title: "Error",
           description:
-            "You can only upload a maximum of 6 images. Upgrade to premium to upload larger/more files",
+            "You can only upload a maximum of 12 images. Upgrade to premium to upload larger/more files",
         });
       } else {
         toast({
           variant: "destructive",
           title: "Error",
-          description: "You can only upload a maximum of 6 images",
+          description: "You can only upload a maximum of 12 images",
         });
       }
       return;
@@ -162,7 +162,7 @@ export const CreateDecorationModal = ({
         });
       } else if (
         !currentUser?.premium &&
-        e.dataTransfer.files[index].size > 4194304
+        e.dataTransfer.files[index].size > 2097152
       ) {
         //toast invalid file size
         const countCopy = count + 1;
@@ -171,26 +171,26 @@ export const CreateDecorationModal = ({
             variant: "destructive",
             title: "Error",
             description:
-              "Images must be 4MB or less. Upgrade to premium to upload larger/more files",
+              "Images must be 2MB or less. Upgrade to premium to upload larger/more files",
           });
         } else {
           toast({
             variant: "destructive",
             title: "Error",
-            description: "Images must be 4MB or less",
+            description: "Images must be 2MB or less",
           });
         }
 
         setCount(countCopy);
       } else if (
         currentUser?.premium &&
-        e.dataTransfer.files[index].size > 6291456
+        e.dataTransfer.files[index].size > 4194304
       ) {
         //toast invalid file size
         toast({
           variant: "destructive",
           title: "Error",
-          description: "Images must be 6MB or less",
+          description: "Images must be 4MB or less",
         });
       } else {
         const image = {
@@ -216,17 +216,17 @@ export const CreateDecorationModal = ({
 
     if (
       (currentUser?.premium && images.length > 8) ||
-      (currentUser?.premium && Array.from(e.target.files).length > 8)
+      (currentUser?.premium && Array.from(e.target.files).length > 16)
     ) {
       toast({
         variant: "destructive",
         title: "Error",
-        description: "You can only upload a maximum of 8 images",
+        description: "You can only upload a maximum of 16 images",
       });
       return;
     } else if (
-      (!currentUser?.premium && images.length > 6) ||
-      (!currentUser?.premium && Array.from(e.target.files).length > 6)
+      (!currentUser?.premium && images.length > 12) ||
+      (!currentUser?.premium && Array.from(e.target.files).length > 12)
     ) {
       const countCopy = count + 1;
       if (countCopy % 3 === 0) {
@@ -234,14 +234,14 @@ export const CreateDecorationModal = ({
           variant: "destructive",
           title: "Error",
           description:
-            "You can only upload a maximum of 6 images. Upgrade to premium to upload larger/more files",
+            "You can only upload a maximum of 12 images. Upgrade to premium to upload larger/more files",
         });
         setCount(countCopy);
       } else {
         toast({
           variant: "destructive",
           title: "Error",
-          description: "You can only upload a maximum of 6 images",
+          description: "You can only upload a maximum of 12 images",
         });
       }
       return;
@@ -257,7 +257,7 @@ export const CreateDecorationModal = ({
         });
       } else if (
         !currentUser?.premium &&
-        e.target.files[index].size > 4194304
+        e.target.files[index].size > 2097152
       ) {
         //toast invalid file size
         const countCopy = count + 1;
@@ -266,23 +266,23 @@ export const CreateDecorationModal = ({
             variant: "destructive",
             title: "Error",
             description:
-              "Images must be 4MB or less. Upgrade to premium to upload larger/more files",
+              "Images must be 2MB or less. Upgrade to premium to upload larger/more files",
           });
         } else {
           toast({
             variant: "destructive",
             title: "Error",
-            description: "Images must be 4MB or less",
+            description: "Images must be 2MB or less",
           });
         }
 
         setCount(countCopy);
-      } else if (currentUser?.premium && e.target.files[index].size > 6291456) {
+      } else if (currentUser?.premium && e.target.files[index].size > 4194304) {
         //toast invalid file size
         toast({
           variant: "destructive",
           title: "Error",
-          description: "Images must be 6MB or less",
+          description: "Images must be 4MB or less",
         });
       } else {
         const image = {

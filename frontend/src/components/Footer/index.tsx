@@ -16,7 +16,7 @@ export const Footer = () => {
             </p>
 
             <ul className="mt-8 flex gap-6">
-              <li>
+              {/* <li>
                 <Link to="https://ko-fi.com/Q5Q1WYOK1" target="_blank">
                   <img
                     height="36"
@@ -25,8 +25,8 @@ export const Footer = () => {
                     alt="Buy Me a Coffee at ko-fi.com"
                   />
                 </Link>
-              </li>
-              {/* <li>
+              </li> */}
+              <li>
                 <Link
                   to="/instagram"
                   rel="noreferrer"
@@ -50,7 +50,7 @@ export const Footer = () => {
                 </Link>
               </li>
 
-              <li>
+              {/* <li>
                 <Link
                   to="/github"
                   rel="noreferrer"
@@ -94,7 +94,7 @@ export const Footer = () => {
                 </li>
                 <li>
                   <a
-                    href="#"
+                    href="mailto:hello@christmaslightsapp.com"
                     className="text-gray-700 transition hover:opacity-75 dark:text-zinc-300"
                   >
                     {" "}
@@ -113,7 +113,7 @@ export const Footer = () => {
                 </li>
               </ul>
             </div>
-            <div>
+            {/* <div>
               <p className="font-medium text-gray-900 dark:text-zinc-400">
                 Support
               </p>
@@ -130,7 +130,7 @@ export const Footer = () => {
                   </Link>
                 </li>
 
-                {/* <li>
+                <li>
                   <a
                     href="#"
                     className="text-gray-700 transition hover:opacity-75 dark:text-zinc-300"
@@ -138,9 +138,9 @@ export const Footer = () => {
                     {" "}
                     Product Hunt{" "}
                   </a>
-                </li> */}
+                </li>
               </ul>
-            </div>
+            </div> */}
 
             <div>
               <p className="font-medium text-gray-900 dark:text-zinc-400">

@@ -22,6 +22,7 @@ model User {
   token String @unique
   email String @unique
   premium Boolean
+  isAdmin Boolean?
   notifications_on_app_verification Boolean
   notifications_on_app_rating Boolean
   notifications_by_email_verification Boolean

@@ -11,6 +11,7 @@ export const typeDefs = gql`
     image: String
     premium: Boolean
     token: String!
+    isAdmin: Boolean
     notifications_on_app_verification: Boolean
     notifications_on_app_rating: Boolean
     notifications_by_email_verification: Boolean
@@ -30,7 +31,7 @@ export const typeDefs = gql`
     interval: String!
     status: String!
     plan_id: String!
-    current_perios_start: Int!
+    current_period_start: Int!
     current_period_end: Int!
     created_at: String!
     updated_at: String!

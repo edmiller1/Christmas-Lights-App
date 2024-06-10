@@ -189,6 +189,7 @@ export const userResolvers = {
               image: input.result.photoURL,
               name: input.result.name,
               token: input.result.token,
+              isAdmin: false,
               notifications_by_email_rating: true,
               notifications_by_email_verification: true,
               notifications_on_app_rating: true,

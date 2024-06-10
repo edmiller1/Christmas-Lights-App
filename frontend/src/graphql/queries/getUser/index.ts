@@ -8,6 +8,8 @@ export const GET_USER = gql`
       email
       imageId
       image
+      isAdmin
+      premium
       decorations {
         id
         name

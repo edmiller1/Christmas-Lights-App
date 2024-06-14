@@ -2,13 +2,11 @@ import { Button } from "@/components/ui/button";
 import { useKindeAuth } from "@kinde-oss/kinde-auth-react";
 import { SEO } from "@/components";
 import { useNavigate } from "react-router-dom";
-import { useEffect } from "react";
 import { useQuery } from "@apollo/client";
 import { GET_USER } from "@/graphql/queries";
 import {
   GetUser as GetUserData,
   GetUserArgs,
-  Get_User,
 } from "@/graphql/queries/getUser/types";
 
 export const SignIn = () => {

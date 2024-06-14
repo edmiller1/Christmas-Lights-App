@@ -146,9 +146,9 @@ function App() {
   };
 
   const hasSession = async () => {
-    const token = await getToken();
-    if (!token) {
+    if (!isAuthenticated) {
       sessionStorage.removeItem("token");
+      localStorage.removeItem("kinde_refresh_token");
     }
   };
 
@@ -158,7 +158,7 @@ function App() {
 
   useEffect(() => {
     signInUser();
-  }, [localStorage.getItem("user"), getToken()]);
+  }, [localStorage.getItem("user"), isAuthenticated]);
 
   useEffect(() => {
     const userString = localStorage.getItem("user");
@@ -169,7 +169,7 @@ function App() {
 
   useEffect(() => {
     hasSession();
-  }, [getToken]);
+  }, [isAuthenticated]);
 
   if (decorationsByCityLoading || decorationsByRatingLoading) {
     return <DecorationsLoading />;

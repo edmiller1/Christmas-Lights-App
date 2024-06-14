@@ -1,9 +1,30 @@
 import { Button } from "@/components/ui/button";
 import { useKindeAuth } from "@kinde-oss/kinde-auth-react";
 import { SEO } from "@/components";
+import { useNavigate } from "react-router-dom";
+import { useEffect } from "react";
+import { useQuery } from "@apollo/client";
+import { GET_USER } from "@/graphql/queries";
+import {
+  GetUser as GetUserData,
+  GetUserArgs,
+  Get_User,
+} from "@/graphql/queries/getUser/types";
 
 export const SignIn = () => {
-  const { login, register } = useKindeAuth();
+  const { login, register, isAuthenticated, user } = useKindeAuth();
+  const navigate = useNavigate();
+
+  //@ts-ignore
+  const { data: getUserData } = useQuery<GetUserData, GetUserArgs>(GET_USER, {
+    variables: { input: { id: user?.id ? user.id : "" } },
+    onCompleted: (data) => {
+      if (data.getUser && isAuthenticated) {
+        navigate(-1);
+      }
+    },
+  });
+
   return (
     <>
       <SEO

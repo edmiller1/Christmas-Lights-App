@@ -3,12 +3,39 @@ import logo from "../../assets/logo.png";
 import { Button } from "@/components/ui/button";
 import { premiumFeatures } from "@/lib/constants";
 import { Badge } from "@/components/ui/badge";
-import { Footer } from "@/components";
+import { AppHeader, Footer } from "@/components";
+import { useKindeAuth } from "@kinde-oss/kinde-auth-react";
+import { useQuery } from "@apollo/client";
+import { useNavigate } from "react-router-dom";
+import { useState } from "react";
+import { GET_USER } from "@/graphql/queries";
+import {
+  GetUser as GetUserData,
+  GetUserArgs,
+  Get_User,
+} from "@/graphql/queries/getUser/types";
 
 export const Premium = () => {
+  const { isAuthenticated, user } = useKindeAuth();
+  const navigate = useNavigate();
+
+  const [currentUser, setCurrentUser] = useState<Get_User | null>(null);
+
+  //@ts-ignore
+  const { data: getUserData } = useQuery<GetUserData, GetUserArgs>(GET_USER, {
+    variables: { input: { id: user?.id ? user.id : "" } },
+    onCompleted: (data) => {
+      setCurrentUser(data.getUser);
+    },
+  });
+
   return (
     <>
       <div className="sm:hidden">
+        <AppHeader
+          currentUser={currentUser}
+          isAuthenticated={isAuthenticated}
+        />
         <div className="w-full">
           <img
             src="https://images.unsplash.com/photo-1470938017644-581bd9737a31?q=80&w=3272&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
@@ -81,7 +108,23 @@ export const Premium = () => {
           </table>
         </div>
         <div className="shadow-xl border-t h-32 flex flex-col justify-center items-center px-5 bg-white fixed bottom-0 left-0 right-0 z-10">
-          <Button className="h-14 w-full text-xl font-bold">Get Premium</Button>
+          {isAuthenticated && currentUser ? (
+            // do the stripe thing
+            <Button
+              onClick={() => navigate("/premium/create")}
+              className="h-14 w-full text-xl font-bold"
+            >
+              Create Decoration
+            </Button>
+          ) : (
+            // go to sign import { first } from 'react-native'
+            <Button
+              className="h-14 w-full text-xl font-bold"
+              onClick={() => navigate("/signin")}
+            >
+              Get Premium
+            </Button>
+          )}
           <p className="mt-3 text-center text-black">cancel anytime</p>
         </div>
         <Footer />
@@ -89,6 +132,10 @@ export const Premium = () => {
 
       {/* Desktop */}
       <div className="hidden sm:block">
+        <AppHeader
+          currentUser={currentUser}
+          isAuthenticated={isAuthenticated}
+        />
         <div className="relative">
           <img
             src="https://images.unsplash.com/photo-1470938017644-581bd9737a31?q=80&w=3272&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"

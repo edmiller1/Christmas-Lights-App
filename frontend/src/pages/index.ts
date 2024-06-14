@@ -4,6 +4,7 @@ export * from "./Error";
 export * from "./Home";
 export * from "./NotFound";
 export * from "./Notifications";
+export * from "./Premium";
 export * from "./PrivacyPolicy";
 export * from "./Profile";
 export * from "./RoutePlanning";

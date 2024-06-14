@@ -97,7 +97,7 @@ export const CreateDecorationModal = ({
     } else if (currentUser?.premium && images.length > 16) {
       //@ts-ignore
       imagesCopy.forEach((image) => {
-        if (imagesCopy.length > 8) {
+        if (imagesCopy.length > 16) {
           imagesCopy.pop();
           filesCopy.pop();
         }

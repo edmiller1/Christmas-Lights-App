@@ -152,7 +152,7 @@ export const AppHeader = ({
               {!currentUser?.premium ? (
                 <Button
                   className="rounded-full"
-                  onClick={() => navigate("/get-premium")}
+                  onClick={() => navigate("/premium")}
                 >
                   Get Premium
                 </Button>

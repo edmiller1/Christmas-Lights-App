@@ -16,6 +16,7 @@ import {
   Error,
   NotFound,
   Notifications,
+  Premium,
   PrivacyPolicy,
   Profile,
   RoutePlanning,
@@ -52,6 +53,10 @@ const router = createBrowserRouter([
   {
     path: "/",
     element: <App />,
+  },
+  {
+    path: "/premium",
+    element: <Premium />,
   },
   {
     path: "/Search",

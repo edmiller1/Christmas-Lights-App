@@ -30,7 +30,7 @@ import {
 } from "./components/ui/carousel";
 import hero from "./assets/hero image.jpg";
 import Autoplay from "embla-carousel-autoplay";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Button } from "./components/ui/button";
 import {
   Accordion,
@@ -44,6 +44,7 @@ const mbApiKey = import.meta.env.VITE_MAPBOX_API_KEY;
 function App() {
   const { getToken, isAuthenticated, user } = useKindeAuth();
   const { toast } = useToast();
+  const navigate = useNavigate();
 
   const [currentUser, setCurrentUser] = useState<Get_User | null>(null);
   const [showMap, setShowMap] = useState<boolean>(false);
@@ -295,7 +296,12 @@ function App() {
                     Upload larger and more images, save more decorations, create
                     more routes and visit more decorations.
                   </p>
-                  <Button className="mt-20">Get Premium</Button>
+                  <Button
+                    onClick={() => navigate("/premium")}
+                    className="mt-20"
+                  >
+                    Get Premium
+                  </Button>
                 </div>
               </div>
               <div>

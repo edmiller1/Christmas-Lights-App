@@ -25,7 +25,8 @@
     "graphql-tag": "^2.12.6",
     "lodash": "^4.17.21",
     "lodash.merge": "^4.6.2",
-    "resend": "^1.1.0"
+    "resend": "^1.1.0",
+    "stripe": "^15.11.0"
   },
   "devDependencies": {
     "@types/dotenv": "^8.2.0",

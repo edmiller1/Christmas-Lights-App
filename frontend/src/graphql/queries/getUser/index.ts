@@ -4,6 +4,7 @@ export const GET_USER = gql`
   query getUser($input: GetUserInput!) {
     getUser(input: $input) {
       id
+      token
       name
       email
       imageId

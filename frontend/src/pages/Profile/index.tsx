@@ -79,23 +79,16 @@ export const Profile = () => {
     navigate("/");
   };
 
-  const hasSession = async () => {
-    const token = await getToken();
-    if (!token) {
-      sessionStorage.removeItem("token");
-    }
-  };
+  const hasSession = sessionStorage.getItem("token");
 
   useEffect(() => {
-    hasSession();
-  }, [getToken]);
+    if (!hasSession) {
+      logout();
+    }
+  }, []);
 
   if (getUserLoading) {
     return <ProfileLoading />;
-  }
-
-  if (!currentUser) {
-    return <SignIn />;
   }
 
   if (logoutLoading) {
@@ -120,7 +113,7 @@ export const Profile = () => {
         type={`Profile for ${currentUser?.name}`}
       />
       {/* Mobile */}
-      <div className="px-8 pt-10 min-h-[118vh] h-full sm:hidden">
+      <div className="px-8 pt-10 min-h-[130vh] h-full sm:hidden">
         {getUserLoading ? (
           <AppHeaderLoading />
         ) : (
@@ -138,22 +131,24 @@ export const Profile = () => {
           </Avatar>
           <span className="text-xl">{currentUser?.name}</span>
         </div>
-        {/* Decoration Card */}
-        {/* <div className="mt-5 rounded-lg border shadow-lg dark:border-black">
-          <div className="flex justify-between items-center p-4">
-            <div className="flex flex-col w-2/3">
-              <span className="text-lg font-semibold">
-                Create your decoration
-              </span>
-              <span className="text-sm mt-2">
-                It's easy to setup and get started.
-              </span>
-            </div>
-            <div className="w-1/3">
-              <img src={svg} alt="Christmas House" className="w-32 h-32" />
+        {/* Premium Card */}
+        {!currentUser?.premium ? (
+          <div
+            className="bg-secondary mt-5 rounded-lg border shadow-lg dark:border-black"
+            onClick={() => navigate("/premium")}
+          >
+            <div className="flex justify-between items-center p-4">
+              <div className="flex flex-col w-2/3">
+                <span className="text-lg font-semibold">Get Premium</span>
+                <span className="text-sm mt-2">Create and explore more</span>
+              </div>
+              <div className="w-1/3 flex justify-end">
+                <CaretRight size={32} weight="bold" />
+              </div>
             </div>
           </div>
-        </div> */}
+        ) : null}
+
         {/* Account Settings */}
         <div className="my-10 ml-1">
           <h2 className="font-semibold text-2xl">Account Settings</h2>

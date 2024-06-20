@@ -60,3 +60,9 @@ export interface DeleteAccountArgs {
     userId: string;
   };
 }
+
+export interface CreateSubscriptionSessionArgs {
+  input: {
+    cancelUrl: string;
+  };
+}

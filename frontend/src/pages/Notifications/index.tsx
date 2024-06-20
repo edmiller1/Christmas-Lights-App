@@ -25,7 +25,7 @@ import { useEffect } from "react";
 
 export const Notifications = () => {
   const { toast } = useToast();
-  const { getToken, isAuthenticated, user } = useKindeAuth();
+  const { getToken, isAuthenticated, logout, user } = useKindeAuth();
 
   const [deleteAllNotifications, { loading: deleteAllNotificationsLoading }] =
     useMutation<DeleteAllNotificationsData>(DELETE_ALL_NOTIFICATIONS, {
@@ -85,16 +85,13 @@ export const Notifications = () => {
     deleteAllNotifications();
   };
 
-  const hasSession = async () => {
-    const token = await getToken();
-    if (!token) {
-      sessionStorage.removeItem("token");
-    }
-  };
+  const hasSession = sessionStorage.getItem("token");
 
   useEffect(() => {
-    hasSession();
-  }, [getToken]);
+    if (!hasSession) {
+      logout();
+    }
+  }, []);
 
   if (getUserNotificationsLoading || getUserLoading) {
     return <NotificationsLoading />;

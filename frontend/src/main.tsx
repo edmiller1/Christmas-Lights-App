@@ -12,6 +12,7 @@ import { KindeProvider } from "@kinde-oss/kinde-auth-react";
 import "./index.css";
 import {
   Admin,
+  CancelSession,
   Decoration,
   Error,
   NotFound,
@@ -59,6 +60,10 @@ const router = createBrowserRouter([
     element: <Premium />,
   },
   {
+    path: "/cancel-session",
+    element: <CancelSession />,
+  },
+  {
     path: "/Search",
     element: <Search />,
     errorElement: <Error />,
@@ -92,8 +97,7 @@ const router = createBrowserRouter([
   },
   {
     path: "/profile",
-    element:
-      isAuthenticated && isAuthenticated.length > 0 ? <Profile /> : <SignIn />,
+    element: <Profile />,
     errorElement: <Error />,
   },
   {
@@ -174,8 +178,6 @@ const client = new ApolloClient({
   version: "0.1",
 });
 
-//TODO Remove the dangerouslyLocalStorage before deployng to prod
-
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
     <KindeProvider
@@ -190,7 +192,6 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
           redirect("/admin");
         }
       }}
-      isDangerouslyUseLocalStorage
     >
       <ApolloProvider client={client}>
         <ThemeProvider defaultTheme="system" storageKey="vite-ui-theme">

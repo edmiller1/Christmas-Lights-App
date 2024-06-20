@@ -16,6 +16,8 @@ datasource db {
 model User {
   id String @id @default(cuid())
   stripe_customer_id String? @unique
+  stripe_session_id String? @unique
+  stripe_subscription_id String? @unique
   name String
   imageId String?
   image String?

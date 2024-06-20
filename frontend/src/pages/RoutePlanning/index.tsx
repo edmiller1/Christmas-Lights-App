@@ -698,6 +698,14 @@ export const RoutePlanning = () => {
     }
   }, [activeDecoration]);
 
+  const hasSession = sessionStorage.getItem("token");
+
+  useEffect(() => {
+    if (!hasSession) {
+      logout();
+    }
+  }, []);
+
   const currentUser = getUserData?.getUser ? getUserData.getUser : null;
 
   return (

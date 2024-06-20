@@ -32,16 +32,7 @@ export const YourDecorations = () => {
     }
   );
 
-  const hasSession = async () => {
-    const token = await getToken();
-    if (!token) {
-      sessionStorage.removeItem("token");
-    }
-  };
-
-  useEffect(() => {
-    hasSession();
-  }, [getToken]);
+  console.log(currentUser?.decorations);
 
   if (getUserLoading) {
     return <YourDecorationsLoading />;
@@ -66,34 +57,36 @@ export const YourDecorations = () => {
         <h2 className="text-2xl font-bold">Your Decorations</h2>
         {currentUser?.decorations && currentUser.decorations.length > 0 ? (
           <div className="grid grid-cols-1 gap-x-6 gap-y-10 my-8">
-            {currentUser?.decorations.map((decoration) => (
-              <Link key={decoration.id} to={`/decoration/${decoration.id}`}>
-                <div className="group">
-                  <div className="w-full h-3/5 overflow-hidden rounded-lg bg-gray-200">
-                    <img
-                      src={decoration.images[0].url}
-                      alt="decoration image"
-                      className="h-80 w-full object-cover object-center"
-                    />
-                  </div>
-                  <div className="flex items-center justify-between">
-                    <h3 className="mt-4 text-lg font-bold">
-                      {decoration.name}
-                    </h3>
-                    <div className="flex items-center space-x-1 mt-3">
-                      <Star
-                        size={20}
-                        className="text-ch-dark dark:text-ch-light"
+            {currentUser?.decorations
+              .filter((decoration) => decoration.images.length > 0)
+              .map((decoration) => (
+                <Link key={decoration.id} to={`/decoration/${decoration.id}`}>
+                  <div className="group">
+                    <div className="w-full h-3/5 overflow-hidden rounded-lg bg-gray-200">
+                      <img
+                        src={decoration.images[0].url}
+                        alt="decoration image"
+                        className="h-80 w-full object-cover object-center"
                       />
-                      <span className="text-lg">{decoration.rating}</span>
                     </div>
+                    <div className="flex items-center justify-between">
+                      <h3 className="mt-4 text-lg font-bold">
+                        {decoration.name}
+                      </h3>
+                      <div className="flex items-center space-x-1 mt-3">
+                        <Star
+                          size={20}
+                          className="text-ch-dark dark:text-ch-light"
+                        />
+                        <span className="text-lg">{decoration.rating}</span>
+                      </div>
+                    </div>
+                    <p className="mt-1">
+                      {decoration.city}, {decoration.country}
+                    </p>
                   </div>
-                  <p className="mt-1">
-                    {decoration.city}, {decoration.country}
-                  </p>
-                </div>
-              </Link>
-            ))}
+                </Link>
+              ))}
           </div>
         ) : (
           <EmptyState
@@ -109,32 +102,34 @@ export const YourDecorations = () => {
         <h1 className="mt-7 font-bold text-4xl">Your Decorations</h1>
         {currentUser?.decorations && currentUser.decorations.length > 0 ? (
           <div className="grid grid-cols-4 gap-x-6 gap-y-10 my-8">
-            {currentUser.decorations.map((decoration) => (
-              <Link key={decoration.id} to={`/decoration/${decoration.id}`}>
-                <div className="group">
-                  <div className="w-full h-3/5 overflow-hidden rounded-lg bg-gray-200">
-                    <img
-                      src={decoration.images[0].url}
-                      alt="decoration image"
-                      className="h-64 w-full object-cover object-center group-hover:opacity-90 transition-all"
-                    />
-                  </div>
-                  <div className="flex items-center justify-between">
-                    <h3 className="mt-4 font-bold">{decoration.name}</h3>
-                    <div className="flex items-center space-x-1 mt-3">
-                      <Star
-                        size={16}
-                        className="text-ch-dark dark:text-ch-light"
+            {currentUser.decorations
+              .filter((decoration) => decoration.images.length > 0)
+              .map((decoration) => (
+                <Link key={decoration.id} to={`/decoration/${decoration.id}`}>
+                  <div className="group">
+                    <div className="w-full h-3/5 overflow-hidden rounded-lg bg-gray-200">
+                      <img
+                        src={decoration.images[0].url}
+                        alt="decoration image"
+                        className="h-64 w-full object-cover object-center group-hover:opacity-90 transition-all"
                       />
-                      <span className="">{decoration.rating}</span>
                     </div>
+                    <div className="flex items-center justify-between">
+                      <h3 className="mt-4 font-bold">{decoration.name}</h3>
+                      <div className="flex items-center space-x-1 mt-3">
+                        <Star
+                          size={16}
+                          className="text-ch-dark dark:text-ch-light"
+                        />
+                        <span className="">{decoration.rating}</span>
+                      </div>
+                    </div>
+                    <p className="mt-1 text-sm">
+                      {decoration.city}, {decoration.country}
+                    </p>
                   </div>
-                  <p className="mt-1 text-sm">
-                    {decoration.city}, {decoration.country}
-                  </p>
-                </div>
-              </Link>
-            ))}
+                </Link>
+              ))}
           </div>
         ) : (
           <EmptyState

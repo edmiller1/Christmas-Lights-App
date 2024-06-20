@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import { prisma } from "../../../database";
 import {
+  CreateSubscriptionSessionArgs,
   DeleteAccountArgs,
   EditAvatarArgs,
   EditNameArgs,
@@ -14,6 +15,12 @@ import { authorise } from "../../../lib/helpers";
 import { Cloudinary } from "../../../lib/cloudinary";
 import { Resend } from "resend";
 import { welcomeEmail } from "../../../lib/emails/welcome";
+import Stripe from "stripe";
+import { update } from "lodash";
+
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
+  apiVersion: "2024-04-10",
+});
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
@@ -161,6 +168,166 @@ export const userResolvers = {
         });
 
         return favourites;
+      } catch (error) {
+        throw new Error(`${error}`);
+      }
+    },
+    createSubscriptionSession: async (
+      _root: undefined,
+      {},
+      { _, req, res }: { _: undefined; req: Request; res: Response }
+    ) => {
+      try {
+        const user = await authorise(req);
+
+        if (!user) {
+          throw new Error("Not authenticated");
+        }
+
+        if (user.premium) {
+          throw new Error("User already has premium subscription");
+        }
+
+        const session = await stripe.checkout.sessions.create({
+          line_items: [
+            {
+              price: process.env.STRIPE_PREMIUM_PRICE_ID,
+              quantity: 1,
+            },
+          ],
+          customer_email: user.email,
+          mode: "subscription",
+          success_url: `${process.env.APP_URL}`,
+          cancel_url: `${process.env.CANCEL_URL}`,
+        });
+
+        if (session) {
+          await prisma.user.update({
+            where: {
+              id: user.id,
+            },
+            data: {
+              stripe_session_id: session.id,
+            },
+          });
+        }
+
+        return session.url;
+      } catch (error) {
+        throw new Error(`${error}`);
+      }
+    },
+    cancelSession: async (
+      _root: undefined,
+      {},
+      { _, req, res }: { _: undefined; req: Request; res: Response }
+    ): Promise<String> => {
+      try {
+        const user = await authorise(req);
+
+        if (!user) {
+          throw new Error("Not authenticated");
+        }
+
+        if (!user.stripe_session_id) {
+          throw new Error("No session found");
+        }
+
+        await prisma.user.update({
+          where: {
+            id: user.id,
+          },
+          data: {
+            stripe_session_id: null,
+          },
+        });
+
+        return "success";
+      } catch (error) {
+        throw new Error(`${error}`);
+      }
+    },
+    confirmSession: async (
+      _root: undefined,
+      {},
+      { _, req, res }: { _: undefined; req: Request; res: Response }
+    ): Promise<User> => {
+      try {
+        const user = await authorise(req);
+
+        if (!user) {
+          throw new Error("Not authenticated");
+        }
+
+        if (user.premium) {
+          throw new Error("User already has premium subscription");
+        }
+
+        if (!user.stripe_session_id) {
+          throw new Error("No session found");
+        }
+
+        const session = await stripe.checkout.sessions.retrieve(
+          user.stripe_session_id
+        );
+
+        if (!session) {
+          throw new Error("Session not found");
+        }
+        if (session && session.status === "complete") {
+          await prisma.user.update({
+            where: {
+              id: user.id,
+            },
+            data: {
+              stripe_customer_id: session.customer as string,
+              stripe_subscription_id: session.subscription as string,
+              stripe_session_id: null,
+              premium: true,
+            },
+          });
+        }
+
+        return user;
+      } catch (error) {
+        throw new Error(`${error}`);
+      }
+    },
+    cancelSubscription: async (
+      _roor: undefined,
+      {},
+      {
+        _,
+        req,
+        res,
+      }: {
+        _: undefined;
+        req: Request;
+        res: Response;
+      }
+    ): Promise<User> => {
+      try {
+        const user = await authorise(req);
+
+        if (!user) {
+          throw new Error("Not authenticated");
+        }
+
+        if (!user.stripe_subscription_id) {
+          throw new Error("No subscription found");
+        }
+
+        await prisma.user.update({
+          where: {
+            id: user.id,
+          },
+          data: {
+            stripe_subscription_id: null,
+            premium: false,
+          },
+        });
+
+        return user;
       } catch (error) {
         throw new Error(`${error}`);
       }

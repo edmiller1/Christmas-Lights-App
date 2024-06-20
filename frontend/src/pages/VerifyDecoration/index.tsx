@@ -25,7 +25,7 @@ import { SEO } from "@/components";
 
 export const VerifyDecoration = () => {
   const { decorationId } = useParams();
-  const { getToken, user } = useKindeAuth();
+  const { logout, user } = useKindeAuth();
   const { toast } = useToast();
   const navigate = useNavigate();
 
@@ -92,16 +92,13 @@ export const VerifyDecoration = () => {
     });
   };
 
-  const hasSession = async () => {
-    const token = await getToken();
-    if (!token) {
-      sessionStorage.removeItem("token");
-    }
-  };
+  const hasSession = sessionStorage.getItem("token");
 
   useEffect(() => {
-    hasSession();
-  }, [getToken]);
+    if (!hasSession) {
+      logout();
+    }
+  }, []);
 
   if (
     (decoration && user && decoration.creator_id !== user.id) ||

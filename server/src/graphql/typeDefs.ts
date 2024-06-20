@@ -5,6 +5,8 @@ export const typeDefs = gql`
   type User {
     id: String!
     stripe_customer_id: String
+    stripe_session_id: String
+    stripe_subscription_id: String
     name: String!
     email: String!
     imageId: String
@@ -323,6 +325,12 @@ export const typeDefs = gql`
     getRecentReports: [Report]!
     getVerificationRequestsCount: Int!
     getUnresolvedReportsCount: Int!
+
+    # Subscription
+    createSubscriptionSession: String!
+    cancelSession: String!
+    confirmSession: User!
+    cancelSubscription: User!
   }
 
   #Mutations

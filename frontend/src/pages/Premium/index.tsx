@@ -1,22 +1,25 @@
-import { Check, Plus } from "@phosphor-icons/react";
+import { CaretLeft, Check, Plus } from "@phosphor-icons/react";
 import logo from "../../assets/logo.png";
 import { Button } from "@/components/ui/button";
 import { premiumFeatures } from "@/lib/constants";
 import { Badge } from "@/components/ui/badge";
 import { AppHeader, Footer } from "@/components";
 import { useKindeAuth } from "@kinde-oss/kinde-auth-react";
-import { useQuery } from "@apollo/client";
+import { useQuery, useLazyQuery } from "@apollo/client";
 import { useNavigate } from "react-router-dom";
-import { useState } from "react";
-import { GET_USER } from "@/graphql/queries";
+import { useEffect, useState } from "react";
+import { CREATE_SUBSCRIPTION_SESSION, GET_USER } from "@/graphql/queries";
 import {
   GetUser as GetUserData,
   GetUserArgs,
   Get_User,
 } from "@/graphql/queries/getUser/types";
+import { CreateSubscriptionSession as CreateSubscriptionSessionData } from "@/graphql/queries/createSubscriptionSession/types";
+import { useToast } from "@/components/ui/use-toast";
 
 export const Premium = () => {
-  const { isAuthenticated, user } = useKindeAuth();
+  const { toast } = useToast();
+  const { getToken, isAuthenticated, user, logout } = useKindeAuth();
   const navigate = useNavigate();
 
   const [currentUser, setCurrentUser] = useState<Get_User | null>(null);
@@ -29,19 +32,62 @@ export const Premium = () => {
     },
   });
 
+  const [createSubscriptionSession] =
+    useLazyQuery<CreateSubscriptionSessionData>(CREATE_SUBSCRIPTION_SESSION, {
+      onCompleted: (data) => {
+        window.location.replace(data.createSubscriptionSession.toString());
+      },
+      onError: () => {
+        toast({
+          variant: "destructive",
+          title: "An error occurred 😬",
+          description: "Please try again later",
+        });
+      },
+    });
+
+  if (currentUser?.premium) {
+    navigate(-1);
+  }
+
   return (
     <>
       <div className="sm:hidden">
-        <AppHeader
-          currentUser={currentUser}
-          isAuthenticated={isAuthenticated}
-        />
         <div className="w-full">
-          <img
-            src="https://images.unsplash.com/photo-1470938017644-581bd9737a31?q=80&w=3272&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
-            alt="image"
-            className="h-72 w-full object-cover object-center"
-          />
+          <div className="relative">
+            <button
+              className="absolute left-3 top-3 px-1 py-1 bg-white rounded-full shadow-lg z-50"
+              onClick={() => navigate(-1)}
+            >
+              <CaretLeft size={24} color="#000000" weight="bold" />
+            </button>
+            <div className="absolute left-5 top-20 z-50">
+              <h2 className="text-3xl font-semibold">Christmas lights App +</h2>
+              <h3 className="text-lg font-semibold">$12 paid annually</h3>
+              <p className="mt-2 text-sm ml-1">cancel anytime</p>
+              {isAuthenticated && currentUser && !currentUser.premium ? (
+                <Button
+                  onClick={() => createSubscriptionSession()}
+                  className="mt-10 h-14 w-full text-xl font-bold"
+                >
+                  Get Premium
+                </Button>
+              ) : (
+                <Button
+                  className="mt-10 h-14 w-full text-xl font-bold"
+                  onClick={() => navigate("/signin")}
+                >
+                  Get Premium
+                </Button>
+              )}
+            </div>
+            <img
+              src="https://images.unsplash.com/photo-1470938017644-581bd9737a31?q=80&w=3272&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+              alt="image"
+              className="h-72 w-full object-cover object-center brightness-75"
+            />
+          </div>
+
           <table className="bg-white divide-gray-300">
             <thead>
               <tr>
@@ -59,9 +105,9 @@ export const Premium = () => {
                 </th>
                 <th
                   scope="col"
-                  className="py-3.5 text-left font-semibold text-gray-900"
+                  className="py-3.5 pl-2.5 text-left font-semibold text-gray-900"
                 >
-                  O
+                  ⭐️
                 </th>
               </tr>
             </thead>
@@ -107,26 +153,6 @@ export const Premium = () => {
             </tbody>
           </table>
         </div>
-        <div className="shadow-xl border-t h-32 flex flex-col justify-center items-center px-5 bg-white fixed bottom-0 left-0 right-0 z-10">
-          {isAuthenticated && currentUser ? (
-            // do the stripe thing
-            <Button
-              onClick={() => navigate("/premium/create")}
-              className="h-14 w-full text-xl font-bold"
-            >
-              Create Decoration
-            </Button>
-          ) : (
-            // go to sign import { first } from 'react-native'
-            <Button
-              className="h-14 w-full text-xl font-bold"
-              onClick={() => navigate("/signin")}
-            >
-              Get Premium
-            </Button>
-          )}
-          <p className="mt-3 text-center text-black">cancel anytime</p>
-        </div>
         <Footer />
       </div>
 
@@ -156,10 +182,24 @@ export const Premium = () => {
                   />
                 </h1>
                 <h2 className="text-2xl ml-4 font-semibold">
-                  $9 paid annually
+                  $12 paid annually
                 </h2>
                 <p className="ml-4 text-sm mt-2">Cancel anytime</p>
-                <Button className="ml-4 mt-10">Get Premium</Button>
+                {isAuthenticated && currentUser && !currentUser.premium ? (
+                  <Button
+                    className="ml-4 mt-10"
+                    onClick={() => createSubscriptionSession()}
+                  >
+                    Get Premium
+                  </Button>
+                ) : (
+                  <Button
+                    className="ml-4 mt-10"
+                    onClick={() => navigate("/signin")}
+                  >
+                    Get Premium
+                  </Button>
+                )}
               </div>
               <div className="p-10 sm:w-full xl:w-1/2">
                 <div className="p-4 h-full w-full rounded-lg bg-white">

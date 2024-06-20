@@ -116,7 +116,7 @@ import { ToastAction } from "@/components/ui/toast";
 export const Decoration = () => {
   const navigate = useNavigate();
   const { decorationId } = useParams();
-  const { getToken, isAuthenticated, user } = useKindeAuth();
+  const { getToken, isAuthenticated, logout, user } = useKindeAuth();
   const { toast } = useToast();
   const [recommendedDecorations, setRecommendedDecorations] =
     useState<Get_Recommended_Decorations[]>();
@@ -501,20 +501,17 @@ export const Decoration = () => {
     });
   };
 
-  const hasSession = async () => {
-    const token = await getToken();
-    if (!token) {
-      sessionStorage.removeItem("token");
+  const hasSession = sessionStorage.getItem("token");
+
+  useEffect(() => {
+    if (!hasSession) {
+      logout();
     }
-  };
+  }, []);
 
   const deleteUserDecoration = (decorationId: string) => {
     deleteDecoration({ variables: { input: { decorationId: decorationId } } });
   };
-
-  useEffect(() => {
-    hasSession();
-  }, [getToken]);
 
   useEffect(() => {
     if (decoration) {

@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import { prisma } from "../../../database";
-import { Decoration, DecorationImage, User } from "@prisma/client";
+import { Decoration, Prisma, PrismaClient, User } from "@prisma/client";
 import {
   AddDecorationToHistoryArgs,
   AddViewArgs,
@@ -25,6 +25,7 @@ import { authorise, calculateRating } from "../../../lib/helpers";
 import { Cloudinary } from "../../../lib/cloudinary";
 import { Resend } from "resend";
 import fetch from "node-fetch";
+import { DefaultArgs } from "@prisma/client/runtime/library";
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
@@ -33,7 +34,15 @@ export const decorationResolvers = {
     getDecoration: async (
       _root: undefined,
       { input }: GetDecorationArgs,
-      { _, req, res }: { _: undefined; req: Request; res: Response }
+      {
+        prisma,
+        req,
+        res,
+      }: {
+        prisma: PrismaClient<Prisma.PrismaClientOptions, never, DefaultArgs>;
+        req: Request;
+        res: Response;
+      }
     ): Promise<Decoration> => {
       try {
         const user = await prisma.user.findFirst({

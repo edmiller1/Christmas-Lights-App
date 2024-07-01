@@ -163,12 +163,14 @@ const authLink = setContext((_, { headers }) => {
       token: token || "",
       latitude: latitude || "",
       longitude: longitude || "",
+      authorization: token || "",
     },
   };
 });
 
 const httpLink = createHttpLink({
   uri: "http://localhost:9000/api",
+  credentials: "same-origin",
 });
 
 const client = new ApolloClient({

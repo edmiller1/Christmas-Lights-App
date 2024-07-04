@@ -1,8 +1,5 @@
 import { Request, Response } from "express";
-import { prisma } from "../../../database";
 import {
-  CreateSubscriptionSessionArgs,
-  DeleteAccountArgs,
   EditAvatarArgs,
   EditNameArgs,
   GetUserArgs,
@@ -16,7 +13,7 @@ import { Cloudinary } from "../../../lib/cloudinary";
 import { Resend } from "resend";
 import { welcomeEmail } from "../../../lib/emails/welcome";
 import Stripe from "stripe";
-import { update } from "lodash";
+import { ApolloContext } from "../../../lib/types";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
   apiVersion: "2024-04-10",
@@ -29,9 +26,10 @@ export const userResolvers = {
     getUser: async (
       _root: undefined,
       { input }: GetUserArgs,
-      { _, req, res }: { _: undefined; req: Request; res: Response }
+      { ctx, req, res }: { ctx: ApolloContext; req: Request; res: Response }
     ) => {
       try {
+        const { prisma, token } = ctx;
         const user = await prisma.user.findFirst({
           where: {
             id: input.id,
@@ -78,9 +76,10 @@ export const userResolvers = {
     getUserNotifications: async (
       _root: undefined,
       {},
-      { _, req, res }: { _: undefined; req: Request; res: Response }
+      { ctx, req, res }: { ctx: ApolloContext; req: Request; res: Response }
     ): Promise<Notification[]> => {
       try {
+        const { prisma, token } = ctx;
         const user = await authorise(req);
 
         if (!user) {
@@ -104,9 +103,10 @@ export const userResolvers = {
     getUnreadNotifications: async (
       _root: undefined,
       {},
-      { _, req, res }: { _: undefined; req: Request; res: Response }
+      { ctx, req, res }: { ctx: ApolloContext; req: Request; res: Response }
     ): Promise<number> => {
       try {
+        const { prisma, token } = ctx;
         const user = await authorise(req);
 
         if (!user) {
@@ -128,9 +128,10 @@ export const userResolvers = {
     searchUserFavourites: async (
       _root: undefined,
       { input }: SearchUserfavouritesArgs,
-      { _, req, res }: { _: undefined; req: Request; res: Response }
+      { ctx, req, res }: { ctx: ApolloContext; req: Request; res: Response }
     ): Promise<Decoration[]> => {
       try {
+        const { prisma, token } = ctx;
         const user = await authorise(req);
 
         if (!user) {
@@ -175,9 +176,10 @@ export const userResolvers = {
     createSubscriptionSession: async (
       _root: undefined,
       {},
-      { _, req, res }: { _: undefined; req: Request; res: Response }
+      { ctx, req, res }: { ctx: ApolloContext; req: Request; res: Response }
     ) => {
       try {
+        const { prisma, token } = ctx;
         const user = await authorise(req);
 
         if (!user) {
@@ -220,9 +222,10 @@ export const userResolvers = {
     cancelSession: async (
       _root: undefined,
       {},
-      { _, req, res }: { _: undefined; req: Request; res: Response }
+      { ctx, req, res }: { ctx: ApolloContext; req: Request; res: Response }
     ): Promise<String> => {
       try {
+        const { prisma, token } = ctx;
         const user = await authorise(req);
 
         if (!user) {
@@ -250,9 +253,10 @@ export const userResolvers = {
     confirmSession: async (
       _root: undefined,
       {},
-      { _, req, res }: { _: undefined; req: Request; res: Response }
+      { ctx, req, res }: { ctx: ApolloContext; req: Request; res: Response }
     ): Promise<User> => {
       try {
+        const { prisma, token } = ctx;
         const user = await authorise(req);
 
         if (!user) {
@@ -297,16 +301,17 @@ export const userResolvers = {
       _roor: undefined,
       {},
       {
-        _,
+        ctx,
         req,
         res,
       }: {
-        _: undefined;
+        ctx: ApolloContext;
         req: Request;
         res: Response;
       }
     ): Promise<User> => {
       try {
+        const { prisma, token } = ctx;
         const user = await authorise(req);
 
         if (!user) {
@@ -337,18 +342,19 @@ export const userResolvers = {
     signIn: async (
       _root: undefined,
       { input }: SignInArgs,
-      { _, req, res }: { _: undefined; req: Request; res: Response }
+      { ctx, req, res }: { ctx: ApolloContext; req: Request; res: Response }
     ): Promise<User | null> => {
       try {
+        const { prisma, token } = ctx;
         let user: User | null = null;
-        const alreadyHasAccount = await prisma.user.findFirst({
+        const alreadyHasAccount = await ctx.prisma.user.findFirst({
           where: {
             id: input.result.id,
           },
         });
 
         if (!alreadyHasAccount) {
-          user = await prisma.user.create({
+          user = await ctx.prisma.user.create({
             data: {
               id: input.result.id,
               stripe_customer_id: null,
@@ -389,9 +395,10 @@ export const userResolvers = {
     editName: async (
       _root: undefined,
       { input }: EditNameArgs,
-      { _, req, res }: { _: undefined; req: Request; res: Response }
+      { ctx, req, res }: { ctx: ApolloContext; req: Request; res: Response }
     ): Promise<User> => {
       try {
+        const { prisma, token } = ctx;
         const user = await authorise(req);
 
         if (!user) {
@@ -415,9 +422,10 @@ export const userResolvers = {
     editAvatar: async (
       _root: undefined,
       { input }: EditAvatarArgs,
-      { _, req, res }: { _: undefined; req: Request; res: Response }
+      { ctx, req, res }: { ctx: ApolloContext; req: Request; res: Response }
     ): Promise<User> => {
       try {
+        const { prisma, token } = ctx;
         const user = await authorise(req);
 
         if (!user) {
@@ -448,9 +456,10 @@ export const userResolvers = {
     mutateNotficationSettings: async (
       _root: undefined,
       { input }: mutateNotficationSettingsArgs,
-      { _, req, res }: { _: undefined; req: Request; res: Response }
+      { ctx, req, res }: { ctx: ApolloContext; req: Request; res: Response }
     ): Promise<User | null> => {
       try {
+        const { prisma, token } = ctx;
         const user = await authorise(req);
 
         if (!user) {
@@ -503,9 +512,10 @@ export const userResolvers = {
     deleteAccount: async (
       _root: undefined,
       {},
-      { _, req, res }: { _: undefined; req: Request; res: Response }
+      { ctx, req, res }: { ctx: ApolloContext; req: Request; res: Response }
     ): Promise<String> => {
       try {
+        const { prisma, token } = ctx;
         const user = await authorise(req);
 
         if (!user) {

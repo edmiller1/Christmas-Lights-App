@@ -14,7 +14,7 @@
     "@cloudinary/react": "^1.13.0",
     "@cloudinary/url-gen": "^1.19.0",
     "@google/generative-ai": "^0.12.0",
-    "@headlessui/react": "^1.7.18",
+    "@headlessui/react": "^2.1.1",
     "@hookform/resolvers": "^3.3.4",
     "@kinde-oss/kinde-auth-react": "^3.0.28",
     "@phosphor-icons/react": "^2.0.15",
@@ -32,6 +32,7 @@
     "@radix-ui/react-switch": "^1.0.3",
     "@radix-ui/react-toast": "^1.1.5",
     "@radix-ui/react-tooltip": "^1.0.7",
+    "@tanstack/react-router": "^1.43.6",
     "@types/mapbox-gl": "^3.1.0",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.0",
@@ -55,6 +56,8 @@
     "zod": "^3.22.4"
   },
   "devDependencies": {
+    "@tanstack/router-devtools": "^1.43.6",
+    "@tanstack/router-plugin": "^1.43.5",
     "@types/node": "^20.11.30",
     "@types/react": "^18.2.66",
     "@types/react-dom": "^18.2.22",

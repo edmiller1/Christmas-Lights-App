@@ -1,27 +1,9 @@
 import { Button } from "@/components/ui/button";
 import { useKindeAuth } from "@kinde-oss/kinde-auth-react";
 import { SEO } from "@/components";
-import { useNavigate } from "react-router-dom";
-import { useQuery } from "@apollo/client";
-import { GET_USER } from "@/graphql/queries";
-import {
-  GetUser as GetUserData,
-  GetUserArgs,
-} from "@/graphql/queries/getUser/types";
 
 export const SignIn = () => {
-  const { login, register, isAuthenticated, user } = useKindeAuth();
-  const navigate = useNavigate();
-
-  //@ts-ignore
-  const { data: getUserData } = useQuery<GetUserData, GetUserArgs>(GET_USER, {
-    variables: { input: { id: user?.id ? user.id : "" } },
-    onCompleted: (data) => {
-      if (data.getUser && isAuthenticated) {
-        navigate(-1);
-      }
-    },
-  });
+  const { login, register } = useKindeAuth();
 
   return (
     <>
@@ -31,7 +13,7 @@ export const SignIn = () => {
         title="Sign In"
         type="Sign In"
       />
-      <div className="min-h-screen flex items-center justify-center py-12">
+      <div className="min-h-screen flex items-center justify-center py-12 px-2">
         <div className="mx-auto grid w-[350px] gap-6">
           <div className="grid gap-2 text-center">
             <h1 className="text-3xl font-bold mb-10">Sign In</h1>

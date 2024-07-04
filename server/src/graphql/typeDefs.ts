@@ -299,11 +299,13 @@ export const typeDefs = gql`
 
   #Queries
   type Query {
-    # App Queries
+    # User
     getUser(input: GetUserInput!): User!
-    getDecoration(input: GetDecorationInput!): Decoration!
     getUserNotifications: [Notification]!
     getUnreadNotifications: Int!
+
+    #Decoration
+    getDecoration(input: GetDecorationInput!): Decoration!
     getRecommendedDecorations(
       input: GetRecommendedDecorationsInput!
     ): [Decoration!]!

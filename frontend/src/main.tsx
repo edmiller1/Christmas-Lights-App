@@ -1,33 +1,9 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
-import App from "./App.tsx";
 import "mapbox-gl/dist/mapbox-gl.css";
-import {
-  RouterProvider,
-  createBrowserRouter,
-  redirect,
-} from "react-router-dom";
 import { HelmetProvider } from "react-helmet-async";
-import { KindeProvider } from "@kinde-oss/kinde-auth-react";
+import { KindeProvider, useKindeAuth } from "@kinde-oss/kinde-auth-react";
 import "./index.css";
-import {
-  Admin,
-  CancelSession,
-  Decoration,
-  Error,
-  NotFound,
-  Notifications,
-  Premium,
-  PrivacyPolicy,
-  Profile,
-  RoutePlanning,
-  Search,
-  SignIn,
-  SignUp,
-  SiteMap,
-  Terms,
-  VerifyDecoration,
-} from "./pages";
 import {
   ApolloClient,
   InMemoryCache,
@@ -37,140 +13,71 @@ import {
 import { setContext } from "@apollo/client/link/context";
 import { ThemeProvider } from "./components/ui/theme-provider.tsx";
 import { Toaster } from "./components/ui/toaster.tsx";
-import { Dashboard } from "./pages/Admin/components/index.ts";
-import {
-  Favourites,
-  History,
-  NotificationSettings,
-  PersonalInfo,
-  YourDecorations,
-} from "./pages/Profile/pages/index.ts";
+import { RouterProvider, createRouter } from "@tanstack/react-router";
+import { routeTree } from "./routeTree.gen.ts";
 
-const isAuthenticated = sessionStorage.getItem("token");
+// Set up a Router instance
+const router = createRouter({
+  routeTree,
+  defaultPreload: "intent",
+  context: {
+    isAuthenticated: false, // This will be set after we wrap the app in an AuthProvider
+  },
+});
 
-console.log(isAuthenticated);
+// Register things for typesafety
+declare module "@tanstack/react-router" {
+  interface Register {
+    router: typeof router;
+  }
+}
 
-const router = createBrowserRouter([
-  {
-    path: "/",
-    element: <App />,
-  },
-  {
-    path: "/premium",
-    element: <Premium />,
-  },
-  {
-    path: "/cancel-session",
-    element: <CancelSession />,
-  },
-  {
-    path: "/Search",
-    element: <Search />,
-    errorElement: <Error />,
-  },
-  { path: "/signup", element: <SignUp />, errorElement: <Error /> },
-  { path: "/signin", element: <SignIn />, errorElement: <Error /> },
-  {
-    path: "/decoration/:decorationId",
-    element: <Decoration />,
-    errorElement: <Error />,
-  },
-  {
-    path: "/verify-decoration/:decorationId",
-    element:
-      isAuthenticated && isAuthenticated.length > 0 ? (
-        <VerifyDecoration />
-      ) : (
-        <NotFound />
-      ),
-    errorElement: <Error />,
-  },
-  {
-    path: "/notifications",
-    element:
-      isAuthenticated && isAuthenticated.length > 0 ? (
-        <Notifications />
-      ) : (
-        <SignIn />
-      ),
-    errorElement: <Error />,
-  },
-  {
-    path: "/profile",
-    element: <Profile />,
-    errorElement: <Error />,
-  },
-  {
-    path: "/profile/personal-info",
-    element: <PersonalInfo />,
-    errorElement: <Error />,
-  },
-  {
-    path: "/profile/notification-settings",
-    element: <NotificationSettings />,
-    errorElement: <Error />,
-  },
-  {
-    path: "/profile/decorations",
-    element: <YourDecorations />,
-    errorElement: <Error />,
-  },
-  { path: "/profile/history", element: <History />, errorElement: <Error /> },
-  {
-    path: "/profile/favourites",
-    element: <Favourites />,
-    errorElement: <Error />,
-  },
-  {
-    path: "/route-planning",
-    element: <RoutePlanning />,
-    errorElement: <Error />,
-  },
-  { path: "/sitemap", element: <SiteMap />, errorElement: <Error /> },
-  { path: "/terms", element: <Terms />, errorElement: <Error /> },
-  {
-    path: "/privacy-policy",
-    element: <PrivacyPolicy />,
-    errorElement: <Error />,
-  },
-  {
-    path: "/admin",
-    element: <Admin />,
-    errorElement: <Error />,
-    children: [
-      {
-        path: "/admin",
-        element: <Dashboard />,
-        errorElement: <Error />,
-      },
-    ],
-  },
-  {
-    path: "*",
-    element: <NotFound />,
-    errorElement: <Error />,
-  },
-]);
+function InnerApp() {
+  const { isAuthenticated } = useKindeAuth();
+  return <RouterProvider router={router} context={{ isAuthenticated }} />;
+}
 
-//@ts-ignore
+function App() {
+  return (
+    <KindeProvider
+      clientId={import.meta.env.VITE_KINDE_CLIENT_ID}
+      domain={import.meta.env.VITE_KINDE_DOMAIN}
+      logoutUri={import.meta.env.VITE_KINDE_LOGOUT_URL}
+      redirectUri={import.meta.env.VITE_KINDE_REDIRECT_URL}
+      isDangerouslyUseLocalStorage
+    >
+      <ApolloProvider client={client}>
+        <ThemeProvider defaultTheme="system" storageKey="vite-ui-theme">
+          <HelmetProvider>
+            <Toaster />
+            <InnerApp />
+          </HelmetProvider>
+        </ThemeProvider>
+      </ApolloProvider>
+    </KindeProvider>
+  );
+}
+
 const authLink = setContext((_, { headers }) => {
-  const token = sessionStorage.getItem("token");
+  // get the authentication token from local storage if it exists
+  const token = localStorage.getItem("kinde_token");
+  const parsedToken = token ? JSON.parse(token) : {};
   const latitude = localStorage.getItem("latitude");
   const longitude = localStorage.getItem("longitude");
 
   return {
     headers: {
-      token: token || "",
+      ...headers,
       latitude: latitude || "",
       longitude: longitude || "",
-      authorization: token || "",
+      authorization: token ? `Bearer ${parsedToken.access_token}` : "",
     },
   };
 });
 
 const httpLink = createHttpLink({
   uri: "http://localhost:9000/api",
-  credentials: "same-origin",
+  credentials: "include",
 });
 
 const client = new ApolloClient({
@@ -182,27 +89,6 @@ const client = new ApolloClient({
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
-    <KindeProvider
-      clientId={import.meta.env.VITE_KINDE_CLIENT_ID}
-      domain={import.meta.env.VITE_KINDE_DOMAIN}
-      logoutUri="http://localhost:3000/"
-      redirectUri="http://localhost:3000/"
-      onRedirectCallback={(user, app_state: any) => {
-        localStorage.setItem("user", JSON.stringify(user));
-        console.log(user);
-        if (app_state && app_state.type === "admin") {
-          redirect("/admin");
-        }
-      }}
-    >
-      <ApolloProvider client={client}>
-        <ThemeProvider defaultTheme="system" storageKey="vite-ui-theme">
-          <HelmetProvider>
-            <Toaster />
-            <RouterProvider router={router} />
-          </HelmetProvider>
-        </ThemeProvider>
-      </ApolloProvider>
-    </KindeProvider>
+    <App />
   </React.StrictMode>
 );

@@ -1,16 +1,7 @@
 require("dotenv").config();
 
 import { ApolloServer } from "@apollo/server";
-import { expressMiddleware } from "@apollo/server/express4";
-import { ApolloServerPluginDrainHttpServer } from "@apollo/server/plugin/drainHttpServer";
-import express from "express";
-import http from "http";
 import { resolvers, typeDefs } from "./graphql";
-import { PrismaClient } from "@prisma/client";
-import cors from "cors";
-import bodyParser from "body-parser";
-import { kindeClient, sessionManager } from "./lib/kinde";
-import { prisma } from "./database";
 import { startStandaloneServer } from "@apollo/server/standalone";
 
 // (async function () {
@@ -52,16 +43,14 @@ import { startStandaloneServer } from "@apollo/server/standalone";
     resolvers,
   });
 
-  const { url } = await startStandaloneServer(server, {
+  await startStandaloneServer(server, {
     listen: { port },
-    context: async ({ req }) => {
-      const token = req.headers.authorization;
-
-      return { prisma, token };
-    },
+    context: async ({ req, res }) => ({
+      token: req.headers.authorization,
+    }),
   });
 
   //seedDb();
 
-  console.log(`🚀 [server]: ${url}`);
+  console.log(`🚀 [server]: http://localhost:${port}`);
 })();

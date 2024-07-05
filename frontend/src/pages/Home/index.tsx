@@ -1,13 +1,34 @@
 import { useEffect, useState } from "react";
 import { Hero } from "./components";
 import { useKindeAuth } from "@kinde-oss/kinde-auth-react";
+import { SIGN_IN } from "@/graphql/mutations";
+import {
+  SignIn as SignInData,
+  SignInArgs,
+} from "@/graphql/mutations/signIn/types";
+import { useToast } from "@/components/ui/use-toast";
+import { useMutation } from "@apollo/client";
 
 const mbApiKey = import.meta.env.VITE_MAPBOX_API_KEY;
 
 export const Home = () => {
+  const { toast } = useToast();
   const { isAuthenticated, login, logout, user } = useKindeAuth();
 
   const [currentPlace, setCurrentPlace] = useState<string>("");
+
+  const [signIn] = useMutation<SignInData, SignInArgs>(SIGN_IN, {
+    variables: {
+      input: {
+        result: {
+          id: user?.id || "",
+          name: user?.given_name + " " + user?.family_name,
+          email: user?.email || "",
+          photoURL: user?.picture || "",
+        },
+      },
+    },
+  });
 
   const getCoords = async () => {
     if (navigator.geolocation) {
@@ -40,6 +61,12 @@ export const Home = () => {
   useEffect(() => {
     getCoords();
   }, []);
+
+  useEffect(() => {
+    if (user) {
+      signIn();
+    }
+  }, [user]);
 
   return (
     <>

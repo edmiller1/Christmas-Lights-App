@@ -1,7 +1,6 @@
 export interface Sign_In {
   __typename: "User";
   id: string;
-  token: string;
 }
 
 export interface SignIn {
@@ -13,7 +12,6 @@ export interface SignInInput {
   name: string;
   email: string;
   photoURL?: string;
-  token: string;
 }
 
 export interface SignInArgs {

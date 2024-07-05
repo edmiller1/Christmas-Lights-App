@@ -1,5 +1,5 @@
-import { useMutation, useQuery } from "@apollo/client";
-import { GET_USER } from "@/graphql/queries";
+import { useLazyQuery, useMutation, useQuery } from "@apollo/client";
+import { GET_UNRESOLVED_REPORTS_COUNT, GET_USER } from "@/graphql/queries";
 import {
   GetUser as GetUserData,
   GetUserArgs,
@@ -36,7 +36,7 @@ export const Profile = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
   const { setTheme } = useTheme();
-  const { getToken, isAuthenticated, logout, user } = useKindeAuth();
+  const { logout, user } = useKindeAuth();
   const [currentTheme, setCurrentTheme] = useState<string | null>(
     localStorage.getItem("vite-ui-theme")
   );
@@ -46,14 +46,30 @@ export const Profile = () => {
   const { loading: getUserLoading } = useQuery<GetUserData, GetUserArgs>(
     GET_USER,
     {
-      variables: { input: { id: user?.id ? user.id : "" } },
+      variables: { input: { id: user?.id ? user.id : "1234" } },
       onCompleted: (data) => {
         if (data) {
+          console.log(data);
           setCurrentUser(data.getUser);
         }
       },
     }
   );
+
+  const [getUser] = useLazyQuery(GET_USER, {
+    onCompleted: (data) => {
+      if (data) {
+        console.log(data);
+        setCurrentUser(data.getUser);
+      }
+    },
+  });
+
+  useEffect(() => {
+    getUser({
+      variables: { input: { id: "1234" } },
+    });
+  }, []);
 
   const changeTheme = () => {
     if (currentTheme === "dark") {
@@ -78,14 +94,6 @@ export const Profile = () => {
     }, 2000);
     navigate("/");
   };
-
-  const hasSession = sessionStorage.getItem("token");
-
-  useEffect(() => {
-    if (!hasSession) {
-      logout();
-    }
-  }, []);
 
   if (getUserLoading) {
     return <ProfileLoading />;
@@ -114,14 +122,7 @@ export const Profile = () => {
       />
       {/* Mobile */}
       <div className="px-8 pt-10 min-h-[130vh] h-full sm:hidden">
-        {getUserLoading ? (
-          <AppHeaderLoading />
-        ) : (
-          <AppHeader
-            currentUser={currentUser}
-            isAuthenticated={isAuthenticated}
-          />
-        )}
+        {getUserLoading ? <AppHeaderLoading /> : <div>Hello</div>}
         <h1 className="text-3xl font-bold">Profile</h1>
         {/* User image & name */}
         <div className="my-5 flex space-x-5 items-center">
@@ -131,6 +132,15 @@ export const Profile = () => {
           </Avatar>
           <span className="text-xl">{currentUser?.name}</span>
         </div>
+        <Button
+          onClick={() =>
+            getUser({
+              variables: { input: { id: "1234" } },
+            })
+          }
+        >
+          Click me
+        </Button>
         {/* Premium Card */}
         {!currentUser?.premium ? (
           <div
@@ -296,19 +306,22 @@ export const Profile = () => {
 
       {/* Desktop */}
       <div className="hidden sm:block">
-        {getUserLoading ? (
-          <AppHeaderLoading />
-        ) : (
-          <AppHeader
-            currentUser={currentUser}
-            isAuthenticated={isAuthenticated}
-          />
-        )}
+        {getUserLoading ? <AppHeaderLoading /> : <div>Hello</div>}
         <div className="lg:mx-28 xl:mx-96 py-24 sm:min-h-screen">
           <h1 className="text-4xl font-bold tracking-wide">Profile</h1>
           <h3 className="mt-2 text-lg">
             {currentUser?.name} - {currentUser?.email}
           </h3>
+          <Button
+            onClick={() => {
+              getUser({
+                variables: { input: { id: "1234" } },
+              });
+              console.log("get user");
+            }}
+          >
+            Click me
+          </Button>
           <div className="mt-10 grid grid-cols-2 gap-x-6 gap-y-10">
             <Card
               className="p-3 cursor-pointer"

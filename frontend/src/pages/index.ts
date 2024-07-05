@@ -11,7 +11,6 @@ export * from "./Profile";
 export * from "./RoutePlanning";
 export * from "./Search";
 export * from "./SignIn";
-export * from "./SignUp";
 export * from "./SiteMap";
 export * from "./Terms";
 export * from "./VerifyDecoration";

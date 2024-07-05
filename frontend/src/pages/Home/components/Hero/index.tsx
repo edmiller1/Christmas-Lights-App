@@ -3,7 +3,7 @@ import { Dialog, DialogPanel } from "@headlessui/react";
 import { List, X } from "@phosphor-icons/react";
 import { Button } from "@/components/ui/button";
 import logo from "@/assets/logo.png";
-import { Link } from "@tanstack/react-router";
+import { Link } from "react-router-dom";
 import { KindeUser } from "@/lib/types";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
@@ -17,6 +17,8 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { ThemeToggle } from "@/components/AppHeader/components";
 import { Input } from "@/components/ui/input";
+import { useNavigate } from "react-router-dom";
+import { Footer } from "@/components";
 
 interface Props {
   currentPlace: string;
@@ -33,6 +35,8 @@ export const Hero = ({
   logout,
   user,
 }: Props) => {
+  const navigate = useNavigate();
+
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   return (
@@ -66,8 +70,7 @@ export const Hero = ({
               Home
             </Link>
             <Link
-              to="/explore"
-              search={{ currentPlace }}
+              to={`/explore?search=${currentPlace}`}
               className="text-sm font-semibold leading-6 hover:underline"
             >
               Explore
@@ -91,7 +94,7 @@ export const Hero = ({
                 <DropdownMenuTrigger asChild>
                   <Button
                     variant="ghost"
-                    className="relative h-8 w-8 rounded-full"
+                    className="relative h-8 w-8 rounded-full mt-1"
                   >
                     <Avatar className="h-9 w-9">
                       <AvatarImage
@@ -119,7 +122,7 @@ export const Hero = ({
                       </Avatar>
                       <div className="flex flex-col space-y-1">
                         <p className="text-sm font-medium leading-none">
-                          {user?.given_name}
+                          {user?.given_name} {user?.family_name}
                         </p>
                         <p className="text-muted-foreground text-xs leading-none">
                           {user?.email}
@@ -131,31 +134,31 @@ export const Hero = ({
                   <DropdownMenuGroup>
                     <DropdownMenuItem
                       className="cursor-pointer"
-                      //onClick={() => navigate("/profile")}
+                      onClick={() => navigate("/profile")}
                     >
                       Profile
                     </DropdownMenuItem>
                     <DropdownMenuItem
                       className="cursor-pointer"
-                      //onClick={() => navigate("/route-planning")}
+                      onClick={() => navigate("/route-planning")}
                     >
                       Route Planning
                     </DropdownMenuItem>
                     <DropdownMenuItem
                       className="cursor-pointer"
-                      //onClick={() => navigate("/profile/decorations")}
+                      onClick={() => navigate("/profile/decorations")}
                     >
                       Decorations
                     </DropdownMenuItem>
                     <DropdownMenuItem
                       className="cursor-pointer"
-                      //onClick={() => navigate("/profile/history")}
+                      onClick={() => navigate("/profile/history")}
                     >
                       History
                     </DropdownMenuItem>
                     <DropdownMenuItem
                       className="cursor-pointer"
-                      //onClick={() => navigate("/profile/favourites")}
+                      onClick={() => navigate("/profile/favourites")}
                     >
                       Favourites
                     </DropdownMenuItem>
@@ -201,8 +204,7 @@ export const Hero = ({
                     Home
                   </Link>
                   <Link
-                    to="/explore"
-                    search={{ currentPlace }}
+                    to={`/explore?search=${currentPlace}`}
                     className="-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7"
                   >
                     Explore
@@ -215,14 +217,52 @@ export const Hero = ({
                   >
                     Get the app
                   </Link>
-                  <Button
-                    variant="link"
-                    className="text-foreground -mx-3 block rounded-lg px-3 py-2.5 text-base font-semibold leading-7"
-                    onClick={() => login()}
-                  >
-                    Log in
-                  </Button>
+                  {!isAuthenticated ? (
+                    <Button
+                      variant="link"
+                      className="text-foreground -mx-3 block rounded-lg px-3 py-2.5 text-base font-semibold leading-7"
+                      onClick={() => login()}
+                    >
+                      Log in
+                    </Button>
+                  ) : null}
                 </div>
+                {isAuthenticated ? (
+                  <div className="-my-6 divide-y divide-gray-500/10">
+                    <div className="space-y-2 py-6">
+                      <Link
+                        to="/profile"
+                        className="-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7"
+                      >
+                        Profile
+                      </Link>
+                      <Link
+                        to="/route-planning"
+                        className="-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7"
+                      >
+                        Route Planning
+                      </Link>
+                      <Link
+                        to="/profile/decorations"
+                        className="-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7"
+                      >
+                        Decorations
+                      </Link>
+                      <Link
+                        to="/profile/history"
+                        className="-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7"
+                      >
+                        History
+                      </Link>
+                      <Link
+                        to="/profile/favourites"
+                        className="-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7"
+                      >
+                        Favourites
+                      </Link>
+                    </div>
+                  </div>
+                ) : null}
                 <div className="py-6 w-full">
                   <Button className="w-full rounded-full">Get Premium</Button>
                 </div>
@@ -232,7 +272,7 @@ export const Hero = ({
         </Dialog>
       </header>
 
-      <div className="relative isolate px-6 pt-14 lg:px-8">
+      <div className="min-h-screen relative isolate px-6 pt-14 lg:px-8">
         <div
           className="absolute inset-x-0 -top-40 -z-10 transform-gpu overflow-hidden blur-2xl sm:-top-80"
           aria-hidden="true"
@@ -276,6 +316,7 @@ export const Hero = ({
           />
         </div>
       </div>
+      <Footer />
     </div>
   );
 };

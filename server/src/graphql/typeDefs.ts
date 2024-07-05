@@ -135,7 +135,6 @@ export const typeDefs = gql`
     name: String!
     email: String!
     photoURL: String
-    token: String!
   }
 
   input SignInInput {
@@ -300,7 +299,7 @@ export const typeDefs = gql`
   #Queries
   type Query {
     # User
-    getUser(input: GetUserInput!): User!
+    getUser: User!
     getUserNotifications: [Notification]!
     getUnreadNotifications: Int!
 

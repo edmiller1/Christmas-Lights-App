@@ -74,19 +74,19 @@ function App() {
     ? decorationsByRatingData.getDecorationsByRating
     : null;
 
-  const [signIn] = useMutation<SignInData, SignInArgs>(SIGN_IN, {
-    onCompleted: (data) => {
-      if (localStorage.getItem("user")) {
-        toast({
-          variant: "default",
-          title: "Signed in Successfully!",
-        });
-      }
-      sessionStorage.setItem("token", data.signIn.token);
-      localStorage.removeItem("user");
-      getUser({ variables: { input: { id: data.signIn.id } } });
-    },
-  });
+  // const [signIn] = useMutation<SignInData, SignInArgs>(SIGN_IN, {
+  //   onCompleted: (data) => {
+  //     if (localStorage.getItem("user")) {
+  //       toast({
+  //         variant: "default",
+  //         title: "Signed in Successfully!",
+  //       });
+  //     }
+  //     sessionStorage.setItem("token", data.signIn.token);
+  //     localStorage.removeItem("user");
+  //     getUser({ variables: { input: { id: data.signIn.id } } });
+  //   },
+  // });
 
   const signInUser = async () => {
     const hasToken = (await getToken()) ?? "";
@@ -107,7 +107,7 @@ function App() {
           },
         };
 
-        signIn({ variables: { input: data.input } });
+        //signIn({ variables: { input: data.input } });
       }
     }
     localStorage.removeItem("user");

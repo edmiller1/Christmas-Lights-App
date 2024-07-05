@@ -3,8 +3,6 @@ export interface KindeAuthResult {
   name: string;
   email: string;
   photoURL?: string;
-  provider: string;
-  token: string;
 }
 
 export interface SignInArgs {

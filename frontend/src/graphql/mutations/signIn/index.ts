@@ -4,7 +4,6 @@ export const SIGN_IN = gql`
   mutation signIn($input: SignInInput!) {
     signIn(input: $input) {
       id
-      token
     }
   }
 `;

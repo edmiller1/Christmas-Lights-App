@@ -394,7 +394,7 @@ export const userResolvers = {
               email: input.result.email,
               image: input.result.photoURL,
               name: input.result.name,
-              token: "",
+              token: "-",
               isAdmin: false,
               notifications_by_email_rating: true,
               notifications_by_email_verification: true,

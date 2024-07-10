@@ -2,7 +2,8 @@ import { Request, Response } from "express";
 import { prisma } from "../../../database";
 import { Notification, User } from "@prisma/client";
 import { MutateNotificationArgs } from "./types";
-import { authorise } from "../../../lib/helpers";
+import { ApolloContext } from "../../../lib/types";
+import { jwtDecode } from "jwt-decode";
 
 export const notificationResolvers = {
   Query: {},
@@ -10,13 +11,24 @@ export const notificationResolvers = {
     markNotificationAsRead: async (
       _root: undefined,
       { input }: MutateNotificationArgs,
-      { _, req, res }: { _: undefined; req: Request; res: Response }
+      context: any
     ): Promise<User> => {
       try {
-        const user = await authorise(req);
+        const token = context.request.headers.get("authorization");
+        const decodedToken = jwtDecode(token || "");
+
+        if (!decodedToken) {
+          throw new Error("Token not found");
+        }
+
+        const user = await prisma.user.findFirst({
+          where: {
+            id: decodedToken.sub,
+          },
+        });
 
         if (!user) {
-          throw new Error("Not authenticated");
+          throw new Error("User not found");
         }
 
         await prisma.notification.update({
@@ -36,13 +48,24 @@ export const notificationResolvers = {
     markNotificationAsUnread: async (
       _root: undefined,
       { input }: MutateNotificationArgs,
-      { _, req, res }: { _: undefined; req: Request; res: Response }
+      context: any
     ): Promise<User> => {
       try {
-        const user = await authorise(req);
+        const token = context.request.headers.get("authorization");
+        const decodedToken = jwtDecode(token || "");
+
+        if (!decodedToken) {
+          throw new Error("Token not found");
+        }
+
+        const user = await prisma.user.findFirst({
+          where: {
+            id: decodedToken.sub,
+          },
+        });
 
         if (!user) {
-          throw new Error("Not authenticated");
+          throw new Error("User not found");
         }
 
         await prisma.notification.update({
@@ -66,13 +89,24 @@ export const notificationResolvers = {
     markAllNotificationsAsRead: async (
       _root: undefined,
       {},
-      { _, req, res }: { _: undefined; req: Request; res: Response }
+      context: any
     ): Promise<User> => {
       try {
-        const user = await authorise(req);
+        const token = context.request.headers.get("authorization");
+        const decodedToken = jwtDecode(token || "");
+
+        if (!decodedToken) {
+          throw new Error("Token not found");
+        }
+
+        const user = await prisma.user.findFirst({
+          where: {
+            id: decodedToken.sub,
+          },
+        });
 
         if (!user) {
-          throw new Error("Not authenticated");
+          throw new Error("User not found");
         }
         await prisma.notification.updateMany({
           where: {
@@ -91,13 +125,24 @@ export const notificationResolvers = {
     deleteNotification: async (
       _root: undefined,
       { input }: MutateNotificationArgs,
-      { _, req, res }: { _: undefined; req: Request; res: Response }
+      context: any
     ): Promise<User> => {
       try {
-        const user = await authorise(req);
+        const token = context.request.headers.get("authorization");
+        const decodedToken = jwtDecode(token || "");
+
+        if (!decodedToken) {
+          throw new Error("Token not found");
+        }
+
+        const user = await prisma.user.findFirst({
+          where: {
+            id: decodedToken.sub,
+          },
+        });
 
         if (!user) {
-          throw new Error("Not authenticated");
+          throw new Error("User not found");
         }
 
         await prisma.notification.delete({
@@ -114,13 +159,24 @@ export const notificationResolvers = {
     deleteAllNotifications: async (
       _root: undefined,
       {},
-      { _, req, res }: { _: undefined; req: Request; res: Response }
+      context: any
     ): Promise<User> => {
       try {
-        const user = await authorise(req);
+        const token = context.request.headers.get("authorization");
+        const decodedToken = jwtDecode(token || "");
+
+        if (!decodedToken) {
+          throw new Error("Token not found");
+        }
+
+        const user = await prisma.user.findFirst({
+          where: {
+            id: decodedToken.sub,
+          },
+        });
 
         if (!user) {
-          throw new Error("Not authenticated");
+          throw new Error("User not found");
         }
 
         await prisma.notification.deleteMany({

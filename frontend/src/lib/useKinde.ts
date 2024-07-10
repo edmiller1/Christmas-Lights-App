@@ -10,14 +10,13 @@ export const KindeContext = createContext<KindeContext>({
 });
 
 export const useKinde = () => {
-  const { getToken } = useKindeAuth();
-  const refreshToken = localStorage.getItem("kinde_refresh_token");
+  const { getToken, user } = useKindeAuth();
   const [token, setToken] = useState("");
 
   const getUserToken = async () => {
     try {
-      console.log("refreshToken", refreshToken);
-      getToken().then((res) => {
+      await getToken().then((res) => {
+        console.log(res);
         setToken(res || "");
       });
     } catch (err) {
@@ -27,7 +26,7 @@ export const useKinde = () => {
 
   useEffect(() => {
     getUserToken();
-  }, [getToken()]);
+  }, [user]);
 
   return { token };
 };

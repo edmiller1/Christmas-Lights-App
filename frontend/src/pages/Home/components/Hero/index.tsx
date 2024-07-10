@@ -261,6 +261,15 @@ export const Hero = ({
                         Favourites
                       </Link>
                     </div>
+                    <div className="py-6 w-full">
+                      <Button
+                        variant="default"
+                        className="w-full rounded-full bg-secondary"
+                        onClick={() => logout()}
+                      >
+                        Log Out
+                      </Button>
+                    </div>
                   </div>
                 ) : null}
                 <div className="py-6 w-full">

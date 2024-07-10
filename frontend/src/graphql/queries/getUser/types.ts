@@ -3,7 +3,6 @@ import { Decoration, Rating, Route } from "@/lib/types";
 export interface Get_User {
   __typename: "User";
   id: string;
-  token: string;
   name: string;
   email: string;
   imageId: string | null;

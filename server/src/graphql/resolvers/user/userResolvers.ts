@@ -1,25 +1,21 @@
 import { Request, Response } from "express";
 import { prisma } from "../../../database";
 import {
-  CreateSubscriptionSessionArgs,
-  DeleteAccountArgs,
   EditAvatarArgs,
   EditNameArgs,
-  GetUserArgs,
   SearchUserfavouritesArgs,
   SignInArgs,
   mutateNotficationSettingsArgs,
 } from "./types";
 import { Decoration, Notification, User } from "@prisma/client";
-import { authorise } from "../../../lib/helpers";
 import { Cloudinary } from "../../../lib/cloudinary";
 import { Resend } from "resend";
 import { welcomeEmail } from "../../../lib/emails/welcome";
 import Stripe from "stripe";
-import { update } from "lodash";
 import { ApolloContext } from "../../../lib/types";
-import { kindeClient, sessionManager } from "../../../lib/kinde";
-import { jwtDecode } from "jwt-decode";
+import { JwtPayload, jwtDecode } from "jwt-decode";
+import "core-js/stable/atob";
+import { authorise } from "../../../lib/helpers";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
   apiVersion: "2024-04-10",
@@ -29,12 +25,10 @@ const resend = new Resend(process.env.RESEND_API_KEY);
 
 export const userResolvers = {
   Query: {
-    getUser: async (
-      _root: undefined,
-      context: ApolloContext
-    ): Promise<User | null> => {
+    getUser: async (_root: undefined, {}, context: any): Promise<User> => {
       try {
-        const decodedToken = jwtDecode(context.token || "");
+        const token = context.request.headers.get("authorization");
+        const decodedToken = jwtDecode(token || "");
 
         if (!decodedToken) {
           throw new Error("Token not found");
@@ -86,13 +80,14 @@ export const userResolvers = {
     getUserNotifications: async (
       _root: undefined,
       {},
-      context: ApolloContext
+      context: any
     ): Promise<Notification[]> => {
       try {
-        const decodedToken = jwtDecode(context.token || "");
+        const token = context.request.headers.get("authorization");
+        const decodedToken = jwtDecode(token || "");
 
         if (!decodedToken) {
-          throw new Error("Not authenticated");
+          throw new Error("Token not found");
         }
 
         const userNotifications = await prisma.notification.findMany({
@@ -112,13 +107,14 @@ export const userResolvers = {
     getUnreadNotifications: async (
       _root: undefined,
       {},
-      context: ApolloContext
+      context: any
     ): Promise<number> => {
       try {
-        const decodedToken = jwtDecode(context.token || "");
+        const token = context.request.headers.get("authorization");
+        const decodedToken = jwtDecode(token || "");
 
         if (!decodedToken) {
-          throw new Error("Not authenticated");
+          throw new Error("Token not found");
         }
 
         const userUnreadNotificationsCount = await prisma.notification.count({
@@ -136,13 +132,14 @@ export const userResolvers = {
     searchUserFavourites: async (
       _root: undefined,
       { input }: SearchUserfavouritesArgs,
-      context: ApolloContext
+      context: any
     ): Promise<Decoration[]> => {
       try {
-        const decodedToken = jwtDecode(context.token || "");
+        const token = context.request.headers.get("authorization");
+        const decodedToken = jwtDecode(token || "");
 
         if (!decodedToken) {
-          throw new Error("Not authenticated");
+          throw new Error("Token not found");
         }
 
         const favourites = await prisma.decoration.findMany({
@@ -180,16 +177,13 @@ export const userResolvers = {
         throw new Error(`${error}`);
       }
     },
-    createSubscriptionSession: async (
-      _root: undefined,
-      {},
-      context: ApolloContext
-    ) => {
+    createSubscriptionSession: async (_root: undefined, {}, context: any) => {
       try {
-        const decodedToken = jwtDecode(context.token || "");
+        const token = context.request.headers.get("authorization");
+        const decodedToken = jwtDecode(token || "");
 
         if (!decodedToken) {
-          throw new Error("Not authenticated");
+          throw new Error("Token not found");
         }
 
         const user = await prisma.user.findFirst({
@@ -238,13 +232,14 @@ export const userResolvers = {
     cancelSession: async (
       _root: undefined,
       {},
-      context: ApolloContext
+      context: any
     ): Promise<String> => {
       try {
-        const decodedToken = jwtDecode(context.token || "");
+        const token = context.request.headers.get("authorization");
+        const decodedToken = jwtDecode(token || "");
 
         if (!decodedToken) {
-          throw new Error("Not authenticated");
+          throw new Error("Token not found");
         }
 
         const user = await prisma.user.findFirst({
@@ -278,13 +273,14 @@ export const userResolvers = {
     confirmSession: async (
       _root: undefined,
       {},
-      context: ApolloContext
+      context: any
     ): Promise<User> => {
       try {
-        const decodedToken = jwtDecode(context.token || "");
+        const token = context.request.headers.get("authorization");
+        const decodedToken = jwtDecode(token || "");
 
         if (!decodedToken) {
-          throw new Error("Not authenticated");
+          throw new Error("Token not found");
         }
 
         const user = await prisma.user.findFirst({
@@ -334,13 +330,14 @@ export const userResolvers = {
     cancelSubscription: async (
       _root: undefined,
       {},
-      context: ApolloContext
+      context: any
     ): Promise<User> => {
       try {
-        const decodedToken = jwtDecode(context.token || "");
+        const token = context.request.headers.get("authorization");
+        const decodedToken = jwtDecode(token || "");
 
         if (!decodedToken) {
-          throw new Error("Not authenticated");
+          throw new Error("Token not found");
         }
 
         const user = await prisma.user.findFirst({
@@ -394,7 +391,6 @@ export const userResolvers = {
               email: input.result.email,
               image: input.result.photoURL,
               name: input.result.name,
-              token: "-",
               isAdmin: false,
               notifications_by_email_rating: true,
               notifications_by_email_verification: true,
@@ -421,13 +417,14 @@ export const userResolvers = {
     editName: async (
       _root: undefined,
       { input }: EditNameArgs,
-      context: ApolloContext
+      context: any
     ): Promise<User> => {
       try {
-        const decodedToken = jwtDecode(context.token || "");
+        const token = context.request.headers.get("authorization");
+        const decodedToken = jwtDecode(token || "");
 
         if (!decodedToken) {
-          throw new Error("Not authenticated");
+          throw new Error("Token not found");
         }
 
         const user = await prisma.user.update({
@@ -447,13 +444,14 @@ export const userResolvers = {
     editAvatar: async (
       _root: undefined,
       { input }: EditAvatarArgs,
-      context: ApolloContext
+      context: any
     ): Promise<User> => {
       try {
-        const decodedToken = jwtDecode(context.token || "");
+        const token = context.request.headers.get("authorization");
+        const decodedToken = jwtDecode(token || "");
 
         if (!decodedToken) {
-          throw new Error("Not authenticated");
+          throw new Error("Token not found");
         }
 
         if (input.imageId !== null) {
@@ -480,13 +478,14 @@ export const userResolvers = {
     mutateNotficationSettings: async (
       _root: undefined,
       { input }: mutateNotficationSettingsArgs,
-      context: ApolloContext
+      context: any
     ): Promise<User | null> => {
       try {
-        const decodedToken = jwtDecode(context.token || "");
+        const token = context.request.headers.get("authorization");
+        const decodedToken = jwtDecode(token || "");
 
         if (!decodedToken) {
-          throw new Error("Not authenticated");
+          throw new Error("Token not found");
         }
 
         let user: User | null = null;
@@ -537,13 +536,14 @@ export const userResolvers = {
     deleteAccount: async (
       _root: undefined,
       {},
-      context: ApolloContext
+      context: any
     ): Promise<String> => {
       try {
-        const decodedToken = jwtDecode(context.token || "");
+        const token = context.request.headers.get("authorization");
+        const decodedToken = jwtDecode(token || "");
 
         if (!decodedToken) {
-          throw new Error("Not authenticated");
+          throw new Error("Token not found");
         }
 
         const user = await prisma.user.findFirst({
@@ -564,7 +564,7 @@ export const userResolvers = {
           html: `<p>User ${user.name} wishes to have their account deleted.</p>
           <p>Please log into the Kinde authentication portal and delete user.</p>
           &nbsp;
-          <p>Please make sure to check Supabase DB for the user and any decorations the user may have before deleting from Kinde.</p>
+          <p>Please make sure to check the Neon DB for the user and any decorations the user may have before deleting from Kinde.</p>
           &nbsp;
           <ul>
             <li>User Id: ${user.id}</li>

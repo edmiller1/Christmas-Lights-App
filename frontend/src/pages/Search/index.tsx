@@ -408,7 +408,7 @@ export const Search = () => {
               <div className="h-10 w-1/4 rounded-lg animate-pulse bg-gray-200 dark:bg-zinc-700"></div>
             ) : (
               <span className="font-semibold">
-                Showing top results for: <strong>{searchQuery}</strong>
+                Showing top results for: <strong>Sydney</strong>
               </span>
             )}
             {getDecorationsViaCountryLoading ||

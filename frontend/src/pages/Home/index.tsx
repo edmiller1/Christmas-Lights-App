@@ -6,13 +6,11 @@ import {
   SignIn as SignInData,
   SignInArgs,
 } from "@/graphql/mutations/signIn/types";
-import { useToast } from "@/components/ui/use-toast";
 import { useMutation } from "@apollo/client";
 
 const mbApiKey = import.meta.env.VITE_MAPBOX_API_KEY;
 
 export const Home = () => {
-  const { toast } = useToast();
   const { isAuthenticated, login, logout, user } = useKindeAuth();
 
   const [currentPlace, setCurrentPlace] = useState<string>("");

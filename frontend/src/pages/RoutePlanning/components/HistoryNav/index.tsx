@@ -163,19 +163,13 @@ export const HistoryNav = ({
               placeholder="Search History"
               value={searchWord}
               onChange={(e) => handleSearchWord(e)}
-              className="bg-gray-100"
             />
             <Button
               disabled={!searchWord}
               variant="outline"
               onClick={filterUserHistory}
-              className="bg-gray-100"
             >
-              <MagnifyingGlass
-                size={16}
-                weight="bold"
-                className="text-ch-dark dark:text-ch-light"
-              />
+              <MagnifyingGlass size={16} weight="bold" />
             </Button>
           </div>
         </div>

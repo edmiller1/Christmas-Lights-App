@@ -3,54 +3,49 @@ require("dotenv").config();
 import { ApolloServer } from "@apollo/server";
 import { resolvers, typeDefs } from "./graphql";
 import { startStandaloneServer } from "@apollo/server/standalone";
+import { createSchema, createYoga } from "graphql-yoga";
+import { createServer } from "node:http";
+
+const port = Number(process.env.PORT);
+
+const schema = createSchema({
+  typeDefs,
+  resolvers,
+});
+
+// Create a Yoga instance with a GraphQL schema.
+const yoga = createYoga({
+  //@ts-ignore
+  schema,
+  graphqlEndpoint: "/api",
+  // context: async ({ request }) => {
+  //   // get custom header value
+  //   const foo = request.headers.get("x-foo") ?? null;
+  //   return { foo };
+  // },
+});
+
+// Pass it into a server to hook into request handlers.
+const server = createServer(yoga);
+
+server.listen(port, () => {
+  console.info(`🚀 [server]: http://localhost:${port}/api`);
+});
 
 // (async function () {
-//   const app = express();
-//   const port = process.env.PORT;
-//   const httpServer = http.createServer(app);
+//   const port = Number(process.env.PORT);
 
-//   // Set up Apollo Server
 //   const server = new ApolloServer({
 //     typeDefs,
 //     resolvers,
-//     plugins: [ApolloServerPluginDrainHttpServer({ httpServer })],
 //   });
-//   await server.start();
 
-//   app.use(
-//     cors(),
-//     bodyParser.json(),
-//     expressMiddleware(server, {
-//       context: async ({ req }) => {
-//         //add token ot user to context
-//         const token = req.get("authorization");
-//         return { prisma, token };
-//       },
-//     })
-//   );
+//   await startStandaloneServer(server, {
+//     listen: { port },
+//     context: async ({ req, res }) => ({}),
+//   });
 
-//   await new Promise<void>((resolve) =>
-//     httpServer.listen({ port: port }, resolve)
-//   );
+//   //seedDb();
+
 //   console.log(`🚀 [server]: http://localhost:${port}`);
 // })();
-
-(async function () {
-  const port = Number(process.env.PORT);
-
-  const server = new ApolloServer({
-    typeDefs,
-    resolvers,
-  });
-
-  await startStandaloneServer(server, {
-    listen: { port },
-    context: async ({ req, res }) => ({
-      token: req.headers.authorization,
-    }),
-  });
-
-  //seedDb();
-
-  console.log(`🚀 [server]: http://localhost:${port}`);
-})();

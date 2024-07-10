@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import { prisma } from "../../../database";
-import { Decoration, Prisma, PrismaClient, User } from "@prisma/client";
+import { Decoration, DecorationImage, User } from "@prisma/client";
 import {
   AddDecorationToHistoryArgs,
   AddViewArgs,
@@ -21,11 +21,12 @@ import {
   removeDecorationFromHistoryArgs,
   unfavouriteDecorationArgs,
 } from "./types";
-import { authorise, calculateRating } from "../../../lib/helpers";
+import { calculateRating, optimizeImages } from "../../../lib/helpers";
 import { Cloudinary } from "../../../lib/cloudinary";
 import { Resend } from "resend";
 import fetch from "node-fetch";
-import { DefaultArgs } from "@prisma/client/runtime/library";
+import { jwtDecode } from "jwt-decode";
+import { ratingEmail } from "../../../lib/emails/rating";
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
@@ -34,20 +35,15 @@ export const decorationResolvers = {
     getDecoration: async (
       _root: undefined,
       { input }: GetDecorationArgs,
-      {
-        prisma,
-        req,
-        res,
-      }: {
-        prisma: PrismaClient<Prisma.PrismaClientOptions, never, DefaultArgs>;
-        req: Request;
-        res: Response;
-      }
+      context: any
     ): Promise<Decoration> => {
       try {
+        const token = context.request.headers.get("authorization");
+        const decodedToken = jwtDecode(token || "");
+
         const user = await prisma.user.findFirst({
           where: {
-            id: input.userId,
+            id: decodedToken.sub,
           },
         });
 
@@ -79,8 +75,7 @@ export const decorationResolvers = {
     },
     getRecommendedDecorations: async (
       _root: undefined,
-      { input }: GetRecommendedDecorationsArgs,
-      { _, req, res }: { _: undefined; req: Request; res: Response }
+      { input }: GetRecommendedDecorationsArgs
     ): Promise<Decoration[]> => {
       try {
         const decorations = await prisma.decoration.findMany({
@@ -110,9 +105,26 @@ export const decorationResolvers = {
     getVerificationSubmissions: async (
       _root: undefined,
       {},
-      { _, req, res }: { _: undefined; req: Request; res: Response }
+      context: any
     ): Promise<Decoration[]> => {
       try {
+        const token = context.request.headers.get("authorization");
+        const decodedToken = jwtDecode(token || "");
+
+        if (!decodedToken) {
+          throw new Error("Token not found");
+        }
+
+        const user = await prisma.user.findFirst({
+          where: {
+            id: decodedToken.sub,
+          },
+        });
+
+        if (!user || !user.isAdmin) {
+          throw new Error("User not found or user is not an admin");
+        }
+
         const decorations = await prisma.decoration.findMany({
           where: {
             verification_submitted: true,
@@ -415,16 +427,27 @@ export const decorationResolvers = {
     createDecoration: async (
       _root: undefined,
       { input }: CreateDecorationArgs,
-      { _, req, res }: { _: undefined; req: Request; res: Response }
+      context: any
     ): Promise<Decoration | null> => {
       try {
-        let newDecoration = null;
+        const token = context.request.headers.get("authorization");
+        const decodedToken = jwtDecode(token || "");
 
-        const user = await authorise(req);
+        if (!decodedToken) {
+          throw new Error("Token not found");
+        }
+
+        const user = await prisma.user.findFirst({
+          where: {
+            id: decodedToken.sub,
+          },
+        });
 
         if (!user) {
-          throw new Error("Not authenticated");
+          throw new Error("User not found");
         }
+
+        let newDecoration = null;
 
         // const regex = /\b\d{1,5}\s[\w\s'&.-]+,\s[\w\s'&.-]+\b/;
 
@@ -474,13 +497,24 @@ export const decorationResolvers = {
     editDecoration: async (
       _root: undefined,
       { input }: EditDecorationArgs,
-      { _, req, res }: { _: undefined; req: Request; res: Response }
+      context: any
     ): Promise<Decoration> => {
       try {
-        const user = await authorise(req);
+        const token = context.request.headers.get("authorization");
+        const decodedToken = jwtDecode(token || "");
+
+        if (!decodedToken) {
+          throw new Error("Token not found");
+        }
+
+        const user = await prisma.user.findFirst({
+          where: {
+            id: decodedToken.sub,
+          },
+        });
 
         if (!user) {
-          throw new Error("Not authenticated");
+          throw new Error("User not found");
         }
 
         const newImages: { id: string; url: string }[] = [];
@@ -524,13 +558,24 @@ export const decorationResolvers = {
     favouriteDecoration: async (
       _root: undefined,
       { input }: FavouriteDecorationArgs,
-      { _, req, res }: { _: undefined; req: Request; res: Response }
+      context: any
     ): Promise<User> => {
       try {
-        const user = await authorise(req);
+        const token = context.request.headers.get("authorization");
+        const decodedToken = jwtDecode(token || "");
+
+        if (!decodedToken) {
+          throw new Error("Token not found");
+        }
+
+        const user = await prisma.user.findFirst({
+          where: {
+            id: decodedToken.sub,
+          },
+        });
 
         if (!user) {
-          throw new Error("Not authenticated");
+          throw new Error("User not found");
         }
 
         await prisma.user.update({
@@ -554,13 +599,24 @@ export const decorationResolvers = {
     unfavouriteDecoration: async (
       _root: undefined,
       { input }: unfavouriteDecorationArgs,
-      { _, req, res }: { _: undefined; req: Request; res: Response }
+      context: any
     ): Promise<User> => {
       try {
-        const user = await authorise(req);
+        const token = context.request.headers.get("authorization");
+        const decodedToken = jwtDecode(token || "");
+
+        if (!decodedToken) {
+          throw new Error("Token not found");
+        }
+
+        const user = await prisma.user.findFirst({
+          where: {
+            id: decodedToken.sub,
+          },
+        });
 
         if (!user) {
-          throw new Error("Not authenticated");
+          throw new Error("User not found");
         }
 
         await prisma.user.update({
@@ -607,13 +663,24 @@ export const decorationResolvers = {
     rateDecoration: async (
       _root: undefined,
       { input }: RateDecorationArgs,
-      { _, req, res }: { _: undefined; req: Request; res: Response }
+      context: any
     ): Promise<Decoration> => {
       try {
-        const user = await authorise(req);
+        const token = context.request.headers.get("authorization");
+        const decodedToken = jwtDecode(token || "");
+
+        if (!decodedToken) {
+          throw new Error("Token not found");
+        }
+
+        const user = await prisma.user.findFirst({
+          where: {
+            id: decodedToken.sub,
+          },
+        });
 
         if (!user) {
-          throw new Error("Not authenticated");
+          throw new Error("User not found");
         }
 
         const decoration = await prisma.decoration.findFirst({
@@ -666,11 +733,7 @@ export const decorationResolvers = {
             from: "christmaslightsapp.com",
             to: owner.email,
             subject: "New Decoration Rating",
-            html: `<p>New Decoration Rating</p>
-            <p>Your decoration ${decoration.name} has recieved a new rating</p>
-            &nbsp;
-            <p>${decoration.name} recieved a rating of ${input.rating}</p>
-            `,
+            html: ratingEmail(input.rating, owner, decoration.name),
           });
         }
         if (owner.notifications_on_app_rating) {
@@ -693,13 +756,24 @@ export const decorationResolvers = {
     editRating: async (
       _root: undefined,
       { input }: EditRatingArgs,
-      { _, req, res }: { _: undefined; req: Request; res: Response }
+      context: any
     ): Promise<User> => {
       try {
-        const user = await authorise(req);
+        const token = context.request.headers.get("authorization");
+        const decodedToken = jwtDecode(token || "");
+
+        if (!decodedToken) {
+          throw new Error("Token not found");
+        }
+
+        const user = await prisma.user.findFirst({
+          where: {
+            id: decodedToken.sub,
+          },
+        });
 
         if (!user) {
-          throw new Error("Not authenticated");
+          throw new Error("User not found");
         }
 
         await prisma.rating.update({
@@ -723,10 +797,21 @@ export const decorationResolvers = {
     deleteRating: async (
       _root: undefined,
       { input }: DeleteRatingArgs,
-      { _, req, res }: { _: undefined; req: Request; res: Response }
+      context: any
     ): Promise<User> => {
       try {
-        const user = await authorise(req);
+        const token = context.request.headers.get("authorization");
+        const decodedToken = jwtDecode(token || "");
+
+        if (!decodedToken) {
+          throw new Error("Token not found");
+        }
+
+        const user = await prisma.user.findFirst({
+          where: {
+            id: decodedToken.sub,
+          },
+        });
 
         if (!user) {
           throw new Error("User cannot be found");
@@ -746,13 +831,24 @@ export const decorationResolvers = {
     reportDecoration: async (
       _root: undefined,
       { input }: ReportDecorationArgs,
-      { _, req, res }: { _: undefined; req: Request; res: Response }
+      context: any
     ): Promise<Decoration> => {
       try {
-        const user = await authorise(req);
+        const token = context.request.headers.get("authorization");
+        const decodedToken = jwtDecode(token || "");
+
+        if (!decodedToken) {
+          throw new Error("Token not found");
+        }
+
+        const user = await prisma.user.findFirst({
+          where: {
+            id: decodedToken.sub,
+          },
+        });
 
         if (!user) {
-          throw new Error("Not authenticated");
+          throw new Error("User not found");
         }
 
         const decoration = await prisma.decoration.findFirst({
@@ -820,13 +916,24 @@ export const decorationResolvers = {
     submitDecorationForVerification: async (
       _root: undefined,
       { input }: SubmitDecorationForVerificationArgs,
-      { _, req, res }: { _: undefined; req: Request; res: Response }
+      context: any
     ): Promise<Decoration> => {
       try {
-        const user = await authorise(req);
+        const token = context.request.headers.get("authorization");
+        const decodedToken = jwtDecode(token || "");
+
+        if (!decodedToken) {
+          throw new Error("Token not found");
+        }
+
+        const user = await prisma.user.findFirst({
+          where: {
+            id: decodedToken.sub,
+          },
+        });
 
         if (!user) {
-          throw new Error("Not authenticated");
+          throw new Error("User not found");
         }
 
         const decoration = await prisma.decoration.findFirst({
@@ -919,13 +1026,29 @@ export const decorationResolvers = {
     addDecorationToHistory: async (
       _root: undefined,
       { input }: AddDecorationToHistoryArgs,
-      { _, req, res }: { _: undefined; req: Request; res: Response }
+      context: any
     ): Promise<User> => {
       try {
-        const user = await authorise(req);
-        if (!user) {
-          throw new Error("Not authenticated");
+        const token = context.request.headers.get("authorization");
+        const decodedToken = jwtDecode(token || "");
+
+        if (!decodedToken) {
+          throw new Error("Token not found");
         }
+
+        const user = await prisma.user.findFirst({
+          where: {
+            id: decodedToken.sub,
+          },
+          include: {
+            history: true,
+          },
+        });
+
+        if (!user) {
+          throw new Error("User not found");
+        }
+
         const firstDecoration = user.history[0];
         const userHistoryCount = user.history.length;
         const exists = user.history.some(
@@ -1008,13 +1131,24 @@ export const decorationResolvers = {
     removeDecorationFromHistory: async (
       _root: undefined,
       { input }: removeDecorationFromHistoryArgs,
-      { _, req, res }: { _: undefined; req: Request; res: Response }
+      context: any
     ): Promise<User> => {
       try {
-        const user = await authorise(req);
+        const token = context.request.headers.get("authorization");
+        const decodedToken = jwtDecode(token || "");
+
+        if (!decodedToken) {
+          throw new Error("Token not found");
+        }
+
+        const user = await prisma.user.findFirst({
+          where: {
+            id: decodedToken.sub,
+          },
+        });
 
         if (!user) {
-          throw new Error("Not authenticated");
+          throw new Error("User not found");
         }
 
         await prisma.user.update({
@@ -1038,13 +1172,24 @@ export const decorationResolvers = {
     deleteDecoration: async (
       _root: undefined,
       { input }: DeleteDecorationArgs,
-      { _, req, res }: { _: undefined; req: Request; res: Response }
+      context: any
     ): Promise<User> => {
       try {
-        const user = await authorise(req);
+        const token = context.request.headers.get("authorization");
+        const decodedToken = jwtDecode(token || "");
+
+        if (!decodedToken) {
+          throw new Error("Token not found");
+        }
+
+        const user = await prisma.user.findFirst({
+          where: {
+            id: decodedToken.sub,
+          },
+        });
 
         if (!user) {
-          throw new Error("Not authenticated");
+          throw new Error("User not found");
         }
 
         const decoration = await prisma.decoration.findFirst({
@@ -1110,6 +1255,10 @@ export const decorationResolvers = {
     },
     rating: (decoration: Decoration): Promise<number> => {
       return calculateRating(decoration.id);
+    },
+    images: async (decoration: Decoration): Promise<DecorationImage[]> => {
+      const optimizedImages = await optimizeImages(decoration.id);
+      return optimizedImages;
     },
   },
 };

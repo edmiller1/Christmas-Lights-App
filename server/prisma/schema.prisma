@@ -3,7 +3,7 @@
 
 generator client {
   provider = "prisma-client-js"
-  previewFeatures = ["multiSchema", "fullTextSearch"]
+  previewFeatures = ["multiSchema", "fullTextSearch", "driverAdapters"]
 }
 
 datasource db {
@@ -21,7 +21,6 @@ model User {
   name String
   imageId String?
   image String?
-  token String @unique
   email String @unique
   premium Boolean
   isAdmin Boolean?

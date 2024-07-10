@@ -192,19 +192,13 @@ export const DecorationsNav = ({
               value={searchTerm}
               onChange={(e) => handleSearchWord(e)}
               onKeyDown={(e) => handleKeyPress(e)}
-              className="bg-gray-100"
             />
             <Button
               variant="outline"
               disabled={!searchTerm}
               onClick={() => searchDecorations(searchTerm)}
-              className="bg-gray-100"
             >
-              <MagnifyingGlass
-                size={16}
-                weight="bold"
-                className="text-ch-dark dark:text-ch-light"
-              />
+              <MagnifyingGlass size={16} weight="bold" />
             </Button>
           </div>
         </div>

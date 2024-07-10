@@ -158,7 +158,6 @@ export const typeDefs = gql`
 
   input GetDecorationInput {
     id: String!
-    userId: String
   }
 
   input ExistingImagesInput {

@@ -1,10 +1,7 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
 import "mapbox-gl/dist/mapbox-gl.css";
-import {
-  RouterProvider,
-  createBrowserRouter,
-} from "react-router-dom";
+import { RouterProvider, createBrowserRouter } from "react-router-dom";
 import { HelmetProvider } from "react-helmet-async";
 import { KindeProvider } from "@kinde-oss/kinde-auth-react";
 import KindeApolloProvider from "./lib/kinde.tsx";
@@ -54,6 +51,11 @@ const router = createBrowserRouter([
   },
   {
     path: "/Search",
+    element: <Search />,
+    errorElement: <Error />,
+  },
+  {
+    path: "/explore",
     element: <Search />,
     errorElement: <Error />,
   },

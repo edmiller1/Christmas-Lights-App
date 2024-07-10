@@ -1,6 +1,4 @@
-import { Request, Response } from "express";
 import { prisma } from "../../../database";
-import { authorise } from "../../../lib/helpers";
 import {
   AddDecorationToRouteArgs,
   CreateRouteArgs,
@@ -8,6 +6,8 @@ import {
   RemoveDecorationFromRouteArgs,
 } from "./types";
 import { User } from "@prisma/client";
+import { ApolloContext } from "../../../lib/types";
+import { jwtDecode } from "jwt-decode";
 
 export const routeResolvers = {
   Query: {},
@@ -15,13 +15,24 @@ export const routeResolvers = {
     createRoute: async (
       _root: undefined,
       { input }: CreateRouteArgs,
-      { _, req, res }: { _: undefined; req: Request; res: Response }
+      context: any
     ): Promise<User> => {
       try {
-        const user = await authorise(req);
+        const token = context.request.headers.get("authorization");
+        const decodedToken = jwtDecode(token || "");
+
+        if (!decodedToken) {
+          throw new Error("Token not found");
+        }
+
+        const user = await prisma.user.findFirst({
+          where: {
+            id: decodedToken.sub,
+          },
+        });
 
         if (!user) {
-          throw new Error("Not authenticated");
+          throw new Error("User not found");
         }
 
         if (input.decorationId) {
@@ -53,18 +64,19 @@ export const routeResolvers = {
     addDecorationToRoute: async (
       _root: undefined,
       { input }: AddDecorationToRouteArgs,
-      { _, req, res }: { _: undefined; req: Request; res: Response }
+      context: any
     ): Promise<User> => {
       try {
-        const user = await authorise(req);
+        const token = context.request.headers.get("authorization");
+        const decodedToken = jwtDecode(token || "");
 
-        if (!user) {
-          throw new Error("Not authenticated");
+        if (!decodedToken) {
+          throw new Error("Token not found");
         }
 
-        await prisma.user.findFirst({
+        const user = await prisma.user.findFirst({
           where: {
-            id: user.id,
+            id: decodedToken.sub,
           },
           include: {
             routes: {
@@ -74,6 +86,10 @@ export const routeResolvers = {
             },
           },
         });
+
+        if (!user) {
+          throw new Error("User not found");
+        }
 
         const userDecorations = user.routes.map((item) => item.decorations);
 
@@ -106,13 +122,24 @@ export const routeResolvers = {
     removeDecorationFromRoute: async (
       _root: undefined,
       { input }: RemoveDecorationFromRouteArgs,
-      { _, req, res }: { _: undefined; req: Request; res: Response }
+      context: any
     ): Promise<User> => {
       try {
-        const user = await authorise(req);
+        const token = context.request.headers.get("authorization");
+        const decodedToken = jwtDecode(token || "");
+
+        if (!decodedToken) {
+          throw new Error("Token not found");
+        }
+
+        const user = await prisma.user.findFirst({
+          where: {
+            id: decodedToken.sub,
+          },
+        });
 
         if (!user) {
-          throw new Error("Not authenticated");
+          throw new Error("User not found");
         }
 
         await prisma.route.update({
@@ -136,10 +163,21 @@ export const routeResolvers = {
     deleteRoute: async (
       _root: undefined,
       { input }: DeleteRouteArgs,
-      { _, req, res }: { _: undefined; req: Request; res: Response }
+      context: any
     ): Promise<User> => {
       try {
-        const user = await authorise(req);
+        const token = context.request.headers.get("authorization");
+        const decodedToken = jwtDecode(token || "");
+
+        if (!decodedToken) {
+          throw new Error("Token not found");
+        }
+
+        const user = await prisma.user.findFirst({
+          where: {
+            id: decodedToken.sub,
+          },
+        });
 
         if (!user) {
           throw new Error("User cannot be found");

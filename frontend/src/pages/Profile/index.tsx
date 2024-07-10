@@ -1,12 +1,9 @@
-import { useLazyQuery, useMutation, useQuery } from "@apollo/client";
-import { GET_UNRESOLVED_REPORTS_COUNT, GET_USER } from "@/graphql/queries";
 import {
   GetUser as GetUserData,
-  GetUserArgs,
   Get_User,
 } from "@/graphql/queries/getUser/types";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import {
   Bell,
   CaretRight,
@@ -25,51 +22,36 @@ import { useToast } from "@/components/ui/use-toast";
 import { useTheme } from "@/components/ui/theme-provider";
 import { Switch } from "@/components/ui/switch";
 import { AppHeaderLoading } from "@/components/AppHeader/components";
-import { AppHeader, SEO } from "@/components";
+import { SEO } from "@/components";
 import { useKindeAuth } from "@kinde-oss/kinde-auth-react";
 import { ProfileLoading } from "./components";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { SignIn } from "../SignIn";
+import { useQuery } from "@apollo/client";
+import { GET_USER } from "@/graphql/queries";
 
 export const Profile = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
   const { setTheme } = useTheme();
-  const { logout, user } = useKindeAuth();
+  const { logout } = useKindeAuth();
   const [currentTheme, setCurrentTheme] = useState<string | null>(
     localStorage.getItem("vite-ui-theme")
   );
   const [currentUser, setCurrentUser] = useState<Get_User | null>(null);
   const [logoutLoading, setLogoutLoading] = useState<boolean>(false);
 
-  const { loading: getUserLoading } = useQuery<GetUserData, GetUserArgs>(
-    GET_USER,
-    {
-      variables: { input: { id: user?.id ? user.id : "1234" } },
-      onCompleted: (data) => {
-        if (data) {
-          console.log(data);
-          setCurrentUser(data.getUser);
-        }
-      },
-    }
-  );
-
-  const [getUser] = useLazyQuery(GET_USER, {
+  const { loading: getUserLoading } = useQuery(GET_USER, {
     onCompleted: (data) => {
       if (data) {
         console.log(data);
-        setCurrentUser(data.getUser);
+        //setCurrentUser(data.getUser);
       }
     },
+    onError: (err) => {
+      console.log(err);
+    },
   });
-
-  useEffect(() => {
-    getUser({
-      variables: { input: { id: "1234" } },
-    });
-  }, []);
 
   const changeTheme = () => {
     if (currentTheme === "dark") {
@@ -132,15 +114,6 @@ export const Profile = () => {
           </Avatar>
           <span className="text-xl">{currentUser?.name}</span>
         </div>
-        <Button
-          onClick={() =>
-            getUser({
-              variables: { input: { id: "1234" } },
-            })
-          }
-        >
-          Click me
-        </Button>
         {/* Premium Card */}
         {!currentUser?.premium ? (
           <div
@@ -312,16 +285,6 @@ export const Profile = () => {
           <h3 className="mt-2 text-lg">
             {currentUser?.name} - {currentUser?.email}
           </h3>
-          <Button
-            onClick={() => {
-              getUser({
-                variables: { input: { id: "1234" } },
-              });
-              console.log("get user");
-            }}
-          >
-            Click me
-          </Button>
           <div className="mt-10 grid grid-cols-2 gap-x-6 gap-y-10">
             <Card
               className="p-3 cursor-pointer"

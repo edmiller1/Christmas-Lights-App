@@ -7,16 +7,16 @@ import {
 } from "@apollo/client";
 import { setContext } from "@apollo/client/link/context";
 import { useKinde } from "./useKinde";
+import { useKindeAuth } from "@kinde-oss/kinde-auth-react";
 
 const KindeApolloProvider = ({ children }: { children: React.ReactNode }) => {
   const { token } = useKinde();
+  const { getToken } = useKindeAuth();
   const httpLink = createHttpLink({
     uri: "http://localhost:9000/api",
   });
 
-  const authLink = setContext((_, { headers }) => {
-    // get the authentication token from local storage if it exists
-    const accessToken = token;
+  const authLink = setContext(async (_, { headers }) => {
     //const parsedToken = token ? JSON.parse(token) : {};
     const latitude = localStorage.getItem("latitude");
     const longitude = localStorage.getItem("longitude");
@@ -25,7 +25,7 @@ const KindeApolloProvider = ({ children }: { children: React.ReactNode }) => {
     return {
       headers: {
         ...headers,
-        authorization: accessToken,
+        authorization: token ? `${token}` : "",
         latitude,
         longitude,
       },

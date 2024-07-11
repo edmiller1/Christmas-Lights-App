@@ -27,6 +27,7 @@ import { Resend } from "resend";
 import fetch from "node-fetch";
 import { jwtDecode } from "jwt-decode";
 import { ratingEmail } from "../../../lib/emails/rating";
+import { newVerificationEmail } from "../../../lib/emails/newVerification";
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
@@ -1003,6 +1004,12 @@ export const decorationResolvers = {
         //email user if they have allowed emails through notification settings
         if (user.notifications_by_email_verification) {
           //TODO: send email to user
+          await resend.emails.send({
+            from: "christmaslightsapp.com",
+            to: user.email,
+            subject: "Verification Request Sent",
+            html: newVerificationEmail(user.name, updatedDecoration.name),
+          });
         }
 
         //create a notification for the user if they have allowed in app notifications

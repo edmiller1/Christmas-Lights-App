@@ -1,14 +1,6 @@
-import { useEffect, useState } from "react";
 import { useQuery } from "@apollo/client";
-import { GET_USER } from "@/graphql/queries";
-import {
-  GetUser as GetUserData,
-  GetUserArgs,
-  Get_User,
-} from "@/graphql/queries/getUser/types";
 import { CaretLeft } from "@phosphor-icons/react";
-import { useLocation, useNavigate } from "react-router-dom";
-import { useKindeAuth } from "@kinde-oss/kinde-auth-react";
+import { useNavigate } from "react-router-dom";
 import { Breadcrumbs, SEO } from "@/components";
 import {
   EmptyState,
@@ -16,72 +8,68 @@ import {
   YourDecorationsLoading,
 } from "../../components";
 import penguin from "../../../../assets/Penguin.png";
+import { GET_USER_FAVOURITES } from "@/graphql/queries";
+import { GetUserFavourites as GetUserFavouritesData } from "@/graphql/queries/getUserFavourites/types";
+import { useToast } from "@/components/ui/use-toast";
 
 export const Favourites = () => {
-  const { getToken, user } = useKindeAuth();
+  const { toast } = useToast();
   const navigate = useNavigate();
-  const { state } = useLocation();
 
-  const [currentUser, setCurrentUser] = useState<Get_User | null>(null);
-
-  const { loading: getUserLoading, refetch: refetchUser } = useQuery<
-    GetUserData,
-    GetUserArgs
-  >(GET_USER, {
-    variables: { input: { id: state ? state : user?.id } },
-    notifyOnNetworkStatusChange: true,
-    onCompleted: (data) => {
-      if (data) {
-        setCurrentUser(data.getUser);
-      }
+  const {
+    data: getUserFavouritesData,
+    loading: getUserFavouritesLoading,
+    refetch: refetchUserFavourites,
+  } = useQuery<GetUserFavouritesData>(GET_USER_FAVOURITES, {
+    onError: (err) => {
+      toast({
+        title: "UH oh! 😬",
+        description: "Failed to get favourites, try refreshing the page.",
+        variant: "destructive",
+      });
+      console.log(err);
     },
   });
 
-  const refetchUserData = () => {
-    refetchUser();
+  const userFavourites = getUserFavouritesData?.getUserFavourites.favourites;
+
+  const user = {
+    id: getUserFavouritesData?.getUserFavourites.id,
+    name: getUserFavouritesData?.getUserFavourites.name,
   };
 
-  const hasSession = async () => {
-    const token = await getToken();
-    if (!token) {
-      sessionStorage.removeItem("token");
-    }
+  const refetchFavourites = () => {
+    refetchUserFavourites();
   };
 
-  useEffect(() => {
-    hasSession();
-  }, [getToken]);
-
-  if (getUserLoading) {
+  if (getUserFavouritesLoading) {
     return <YourDecorationsLoading />;
   }
 
   return (
     <>
       <SEO
-        description={`${currentUser?.name} Favourites`}
-        name={`${currentUser?.name} Favourites`}
-        title={`${currentUser?.name} Favourites`}
+        description={`${user.name} - Favourites`}
+        name={`${user.name} - Favourites`}
+        title={`${user.name} - Favourites`}
         type="Favourites"
       />
       <div className="px-8 py-5 min-h-screen sm:hidden">
-        <div role="button" className="pb-12" onClick={() => navigate(-1)}>
-          <CaretLeft
-            size={24}
-            weight="bold"
-            className="text-ch-dark dark:text-ch-light"
-          />
+        <div className="flex items-center space-x-3">
+          <div role="button" onClick={() => navigate(-1)}>
+            <CaretLeft size={24} weight="bold" />
+          </div>
+          <h2 className="text-2xl font-bold">Favourites</h2>
         </div>
-        <h2 className="text-2xl font-bold">Favourites</h2>
-        {currentUser?.favourites && currentUser?.favourites.length > 0 ? (
+        {userFavourites && userFavourites.length > 0 ? (
           <div className="grid grid-cols-1 gap-x-6 gap-y-10 my-8">
-            {currentUser?.favourites.map((decoration, index) => (
+            {userFavourites.map((decoration, index) => (
               <FavouriteDecorationCard
                 key={decoration.id}
                 decoration={decoration}
-                decorations={currentUser.favourites}
+                decorations={userFavourites!}
                 index={index}
-                refetchUserData={refetchUserData}
+                refetchfavourites={refetchFavourites}
               />
             ))}
           </div>
@@ -94,18 +82,18 @@ export const Favourites = () => {
       </div>
 
       {/* Desktop */}
-      <div className="hidden lg:ml-40 sm:block sm:min-h-screen xl:mx-96 sm:py-24">
+      <div className="hidden sm:mx-24 md:mx-28 lg:ml-40 sm:block sm:min-h-screen xl:mx-96 sm:py-24">
         <Breadcrumbs firstWord="Profile" secondWord="Favourites" />
         <h1 className="mt-7 font-bold text-4xl">Favourites</h1>
-        {currentUser?.favourites && currentUser.favourites.length > 0 ? (
+        {userFavourites && userFavourites.length > 0 ? (
           <div className="grid grid-cols-4 gap-x-6 gap-y-8 my-8">
-            {currentUser.favourites.map((decoration, index) => (
+            {userFavourites.map((decoration, index) => (
               <FavouriteDecorationCard
                 key={decoration.id}
                 decoration={decoration}
-                decorations={currentUser.favourites}
+                decorations={userFavourites!}
                 index={index}
-                refetchUserData={refetchUserData}
+                refetchfavourites={refetchFavourites}
               />
             ))}
           </div>

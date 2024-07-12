@@ -28,7 +28,7 @@ import { useKindeAuth } from "@kinde-oss/kinde-auth-react";
 import { DeleteAccountModal, PersonalInfoLoading } from "../../components";
 
 export const PersonalInfo = () => {
-  const { getToken, logout, user } = useKindeAuth();
+  const { logout, user } = useKindeAuth();
   const { state } = useLocation();
   const navigate = useNavigate();
   const [currentUser, setCurrentUser] = useState<Get_User | null>(null);
@@ -98,7 +98,6 @@ export const PersonalInfo = () => {
     DELETE_ACCOUNT,
     {
       onCompleted: () => {
-        sessionStorage.removeItem("token");
         setIsDeleteOpen(false);
         toast({
           title: "Success 🎉",
@@ -149,17 +148,6 @@ export const PersonalInfo = () => {
     });
   };
 
-  const hasSession = async () => {
-    const token = await getToken();
-    if (!token) {
-      sessionStorage.removeItem("token");
-    }
-  };
-
-  useEffect(() => {
-    hasSession();
-  }, [getToken]);
-
   if (getUserLoading || getUserNetworkStatus === NetworkStatus.refetch) {
     return <PersonalInfoLoading />;
   }
@@ -184,21 +172,32 @@ export const PersonalInfo = () => {
       <SEO
         description="Profile Settings"
         name="Profile Settings"
-        title={`${currentUser?.name}`}
+        title={`${user?.given_name} ${user?.family_name}`}
         type="Profile Settings"
       />
       {/* Mobile */}
       <div className="px-8 py-5 h-screen sm:hidden">
-        <div role="button" className="pb-12" onClick={() => navigate(-1)}>
-          <CaretLeft
-            size={24}
-            weight="bold"
-            className="text-ch-dark dark:text-ch-light"
-          />
+        <div className="flex items-center space-x-3">
+          <div role="button" onClick={() => navigate(-1)}>
+            <CaretLeft size={24} weight="bold" />
+          </div>
+          <h2 className="text-2xl font-bold">Personal Info</h2>
         </div>
-        <h2 className="text-2xl font-bold">Personal Info</h2>
         <div className="my-8 ml-1">
-          {isEditingAvatar ? (
+          <div className="my-6 flex items-center justify-between">
+            <div className="flex flex-col">
+              <span className="font-semibold">Avatar</span>
+              <img
+                src={user?.picture ?? ""}
+                alt="profile"
+                className="mt-1 rounded-full w-12 h-12"
+              />
+            </div>
+            {/* <Button variant="outline" onClick={() => setIsEditingAvatar(true)}>
+              Edit
+            </Button> */}
+          </div>
+          {/* {isEditingAvatar ? (
             <div className="my-6 flex items-center justify-between">
               <div className="flex flex-col w-full space-y-2">
                 <span className="font-semibold">Avatar</span>
@@ -270,11 +269,27 @@ export const PersonalInfo = () => {
                 </div>
               )}
             </>
-          )}
+          )} */}
         </div>
         <Separator />
         <div className="my-8 ml-1">
-          {isEditingName ? (
+          <div className="my-6 flex items-center justify-between">
+            <div className="flex flex-col">
+              <span className="font-semibold">Name</span>
+              <span className="font-light">
+                {user?.given_name} {user?.family_name}
+              </span>
+            </div>
+            {/* <Button
+              variant="outline"
+              onClick={() => {
+                setIsEditingName(true);
+              }}
+            >
+              Edit
+            </Button> */}
+          </div>
+          {/* {isEditingName ? (
             <div className="my-6 flex items-center justify-between">
               <div className="flex flex-col space-y-2">
                 <span className="font-semibold">Name</span>
@@ -325,19 +340,19 @@ export const PersonalInfo = () => {
                 </div>
               )}
             </>
-          )}
+          )} */}
         </div>
         <Separator />
         <div className="my-8 ml-1">
           <div className="my-6 flex items-center justify-between">
             <div className="flex flex-col">
               <span className="font-semibold">Email Address</span>
-              <span className="font-light">{currentUser?.email}</span>
+              <span className="font-light">{user?.email}</span>
             </div>
           </div>
         </div>
         <Separator />
-        <div className="flex h-[26rem] justify-center items-end w-full">
+        <div className="flex h-[18rem] justify-center items-end w-full">
           <Button
             variant="default"
             className="w-full py-6"
@@ -349,11 +364,24 @@ export const PersonalInfo = () => {
       </div>
 
       {/* Desktop */}
-      <div className="hidden lg:ml-40 sm:block sm:py-24 sm:min-h-screen xl:mx-96">
+      <div className="hidden sm:ml-40 md:ml-40 lg:ml-40 sm:block sm:py-24 sm:min-h-screen sm:w-full 2xl:w-2/3 lg:mx-28 xl:mx-56 2xl:mx-64">
         <Breadcrumbs firstWord="Profile" secondWord="Personal Info" />
         <h1 className="my-7 font-bold text-4xl">Personal Info</h1>
         <div className="w-1/2 my-8 ml-1">
-          {isEditingAvatar ? (
+          <div className="my-6 flex items-center justify-between">
+            <div className="flex flex-col space-y-2">
+              <span className="font-semibold">Avatar</span>
+              <img
+                src={user?.picture ?? ""}
+                alt="profile"
+                className="mt-1 rounded-full w-12 h-12"
+              />
+            </div>
+            {/* <Button variant="outline" onClick={() => setIsEditingAvatar(true)}>
+              Edit
+            </Button> */}
+          </div>
+          {/* {isEditingAvatar ? (
             <div className="my-6 flex items-center justify-between">
               <div className="flex flex-col w-full space-y-4">
                 <span className="font-semibold">Avatar</span>
@@ -426,13 +454,29 @@ export const PersonalInfo = () => {
                 </div>
               )}
             </>
-          )}
+          )} */}
         </div>
         <div className="w-1/2">
           <Separator />
         </div>
         <div className="w-1/2 my-8 ml-1">
-          {isEditingName ? (
+          <div className="my-6 flex items-center justify-between">
+            <div className="flex flex-col">
+              <span className="font-semibold">Name</span>
+              <span className="font-light">
+                {user?.given_name} {user?.family_name}
+              </span>
+            </div>
+            {/* <Button
+              variant="outline"
+              onClick={() => {
+                setIsEditingName(true);
+              }}
+            >
+              Edit
+            </Button> */}
+          </div>
+          {/* {isEditingName ? (
             <div className="my-6 flex items-center justify-between">
               <div className="flex flex-col space-y-2">
                 <span className="font-semibold">Name</span>
@@ -483,7 +527,7 @@ export const PersonalInfo = () => {
                 </div>
               )}
             </>
-          )}
+          )} */}
         </div>
         <div className="w-1/2">
           <Separator />
@@ -492,7 +536,7 @@ export const PersonalInfo = () => {
           <div className="my-6 flex items-center justify-between">
             <div className="flex flex-col">
               <span className="font-semibold">Email Address</span>
-              <span className="font-light">{currentUser?.email}</span>
+              <span className="font-light">{user?.email}</span>
             </div>
           </div>
         </div>

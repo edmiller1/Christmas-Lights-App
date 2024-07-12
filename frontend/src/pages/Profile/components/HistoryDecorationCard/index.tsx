@@ -20,14 +20,14 @@ interface Props {
   decoration: Decoration;
   decorations: Decoration[];
   index: number;
-  refetchUserData: () => void;
+  refetchHistory: () => void;
 }
 
 export const HistoryDecorationCard = ({
   decoration,
   decorations,
   index,
-  refetchUserData,
+  refetchHistory,
 }: Props) => {
   const { toast } = useToast();
 
@@ -42,7 +42,7 @@ export const HistoryDecorationCard = ({
     removeDecorationFromHistoryArgs
   >(REMOVE_DECORATION_FROM_HISTORY, {
     onCompleted: () => {
-      refetchUserData();
+      refetchHistory();
     },
     onError: () => {
       toast({

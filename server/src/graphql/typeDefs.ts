@@ -301,6 +301,9 @@ export const typeDefs = gql`
     getUser: User!
     getUserNotifications: [Notification]!
     getUnreadNotifications: Int!
+    getUserDecorations: User!
+    getUserFavourites: User!
+    getUserHistory: User!
 
     #Decoration
     getDecoration(input: GetDecorationInput!): Decoration!

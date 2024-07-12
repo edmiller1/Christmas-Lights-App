@@ -14,13 +14,13 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { CaretLeft } from "@phosphor-icons/react";
 import { Switch } from "@/components/ui/switch";
 import { Separator } from "@/components/ui/separator";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Breadcrumbs, SEO } from "@/components";
 import { useKindeAuth } from "@kinde-oss/kinde-auth-react";
 import { PersonalInfoLoading } from "../../components";
 
 export const NotificationSettings = () => {
-  const { getToken, user } = useKindeAuth();
+  const { user } = useKindeAuth();
   const { state } = useLocation();
   const navigate = useNavigate();
   const [currentUser, setCurrentUser] = useState<Get_User | null>(null);
@@ -53,17 +53,6 @@ export const NotificationSettings = () => {
       variables: { input: { name: name, setting: checked } },
     });
   };
-
-  const hasSession = async () => {
-    const token = await getToken();
-    if (!token) {
-      sessionStorage.removeItem("token");
-    }
-  };
-
-  useEffect(() => {
-    hasSession();
-  }, [getToken]);
 
   if (getUserLoading || getUserNetworkStatus === NetworkStatus.refetch) {
     return <PersonalInfoLoading />;
@@ -149,7 +138,7 @@ export const NotificationSettings = () => {
       </div>
 
       {/* Desktop */}
-      <div className="hidden lg:ml-40 sm:block sm:min-h-screen xl:mx-96 sm:py-24">
+      <div className="hidden sm:ml-40 md:ml-40 lg:ml-40 sm:block sm:py-24 sm:min-h-screen sm:w-full 2xl:w-2/3 lg:mx-28 xl:mx-56 2xl:mx-64">
         <Breadcrumbs firstWord="Profile" secondWord="Notification Settings" />
         <h1 className="mt-7 font-bold text-4xl">Notification Settings</h1>
         <span className="text-sm mb-7">

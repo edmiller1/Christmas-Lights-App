@@ -1,87 +1,78 @@
-import { useEffect, useState } from "react";
 import { useQuery } from "@apollo/client";
-import { GET_USER } from "@/graphql/queries";
-
-import {
-  GetUser as GetUserData,
-  GetUserArgs,
-  Get_User,
-} from "@/graphql/queries/getUser/types";
 import { CaretLeft } from "@phosphor-icons/react";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { Breadcrumbs, SEO } from "@/components";
-import { useKindeAuth } from "@kinde-oss/kinde-auth-react";
 import {
   EmptyState,
   HistoryDecorationCard,
   YourDecorationsLoading,
 } from "../../components";
 import reindeer from "../../../../assets/Reindeer.png";
+import { GET_USER_HISTORY } from "@/graphql/queries";
+import { GetUserHistory as GetUserHistoryData } from "@/graphql/queries/getUserHistory/types";
+import { useToast } from "@/components/ui/use-toast";
 
 export const History = () => {
-  const { getToken, user } = useKindeAuth();
+  const { toast } = useToast();
   const navigate = useNavigate();
-  const { state } = useLocation();
-  const [currentUser, setCurrentUser] = useState<Get_User | null>(null);
 
-  const { loading: getUserLoading, refetch: refetchUser } = useQuery<
-    GetUserData,
-    GetUserArgs
-  >(GET_USER, {
-    variables: { input: { id: state ? state : user?.id } },
-    notifyOnNetworkStatusChange: true,
-    onCompleted: (data) => {
-      if (data) {
-        setCurrentUser(data.getUser);
-      }
+  const {
+    data: getUserHistoryData,
+    loading: getUserHistoryLoading,
+    refetch: refetchUserHistory,
+  } = useQuery<GetUserHistoryData>(GET_USER_HISTORY, {
+    onError: (err) => {
+      toast({
+        title: "UH oh! 😬",
+        description: "Failed to get history, try refreshing the page.",
+        variant: "destructive",
+      });
+      console.log(err);
     },
   });
 
-  const refetchUserData = () => {
-    refetchUser();
+  const userHistory = getUserHistoryData?.getUserHistory.history;
+  const user = {
+    id: getUserHistoryData?.getUserHistory.id,
+    name: getUserHistoryData?.getUserHistory.name,
   };
 
-  const hasSession = async () => {
-    const token = await getToken();
-    if (!token) {
-      sessionStorage.removeItem("token");
-    }
+  const refetchHistory = () => {
+    refetchUserHistory();
   };
 
-  useEffect(() => {
-    hasSession();
-  }, [getToken]);
-
-  if (getUserLoading) {
+  if (getUserHistoryLoading) {
     return <YourDecorationsLoading />;
   }
 
   return (
     <>
       <SEO
-        description={`${currentUser?.name} History`}
-        name={`${currentUser?.name} History`}
-        title={`${currentUser?.name} History`}
-        type={`${currentUser?.name} History`}
+        description={`${user?.name} - History`}
+        name={`${user?.name} - History`}
+        title={`${user?.name} - History`}
+        type={`${user?.name} - History`}
       />
       <div className="px-8 py-5 min-h-screen sm:hidden">
-        <div role="button" className="pb-12" onClick={() => navigate(-1)}>
-          <CaretLeft
-            size={24}
-            weight="bold"
-            className="text-ch-dark dark:text-ch-light"
-          />
+        <div className="flex items-center space-x-3">
+          <div role="button" onClick={() => navigate(-1)}>
+            <CaretLeft
+              size={24}
+              weight="bold"
+              className="text-ch-dark dark:text-ch-light"
+            />
+          </div>
+          <h2 className="text-2xl font-bold">History</h2>
         </div>
-        <h2 className="text-2xl font-bold">History</h2>
-        {currentUser?.history && currentUser?.history.length > 0 ? (
+        {userHistory && userHistory.length > 0 ? (
           <div className="grid grid-cols-1 gap-x-6 gap-y-10 my-8">
-            {currentUser?.history.map((decoration, index) => (
+            {userHistory.map((decoration, index) => (
               <HistoryDecorationCard
                 key={decoration.id}
                 decoration={decoration}
-                decorations={currentUser.history}
+                decorations={userHistory}
                 index={index}
-                refetchUserData={refetchUserData}
+                refetchHistory={refetchHistory}
               />
             ))}
           </div>
@@ -94,18 +85,18 @@ export const History = () => {
       </div>
 
       {/* Desktop */}
-      <div className="hidden lg:ml-40 sm:block sm:min-h-screen xl:mx-96 sm:py-24">
+      <div className="hidden sm:mx-24 md:mx-28 lg:ml-40 sm:block sm:min-h-screen xl:mx-96 sm:py-24">
         <Breadcrumbs firstWord="Profile" secondWord="History" />
         <h1 className="mt-7 font-bold text-4xl">History</h1>
-        {currentUser?.history && currentUser.history.length > 0 ? (
+        {userHistory && userHistory.length > 0 ? (
           <div className="grid grid-cols-4 gap-x-6 gap-y-8 my-8">
-            {currentUser.history.map((decoration, index) => (
+            {userHistory.map((decoration, index) => (
               <HistoryDecorationCard
                 key={decoration.id}
                 decoration={decoration}
-                decorations={currentUser.history}
+                decorations={userHistory}
                 index={index}
-                refetchUserData={refetchUserData}
+                refetchHistory={refetchHistory}
               />
             ))}
           </div>

@@ -1,4 +1,3 @@
-import { Request, Response } from "express";
 import { prisma } from "../../../database";
 import {
   EditAvatarArgs,
@@ -12,10 +11,9 @@ import { Cloudinary } from "../../../lib/cloudinary";
 import { Resend } from "resend";
 import { welcomeEmail } from "../../../lib/emails/welcome";
 import Stripe from "stripe";
-import { ApolloContext } from "../../../lib/types";
-import { JwtPayload, jwtDecode } from "jwt-decode";
+import { jwtDecode } from "jwt-decode";
 import "core-js/stable/atob";
-import { authorise } from "../../../lib/helpers";
+import { get } from "lodash";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
   apiVersion: "2024-04-10",
@@ -173,6 +171,111 @@ export const userResolvers = {
         });
 
         return favourites;
+      } catch (error) {
+        throw new Error(`${error}`);
+      }
+    },
+    getUserDecorations: async (
+      _root: undefined,
+      {},
+      context: any
+    ): Promise<User> => {
+      try {
+        const token = context.request.headers.get("authorization");
+        const decodedToken = jwtDecode(token || "");
+
+        if (!decodedToken) {
+          throw new Error("Token not found");
+        }
+
+        const user = await prisma.user.findFirst({
+          where: {
+            id: decodedToken.sub,
+          },
+          include: {
+            decorations: {
+              include: {
+                images: true,
+              },
+            },
+          },
+        });
+
+        if (!user) {
+          throw new Error("User not found");
+        }
+
+        return user;
+      } catch (error) {
+        throw new Error(`${error}`);
+      }
+    },
+    getUserFavourites: async (
+      _root: undefined,
+      {},
+      context: any
+    ): Promise<User> => {
+      try {
+        const token = context.request.headers.get("authorization");
+        const decodedToken = jwtDecode(token || "");
+
+        if (!decodedToken) {
+          throw new Error("Token not found");
+        }
+
+        const user = await prisma.user.findFirst({
+          where: {
+            id: decodedToken.sub,
+          },
+          include: {
+            favourites: {
+              include: {
+                images: true,
+              },
+            },
+          },
+        });
+
+        if (!user) {
+          throw new Error("User not found");
+        }
+
+        return user;
+      } catch (error) {
+        throw new Error(`${error}`);
+      }
+    },
+    getUserHistory: async (
+      _root: undefined,
+      {},
+      context: any
+    ): Promise<User> => {
+      try {
+        const token = context.request.headers.get("authorization");
+        const decodedToken = jwtDecode(token || "");
+
+        if (!decodedToken) {
+          throw new Error("Token not found");
+        }
+
+        const user = await prisma.user.findFirst({
+          where: {
+            id: decodedToken.sub,
+          },
+          include: {
+            history: {
+              include: {
+                images: true,
+              },
+            },
+          },
+        });
+
+        if (!user) {
+          throw new Error("User not found");
+        }
+
+        return user;
       } catch (error) {
         throw new Error(`${error}`);
       }

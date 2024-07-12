@@ -14,14 +14,14 @@ interface Props {
   decoration: Decoration;
   decorations: Decoration[];
   index: number;
-  refetchUserData: () => void;
+  refetchfavourites: () => void;
 }
 
 export const FavouriteDecorationCard = ({
   decoration,
   decorations,
   index,
-  refetchUserData,
+  refetchfavourites,
 }: Props) => {
   const { toast } = useToast();
 
@@ -37,7 +37,7 @@ export const FavouriteDecorationCard = ({
             title: "Success 🎉",
             description: "Decoration removed from favourites!",
           });
-          refetchUserData();
+          refetchfavourites();
         },
         onError: () => {
           toast({

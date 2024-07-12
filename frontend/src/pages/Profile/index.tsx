@@ -1,11 +1,8 @@
-import {
-  GetUser as GetUserData,
-  Get_User,
-} from "@/graphql/queries/getUser/types";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useState } from "react";
 import {
   Bell,
+  CaretLeft,
   CaretRight,
   CircleNotch,
   ClockCounterClockwise,
@@ -29,6 +26,8 @@ import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { useQuery } from "@apollo/client";
 import { GET_USER } from "@/graphql/queries";
+import { GetUser as GetUserData } from "@/graphql/queries/getUser/types";
+import logo from "../../assets/logo.png";
 
 export const Profile = () => {
   const navigate = useNavigate();
@@ -38,20 +37,16 @@ export const Profile = () => {
   const [currentTheme, setCurrentTheme] = useState<string | null>(
     localStorage.getItem("vite-ui-theme")
   );
-  const [currentUser, setCurrentUser] = useState<Get_User | null>(null);
   const [logoutLoading, setLogoutLoading] = useState<boolean>(false);
 
-  const { loading: getUserLoading } = useQuery(GET_USER, {
-    onCompleted: (data) => {
-      if (data) {
-        console.log(data);
-        //setCurrentUser(data.getUser);
-      }
-    },
-    onError: (err) => {
-      console.log(err);
-    },
-  });
+  const { data: getUserData, loading: getUserLoading } = useQuery<GetUserData>(
+    GET_USER,
+    {
+      onError: (err) => {
+        console.log(err);
+      },
+    }
+  );
 
   const changeTheme = () => {
     if (currentTheme === "dark") {
@@ -65,7 +60,6 @@ export const Profile = () => {
 
   const signUserOut = () => {
     setLogoutLoading(true);
-    sessionStorage.removeItem("token");
     toast({
       title: "Success 🎉",
       description: "Signed out successfully!",
@@ -94,28 +88,35 @@ export const Profile = () => {
     );
   }
 
+  const user = getUserData?.getUser ? getUserData.getUser : null;
+
   return (
     <>
       <SEO
-        description={`Profile for ${currentUser?.name}`}
-        name={`${currentUser?.name} Profile`}
-        title={`${currentUser?.name} Profile`}
-        type={`Profile for ${currentUser?.name}`}
+        description={`Profile for ${user?.name}`}
+        name={`${user?.name} Profile`}
+        title={`${user?.name} Profile`}
+        type={`Profile for ${user?.name}`}
       />
       {/* Mobile */}
-      <div className="px-8 pt-10 min-h-[130vh] h-full sm:hidden">
-        {getUserLoading ? <AppHeaderLoading /> : <div>Hello</div>}
-        <h1 className="text-3xl font-bold">Profile</h1>
+      <div className="px-8 pt-5 min-h-[130vh] h-full sm:hidden">
+        <div className="flex items-center space-x-3">
+          <Link to="/">
+            <CaretLeft size={28} weight="bold" />
+          </Link>
+          <h1 className="text-3xl font-bold">Profile</h1>
+        </div>
+
         {/* User image & name */}
         <div className="my-5 flex space-x-5 items-center">
           <Avatar className="w-20 h-20">
-            <AvatarImage src={currentUser?.image} />
-            <AvatarFallback>{currentUser?.name[0]}</AvatarFallback>
+            <AvatarImage src={user?.image} />
+            <AvatarFallback>{user?.name[0]}</AvatarFallback>
           </Avatar>
-          <span className="text-xl">{currentUser?.name}</span>
+          <span className="text-xl">{user?.name}</span>
         </div>
         {/* Premium Card */}
-        {!currentUser?.premium ? (
+        {!user?.premium ? (
           <div
             className="bg-secondary mt-5 rounded-lg border shadow-lg dark:border-black"
             onClick={() => navigate("/premium")}
@@ -138,7 +139,7 @@ export const Profile = () => {
           <div
             className="my-7 flex items-center justify-between"
             onClick={() =>
-              navigate("/profile/personal-info", { state: currentUser?.id })
+              navigate("/profile/personal-info", { state: user?.id })
             }
           >
             <div className="flex items-center space-x-5">
@@ -155,7 +156,7 @@ export const Profile = () => {
             className="my-7 flex items-center justify-between"
             onClick={() =>
               navigate("/profile/notification-settings", {
-                state: currentUser?.id,
+                state: user?.id,
               })
             }
           >
@@ -191,7 +192,9 @@ export const Profile = () => {
           <div
             className="my-7 flex items-center justify-between"
             onClick={() =>
-              navigate("/profile/decorations", { state: currentUser?.id })
+              navigate("/profile/decorations", {
+                state: { decorations: user?.decorations, userName: user?.name },
+              })
             }
           >
             <div className="flex items-center space-x-5">
@@ -204,10 +207,13 @@ export const Profile = () => {
             </div>
             <CaretRight size={24} className="text-ch-dark dark:text-ch-light" />
           </div>
+          {/* History */}
           <div
             className="my-7 flex items-center justify-between"
             onClick={() =>
-              navigate("/profile/history", { state: currentUser?.id })
+              navigate("/profile/history", {
+                state: { history: user?.history, userName: user?.name },
+              })
             }
           >
             <div className="flex items-center space-x-5">
@@ -220,10 +226,13 @@ export const Profile = () => {
             </div>
             <CaretRight size={24} className="text-ch-dark dark:text-ch-light" />
           </div>
+          {/* Favourites */}
           <div
             className="my-7 flex items-center justify-between"
             onClick={() =>
-              navigate("/profile/favourites", { state: currentUser?.id })
+              navigate("/profile/favourites", {
+                state: { favourites: user?.favourites, userName: user?.name },
+              })
             }
           >
             <div className="flex items-center space-x-5">
@@ -269,7 +278,7 @@ export const Profile = () => {
             </Link>
           </div>
           <div>
-            <span className="dark:text-gray-400 text-xs font-light">
+            <span className="dark:text-gray-400 text-xs font-light pb-10">
               &copy; {new Date().getFullYear()} Christmas Lights App. All Rights
               Reserved.
             </span>
@@ -279,17 +288,19 @@ export const Profile = () => {
 
       {/* Desktop */}
       <div className="hidden sm:block">
-        {getUserLoading ? <AppHeaderLoading /> : <div>Hello</div>}
-        <div className="lg:mx-28 xl:mx-96 py-24 sm:min-h-screen">
+        <Link to="/">
+          <img src={logo} alt="logo" className="m-4 w-10 h-10 cursor-pointer" />
+        </Link>
+        <div className="sm:mx-5 md:mx-12 lg:mx-24 xl:mx-28 2xl:mx-96 py-24 sm:min-h-screen">
           <h1 className="text-4xl font-bold tracking-wide">Profile</h1>
           <h3 className="mt-2 text-lg">
-            {currentUser?.name} - {currentUser?.email}
+            {user?.name} - {user?.email}
           </h3>
           <div className="mt-10 grid grid-cols-2 gap-x-6 gap-y-10">
             <Card
               className="p-3 cursor-pointer"
               onClick={() =>
-                navigate("/profile/personal-info", { state: currentUser?.id })
+                navigate("/profile/personal-info", { state: user?.id })
               }
             >
               <UserCircle
@@ -322,11 +333,7 @@ export const Profile = () => {
             </Card>
             <Card
               className="p-3 cursor-pointer"
-              onClick={() =>
-                navigate("/profile/notification-settings", {
-                  state: currentUser?.id,
-                })
-              }
+              onClick={() => navigate("/profile/notification-settings")}
             >
               <Bell size={36} className="text-ch-dark dark:text-ch-light" />
               <div>
@@ -339,9 +346,7 @@ export const Profile = () => {
             </Card>
             <Card
               className="p-3 cursor-pointer"
-              onClick={() =>
-                navigate("/profile/decorations", { state: currentUser?.id })
-              }
+              onClick={() => navigate("/profile/decorations")}
             >
               <HouseLine
                 size={36}
@@ -356,9 +361,7 @@ export const Profile = () => {
             </Card>
             <Card
               className="p-3 cursor-pointer"
-              onClick={() =>
-                navigate("/profile/history", { state: currentUser?.id })
-              }
+              onClick={() => navigate("/profile/history")}
             >
               <ClockCounterClockwise
                 size={36}
@@ -373,9 +376,7 @@ export const Profile = () => {
             </Card>
             <Card
               className="p-3 cursor-pointer"
-              onClick={() =>
-                navigate("/profile/favourites", { state: currentUser?.id })
-              }
+              onClick={() => navigate("/profile/favourites")}
             >
               <Heart size={36} className="text-ch-dark dark:text-ch-light" />
               <div>

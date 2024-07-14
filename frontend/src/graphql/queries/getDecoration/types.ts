@@ -30,7 +30,6 @@ export interface GetDecoration {
 
 export interface GetDecorationInput {
   id: string;
-  userId?: string;
 }
 
 export interface GetDecorationArgs {

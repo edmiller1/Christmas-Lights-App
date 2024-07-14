@@ -21,10 +21,7 @@ import {
   GetDecoration as GetDecorationData,
   GetDecorationArgs,
 } from "@/graphql/queries/getDecoration/types";
-import {
-  GetUser as GetUserData,
-  GetUserArgs,
-} from "@/graphql/queries/getUser/types";
+import { GetUser as GetUserData } from "@/graphql/queries/getUser/types";
 import {
   GetRecommendedDecorations as GetRecommendedDecorationsData,
   GetRecommendedDecorationsArgs,
@@ -39,8 +36,11 @@ import {
   CaretLeft,
   CaretRight,
   CircleWavyCheck,
+  DotsThreeVertical,
+  Pencil,
   Share,
   Star,
+  Trash,
 } from "@phosphor-icons/react";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
@@ -112,18 +112,24 @@ import {
 import { AppHeaderLoading } from "@/components/AppHeader/components";
 import { AppHeader, Footer, SEO } from "@/components";
 import { ToastAction } from "@/components/ui/toast";
+import {
+  Drawer,
+  DrawerContent,
+  DrawerHeader,
+  DrawerTitle,
+  DrawerTrigger,
+} from "@/components/ui/drawer";
 
 export const Decoration = () => {
   const navigate = useNavigate();
   const { decorationId } = useParams();
-  const { getToken, isAuthenticated, logout, user } = useKindeAuth();
+  const { isAuthenticated, user } = useKindeAuth();
   const { toast } = useToast();
   const [recommendedDecorations, setRecommendedDecorations] =
     useState<Get_Recommended_Decorations[]>();
 
   //Mobile
   const [showRatings, setShowRatings] = useState<boolean>(false);
-  const [showShareOptions, setShowShareOptions] = useState<boolean>(false);
 
   //Desktop
   //@ts-ignore
@@ -156,9 +162,7 @@ export const Decoration = () => {
     data: getUserData,
     loading: getUserLoading,
     refetch: getUserRefetch,
-  } = useQuery<GetUserData, GetUserArgs>(GET_USER, {
-    variables: { input: { id: user?.id ? user.id : "" } },
-  });
+  } = useQuery<GetUserData>(GET_USER);
 
   const currentUser = getUserData?.getUser ? getUserData.getUser : null;
 
@@ -169,7 +173,7 @@ export const Decoration = () => {
     refetch: getDecorationRefetch,
   } = useQuery<GetDecorationData, GetDecorationArgs>(GET_DECORATION, {
     variables: {
-      input: { id: decorationId!, userId: user?.id ? user.id : "" },
+      input: { id: decorationId! },
     },
     onCompleted: (data) => {
       setCurrentImage(data.getDecoration.images[0]);
@@ -182,7 +186,10 @@ export const Decoration = () => {
 
   const [
     getRecommendedDecorations,
-    { loading: getRecommendedDecorationsLoading },
+    {
+      loading: getRecommendedDecorationsLoading,
+      error: getRecommendedDecorationsError,
+    },
   ] = useLazyQuery<
     GetRecommendedDecorationsData,
     GetRecommendedDecorationsArgs
@@ -501,14 +508,6 @@ export const Decoration = () => {
     });
   };
 
-  const hasSession = sessionStorage.getItem("token");
-
-  useEffect(() => {
-    if (!hasSession) {
-      logout();
-    }
-  }, []);
-
   const deleteUserDecoration = (decorationId: string) => {
     deleteDecoration({ variables: { input: { decorationId: decorationId } } });
   };
@@ -550,20 +549,26 @@ export const Decoration = () => {
     return <DecorationLoading />;
   }
 
-  if (!decoration?.verified) {
-    return <NotFound />;
+  if (currentUser && decoration) {
+    if (!decoration?.verified && decoration.creator_id !== currentUser.id) {
+      return <NotFound />;
+    }
+  } else if (!currentUser && decoration) {
+    if (!decoration?.verified) {
+      return <NotFound />;
+    }
   }
 
   return (
     <>
       <SEO
-        title={decoration.name}
+        title={decoration?.name ?? ""}
         description="Christmas Decoration"
-        name={decoration.name}
+        name={decoration?.name ?? ""}
         type="Christmas Decoration"
       />
       {/* Mobile */}
-      <div className="overflow-y-auto h-[70rem] sm:hidden">
+      <div className="overflow-y-auto h-full sm:hidden">
         {showImageOverlay ? (
           <ImagesOverlay
             decorationImages={decoration?.images}
@@ -597,15 +602,6 @@ export const Decoration = () => {
             deleteRatingLoading={deleteRatingLoading}
           />
         ) : null}
-        {showShareOptions ? (
-          <ShareDecoration
-            setShowShareOptions={setShowShareOptions}
-            decorationImage={decoration?.images[0]}
-            decorationName={decoration?.name}
-            decorationCountry={decoration?.country}
-            decorationCity={decoration?.city}
-          />
-        ) : null}
         <div className="relative">
           <button
             className="absolute left-3 top-3 px-1 py-1 bg-white rounded-full shadow-lg"
@@ -621,12 +617,12 @@ export const Decoration = () => {
             removeFromFavourites={removeFromFavourites}
             unfavouriteDecorationLoading={unfavouriteDecorationLoading}
           />
-          <button
-            className="absolute right-16 top-3 px-1 py-1 bg-white rounded-full shadow-lg"
-            onClick={() => setShowShareOptions(true)}
-          >
-            <Share size={24} color="#000000" weight="bold" />
-          </button>
+          <ShareDecoration
+            decorationImage={decoration?.images[0]}
+            decorationName={decoration?.name}
+            decorationCountry={decoration?.country}
+            decorationCity={decoration?.city}
+          />
           <div className="absolute right-3 bottom-3 px-3 py-1 text-xs bg-zinc-800 rounded-full">
             {getImageIndex(currentImage?.id)} / {decoration?.images.length}
           </div>
@@ -656,16 +652,57 @@ export const Decoration = () => {
         </div>
         <div className="pl-5 pr-2 py-3">
           <div className="flex items-center justify-between space-x-2">
-            <div className="flex items-center space-x-2">
-              <h1 className="font-semibold text-3xl">{decoration?.name}</h1>
-              {decoration?.verified ? (
-                <CircleWavyCheck
-                  size={24}
-                  className="text-primary"
-                  weight="fill"
-                />
-              ) : null}
+            <div className="flex items-center justify-between">
+              <div className="flex items-center space-x-1">
+                <h1 className="font-semibold text-3xl">{decoration?.name}</h1>
+                {!decoration?.verified ? (
+                  <CircleWavyCheck
+                    size={24}
+                    className="text-primary"
+                    weight="fill"
+                  />
+                ) : null}
+              </div>
             </div>
+            {currentUser?.id === decoration?.creator_id ? (
+              <div className="flex justify-end">
+                <Drawer shouldScaleBackground modal={false}>
+                  <DrawerTrigger asChild>
+                    <DotsThreeVertical
+                      size={28}
+                      weight="bold"
+                      className="float-right"
+                    />
+                  </DrawerTrigger>
+                  <DrawerContent className="h-64 focus:outline-none">
+                    <DrawerHeader className="flex justify-start">
+                      <DrawerTitle>Decoration options</DrawerTitle>
+                    </DrawerHeader>
+                    <div className="flex flex-col mx-4 rounded-lg bg-secondary">
+                      <div
+                        className="flex items-center space-x-2 p-3"
+                        onClick={() => setIsEditOpen(true)}
+                      >
+                        <Pencil size={20} className="text-white" />
+                        <span className="text-sm font-semibold">
+                          Edit decoration
+                        </span>
+                      </div>
+                      <Separator />
+                      <div
+                        className="flex items-center space-x-2 p-3"
+                        onClick={() => setIsDeleteOpen(true)}
+                      >
+                        <Trash size={20} className="text-white" />
+                        <span className="text-sm font-semibold">
+                          Delete decoration
+                        </span>
+                      </div>
+                    </div>
+                  </DrawerContent>
+                </Drawer>
+              </div>
+            ) : null}
             {user?.id !== decoration?.creator_id ? (
               <div className="flex justify-end">
                 <DecorationMenu
@@ -726,20 +763,8 @@ export const Decoration = () => {
         <RecommendedDecorations
           recommendedDecorations={recommendedDecorations}
           getRecommendeddecorationsLoading={getRecommendedDecorationsLoading}
+          getRecommendedDecorationsError={getRecommendedDecorationsError}
         />
-        {/* Bottom nav */}
-        {user?.id === decoration?.creator_id ? (
-          <div className="fixed shadow w-full max-w-[560px] h-18 bottom-0 left-0 right-0 px-5 py-3 flex items-center justify-between dark:bg-zinc-900 dark:border-t dark:border-black">
-            <div>
-              <Button variant="secondary" onClick={() => setIsEditOpen(true)}>
-                Edit
-              </Button>
-            </div>
-            <div>
-              <Button onClick={() => setIsDeleteOpen(true)}>Delete</Button>
-            </div>
-          </div>
-        ) : null}
       </div>
 
       {/* Desktop */}
@@ -760,7 +785,7 @@ export const Decoration = () => {
             setShowFullImageOverlay={setShowFullImageOverlay}
           />
         ) : null}
-        <div className="flex flex-col mx-72 pt-20 2xl:mx-96">
+        <div className="flex flex-col pt-20 sm:mx-10 md:mx-16 lg:mx-32 xl:mx-52 2xl:mx-72">
           <h1 className="text-3xl font-semibold">{decoration?.name}</h1>
           <div className="flex justify-between items-center font-semibold text-sm my-2">
             <div className="flex">
@@ -858,7 +883,7 @@ export const Decoration = () => {
                 </TooltipProvider>
               ) : null}
             </div>
-            <div className="my-5 h-[26rem] w-full bg-gray-200 rounded-lg">
+            <div className="my-5 h-full w-full bg-gray-200 rounded-lg">
               <img
                 src={`https://api.mapbox.com/styles/v1/mapbox/streets-v11/static/pin-l-village+bc1919(${decoration?.longitude},${decoration?.latitude})/${decoration?.longitude},${decoration?.latitude},15,0/1120x500@2x?attribution=false&logo=false&access_token=pk.eyJ1Ijoic2hhbXB1cnJzIiwiYSI6ImNsZjdhcmJweDB5cGw0M212YnplaTFkNnkifQ.RRUvcHyfO7W0Pg4vOQ4UvA`}
                 alt="static map"
@@ -870,6 +895,7 @@ export const Decoration = () => {
               getRecommendeddecorationsLoading={
                 getRecommendedDecorationsLoading
               }
+              getRecommendedDecorationsError={getRecommendedDecorationsError}
             />
           </div>
         </div>

@@ -22,7 +22,7 @@ export const DecorationLoading = () => {
 
       {/* Desktop */}
       <div className="hidden sm:block min-h-screen">
-        <div className="mx-96 pt-32">
+        <div className="flex flex-col pt-32 sm:mx-10 md:mx-16 lg:mx-32 xl:mx-52 2xl:mx-72">
           <div className="h-10 w-1/2 rounded-lg animate-pulse bg-gray-200 dark:bg-zinc-700"></div>
           <div className="flex items-center justify-between">
             <div className="h-5 my-5 w-1/3 rounded-lg animate-pulse bg-gray-200 dark:bg-zinc-700"></div>

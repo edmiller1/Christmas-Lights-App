@@ -16,6 +16,7 @@ export * from "./ImagesGrid";
 export * from "./ImagesOverlay";
 export * from "./RateButton";
 export * from "./RecommendedDecorations";
+export * from "./RecommendedDecorationsError";
 export * from "./RecommendedDecorationsLoading";
 export * from "./ReportDecorationModal";
 export * from "./SaveButton";

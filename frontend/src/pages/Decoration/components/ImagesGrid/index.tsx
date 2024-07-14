@@ -16,7 +16,7 @@ export const ImagesGrid = ({
         <img
           src={decorationImages[0].url}
           alt="Christmas Decoration"
-          className="image-grd-col-2 image-grid-row-2 rounded-xl cursor-pointer"
+          className="image-grd-col-2 image-grid-row-2 rounded-xl cursor-pointer object-cover"
           onClick={() => setShowImageOverlay(true)}
         />
       </div>
@@ -29,13 +29,13 @@ export const ImagesGrid = ({
         <img
           src={decorationImages[0].url}
           alt="Christmas Decoration"
-          className="w-1/2 h-[500px] rounded-tl-xl rounded-bl-xl cursor-pointer"
+          className="w-1/2 h-[500px] rounded-tl-xl rounded-bl-xl cursor-pointer object-cover"
           onClick={() => setShowImageOverlay(true)}
         />
         <img
           src={decorationImages[1].url}
           alt="Christmas decoration"
-          className="w-1/2 h-[500px] rounded-tr-xl rounded-br-xl cursor-pointer"
+          className="w-1/2 h-[500px] rounded-tr-xl rounded-br-xl cursor-pointer object-cover"
           onClick={() => setShowImageOverlay(true)}
         />
       </div>
@@ -51,19 +51,19 @@ export const ImagesGrid = ({
         <img
           src={decorationImages[0].url}
           alt="Christmas decoration"
-          className="image-grid-col-2 image-grid-row-2 rounded-tl-xl rounded-bl-xl cursor-pointer"
+          className="image-grid-col-2 image-grid-row-2 rounded-tl-xl rounded-bl-xl cursor-pointer object-cover"
           onClick={() => setShowImageOverlay(true)}
         />
         <img
           src={decorationImages[1].url}
           alt="Christmas Decoration"
-          className="rounded-tr-xl cursor-pointer"
+          className="rounded-tr-xl cursor-pointer object-cover"
           onClick={() => setShowImageOverlay(true)}
         />
         <img
           src={decorationImages[2].url}
           alt="Christmas Decoration"
-          className="rounded-br-xl cursor-pointer"
+          className="rounded-br-xl cursor-pointer object-cover"
           onClick={() => setShowImageOverlay(true)}
         />
         <div className="absolute sm:bottom-48 sm:right-72 lg:right-[26%] xl:right-[22%] z-10">
@@ -87,31 +87,32 @@ export const ImagesGrid = ({
           <img
             src={decorationImages[0].url}
             alt="Christmas decoration"
-            className="image-grid-col-2 image-grid-row-2 rounded-tl-xl rounded-bl-xl cursor-pointer"
+            className="image-grid-col-2 image-grid-row-2 rounded-tl-xl rounded-bl-xl cursor-pointer object-cover"
             onClick={() => setShowImageOverlay(true)}
           />
           <img
             src={decorationImages[1].url}
             alt="Christmas Decoration"
-            className="cursor-pointer"
+            className="cursor-pointer object-cover"
             onClick={() => setShowImageOverlay(true)}
           />
 
           <img
             src={decorationImages[2].url}
             alt="Christmas Decoration"
-            className="rounded-tr-xl cursor-pointer"
+            className="rounded-tr-xl cursor-pointer object-cover"
             onClick={() => setShowImageOverlay(true)}
           />
           <img
             src={decorationImages[3].url}
             alt="Christmas Decoration"
+            className="cursor-pointer object-cover"
             onClick={() => setShowImageOverlay(true)}
           />
           <img
             src={decorationImages[4].url}
             alt="Christmas Decoration"
-            className="rounded-br-xl cursor-pointer"
+            className="rounded-br-xl cursor-pointer object-cover"
             onClick={() => setShowImageOverlay(true)}
           />
         </>

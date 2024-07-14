@@ -27,10 +27,7 @@ import {
   GetDecorationsViaRegionArgs,
   Get_Decorations_Via_Region,
 } from "@/graphql/queries/getDecorationsViaRegion/types";
-import {
-  GetUser as GetUserData,
-  GetUserArgs,
-} from "../../graphql/queries/getUser/types";
+import { GetUser as GetUserData } from "../../graphql/queries/getUser/types";
 import {
   SearchForDecorations as SearchForDecorationsData,
   SearchForDecorationsArgs,
@@ -125,8 +122,7 @@ export const Search = () => {
     data: getUserData,
     loading: getUserLoading,
     refetch: refetchUser,
-  } = useQuery<GetUserData, GetUserArgs>(GET_USER, {
-    variables: { input: { id: user?.id ? user.id : "" } },
+  } = useQuery<GetUserData>(GET_USER, {
     skip: !user,
   });
 

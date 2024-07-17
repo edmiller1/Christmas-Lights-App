@@ -18,6 +18,9 @@ interface Props {
   setCurrentStep: (currentStep: number) => void;
   images: Array<{ id: string; url: string }>;
   currentImage: { id: string; url: string } | undefined;
+  setCurrentImage: (
+    currentImage: { id: string; url: string } | undefined
+  ) => void;
   discardDecoration: () => void;
   removeImage: (id: string | undefined) => void;
   nextImage: () => void;
@@ -38,6 +41,7 @@ export const ImagesModal = ({
   setCurrentStep,
   images,
   currentImage,
+  setCurrentImage,
   discardDecoration,
   removeImage,
   nextImage,
@@ -198,6 +202,7 @@ export const ImagesModal = ({
                       onDragEnter={() => (draggedOverImage.current = index)}
                       onDragEnd={handleSortImages}
                       onDragOver={(e) => e.preventDefault()}
+                      onClick={() => setCurrentImage(image)}
                     />
                   ))}
                 </div>

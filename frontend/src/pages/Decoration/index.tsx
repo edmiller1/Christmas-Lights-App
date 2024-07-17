@@ -521,7 +521,7 @@ export const Decoration = () => {
       });
       addDecorationToHistory({ variables: { input: { id: decoration.id } } });
     }
-  }, [decoration?.id]);
+  }, [decorationId]);
 
   useEffect(() => {
     if (decoration?.creator_id !== user?.id) {
@@ -726,7 +726,10 @@ export const Decoration = () => {
               {decoration?.ratings.length === 1 ? "rating" : "ratings"}
             </button>
             &nbsp; &middot; &nbsp;
-            <span>{decoration?.views.length} views</span>
+            <span>
+              {decoration?.views.length}{" "}
+              {decoration?.views.length === 1 ? "view" : "views"}
+            </span>
           </div>
           <div className="mt-2">
             <span>

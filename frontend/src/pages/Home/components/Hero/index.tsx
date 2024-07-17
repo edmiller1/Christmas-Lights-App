@@ -2,15 +2,23 @@ import { KindeUser } from "@/lib/types";
 import { Input } from "@/components/ui/input";
 import { Footer } from "@/components";
 import { Navigation } from "../Navigation";
+import { Get_User } from "@/graphql/queries/getUser/types";
 
 interface Props {
   isAuthenticated: boolean;
   user: KindeUser | undefined;
   logout: () => Promise<void>;
   login: (options?: any) => Promise<void>;
+  currentUser: Get_User | null;
 }
 
-export const Hero = ({ isAuthenticated, login, logout, user }: Props) => {
+export const Hero = ({
+  currentUser,
+  isAuthenticated,
+  login,
+  logout,
+  user,
+}: Props) => {
   return (
     <div className="bg-background">
       <Navigation
@@ -18,6 +26,7 @@ export const Hero = ({ isAuthenticated, login, logout, user }: Props) => {
         user={user}
         logout={logout}
         login={login}
+        currentUser={currentUser}
       />
       <div className="min-h-screen relative isolate px-6 pt-14 lg:px-8">
         <div

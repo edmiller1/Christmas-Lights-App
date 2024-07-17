@@ -91,7 +91,7 @@ export const ImagesOverlay = ({
         }}
       >
         <div className="w-full">
-          <div className="sticky top-0 flex justify-between items-center px-5 py-5 h-16 border-b">
+          <div className="sticky bg-background top-0 flex justify-between items-center px-5 py-5 h-16 border-b z-50">
             <Button variant="ghost">
               <CaretLeft
                 size={28}

@@ -392,6 +392,7 @@ export const CreateDecorationModal = ({
     return (
       <ImagesModal
         currentImage={currentImage}
+        setCurrentImage={setCurrentImage}
         discardDecoration={discardDecoration}
         hideImageTools={hideImageTools}
         images={images}

@@ -15,7 +15,12 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Dialog, DialogPanel } from "@headlessui/react";
-import { ThemeToggle } from "@/components/AppHeader/components";
+import {
+  CreateButton,
+  CreateDecorationModal,
+  ThemeToggle,
+} from "@/components/AppHeader/components";
+import { Get_User } from "@/graphql/queries/getUser/types";
 
 interface Props {
   currentPlace?: string;
@@ -23,9 +28,11 @@ interface Props {
   user: KindeUser | undefined;
   logout: () => Promise<void>;
   login: (options?: any) => Promise<void>;
+  currentUser: Get_User | null;
 }
 
 export const Navigation = ({
+  currentUser,
   currentPlace,
   isAuthenticated,
   user,
@@ -34,6 +41,7 @@ export const Navigation = ({
 }: Props) => {
   const navigate = useNavigate();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [isCreateOpen, setIsCreateOpen] = useState<boolean>(false);
   return (
     <header className="absolute inset-x-0 top-0 z-50">
       <nav
@@ -72,6 +80,9 @@ export const Navigation = ({
         </div>
         <div className="hidden lg:flex lg:space-x-5 lg:flex-1 lg:justify-end">
           <Button className="rounded-full">Get the app</Button>
+          {isAuthenticated ? (
+            <CreateButton setIsCreateOpen={setIsCreateOpen} />
+          ) : null}
           {!isAuthenticated ? (
             <Button
               variant="outline"
@@ -269,6 +280,11 @@ export const Navigation = ({
           </div>
         </DialogPanel>
       </Dialog>
+      <CreateDecorationModal
+        isCreateOpen={isCreateOpen}
+        setIsCreateOpen={setIsCreateOpen}
+        currentUser={currentUser}
+      />
     </header>
   );
 };

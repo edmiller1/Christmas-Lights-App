@@ -151,7 +151,7 @@ export const AppHeader = ({
               <Input
                 type="text"
                 placeholder="Search"
-                className="ml-4"
+                className="ml-4 sm:w-96"
                 value={searchQuery ? searchQuery : searchTerm}
                 onChange={(e) => handleSearch(e)}
                 onKeyDown={(e) => searchViaKey(e)}
@@ -194,7 +194,7 @@ export const AppHeader = ({
             <List className="h-6 w-6" aria-hidden="true" />
           </button>
         </div>
-        <div className="hidden sm:flex w-full max-w-sm items-center justify-center space-x-2">
+        <div className="hidden lg:flex w-full max-w-sm items-center justify-center space-x-2 mr-10">
           <Input
             type="text"
             placeholder="Search"

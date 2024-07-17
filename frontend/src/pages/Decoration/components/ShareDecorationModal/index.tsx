@@ -137,7 +137,7 @@ export const ShareDecorationModal = ({
                       </div>
                     }
                   />
-                  <Separator />
+                  <Separator className="dark:bg-zinc-700" />
                   <FacebookMessengerShareButton
                     url={"https://www.christmas-lights.com" + url.pathname}
                     appId={import.meta.env.VITE_FACEBOOK_APP_ID}
@@ -152,7 +152,7 @@ export const ShareDecorationModal = ({
                       </div>
                     }
                   />
-                  <Separator />
+                  <Separator className="dark:bg-zinc-700" />
                   <FacebookShareButton
                     url={"https://www.christmas-lights.com" + url.pathname}
                     className="w-full"
@@ -166,7 +166,7 @@ export const ShareDecorationModal = ({
                       </div>
                     }
                   />
-                  <Separator />
+                  <Separator className="dark:bg-zinc-700" />
                   <TwitterShareButton
                     url={"https://www.christmas-lights.com" + url.pathname}
                     className="w-full"

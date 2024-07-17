@@ -117,7 +117,7 @@ export const ImagesGrid = ({
           />
         </>
       ) : null}
-      <div className="absolute sm:bottom-10 right-[22%] 2xl:bottom-40 z-10">
+      <div className="absolute sm:right-10 sm:bottom-52 md:right-20 md:bottom-56 lg:right-36 lg:bottom-60 xl:right-60 xl:bottom-60 2xl:right-80 2xl:bottom-56 z-10">
         <Button variant="outline" onClick={() => setShowImageOverlay(true)}>
           <DotsNine
             size={28}

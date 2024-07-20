@@ -61,8 +61,8 @@ export const FavouriteDecorationCard = ({
     <>
       <div className="group sm:hidden">
         {unFavouriteDecorationLoading && currentDecorationIndex === index ? (
-          <div className="w-full overflow-hidden rounded-xl relative">
-            <div className="w-full h-full rounded-xl bg-black/90 absolute z-50 space-y-3 flex flex-col justify-center items-center">
+          <div className="relative w-full overflow-hidden rounded-xl">
+            <div className="absolute z-50 flex flex-col items-center justify-center w-full h-full space-y-3 rounded-xl bg-black/90">
               <CircleNotch size={52} weight="bold" className="animate-spin" />
               <span className="font-semibold">Removing decoration...</span>
             </div>
@@ -75,11 +75,11 @@ export const FavouriteDecorationCard = ({
             <img
               src={decoration.images[0].url}
               alt="decoration image"
-              className="h-80 w-full object-cover object-center"
+              className="object-cover object-center w-full h-80"
             />
           </div>
         ) : (
-          <div className="w-full overflow-hidden rounded-xl bg-gray-200 relative">
+          <div className="relative w-full overflow-hidden bg-gray-200 rounded-xl">
             <button
               className="absolute top-2 right-2"
               onClick={() => removeDecorationFromFavourites(decoration.id)}
@@ -90,7 +90,7 @@ export const FavouriteDecorationCard = ({
               <img
                 src={decoration.images[0].url}
                 alt="decoration image"
-                className="h-80 w-full object-cover object-center"
+                className="object-cover object-center w-full h-80"
               />
             </Link>
           </div>
@@ -98,17 +98,13 @@ export const FavouriteDecorationCard = ({
 
         <Link to={`/decoration/${decoration.id}`}>
           <div className="flex items-center justify-between">
-            <h3 className="mt-4 text-lg font-bold">{decoration.name}</h3>
-            <div className="flex items-center space-x-1 mt-3">
-              <Star
-                size={20}
-                weight="fill"
-                className="text-ch-dark dark:text-ch-light"
-              />
-              <span className="text-lg">{decoration.rating}</span>
+            <h3 className="mt-1 font-bold">{decoration.name}</h3>
+            <div className="flex items-center mt-1 space-x-1">
+              <Star size={16} className="text-ch-dark dark:text-ch-light" />
+              <span>{decoration.rating}</span>
             </div>
           </div>
-          <p className="mt-1 text-gray-400">
+          <p className="text-sm">
             {decoration.city}, {decoration.country}
           </p>
         </Link>
@@ -116,8 +112,8 @@ export const FavouriteDecorationCard = ({
 
       <div className="hidden sm:block group">
         {unFavouriteDecorationLoading && currentDecorationIndex === index ? (
-          <div className="w-full overflow-hidden rounded-xl relative">
-            <div className="w-full h-full rounded-xl bg-black/90 absolute z-50 space-y-3 flex flex-col justify-center items-center">
+          <div className="relative w-64 overflow-hidden rounded-xl">
+            <div className="absolute z-50 flex flex-col items-center justify-center w-full h-full space-y-3 rounded-xl bg-black/90">
               <CircleNotch size={52} weight="bold" className="animate-spin" />
               <span className="font-semibold">Removing decoration...</span>
             </div>
@@ -130,11 +126,11 @@ export const FavouriteDecorationCard = ({
             <img
               src={decoration.images[0].url}
               alt="decoration image"
-              className="h-64 w-full object-cover object-center"
+              className="object-cover object-center w-64 h-64"
             />
           </div>
         ) : (
-          <div className="w-full overflow-hidden rounded-xl bg-gray-200 relative">
+          <div className="relative w-64 overflow-hidden bg-gray-200 rounded-xl">
             <button
               className="absolute top-2 right-2"
               onClick={() => removeDecorationFromFavourites(decoration.id)}
@@ -149,7 +145,7 @@ export const FavouriteDecorationCard = ({
               <img
                 src={decoration.images[0].url}
                 alt="decoration image"
-                className="h-64 w-full object-cover object-center"
+                className="object-cover object-center w-64 h-64"
               />
             </Link>
           </div>
@@ -161,7 +157,7 @@ export const FavouriteDecorationCard = ({
         >
           <div className="flex items-center justify-between">
             <h3 className="mt-4 font-bold">{decoration.name}</h3>
-            <div className="flex items-center space-x-1 mt-3">
+            <div className="flex items-center mt-3 space-x-1">
               <Star
                 size={16}
                 weight="fill"

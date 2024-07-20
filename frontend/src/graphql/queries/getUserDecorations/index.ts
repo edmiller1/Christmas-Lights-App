@@ -15,6 +15,8 @@ export const GET_USER_DECORATIONS = gql`
           id
           url
         }
+        verified
+        verification_submitted
       }
     }
   }

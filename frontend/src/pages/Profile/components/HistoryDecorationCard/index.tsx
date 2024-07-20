@@ -67,8 +67,8 @@ export const HistoryDecorationCard = ({
       <div className="group sm:hidden">
         {removeDecorationFromHistoryLoading &&
         currentDecorationIndex === index ? (
-          <div className="w-full overflow-hidden rounded-lg bg-gray-200 relative">
-            <div className="w-full h-full rounded-xl bg-black/90 absolute z-50 space-y-3 flex flex-col justify-center items-center">
+          <div className="relative w-full overflow-hidden bg-gray-200 rounded-lg">
+            <div className="absolute z-50 flex flex-col items-center justify-center w-full h-full space-y-3 rounded-xl bg-black/90">
               <CircleNotch size={52} weight="bold" className="animate-spin" />
               <span className="font-semibold">Removing decoration...</span>
             </div>
@@ -76,7 +76,7 @@ export const HistoryDecorationCard = ({
               <DropdownMenuTrigger asChild>
                 <button
                   disabled
-                  className="absolute right-2 top-2 bg-black/50 rounded-full p-1"
+                  className="absolute p-1 rounded-full right-2 top-2 bg-black/50"
                 >
                   <DotsThreeVertical
                     size={32}
@@ -93,17 +93,17 @@ export const HistoryDecorationCard = ({
               <img
                 src={decoration.images[0].url}
                 alt="decoration image"
-                className="h-80 w-full object-cover object-center"
+                className="object-cover object-center w-full h-80"
               />
             </Link>
           </div>
         ) : (
-          <div className="w-full overflow-hidden rounded-lg bg-gray-200 relative">
+          <div className="relative w-full overflow-hidden bg-gray-200 rounded-lg">
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <button className="absolute right-2 top-2 bg-black/50 rounded-full p-1">
+                <button className="absolute p-1 rounded-full right-2 top-2 bg-black/50">
                   <DotsThreeVertical
-                    size={32}
+                    size={24}
                     weight="bold"
                     className="text-ch-light"
                   />
@@ -121,25 +121,20 @@ export const HistoryDecorationCard = ({
               <img
                 src={decoration.images[0].url}
                 alt="decoration image"
-                className="h-80 w-full object-cover object-center"
+                className="object-cover object-center w-full h-80"
               />
             </Link>
           </div>
         )}
-
         <Link to={`/decoration/${decoration.id}`} key={decoration.id}>
           <div className="flex items-center justify-between">
-            <h3 className="mt-4 text-lg font-bold">{decoration.name}</h3>
-            <div className="flex items-center space-x-1 mt-3">
-              <Star
-                size={20}
-                weight="fill"
-                className="text-ch-dark dark:text-ch-light"
-              />
-              <span className="text-lg">{decoration.rating}</span>
+            <h3 className="mt-1 font-bold">{decoration.name}</h3>
+            <div className="flex items-center mt-1 space-x-1">
+              <Star size={16} className="text-ch-dark dark:text-ch-light" />
+              <span>{decoration.rating}</span>
             </div>
           </div>
-          <p className="mt-1">
+          <p className="text-sm">
             {decoration.city}, {decoration.country}
           </p>
         </Link>
@@ -149,8 +144,8 @@ export const HistoryDecorationCard = ({
       <div className="hidden sm:block sm:group">
         {removeDecorationFromHistoryLoading &&
         currentDecorationIndex === index ? (
-          <div className="w-full overflow-hidden rounded-lg bg-gray-200 relative">
-            <div className="w-full h-full rounded-xl bg-black/90 absolute z-50 space-y-3 flex flex-col justify-center items-center">
+          <div className="relative w-64 overflow-hidden bg-gray-200 rounded-lg">
+            <div className="absolute z-50 flex flex-col items-center justify-center w-full h-full space-y-3 rounded-xl bg-black/90">
               <CircleNotch size={52} weight="bold" className="animate-spin" />
               <span className="font-semibold">Removing decoration...</span>
             </div>
@@ -158,7 +153,7 @@ export const HistoryDecorationCard = ({
               <DropdownMenuTrigger asChild>
                 <button
                   disabled
-                  className="absolute right-2 top-2 bg-black/50 rounded-full p-1"
+                  className="absolute p-1 rounded-full right-2 top-2 bg-black/50"
                 >
                   <DotsThreeVertical
                     size={32}
@@ -175,15 +170,15 @@ export const HistoryDecorationCard = ({
               <img
                 src={decoration.images[0].url}
                 alt="decoration image"
-                className="h-64 w-full object-cover object-center"
+                className="object-cover object-center w-64 h-64"
               />
             </Link>
           </div>
         ) : (
-          <div className="w-full overflow-hidden rounded-lg bg-gray-200 relative">
+          <div className="relative w-full overflow-hidden bg-gray-200 rounded-lg">
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <button className="absolute right-2 top-2 bg-black/50 rounded-full p-1">
+                <button className="absolute p-1 rounded-full right-2 top-2 bg-black/50">
                   <DotsThreeVertical
                     size={32}
                     weight="bold"
@@ -203,7 +198,7 @@ export const HistoryDecorationCard = ({
               <img
                 src={decoration.images[0].url}
                 alt="decoration image"
-                className="h-64 w-full object-cover object-center"
+                className="object-cover object-center w-full h-64"
               />
             </Link>
           </div>
@@ -211,7 +206,7 @@ export const HistoryDecorationCard = ({
         <Link to={`/decoration/${decoration.id}`}>
           <div className="flex items-center justify-between">
             <h3 className="mt-4 font-bold">{decoration.name}</h3>
-            <div className="flex items-center space-x-1 mt-3">
+            <div className="flex items-center mt-3 space-x-1">
               <Star
                 size={16}
                 weight="fill"

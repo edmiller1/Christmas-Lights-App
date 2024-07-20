@@ -54,7 +54,7 @@ export const Favourites = () => {
         title={`${user.name} - Favourites`}
         type="Favourites"
       />
-      <div className="px-8 py-5 min-h-screen sm:hidden">
+      <div className="min-h-screen px-8 py-5 sm:hidden">
         <div className="flex items-center space-x-3">
           <div role="button" onClick={() => navigate(-1)}>
             <CaretLeft size={24} weight="bold" />
@@ -62,7 +62,7 @@ export const Favourites = () => {
           <h2 className="text-2xl font-bold">Favourites</h2>
         </div>
         {userFavourites && userFavourites.length > 0 ? (
-          <div className="grid grid-cols-1 gap-x-6 gap-y-10 my-8">
+          <div className="grid grid-cols-1 my-8 gap-x-6 gap-y-10">
             {userFavourites.map((decoration, index) => (
               <FavouriteDecorationCard
                 key={decoration.id}
@@ -82,11 +82,11 @@ export const Favourites = () => {
       </div>
 
       {/* Desktop */}
-      <div className="hidden sm:mx-24 md:mx-28 lg:ml-40 sm:block sm:min-h-screen xl:mx-96 sm:py-24">
+      <div className="hidden sm:mx-24 sm:block sm:min-h-screen sm:py-24">
         <Breadcrumbs firstWord="Profile" secondWord="Favourites" />
-        <h1 className="mt-7 font-bold text-4xl">Favourites</h1>
+        <h1 className="text-4xl font-bold mt-7">Favourites</h1>
         {userFavourites && userFavourites.length > 0 ? (
-          <div className="grid grid-cols-4 gap-x-6 gap-y-8 my-8">
+          <div className="grid grid-cols-4 my-8 gap-x-6 gap-y-8">
             {userFavourites.map((decoration, index) => (
               <FavouriteDecorationCard
                 key={decoration.id}

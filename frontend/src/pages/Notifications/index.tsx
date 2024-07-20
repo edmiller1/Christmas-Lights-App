@@ -15,17 +15,13 @@ import { NotFound } from "..";
 import { CircleNotch, Notification } from "@phosphor-icons/react";
 import { NotificationItem, NotificationsLoading } from "./components";
 import { useToast } from "@/components/ui/use-toast";
-import {
-  AllNotificationsMenu,
-  AppHeaderLoading,
-} from "@/components/AppHeader/components";
+import { AllNotificationsMenu } from "@/components/AppHeader/components";
 import { AppHeader, SEO } from "@/components";
 import { useKindeAuth } from "@kinde-oss/kinde-auth-react";
-import { useEffect } from "react";
 
 export const Notifications = () => {
   const { toast } = useToast();
-  const { getToken, isAuthenticated, logout, user } = useKindeAuth();
+  const { isAuthenticated, user } = useKindeAuth();
 
   const [deleteAllNotifications, { loading: deleteAllNotificationsLoading }] =
     useMutation<DeleteAllNotificationsData>(DELETE_ALL_NOTIFICATIONS, {
@@ -85,14 +81,6 @@ export const Notifications = () => {
     deleteAllNotifications();
   };
 
-  const hasSession = sessionStorage.getItem("token");
-
-  useEffect(() => {
-    if (!hasSession) {
-      logout();
-    }
-  }, []);
-
   if (getUserNotificationsLoading || getUserLoading) {
     return <NotificationsLoading />;
   }
@@ -108,19 +96,13 @@ export const Notifications = () => {
       <div className="hidden sm:block">
         <NotFound />
       </div>
-      <div className="py-5 min-h-screen sm:hidden">
-        {getUserLoading ? (
-          <AppHeaderLoading />
-        ) : (
-          <AppHeader
-            currentUser={currentUser}
-            isAuthenticated={isAuthenticated}
-          />
-        )}
-        <div className="flex justify-between items-center px-2">
-          <div className="flex items-center mt-5">
-            <h1 className="ml-5 font-bold text-3xl">Notifications</h1>
-          </div>
+      <div className="min-h-screen py-5 sm:hidden">
+        <AppHeader
+          currentUser={currentUser}
+          isAuthenticated={isAuthenticated}
+        />
+        <div className="flex items-center justify-between mt-12">
+          <h1 className="ml-5 text-3xl font-bold">Notifications</h1>
           {userNotifications && userNotifications.length > 0 ? (
             <AllNotificationsMenu
               deleteAllTheNotifications={deleteAllTheNotifications}
@@ -128,7 +110,7 @@ export const Notifications = () => {
             />
           ) : null}
         </div>
-        <div className="mt-5">
+        <div className="">
           {userNotifications && userNotifications.length > 0 ? (
             <>
               {markAllNotificationsAsReadLoading ||
@@ -140,7 +122,7 @@ export const Notifications = () => {
                   />
                 </div>
               ) : (
-                <div className="mt-10">
+                <div className="mt-1">
                   {userNotifications?.map((notification, index) => (
                     <NotificationItem
                       key={notification.id}

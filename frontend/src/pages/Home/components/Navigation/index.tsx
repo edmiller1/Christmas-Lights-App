@@ -51,7 +51,7 @@ export const Navigation = ({
         <div className="flex lg:flex-1">
           <Link to="/" className="-m-1.5 p-1.5">
             <span className="sr-only">Christmas Lights App</span>
-            <img className="h-10 w-auto" src={logo} alt="" />
+            <img className="w-auto h-10" src={logo} alt="" />
           </Link>
         </div>
         <div className="flex lg:hidden">
@@ -61,7 +61,7 @@ export const Navigation = ({
             onClick={() => setMobileMenuOpen(true)}
           >
             <span className="sr-only">Open main menu</span>
-            <List className="h-6 w-6" aria-hidden="true" />
+            <List className="w-6 h-6" aria-hidden="true" />
           </button>
         </div>
         <div className="hidden lg:flex lg:gap-x-12">
@@ -99,7 +99,7 @@ export const Navigation = ({
               <DropdownMenuTrigger asChild>
                 <Button
                   variant="ghost"
-                  className="relative h-8 w-8 rounded-full mt-1"
+                  className="relative w-8 h-8 mt-1 rounded-full"
                 >
                   <Avatar className="h-9 w-9">
                     <AvatarImage
@@ -125,7 +125,7 @@ export const Navigation = ({
                       <p className="text-sm font-medium leading-none">
                         {user?.given_name} {user?.family_name}
                       </p>
-                      <p className="text-muted-foreground text-xs leading-none">
+                      <p className="text-xs leading-none text-muted-foreground">
                         {user?.email}
                       </p>
                     </div>
@@ -180,11 +180,11 @@ export const Navigation = ({
         onClose={setMobileMenuOpen}
       >
         <div className="fixed inset-0 z-50 bg-background" />
-        <DialogPanel className="fixed inset-y-0 right-0 z-50 w-full overflow-y-auto px-6 py-6 sm:max-w-sm sm:ring-1">
+        <DialogPanel className="fixed inset-y-0 right-0 z-50 w-full px-6 py-6 overflow-y-auto sm:max-w-sm sm:ring-1">
           <div className="flex items-center justify-between">
             <Link to="/" className="-m-1.5 p-1.5">
               <span className="sr-only">Christmas Lights App</span>
-              <img className="h-8 w-auto" src={logo} alt="" />
+              <img className="w-auto h-8" src={logo} alt="" />
             </Link>
             <button
               type="button"
@@ -192,21 +192,21 @@ export const Navigation = ({
               onClick={() => setMobileMenuOpen(false)}
             >
               <span className="sr-only">Close menu</span>
-              <X className="h-6 w-6" aria-hidden="true" />
+              <X className="w-6 h-6" aria-hidden="true" />
             </button>
           </div>
-          <div className="mt-6 flow-root">
+          <div className="flow-root mt-6">
             <div className="-my-6 divide-y divide-gray-500/10">
-              <div className="space-y-2 py-6">
+              <div className="py-6 space-y-2">
                 <Link
                   to="/"
-                  className="-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7"
+                  className="block px-3 py-2 -mx-3 text-base font-semibold leading-7 rounded-lg"
                 >
                   Home
                 </Link>
                 <Link
                   to={`/explore?search=${currentPlace}`}
-                  className="-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7"
+                  className="block px-3 py-2 -mx-3 text-base font-semibold leading-7 rounded-lg"
                 >
                   Explore
                 </Link>
@@ -230,39 +230,45 @@ export const Navigation = ({
               </div>
               {isAuthenticated ? (
                 <div className="-my-6 divide-y divide-gray-500/10">
-                  <div className="space-y-2 py-6">
+                  <div className="py-6 space-y-2">
                     <Link
                       to="/profile"
-                      className="-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7"
+                      className="block px-3 py-2 -mx-3 text-base font-semibold leading-7 rounded-lg"
                     >
                       Profile
                     </Link>
                     <Link
+                      to="/Notifications"
+                      className="block px-3 py-2 -mx-3 text-base font-semibold leading-7 rounded-lg"
+                    >
+                      Notifications
+                    </Link>
+                    <Link
                       to="/route-planning"
-                      className="-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7"
+                      className="block px-3 py-2 -mx-3 text-base font-semibold leading-7 rounded-lg"
                     >
                       Route Planning
                     </Link>
                     <Link
                       to="/profile/decorations"
-                      className="-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7"
+                      className="block px-3 py-2 -mx-3 text-base font-semibold leading-7 rounded-lg"
                     >
                       Decorations
                     </Link>
                     <Link
                       to="/profile/history"
-                      className="-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7"
+                      className="block px-3 py-2 -mx-3 text-base font-semibold leading-7 rounded-lg"
                     >
                       History
                     </Link>
                     <Link
                       to="/profile/favourites"
-                      className="-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7"
+                      className="block px-3 py-2 -mx-3 text-base font-semibold leading-7 rounded-lg"
                     >
                       Favourites
                     </Link>
                   </div>
-                  <div className="py-6 w-full">
+                  <div className="w-full py-6">
                     <Button
                       variant="default"
                       className="w-full rounded-full bg-secondary"
@@ -273,7 +279,7 @@ export const Navigation = ({
                   </div>
                 </div>
               ) : null}
-              <div className="py-6 w-full">
+              <div className="w-full py-6">
                 <Button className="w-full rounded-full">Get Premium</Button>
               </div>
             </div>

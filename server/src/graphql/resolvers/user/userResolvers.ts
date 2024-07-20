@@ -505,7 +505,7 @@ export const userResolvers = {
 
           await resend.emails.send({
             from: "onboarding@resend.dev",
-            to: "edmiller.me@gmail.com",
+            to: "edmiller.me@gmail.com", //TODO: Change to user email
             subject: "Welcome to Christmas Lights App",
             html: welcomeEmail,
           });
@@ -661,8 +661,8 @@ export const userResolvers = {
 
         //Send email to admin so they can delete user from Kinde
         await resend.emails.send({
-          from: "'Christmas Lights App <christmaslightsapp.com>'",
-          to: "edmiller.me@gmail.com",
+          from: "onboarding@resend.dev",
+          to: "edmiller.me@gmail.com", //TODO: Change to admin email
           subject: "Account Deletion",
           html: `<p>User ${user.name} wishes to have their account deleted.</p>
           <p>Please log into the Kinde authentication portal and delete user.</p>

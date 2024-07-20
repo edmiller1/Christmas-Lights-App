@@ -15,7 +15,7 @@ import logo from "../../assets/logo.png";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { CircleNotch, Files } from "@phosphor-icons/react";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { NotFound } from "..";
 import { getBase64Value } from "@/lib/helpers";
 import { AlreadySubmittedModal, VerifyDecorationLoading } from "./components";
@@ -25,7 +25,7 @@ import { SEO } from "@/components";
 
 export const VerifyDecoration = () => {
   const { decorationId } = useParams();
-  const { logout, user } = useKindeAuth();
+  const { user } = useKindeAuth();
   const { toast } = useToast();
   const navigate = useNavigate();
 
@@ -92,14 +92,6 @@ export const VerifyDecoration = () => {
     });
   };
 
-  const hasSession = sessionStorage.getItem("token");
-
-  useEffect(() => {
-    if (!hasSession) {
-      logout();
-    }
-  }, []);
-
   if (
     (decoration && user && decoration.creator_id !== user.id) ||
     getDecorationError
@@ -113,7 +105,7 @@ export const VerifyDecoration = () => {
 
   if (submitDecorationForVerificationLoading) {
     return (
-      <div className="min-h-screen flex flex-col justify-center items-center">
+      <div className="flex flex-col items-center justify-center min-h-screen">
         <CircleNotch size={80} color="#5AC18A" className="animate-spin" />
         <span className="text-lg">Sending Verification Request...</span>
       </div>
@@ -133,21 +125,21 @@ export const VerifyDecoration = () => {
         decorationId={decorationId}
       />
       {/* Mobile */}
-      <div className="min-h-screen sm:hidden">
+      <div className="h-full sm:hidden">
         <div className="w-full pt-2">
-          <div className="h-14 border-b-2 dark:border-black">
+          <div className="border-b-2 h-14">
             <Link to="/" className="">
               <img src={logo} alt="logo" className="h-12" />
             </Link>
           </div>
         </div>
-        <div className="mt-8 flex flex-col justify-center mx-5 space-y-3">
+        <div className="flex flex-col justify-center mx-5 mt-8 mb-5 space-y-3">
           <h1 className="text-3xl font-semibold">Verify Decoration</h1>
-          <div className="p-4 flex items-center border rounded-xl space-x-3">
+          <div className="flex items-center p-4 space-x-3 border rounded-xl">
             <img
               src={decoration?.images[0].url}
               alt="Christmas decoration"
-              className="h-24 w-24 object-cover rounded-lg"
+              className="object-cover w-24 h-24 rounded-lg"
             />
             <div className="flex flex-col">
               <span className="font-semibold">{decoration?.name}</span>
@@ -168,7 +160,7 @@ export const VerifyDecoration = () => {
             </p>
             <Separator />
           </div>
-          <div className="relative flex flex-col items-center justify-center w-full h-1/2 py-4 rounded-lg border-2 border-dashed border-gray-300 text-center hover:border-gray-400">
+          <div className="relative flex flex-col items-center justify-center w-full h-64 py-4 text-center border-2 border-gray-300 border-dashed rounded-lg hover:border-gray-400">
             <label>
               <input
                 type="file"
@@ -179,7 +171,7 @@ export const VerifyDecoration = () => {
                 <img
                   src={filePreview}
                   alt="file preview"
-                  className="w-2/3 h-1/3 m-auto rounded-lg mb-2 object-cover"
+                  className="object-cover w-2/3 m-auto mb-2 rounded-lg h-1/3"
                 />
               ) : (
                 <Files size={96} color="#6b7280" weight="thin" />
@@ -191,23 +183,21 @@ export const VerifyDecoration = () => {
               <span className="text-gray-400">JPEG or PNG only</span>
             )}
           </div>
-        </div>
-        <nav className="fixed shadow w-full max-w-[560px] h-18 bottom-0 left-0 right-0 z-10 flex justify-center items-center dark:bg-zinc-900 dark:border-t dark:border-black sm:hidden">
           <Button
-            className="w-full mx-5 my-5 py-8 rounded-xl text-lg"
+            className="w-full py-8 text-lg rounded-xl"
             disabled={!file}
             onClick={submitDecoration}
           >
             Submit
           </Button>
-        </nav>
+        </div>
       </div>
 
       {/* Desktop */}
       <div className="hidden sm:block sm:min-h-screen">
-        <div className="flex items-center space-x-40 mx-96 py-24">
+        <div className="flex items-center py-24 space-x-40 sm:mx-3 md:mx-5 lg:mx-32 xl:mx-64 2xl:mx-96">
           <div className="w-1/2">
-            <h1 className="text-3xl font-semibold pb-5">Verify Decoration</h1>
+            <h1 className="pb-5 text-3xl font-semibold">Verify Decoration</h1>
             <Separator />
             <div className="text-base">
               <p className="py-5">
@@ -223,7 +213,7 @@ export const VerifyDecoration = () => {
               </p>
               <Separator />
             </div>
-            <div className="relative flex flex-col items-center justify-center w-full h-72 py-6 rounded-lg border-2 border-dashed border-gray-300 text-center cursor-pointer hover:border-gray-400">
+            <div className="relative flex flex-col items-center justify-center w-full py-6 mt-5 text-center border-2 border-gray-300 border-dashed rounded-lg cursor-pointer h-72 hover:border-gray-400">
               <label className="cursor-pointer">
                 <input
                   type="file"
@@ -234,7 +224,7 @@ export const VerifyDecoration = () => {
                   <img
                     src={filePreview}
                     alt="file preview"
-                    className="w-1/3 m-auto rounded-lg mb-2 object-cover"
+                    className="object-cover w-1/3 m-auto mb-2 rounded-lg"
                   />
                 ) : (
                   <Files size={96} color="#6b7280" weight="thin" />
@@ -251,15 +241,15 @@ export const VerifyDecoration = () => {
             <img
               src={decoration?.images[0].url}
               alt="Christmas decoration"
-              className="w-64 h-64 object-cover rounded-tr-lg rounded-tl-lg"
+              className="object-cover w-64 h-64 rounded-tl-lg rounded-tr-lg"
             />
-            <div className="flex flex-col items-start border-gray-400 dark:border-black border-b border-r border-l rounded-bl-lg rounded-br-lg w-64 px-3 py-3">
+            <div className="flex flex-col items-start w-64 px-3 py-3 border-b border-l border-r border-gray-400 rounded-bl-lg rounded-br-lg dark:border-black">
               <span className="font-semibold">{decoration?.name}</span>
               <span className="text-xs">{decoration?.address}</span>
             </div>
           </div>
         </div>
-        <div className="flex justify-end items-center w-full px-96 border-t">
+        <div className="flex items-center justify-end w-full border-t px-96">
           <Button disabled={!file} className="mt-4" onClick={submitDecoration}>
             Submit
           </Button>

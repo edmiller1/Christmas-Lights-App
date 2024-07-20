@@ -16,7 +16,6 @@ export const useKinde = () => {
   const getUserToken = async () => {
     try {
       await getToken().then((res) => {
-        console.log(res);
         setToken(res || "");
       });
     } catch (err) {

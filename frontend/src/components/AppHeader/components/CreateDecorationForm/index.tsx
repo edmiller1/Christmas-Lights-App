@@ -119,6 +119,7 @@ export const CreateDecorationForm = ({
   };
 
   const handleSelectAddress = async (suggestion: any) => {
+    console.log("selected suggestion");
     setSearchQuery(suggestion.full_address);
     const response = await fetch(
       `https://api.mapbox.com/search/searchbox/v1/retrieve/${suggestion.mapbox_id}?session_token=0f6c0283-69eb-41d1-88af-83b6da40a6a0&access_token=${mbApiKey}`
@@ -182,7 +183,7 @@ export const CreateDecorationForm = ({
 
   return (
     <>
-      <div className="flex flex-col items-start space-y-3 mb-5">
+      <div className="flex flex-col items-start mb-5 space-y-3">
         <TooltipProvider>
           <Tooltip>
             <TooltipTrigger asChild>
@@ -269,6 +270,8 @@ export const CreateDecorationForm = ({
                       handleAddressSearch(e);
                     }}
                     value={searchQuery}
+                    placeholder="Start typing the address..."
+                    autoComplete="off"
                   />
                 </FormControl>
                 <FormMessage />
@@ -277,12 +280,12 @@ export const CreateDecorationForm = ({
           />
           <>
             {suggestions.length > 0 ? (
-              <div className="z-50 h-72 overflow-y-auto rounded-lg border dark:border-zinc-800">
+              <div className="z-50 overflow-y-auto border rounded-lg h-72 dark:border-zinc-800">
                 <ul>
                   {suggestions.map((suggestion: any) => (
                     <li
                       key={suggestion.mapbox_id}
-                      className="flex cursor-pointer flex-col border-b px-3 py-2 dark:text-white dark:border-zinc-800 dark:hover:bg-zinc-700"
+                      className="flex flex-col px-3 py-2 border-b cursor-pointer dark:text-white dark:border-zinc-800 dark:hover:bg-zinc-700"
                       onClick={() => handleSelectAddress(suggestion)}
                     >
                       <strong className="text-sm">{suggestion.name}</strong>

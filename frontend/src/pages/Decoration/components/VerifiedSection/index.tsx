@@ -15,14 +15,14 @@ export const VerifiedSection = ({
   return (
     <>
       {!verified && !verificationSubmitted ? (
-        <div className="px-5 py-3 flex space-x-5">
+        <div className="flex px-5 py-3 space-x-5">
           <WarningCircle
             size={52}
             color="#E23737"
             weight="bold"
             className="w-1/3"
           />
-          <div className="flex flex-col text-sm space-y-2">
+          <div className="flex flex-col space-y-2 text-sm">
             <p className="text-lg font-semibold">
               Your decoration is not verified.
             </p>
@@ -35,7 +35,7 @@ export const VerifiedSection = ({
               You can submit your decoration for verification{" "}
               <Link
                 to={`/verify-decoration/${decorationId}`}
-                className="text-ch-turquoise underline text-sm"
+                className="text-sm underline text-ch-turquoise"
               >
                 here
               </Link>
@@ -43,14 +43,14 @@ export const VerifiedSection = ({
           </div>
         </div>
       ) : verificationSubmitted ? (
-        <div className="px-5 py-3 flex space-x-5">
+        <div className="flex px-5 py-3 space-x-5">
           <WarningCircle
             size={52}
             color="#E23737"
             weight="bold"
             className="w-1/3"
           />
-          <div className="flex flex-col text-sm space-y-2">
+          <div className="flex flex-col space-y-2 text-sm">
             <p className="text-lg font-semibold">
               Your decoration is not verified.
             </p>

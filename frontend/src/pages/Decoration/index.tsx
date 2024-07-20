@@ -568,7 +568,7 @@ export const Decoration = () => {
         type="Christmas Decoration"
       />
       {/* Mobile */}
-      <div className="overflow-y-auto h-full sm:hidden">
+      <div className="h-full overflow-y-auto sm:hidden">
         {showImageOverlay ? (
           <ImagesOverlay
             decorationImages={decoration?.images}
@@ -604,7 +604,7 @@ export const Decoration = () => {
         ) : null}
         <div className="relative">
           <button
-            className="absolute left-3 top-3 px-1 py-1 bg-white rounded-full shadow-lg"
+            className="absolute px-1 py-1 bg-white rounded-full shadow-lg left-3 top-3"
             onClick={() => navigate(-1)}
           >
             <CaretLeft size={24} color="#000000" weight="bold" />
@@ -623,7 +623,7 @@ export const Decoration = () => {
             decorationCountry={decoration?.country}
             decorationCity={decoration?.city}
           />
-          <div className="absolute right-3 bottom-3 px-3 py-1 text-xs bg-zinc-800 rounded-full">
+          <div className="absolute px-3 py-1 text-xs rounded-full right-3 bottom-3 bg-zinc-800">
             {getImageIndex(currentImage?.id)} / {decoration?.images.length}
           </div>
           {decoration && decoration?.images.length > 1 ? (
@@ -646,15 +646,15 @@ export const Decoration = () => {
             loading="lazy"
             src={currentImage?.url}
             alt="decoration image"
-            className="h-64 w-full object-cover"
+            className="object-cover w-full h-64"
             onClick={() => setShowImageOverlay(true)}
           />
         </div>
-        <div className="pl-5 pr-2 py-3">
+        <div className="py-3 pl-5 pr-2">
           <div className="flex items-center justify-between space-x-2">
             <div className="flex items-center justify-between">
               <div className="flex items-center space-x-1">
-                <h1 className="font-semibold text-3xl">{decoration?.name}</h1>
+                <h1 className="text-3xl font-semibold">{decoration?.name}</h1>
                 {!decoration?.verified ? (
                   <CircleWavyCheck
                     size={24}
@@ -680,7 +680,7 @@ export const Decoration = () => {
                     </DrawerHeader>
                     <div className="flex flex-col mx-4 rounded-lg bg-secondary">
                       <div
-                        className="flex items-center space-x-2 p-3"
+                        className="flex items-center p-3 space-x-2"
                         onClick={() => setIsEditOpen(true)}
                       >
                         <Pencil size={20} className="text-white" />
@@ -690,7 +690,7 @@ export const Decoration = () => {
                       </div>
                       <Separator />
                       <div
-                        className="flex items-center space-x-2 p-3"
+                        className="flex items-center p-3 space-x-2"
                         onClick={() => setIsDeleteOpen(true)}
                       >
                         <Trash size={20} className="text-white" />
@@ -711,7 +711,7 @@ export const Decoration = () => {
               </div>
             ) : null}
           </div>
-          <div className="flex items-center space-x-1 mt-2">
+          <div className="flex items-center mt-2 space-x-1">
             <Star size={16} color="#ffffff" weight="fill" />
             <span>
               {decoration?.rating === 0 ? "New" : decoration?.rating.toFixed(1)}
@@ -790,7 +790,7 @@ export const Decoration = () => {
         ) : null}
         <div className="flex flex-col pt-20 sm:mx-10 md:mx-16 lg:mx-32 xl:mx-52 2xl:mx-72">
           <h1 className="text-3xl font-semibold">{decoration?.name}</h1>
-          <div className="flex justify-between items-center font-semibold text-sm my-2">
+          <div className="flex items-center justify-between my-2 text-sm font-semibold">
             <div className="flex">
               <div className="flex items-center">
                 <Star size={16} weight="fill" className="text-ch-light" />
@@ -821,10 +821,13 @@ export const Decoration = () => {
               </span>
             </div>
             {currentUser?.id === decoration?.creator_id ? (
-              <div className="mr-1 flex">
-                {!decoration?.verified &&
-                !decoration?.verification_submitted ? (
-                  <VerifiedPopOver decorationId={decorationId} />
+              <div className="flex mr-1">
+                {user?.id === decoration?.creator_id ? (
+                  <VerifiedPopOver
+                    verificationSubmitted={decoration?.verification_submitted}
+                    verified={decoration?.verified}
+                    decorationId={decorationId}
+                  />
                 ) : null}
                 <DecorationUserMenu
                   setIsEditOpen={setIsEditOpen}
@@ -863,10 +866,10 @@ export const Decoration = () => {
               <span className="ml-2">Share</span>
             </Button>
           </div>
-          <div className="mt-5 mx-2">
+          <div className="mx-2 mt-5">
             <h2 className="text-2xl font-bold">Location</h2>
-            <div className="w-2/3 flex items-center">
-              <h3 className="text-base mr-2 text-gray-600 dark:text-zinc-300">
+            <div className="flex items-center w-2/3">
+              <h3 className="mr-2 text-base text-gray-600 dark:text-zinc-300">
                 {decoration?.address}
               </h3>
               {decoration?.verified ? (
@@ -886,7 +889,7 @@ export const Decoration = () => {
                 </TooltipProvider>
               ) : null}
             </div>
-            <div className="my-5 h-full w-full bg-gray-200 rounded-lg">
+            <div className="w-full h-full my-5 bg-gray-200 rounded-lg">
               <img
                 src={`https://api.mapbox.com/styles/v1/mapbox/streets-v11/static/pin-l-village+bc1919(${decoration?.longitude},${decoration?.latitude})/${decoration?.longitude},${decoration?.latitude},15,0/1120x500@2x?attribution=false&logo=false&access_token=pk.eyJ1Ijoic2hhbXB1cnJzIiwiYSI6ImNsZjdhcmJweDB5cGw0M212YnplaTFkNnkifQ.RRUvcHyfO7W0Pg4vOQ4UvA`}
                 alt="static map"

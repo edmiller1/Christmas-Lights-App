@@ -1,7 +1,6 @@
 import { KindeUser } from "@/lib/types";
 import { Input } from "@/components/ui/input";
-import { Footer } from "@/components";
-import { Navigation } from "../Navigation";
+import { AppHeader, Footer } from "@/components";
 import { Get_User } from "@/graphql/queries/getUser/types";
 
 interface Props {
@@ -10,27 +9,16 @@ interface Props {
   logout: () => Promise<void>;
   login: (options?: any) => Promise<void>;
   currentUser: Get_User | null;
+  currentPlace: string;
 }
 
-export const Hero = ({
-  currentUser,
-  isAuthenticated,
-  login,
-  logout,
-  user,
-}: Props) => {
+export const Hero = ({ currentUser, isAuthenticated }: Props) => {
   return (
     <div className="bg-background">
-      <Navigation
-        isAuthenticated={isAuthenticated}
-        user={user}
-        logout={logout}
-        login={login}
-        currentUser={currentUser}
-      />
-      <div className="min-h-screen relative isolate px-6 pt-14 lg:px-8">
+      <AppHeader currentUser={currentUser} isAuthenticated={isAuthenticated} />
+      <div className="relative min-h-screen px-6 isolate pt-14 lg:px-8">
         <div
-          className="absolute inset-x-0 -top-40 -z-10 transform-gpu overflow-hidden blur-2xl sm:-top-80"
+          className="absolute inset-x-0 overflow-hidden -top-40 -z-10 transform-gpu blur-2xl sm:-top-80"
           aria-hidden="true"
         >
           <div
@@ -41,7 +29,7 @@ export const Hero = ({
             }}
           />
         </div>
-        <div className="mx-auto max-w-2xl py-32 sm:py-48 lg:py-56">
+        <div className="max-w-2xl py-32 mx-auto sm:py-48 lg:py-56">
           <div className="hidden sm:mb-8 sm:flex sm:justify-center"></div>
           <div className="text-center">
             <h1 className="text-4xl font-bold tracking-tight sm:text-6xl">
@@ -51,9 +39,9 @@ export const Hero = ({
               Bring the holiday cheer to life! Create, share, rate and discover
               stunning Christmas decorations.
             </p>
-            <div className="mt-10 flex items-center justify-center gap-x-6">
+            <div className="flex items-center justify-center mt-10 gap-x-6">
               <Input
-                className="h-16 rounded-full text-xl"
+                className="h-16 text-xl rounded-full"
                 placeholder="Search by city, country or decoration name"
               />
             </div>

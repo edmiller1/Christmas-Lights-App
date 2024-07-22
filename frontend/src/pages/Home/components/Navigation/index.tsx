@@ -23,7 +23,7 @@ import {
 import { Get_User } from "@/graphql/queries/getUser/types";
 
 interface Props {
-  currentPlace?: string;
+  currentPlace: string;
   isAuthenticated: boolean;
   user: KindeUser | undefined;
   logout: () => Promise<void>;
@@ -71,12 +71,15 @@ export const Navigation = ({
           >
             Home
           </Link>
-          <Link
-            to={`/explore?search=${currentPlace}`}
-            className="text-sm font-semibold leading-6 hover:underline"
-          >
-            Explore
-          </Link>
+          {localStorage.getItem("latitude") &&
+          localStorage.getItem("longitude") ? (
+            <Link
+              to={`/explore?query=${currentPlace}`}
+              className="text-sm font-semibold leading-6 hover:underline"
+            >
+              Explore
+            </Link>
+          ) : null}
         </div>
         <div className="hidden lg:flex lg:space-x-5 lg:flex-1 lg:justify-end">
           <Button className="rounded-full">Get the app</Button>
@@ -204,12 +207,15 @@ export const Navigation = ({
                 >
                   Home
                 </Link>
-                <Link
-                  to={`/explore?search=${currentPlace}`}
-                  className="block px-3 py-2 -mx-3 text-base font-semibold leading-7 rounded-lg"
-                >
-                  Explore
-                </Link>
+                {localStorage.getItem("latitude") &&
+                localStorage.getItem("longitude") ? (
+                  <Link
+                    to={`/explore?query=${currentPlace}`}
+                    className="block px-3 py-2 -mx-3 text-base font-semibold leading-7 rounded-lg"
+                  >
+                    Explore
+                  </Link>
+                ) : null}
               </div>
               <div className="py-6">
                 <Link

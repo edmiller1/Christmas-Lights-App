@@ -84,8 +84,8 @@ export const SearchMap = ({
         getDecorationsViaRegionLoading ||
         getDecorationsViaCityLoading ||
         searchForDecorationsLoading ? (
-          <div className="absolute top-0 left-1/2 mt-5 w-16 h-8 rounded-lg bg-white z-40">
-            <div className="flex justify-center space-x-1 items-center h-full">
+          <div className="absolute top-0 left-[40%] mt-5 w-16 h-8 rounded-lg bg-white z-40">
+            <div className="flex items-center justify-center h-full space-x-1">
               <Circle
                 size={12}
                 color="#3b403d"
@@ -109,9 +109,8 @@ export const SearchMap = ({
         ) : null}
 
         {searchedDecorations?.map((decoration, index) => (
-          <>
+          <div key={decoration.id}>
             <Marker
-              key={decoration.id}
               style={{
                 zIndex: activeDecorationIndex === index ? 98 : "unset",
               }}
@@ -143,7 +142,7 @@ export const SearchMap = ({
                 </Popup>
               ) : null}
             </Marker>
-          </>
+          </div>
         ))}
 
         <NavigationControl />

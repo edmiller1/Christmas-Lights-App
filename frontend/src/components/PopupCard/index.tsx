@@ -2,14 +2,7 @@ import { Get_Decorations_Via_City } from "@/graphql/queries/getDecorationsViaCit
 import { Get_Decorations_Via_Country } from "@/graphql/queries/getDecorationsViaCountry/types";
 import { Get_Decorations_Via_Region } from "@/graphql/queries/getDecorationsViaRegion/types";
 import { DecorationImage } from "@/lib/types";
-import {
-  ArrowUpRight,
-  CaretLeft,
-  CaretRight,
-  Heart,
-  Star,
-  X,
-} from "@phosphor-icons/react";
+import { CaretLeft, CaretRight, Heart, Star, X } from "@phosphor-icons/react";
 import { useState } from "react";
 import { Link } from "react-router-dom";
 
@@ -94,19 +87,62 @@ export const PopupCard = ({
   return (
     <>
       {/* Mobile */}
-      <div className="sm:hidden block">
-        <div className="flex w-full h-96 absolute bottom-5 left-2 right-2 rounded-xl z-50">
-          <div className="w-1/3">
-            <img src={currentImage?.url} alt="Christmas decoration" />
+      <div className="sm:hidden">
+        <div className="w-72 flex mt-5 ml-16 visible bg-white rounded-lg z-[99]">
+          <div className="relative w-1/3">
+            <div
+              role="button"
+              className="absolute left-1 top-1"
+              onClick={closePopup}
+            >
+              <X
+                size={16}
+                weight="bold"
+                color="#FFFFFF"
+                className="p-1 bg-black rounded-full opacity-80 hover:opacity-100"
+              />
+            </div>
+            <img
+              src={currentImage?.url}
+              alt="Christmas decoration"
+              className="rounded-l-lg"
+            />
           </div>
-          <div className="w-2/3"></div>
+          <div className="w-2/3 px-2">
+            <div className="flex justify-between">
+              <div className="flex flex-col text-xs">
+                <span className="mt-1 font-bold text-black">
+                  {activeDecoration?.name}
+                </span>
+                <span className="text-xs text-gray-500">
+                  {activeDecoration?.city}, {activeDecoration?.country}
+                </span>
+              </div>
+              <div className="mt-1">
+                {activeDecoration &&
+                userFavourites?.includes(activeDecoration?.id) ? (
+                  <Heart size={16} weight="fill" color="#FF647F" />
+                ) : (
+                  <Heart size={16} weight="bold" color="#000000" />
+                )}
+              </div>
+            </div>
+            <div className="flex items-center justify-between">
+              <div className="flex items-center space-x-1 text-xs">
+                <Star size={12} weight="fill" color="#000000" />
+                <span className="text-xs text-black">
+                  {activeDecoration?.rating}
+                </span>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
 
       {/* Desktop */}
       <div className="hidden sm:block">
         <div
-          className="w-[327px] flex flex-col mt-3 visible bg-white rounded-xl z-[99]"
+          className="w-[327px] flex flex-col mt-3 ml-10 visible bg-white rounded-xl z-[99]"
           onMouseOver={() => {
             setShowRightArrow(true);
             setShowLeftArrow(true);
@@ -117,32 +153,28 @@ export const PopupCard = ({
           }}
         >
           <div
-            className="overflow-hidden rounded-tr-xl rounded-tl-xl relative"
+            className="relative overflow-hidden rounded-tr-xl rounded-tl-xl"
             onMouseOver={showArrows}
             onMouseLeave={hideArrows}
           >
             <div
-              className="flex transition-transform ease-out duration-500"
+              className="flex transition-transform duration-500 ease-out"
               style={{ transform: `translateX(-${currentIndex * 100}%)` }}
             >
               {activeDecoration?.images.map((image) => (
                 <img
                   key={image.id}
                   src={image.url}
-                  className="decoration-card-image object-cover object-center w-72 h-52"
+                  className="object-cover object-center decoration-card-image w-72 h-52"
                 />
               ))}
             </div>
 
-            <div className="absolute inset-0 flex justify-between p-4 z-10">
-              <div role="button" onClick={closePopup}>
-                <X
-                  size={28}
-                  weight="bold"
-                  color="#FFFFFF"
-                  className="bg-black opacity-80 rounded-full p-1 hover:opacity-100"
-                />
-              </div>
+            <Link to={`/decoration/${activeDecoration?.id}`}>
+              <div className="absolute inset-0 z-10 flex items-start justify-end p-2 cursor-pointer"></div>
+            </Link>
+
+            <div className="absolute z-10 flex top-2 right-2">
               {activeDecoration &&
               userFavourites?.includes(activeDecoration?.id) ? (
                 <Heart size={24} weight="fill" color="#FF647F" />
@@ -150,11 +182,23 @@ export const PopupCard = ({
                 <Heart size={24} weight="duotone" color="#FFFFFF" />
               )}
             </div>
+            <div
+              role="button"
+              onClick={closePopup}
+              className="absolute z-10 flex top-2 left-2"
+            >
+              <X
+                size={28}
+                weight="bold"
+                color="#FFFFFF"
+                className="p-1 bg-black rounded-full opacity-80 hover:opacity-100"
+              />
+            </div>
             {!showLeftArrow ? null : (
               <div className="absolute left-5 top-[45%] z-10">
                 <button
                   onClick={prevImage}
-                  className="p-1 rounded-full shadow bg-white/80 text-gray-800 focus:outline-none hover:bg-white transition-all"
+                  className="p-1 text-gray-800 transition-all rounded-full shadow bg-white/80 focus:outline-none hover:bg-white"
                 >
                   <CaretLeft size={16} weight="bold" />
                 </button>
@@ -164,7 +208,7 @@ export const PopupCard = ({
               <div className="absolute right-5 top-[45%] z-10">
                 <button
                   onClick={nextImage}
-                  className="p-1 rounded-full shadow bg-white/90 text-gray-800 focus:outline-none hover:bg-white transition-all"
+                  className="p-1 text-gray-800 transition-all rounded-full shadow bg-white/90 focus:outline-none hover:bg-white"
                 >
                   <CaretRight size={16} weight="bold" />
                 </button>
@@ -172,7 +216,7 @@ export const PopupCard = ({
             ) : null}
 
             {activeDecoration && activeDecoration.images.length > 1 ? (
-              <div className="absolute bottom-4 right-0 left-0">
+              <div className="absolute left-0 right-0 bottom-4">
                 <div className="flex items-center justify-center gap-2">
                   {activeDecoration.images.map((_, i) => (
                     <div
@@ -187,7 +231,7 @@ export const PopupCard = ({
               </div>
             ) : null}
           </div>
-          <div className="bg-white text-black px-4 py-1 rounded-br-xl rounded-bl-xl">
+          <div className="px-4 py-3 text-black bg-white rounded-br-xl rounded-bl-xl">
             <div className="flex items-center justify-between">
               <span className="mt-1 font-bold text-[1.01rem]">
                 {activeDecoration?.name}
@@ -197,24 +241,9 @@ export const PopupCard = ({
                 <span className="text-black">{activeDecoration?.rating}</span>
               </div>
             </div>
-            <div className="flex items-center justify-between">
-              <span className="text-sm text-gray-500">
-                {activeDecoration?.city}, {activeDecoration?.country}
-              </span>
-              <div className="mt-1 p-1 bg-primary opacity-80 rounded-full hover:opacity-100 transition-all">
-                <Link
-                  to={`/decoration/${activeDecoration?.id}`}
-                  target="_blank"
-                >
-                  <ArrowUpRight
-                    size={20}
-                    weight="bold"
-                    color="#000000"
-                    className="more-arrow"
-                  />
-                </Link>
-              </div>
-            </div>
+            <span className="text-sm text-gray-500">
+              {activeDecoration?.city}, {activeDecoration?.country}
+            </span>
           </div>
         </div>
       </div>

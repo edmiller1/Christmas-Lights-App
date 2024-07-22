@@ -1,10 +1,4 @@
-import {
-  AppHeader,
-  DecorationCard,
-  Paginate,
-  SEO,
-  UserMenuDrawer,
-} from "@/components";
+import { AppHeader, DecorationCard, Paginate, SEO } from "@/components";
 import {
   GET_DECORATIONS_VIA_CITY,
   GET_DECORATIONS_VIA_COUNTRY,
@@ -34,14 +28,11 @@ import {
   Search_For_Decorations,
 } from "@/graphql/queries/searchForDecorations/types";
 import { useQuery, useLazyQuery } from "@apollo/client";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import { AppHeaderLoading } from "@/components/AppHeader/components";
 import { useEffect, useState } from "react";
 import { DecorationsLoading, SearchDrawer, SearchMap } from "./components";
 import { Warning } from "@phosphor-icons/react";
-import { Button } from "@/components/ui/button";
-import { Drawer, DrawerTrigger } from "@/components/ui/drawer";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useKindeAuth } from "@kinde-oss/kinde-auth-react";
 
 const initialViewState = {
@@ -53,7 +44,6 @@ const initialViewState = {
 };
 
 export const Search = () => {
-  const navigate = useNavigate();
   const { isAuthenticated, user } = useKindeAuth();
   const location = useLocation();
   const searchQuery = new URLSearchParams(location.search).get("query");
@@ -290,7 +280,7 @@ export const Search = () => {
         type={`Results for: ${searchQuery!}`}
       />
       {/* Mobile */}
-      <div className="sm:hidden h-screen">
+      <div className="h-screen sm:hidden">
         {getUserLoading ? (
           <AppHeaderLoading />
         ) : (
@@ -300,7 +290,7 @@ export const Search = () => {
             isAuthenticated={isAuthenticated}
           />
         )}
-        <div className="fixed top-16 w-screen h-screen">
+        <div className="fixed w-screen h-screen top-16">
           <SearchMap
             searchedDecorations={searchedDecorations}
             viewState={viewState}
@@ -322,9 +312,9 @@ export const Search = () => {
         </div>
         <div className="fixed shadow w-full max-w-[560px] p-2 z-50 bottom-0 left-0 right-0 flex flex-col rounded-t-[10px] bg-slate-50 dark:bg-zinc-900 border-t dark:border-black">
           <div>
-            <div className="w-full flex items-center justify-center mt-2">
+            <div className="flex items-center justify-center w-full mt-2">
               <button
-                className="w-1/4 bg-zinc-700 h-3 rounded-full"
+                className="w-1/4 h-3 rounded-full bg-zinc-700"
                 onClick={() => setOpenSearchDrawer(true)}
               ></button>
             </div>
@@ -350,39 +340,10 @@ export const Search = () => {
               />
             ) : null}
           </div>
-          <div className="flex justify-between items-center">
+          <div className="px-3 py-5">
             <span className="font-semibold">
               Showing top results for: <strong>{searchQuery}</strong>
             </span>
-            {getUserLoading ? (
-              <div className="p-2">
-                <div className="w-10 h-10 rounded-full animate-pulse bg-gray-200 dark:bg-zinc-700"></div>
-              </div>
-            ) : user ? (
-              <div className="p-2">
-                <Drawer>
-                  <DrawerTrigger>
-                    <Avatar>
-                      <AvatarImage
-                        src={currentUser?.image}
-                        alt="profile picture"
-                      />
-                      <AvatarFallback>
-                        {currentUser?.name[0].toUpperCase()}
-                      </AvatarFallback>
-                    </Avatar>
-                    <UserMenuDrawer currentUser={currentUser} />
-                  </DrawerTrigger>
-                </Drawer>
-              </div>
-            ) : (
-              <Button
-                className="w-1/4 mr-2"
-                onClick={() => navigate("/signin")}
-              >
-                Log In
-              </Button>
-            )}
           </div>
         </div>
       </div>
@@ -401,10 +362,10 @@ export const Search = () => {
         <div className="flex pt-16">
           <div className="w-3/5 px-5 py-3 min-h-[92.6vh]">
             {searchForDecorationsLoading ? (
-              <div className="h-10 w-1/4 rounded-lg animate-pulse bg-gray-200 dark:bg-zinc-700"></div>
+              <div className="w-1/4 h-10 bg-gray-200 rounded-lg animate-pulse dark:bg-zinc-700"></div>
             ) : (
               <span className="font-semibold">
-                Showing top results for: <strong>Sydney</strong>
+                Showing top results for: <strong>{searchQuery}</strong>
               </span>
             )}
             {getDecorationsViaCountryLoading ||
@@ -413,7 +374,7 @@ export const Search = () => {
             searchForDecorationsLoading ? (
               <DecorationsLoading />
             ) : searchedDecorations && searchedDecorations.length === 0 ? (
-              <div className="mt-44 flex flex-col justify-center items-center text-xl text-primary">
+              <div className="flex flex-col items-center justify-center text-xl mt-44 text-primary">
                 <Warning size={40} weight="bold" />
                 <span>
                   Could not find any decorations for search term:{" "}
@@ -422,7 +383,7 @@ export const Search = () => {
               </div>
             ) : (
               <>
-                <div className="mt-5 grid grid-cols-3 gap-x-6 gap-y-10 mb-10">
+                <div className="grid grid-cols-3 mt-5 mb-10 gap-x-6 gap-y-10">
                   {searchedDecorations?.map((decoration, index) => (
                     <DecorationCard
                       key={decoration.id}
@@ -449,7 +410,7 @@ export const Search = () => {
               </>
             )}
           </div>
-          <div className="w-2/5 fixed right-0 top-16 bottom-0">
+          <div className="fixed bottom-0 right-0 w-2/5 top-16">
             <SearchMap
               searchedDecorations={searchedDecorations}
               viewState={viewState}

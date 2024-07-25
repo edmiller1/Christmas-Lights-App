@@ -18,7 +18,6 @@ import { Link, useNavigate } from "react-router-dom";
 import { useToast } from "@/components/ui/use-toast";
 import { useTheme } from "@/components/ui/theme-provider";
 import { Switch } from "@/components/ui/switch";
-import { AppHeaderLoading } from "@/components/AppHeader/components";
 import { SEO } from "@/components";
 import { useKindeAuth } from "@kinde-oss/kinde-auth-react";
 import { ProfileLoading } from "./components";
@@ -77,7 +76,7 @@ export const Profile = () => {
 
   if (logoutLoading) {
     return (
-      <div className="min-h-screen flex flex-col items-center justify-center">
+      <div className="flex flex-col items-center justify-center min-h-screen">
         <CircleNotch
           size={72}
           weight="bold"
@@ -108,7 +107,7 @@ export const Profile = () => {
         </div>
 
         {/* User image & name */}
-        <div className="my-5 flex space-x-5 items-center">
+        <div className="flex items-center my-5 space-x-5">
           <Avatar className="w-20 h-20">
             <AvatarImage src={user?.image} />
             <AvatarFallback>{user?.name[0]}</AvatarFallback>
@@ -118,15 +117,15 @@ export const Profile = () => {
         {/* Premium Card */}
         {!user?.premium ? (
           <div
-            className="bg-secondary mt-5 rounded-lg border shadow-lg dark:border-black"
+            className="mt-5 border rounded-lg shadow-lg bg-secondary dark:border-black"
             onClick={() => navigate("/premium")}
           >
-            <div className="flex justify-between items-center p-4">
+            <div className="flex items-center justify-between p-4">
               <div className="flex flex-col w-2/3">
                 <span className="text-lg font-semibold">Get Premium</span>
-                <span className="text-sm mt-2">Create and explore more</span>
+                <span className="mt-2 text-sm">Create and explore more</span>
               </div>
-              <div className="w-1/3 flex justify-end">
+              <div className="flex justify-end w-1/3">
                 <CaretRight size={32} weight="bold" />
               </div>
             </div>
@@ -135,9 +134,9 @@ export const Profile = () => {
 
         {/* Account Settings */}
         <div className="my-10 ml-1">
-          <h2 className="font-semibold text-2xl">Account Settings</h2>
+          <h2 className="text-2xl font-semibold">Account Settings</h2>
           <div
-            className="my-7 flex items-center justify-between"
+            className="flex items-center justify-between my-7"
             onClick={() =>
               navigate("/profile/personal-info", { state: user?.id })
             }
@@ -153,7 +152,7 @@ export const Profile = () => {
             <CaretRight size={24} className="text-ch-dark dark:text-ch-light" />
           </div>
           <div
-            className="my-7 flex items-center justify-between"
+            className="flex items-center justify-between my-7"
             onClick={() =>
               navigate("/profile/notification-settings", {
                 state: user?.id,
@@ -174,7 +173,7 @@ export const Profile = () => {
         </div>
         {/* Dashboard */}
         <div className="my-10 ml-1">
-          <div className="my-7 flex items-center justify-between">
+          <div className="flex items-center justify-between my-7">
             <div className="flex items-center space-x-20">
               <div className="flex items-center space-x-5">
                 <Gauge size={32} weight="thin" />
@@ -188,9 +187,9 @@ export const Profile = () => {
         </div>
         {/* Decorations */}
         <div className="my-10 ml-1">
-          <h2 className="font-semibold text-2xl">Decorations</h2>
+          <h2 className="text-2xl font-semibold">Decorations</h2>
           <div
-            className="my-7 flex items-center justify-between"
+            className="flex items-center justify-between my-7"
             onClick={() =>
               navigate("/profile/decorations", {
                 state: { decorations: user?.decorations, userName: user?.name },
@@ -209,7 +208,7 @@ export const Profile = () => {
           </div>
           {/* History */}
           <div
-            className="my-7 flex items-center justify-between"
+            className="flex items-center justify-between my-7"
             onClick={() =>
               navigate("/profile/history", {
                 state: { history: user?.history, userName: user?.name },
@@ -228,7 +227,7 @@ export const Profile = () => {
           </div>
           {/* Favourites */}
           <div
-            className="my-7 flex items-center justify-between"
+            className="flex items-center justify-between my-7"
             onClick={() =>
               navigate("/profile/favourites", {
                 state: { favourites: user?.favourites, userName: user?.name },
@@ -248,7 +247,7 @@ export const Profile = () => {
           <Separator />
         </div>
         <div className="my-10 ml-1">
-          <div className="my-7 flex items-center justify-between">
+          <div className="flex items-center justify-between my-7">
             <div className="flex items-center space-x-5">
               <Moon
                 size={32}
@@ -264,11 +263,11 @@ export const Profile = () => {
           </div>
         </div>
         {/* Footer */}
-        <div className="mt-10 flex flex-col justify-center items-center">
+        <div className="flex flex-col items-center justify-center mt-10">
           <Button className="w-full" onClick={signUserOut}>
             Log out
           </Button>
-          <div className="mt-5 flex justify-center items-center">
+          <div className="flex items-center justify-center mt-5">
             <Link to="/terms" className="mr-1">
               <span className="text-xs underline">Terms of Service</span>
             </Link>
@@ -278,7 +277,7 @@ export const Profile = () => {
             </Link>
           </div>
           <div>
-            <span className="dark:text-gray-400 text-xs font-light pb-10">
+            <span className="pb-10 text-xs font-light dark:text-gray-400">
               &copy; {new Date().getFullYear()} Christmas Lights App. All Rights
               Reserved.
             </span>
@@ -289,14 +288,14 @@ export const Profile = () => {
       {/* Desktop */}
       <div className="hidden sm:block">
         <Link to="/">
-          <img src={logo} alt="logo" className="m-4 w-10 h-10 cursor-pointer" />
+          <img src={logo} alt="logo" className="w-10 h-10 m-4 cursor-pointer" />
         </Link>
-        <div className="sm:mx-5 md:mx-12 lg:mx-24 xl:mx-28 2xl:mx-96 py-24 sm:min-h-screen">
+        <div className="py-24 sm:mx-5 md:mx-12 lg:mx-24 xl:mx-28 2xl:mx-96 sm:min-h-screen">
           <h1 className="text-4xl font-bold tracking-wide">Profile</h1>
           <h3 className="mt-2 text-lg">
             {user?.name} - {user?.email}
           </h3>
-          <div className="mt-10 grid grid-cols-2 gap-x-6 gap-y-10">
+          <div className="grid grid-cols-2 mt-10 gap-x-6 gap-y-10">
             <Card
               className="p-3 cursor-pointer"
               onClick={() =>

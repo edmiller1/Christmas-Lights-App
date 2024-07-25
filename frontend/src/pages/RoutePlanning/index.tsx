@@ -702,7 +702,7 @@ export const RoutePlanning = () => {
   return (
     <>
       <SEO
-        description="Plan, create and go on routes."
+        description="Plan, create and explore."
         name="Route Planning"
         title="Route Planning"
         type="Route Planning"
@@ -874,7 +874,7 @@ export const RoutePlanning = () => {
         />
 
         {/* Main column */}
-        <main className="ml-[29rem] xl:w-[70vw] 2xl:w-[75.8vw] h-screen relative">
+        <main className="ml-[29rem] xl:w-[69.6vw] 2xl:w-[75.5vw] h-screen relative">
           <RouteMap
             setViewState={setViewState}
             viewState={viewState}
@@ -903,7 +903,7 @@ export const RoutePlanning = () => {
           ) : null}
         </main>
         <div className="absolute z-50 cursor-pointer top-5 right-16">
-          {currentUser ? (
+          {isAuthenticated ? (
             <UserMenu logUserOut={logUserOut} currentUser={currentUser} />
           ) : (
             <LoggedOutUserMenu />

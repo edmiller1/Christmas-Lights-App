@@ -18,10 +18,8 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { CaretLeft, CircleNotch } from "@phosphor-icons/react";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { toast } from "@/components/ui/use-toast";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { getBase64Value } from "@/lib/helpers";
 import { Breadcrumbs, SEO } from "@/components";
 import { useKindeAuth } from "@kinde-oss/kinde-auth-react";
@@ -32,11 +30,17 @@ export const PersonalInfo = () => {
   const { state } = useLocation();
   const navigate = useNavigate();
   const [currentUser, setCurrentUser] = useState<Get_User | null>(null);
+  //@ts-ignore
   const [isEditingName, setIsEditingName] = useState<boolean>(false);
+  //@ts-ignore
   const [newName, setNewName] = useState<string>("");
+  //@ts-ignore
   const [isEditingAvatar, setIsEditingAvatar] = useState<boolean>(false);
+  //@ts-ignore
   const [newImage, setNewImage] = useState<string>("");
+  //@ts-ignore
   const [base64Value, setBase64Value] = useState<string>("");
+  //@ts-ignore
   const [isDeleteOpen, setIsDeleteOpen] = useState<boolean>(false);
 
   const {
@@ -53,6 +57,7 @@ export const PersonalInfo = () => {
     },
   });
 
+  //@ts-ignore
   const [editName, { loading: editNameLoading }] = useMutation<
     EditNameData,
     EditNameArgs
@@ -73,6 +78,7 @@ export const PersonalInfo = () => {
     },
   });
 
+  //@ts-ignore
   const [editAvatar, { loading: editAvatarLoading }] = useMutation<
     EditAvatarData,
     EditAvatarArgs
@@ -116,16 +122,19 @@ export const PersonalInfo = () => {
     deleteAccount();
   };
 
+  //@ts-ignore
   const editUserName = (name: string) => {
     setIsEditingName(false);
     editName({ variables: { input: { name: name } } });
   };
 
+  //@ts-ignore
   const cancelNameEditing = () => {
     setNewName("");
     setIsEditingName(false);
   };
 
+  //@ts-ignore
   const editUserAvatar = (avatar: string) => {
     setIsEditingAvatar(false);
     editAvatar({
@@ -133,12 +142,14 @@ export const PersonalInfo = () => {
     });
   };
 
+  //@ts-ignore
   const cancelEditingAvatar = () => {
     setNewImage("");
     setBase64Value("");
     setIsEditingAvatar(false);
   };
 
+  //@ts-ignore
   const selectImage = (e: any) => {
     e.preventDefault();
 
@@ -154,7 +165,7 @@ export const PersonalInfo = () => {
 
   if (deleteAccountLoading) {
     return (
-      <div className="min-h-screen bg-background flex flex-col space-y-5 justify-center items-center">
+      <div className="flex flex-col items-center justify-center min-h-screen space-y-5 bg-background">
         <CircleNotch size={96} className="animate-spin" />
         <span className="text-xl font-semibold">Deleting Account...</span>
       </div>
@@ -176,7 +187,7 @@ export const PersonalInfo = () => {
         type="Profile Settings"
       />
       {/* Mobile */}
-      <div className="px-8 py-5 h-screen sm:hidden">
+      <div className="h-screen px-8 py-5 sm:hidden">
         <div className="flex items-center space-x-3">
           <div role="button" onClick={() => navigate(-1)}>
             <CaretLeft size={24} weight="bold" />
@@ -184,13 +195,13 @@ export const PersonalInfo = () => {
           <h2 className="text-2xl font-bold">Personal Info</h2>
         </div>
         <div className="my-8 ml-1">
-          <div className="my-6 flex items-center justify-between">
+          <div className="flex items-center justify-between my-6">
             <div className="flex flex-col">
               <span className="font-semibold">Avatar</span>
               <img
                 src={user?.picture ?? ""}
                 alt="profile"
-                className="mt-1 rounded-full w-12 h-12"
+                className="w-12 h-12 mt-1 rounded-full"
               />
             </div>
             {/* <Button variant="outline" onClick={() => setIsEditingAvatar(true)}>
@@ -198,7 +209,7 @@ export const PersonalInfo = () => {
             </Button> */}
           </div>
           {/* {isEditingAvatar ? (
-            <div className="my-6 flex items-center justify-between">
+            <div className="flex items-center justify-between my-6">
               <div className="flex flex-col w-full space-y-2">
                 <span className="font-semibold">Avatar</span>
                 {newImage ? (
@@ -206,9 +217,9 @@ export const PersonalInfo = () => {
                     <img
                       src={newImage}
                       alt="new avatar"
-                      className="mt-1 rounded-full w-12 h-12"
+                      className="w-12 h-12 mt-1 rounded-full"
                     />
-                    <Label className="h-10 w-1/2 rounded-lg border flex items-center text-xs px-4 mt-2">
+                    <Label className="flex items-center w-1/2 h-10 px-4 mt-2 text-xs border rounded-lg">
                       Choose file
                       <Input
                         type="file"
@@ -218,7 +229,7 @@ export const PersonalInfo = () => {
                     </Label>
                   </div>
                 ) : (
-                  <Label className="h-10 w-3/4 rounded-lg border flex items-center px-4">
+                  <Label className="flex items-center w-3/4 h-10 px-4 border rounded-lg">
                     Choose file
                     <Input
                       type="file"
@@ -251,13 +262,13 @@ export const PersonalInfo = () => {
                   />
                 </div>
               ) : (
-                <div className="my-6 flex items-center justify-between">
+                <div className="flex items-center justify-between my-6">
                   <div className="flex flex-col">
                     <span className="font-semibold">Avatar</span>
                     <img
                       src={currentUser?.image}
                       alt="profile"
-                      className="mt-1 rounded-full w-12 h-12"
+                      className="w-12 h-12 mt-1 rounded-full"
                     />
                   </div>
                   <Button
@@ -273,7 +284,7 @@ export const PersonalInfo = () => {
         </div>
         <Separator />
         <div className="my-8 ml-1">
-          <div className="my-6 flex items-center justify-between">
+          <div className="flex items-center justify-between my-6">
             <div className="flex flex-col">
               <span className="font-semibold">Name</span>
               <span className="font-light">
@@ -290,7 +301,7 @@ export const PersonalInfo = () => {
             </Button> */}
           </div>
           {/* {isEditingName ? (
-            <div className="my-6 flex items-center justify-between">
+            <div className="flex items-center justify-between my-6">
               <div className="flex flex-col space-y-2">
                 <span className="font-semibold">Name</span>
                 <Input
@@ -324,7 +335,7 @@ export const PersonalInfo = () => {
                   />
                 </div>
               ) : (
-                <div className="my-6 flex items-center justify-between">
+                <div className="flex items-center justify-between my-6">
                   <div className="flex flex-col">
                     <span className="font-semibold">Name</span>
                     <span className="font-light">{currentUser?.name}</span>
@@ -344,7 +355,7 @@ export const PersonalInfo = () => {
         </div>
         <Separator />
         <div className="my-8 ml-1">
-          <div className="my-6 flex items-center justify-between">
+          <div className="flex items-center justify-between my-6">
             <div className="flex flex-col">
               <span className="font-semibold">Email Address</span>
               <span className="font-light">{user?.email}</span>
@@ -366,15 +377,15 @@ export const PersonalInfo = () => {
       {/* Desktop */}
       <div className="hidden sm:ml-40 md:ml-40 lg:ml-40 sm:block sm:py-24 sm:min-h-screen sm:w-full 2xl:w-2/3 lg:mx-28 xl:mx-56 2xl:mx-64">
         <Breadcrumbs firstWord="Profile" secondWord="Personal Info" />
-        <h1 className="my-7 font-bold text-4xl">Personal Info</h1>
+        <h1 className="text-4xl font-bold my-7">Personal Info</h1>
         <div className="w-1/2 my-8 ml-1">
-          <div className="my-6 flex items-center justify-between">
+          <div className="flex items-center justify-between my-6">
             <div className="flex flex-col space-y-2">
               <span className="font-semibold">Avatar</span>
               <img
                 src={user?.picture ?? ""}
                 alt="profile"
-                className="mt-1 rounded-full w-12 h-12"
+                className="w-12 h-12 mt-1 rounded-full"
               />
             </div>
             {/* <Button variant="outline" onClick={() => setIsEditingAvatar(true)}>
@@ -382,7 +393,7 @@ export const PersonalInfo = () => {
             </Button> */}
           </div>
           {/* {isEditingAvatar ? (
-            <div className="my-6 flex items-center justify-between">
+            <div className="flex items-center justify-between my-6">
               <div className="flex flex-col w-full space-y-4">
                 <span className="font-semibold">Avatar</span>
                 {newImage ? (
@@ -390,9 +401,9 @@ export const PersonalInfo = () => {
                     <img
                       src={newImage}
                       alt="new avatar"
-                      className="mt-1 rounded-full w-12 h-12"
+                      className="w-12 h-12 mt-1 rounded-full"
                     />
-                    <Label className="h-10 w-32 rounded-lg border flex items-center text-xs px-4 mt-2 cursor-pointer">
+                    <Label className="flex items-center w-32 h-10 px-4 mt-2 text-xs border rounded-lg cursor-pointer">
                       Choose file
                       <Input
                         type="file"
@@ -402,7 +413,7 @@ export const PersonalInfo = () => {
                     </Label>
                   </div>
                 ) : (
-                  <Label className="h-10 w-32 rounded-lg border flex items-center px-4 cursor-pointer">
+                  <Label className="flex items-center w-32 h-10 px-4 border rounded-lg cursor-pointer">
                     Choose file
                     <Input
                       type="file"
@@ -436,13 +447,13 @@ export const PersonalInfo = () => {
                   />
                 </div>
               ) : (
-                <div className="my-6 flex items-center justify-between">
+                <div className="flex items-center justify-between my-6">
                   <div className="flex flex-col space-y-2">
                     <span className="font-semibold">Avatar</span>
                     <img
                       src={currentUser?.image}
                       alt="profile"
-                      className="mt-1 rounded-full w-12 h-12"
+                      className="w-12 h-12 mt-1 rounded-full"
                     />
                   </div>
                   <Button
@@ -460,7 +471,7 @@ export const PersonalInfo = () => {
           <Separator />
         </div>
         <div className="w-1/2 my-8 ml-1">
-          <div className="my-6 flex items-center justify-between">
+          <div className="flex items-center justify-between my-6">
             <div className="flex flex-col">
               <span className="font-semibold">Name</span>
               <span className="font-light">
@@ -477,7 +488,7 @@ export const PersonalInfo = () => {
             </Button> */}
           </div>
           {/* {isEditingName ? (
-            <div className="my-6 flex items-center justify-between">
+            <div className="flex items-center justify-between my-6">
               <div className="flex flex-col space-y-2">
                 <span className="font-semibold">Name</span>
                 <Input
@@ -511,7 +522,7 @@ export const PersonalInfo = () => {
                   />
                 </div>
               ) : (
-                <div className="my-6 flex items-center justify-between">
+                <div className="flex items-center justify-between my-6">
                   <div className="flex flex-col">
                     <span className="font-semibold">Name</span>
                     <span className="font-light">{currentUser?.name}</span>
@@ -533,7 +544,7 @@ export const PersonalInfo = () => {
           <Separator />
         </div>
         <div className="w-1/2 my-8 ml-1">
-          <div className="my-6 flex items-center justify-between">
+          <div className="flex items-center justify-between my-6">
             <div className="flex flex-col">
               <span className="font-semibold">Email Address</span>
               <span className="font-light">{user?.email}</span>
@@ -543,7 +554,7 @@ export const PersonalInfo = () => {
         <div className="w-1/2">
           <Separator />
         </div>
-        <div className="flex h-full mt-32 justify-center items-end w-1/2">
+        <div className="flex items-end justify-center w-1/2 h-full mt-32">
           <Button
             variant="default"
             className="w-full py-6"

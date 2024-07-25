@@ -7,7 +7,7 @@ import { AppHeader, Footer } from "@/components";
 import { useKindeAuth } from "@kinde-oss/kinde-auth-react";
 import { useQuery, useLazyQuery } from "@apollo/client";
 import { useNavigate } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { CREATE_SUBSCRIPTION_SESSION, GET_USER } from "@/graphql/queries";
 import {
   GetUser as GetUserData,
@@ -19,7 +19,7 @@ import { useToast } from "@/components/ui/use-toast";
 
 export const Premium = () => {
   const { toast } = useToast();
-  const { getToken, isAuthenticated, user, logout } = useKindeAuth();
+  const { isAuthenticated, user } = useKindeAuth();
   const navigate = useNavigate();
 
   const [currentUser, setCurrentUser] = useState<Get_User | null>(null);
@@ -56,25 +56,25 @@ export const Premium = () => {
         <div className="w-full">
           <div className="relative">
             <button
-              className="absolute left-3 top-3 px-1 py-1 bg-white rounded-full shadow-lg z-50"
+              className="absolute z-50 px-1 py-1 bg-white rounded-full shadow-lg left-3 top-3"
               onClick={() => navigate(-1)}
             >
               <CaretLeft size={24} color="#000000" weight="bold" />
             </button>
-            <div className="absolute left-5 top-20 z-50">
+            <div className="absolute z-50 left-5 top-20">
               <h2 className="text-3xl font-semibold">Christmas lights App +</h2>
               <h3 className="text-lg font-semibold">$12 paid annually</h3>
-              <p className="mt-2 text-sm ml-1">cancel anytime</p>
+              <p className="mt-2 ml-1 text-sm">cancel anytime</p>
               {isAuthenticated && currentUser && !currentUser.premium ? (
                 <Button
                   onClick={() => createSubscriptionSession()}
-                  className="mt-10 h-14 w-full text-xl font-bold"
+                  className="w-full mt-10 text-xl font-bold h-14"
                 >
                   Get Premium
                 </Button>
               ) : (
                 <Button
-                  className="mt-10 h-14 w-full text-xl font-bold"
+                  className="w-full mt-10 text-xl font-bold h-14"
                   onClick={() => navigate("/signin")}
                 >
                   Get Premium
@@ -84,7 +84,7 @@ export const Premium = () => {
             <img
               src="https://images.unsplash.com/photo-1470938017644-581bd9737a31?q=80&w=3272&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
               alt="image"
-              className="h-72 w-full object-cover object-center brightness-75"
+              className="object-cover object-center w-full h-72 brightness-75"
             />
           </div>
 
@@ -114,13 +114,13 @@ export const Premium = () => {
             <tbody className="bg-white">
               {premiumFeatures.map((feature) => (
                 <tr key={feature.title} className="even:bg-gray-100">
-                  <td className="flex items-center text-sm whitespace-nowrap py-4 pl-1 font-sm text-gray-900">
+                  <td className="flex items-center py-4 pl-1 text-sm text-gray-900 whitespace-nowrap font-sm">
                     {feature.title}{" "}
                     {feature.flair && (
                       <Badge className="ml-5">{feature.flair}</Badge>
                     )}
                   </td>
-                  <td className="whitespace-nowrap px-3 py-4 text-center text-sm text-gray-600">
+                  <td className="px-3 py-4 text-sm text-center text-gray-600 whitespace-nowrap">
                     {typeof feature.free === "boolean" ? (
                       feature.free ? (
                         <Check
@@ -134,7 +134,7 @@ export const Premium = () => {
                       feature.free
                     )}
                   </td>
-                  <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-600">
+                  <td className="px-3 py-4 text-sm text-gray-600 whitespace-nowrap">
                     {typeof feature.premium === "boolean" ? (
                       feature.premium ? (
                         <Check
@@ -168,11 +168,11 @@ export const Premium = () => {
             alt="image"
             className="h-[100vh] w-full object-cover object-center"
           />
-          <div className="absolute inset-0 bg-black bg-opacity-40 z-10">
+          <div className="absolute inset-0 z-10 bg-black bg-opacity-40">
             <div className="flex sm:flex-col xl:flex-row">
               <div className="p-10 sm:w-full xl:w-1/2">
                 <img src={logo} alt="logo" className="h-16" />
-                <h1 className="flex text-6xl ml-4 my-5 font-bold">
+                <h1 className="flex my-5 ml-4 text-6xl font-bold">
                   Christmas Lights App
                   <Plus
                     size={28}
@@ -181,20 +181,20 @@ export const Premium = () => {
                     color="#DC2626"
                   />
                 </h1>
-                <h2 className="text-2xl ml-4 font-semibold">
+                <h2 className="ml-4 text-2xl font-semibold">
                   $12 paid annually
                 </h2>
-                <p className="ml-4 text-sm mt-2">Cancel anytime</p>
+                <p className="mt-2 ml-4 text-sm">Cancel anytime</p>
                 {isAuthenticated && currentUser && !currentUser.premium ? (
                   <Button
-                    className="ml-4 mt-10"
+                    className="mt-10 ml-4"
                     onClick={() => createSubscriptionSession()}
                   >
                     Get Premium
                   </Button>
                 ) : (
                   <Button
-                    className="ml-4 mt-10"
+                    className="mt-10 ml-4"
                     onClick={() => navigate("/signin")}
                   >
                     Get Premium
@@ -202,7 +202,7 @@ export const Premium = () => {
                 )}
               </div>
               <div className="p-10 sm:w-full xl:w-1/2">
-                <div className="p-4 h-full w-full rounded-lg bg-white">
+                <div className="w-full h-full p-4 bg-white rounded-lg">
                   <table className="min-w-full divide-gray-300">
                     <thead>
                       <tr>
@@ -229,13 +229,13 @@ export const Premium = () => {
                     <tbody className="bg-white">
                       {premiumFeatures.map((feature) => (
                         <tr key={feature.title} className="even:bg-gray-100">
-                          <td className="flex items-center space-x-3 whitespace-nowrap py-4 pl-4 pr-3 font-medium text-gray-900 sm:pl-3">
+                          <td className="flex items-center py-4 pl-4 pr-3 space-x-3 font-medium text-gray-900 whitespace-nowrap sm:pl-3">
                             {feature.title}{" "}
                             {feature.flair && (
                               <Badge className="ml-5">{feature.flair}</Badge>
                             )}
                           </td>
-                          <td className="whitespace-nowrap px-3 py-4 text-center text-gray-600">
+                          <td className="px-3 py-4 text-center text-gray-600 whitespace-nowrap">
                             {typeof feature.free === "boolean" ? (
                               feature.free ? (
                                 <Check color="#DC2626" />
@@ -244,7 +244,7 @@ export const Premium = () => {
                               feature.free
                             )}
                           </td>
-                          <td className="whitespace-nowrap px-3 py-4 text-center text-gray-600">
+                          <td className="px-3 py-4 text-center text-gray-600 whitespace-nowrap">
                             {typeof feature.premium === "boolean" ? (
                               feature.premium ? (
                                 <Check

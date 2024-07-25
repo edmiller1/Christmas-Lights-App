@@ -9,7 +9,6 @@ import { RouteDecorationCard, DecorationsLoading } from "..";
 import { useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { DrawerNavigation } from "../DrawerNavigation";
-import { Get_User } from "@/graphql/queries/getUser/types";
 
 interface Props {
   activeDecoration:
@@ -32,7 +31,6 @@ interface Props {
   setMobileMenuOpen?: (mobileMenuOpen: boolean) => void;
   selectedIcon: string;
   changeRoute: (icon: string) => void;
-  currentUser: Get_User | null;
 }
 
 export const FavouritesNav = ({
@@ -45,7 +43,6 @@ export const FavouritesNav = ({
   setMobileMenuOpen,
   selectedIcon,
   changeRoute,
-  currentUser,
 }: Props) => {
   const [searchWord, setSearchWord] = useState<string>("");
   const [filteredList, setFilteredList] = useState<Decoration[] | undefined>(
@@ -82,14 +79,14 @@ export const FavouritesNav = ({
               stiffness: 300,
             }}
           >
-            <div className="flex justify-center my-2 w-screen">
+            <div className="flex justify-center w-screen my-2">
               <button
-                className="w-1/4 bg-zinc-700 h-3 rounded-full"
+                className="w-1/4 h-3 rounded-full bg-zinc-700"
                 onClick={() => setMobileMenuOpen!(false)}
               ></button>
             </div>
             <div className="px-5 dark:text-ch-light">
-              <div className="my-5 flex items-center justify-between space-x-3">
+              <div className="flex items-center justify-between my-5 space-x-3">
                 <Input
                   type="text"
                   placeholder="Search Favourites"
@@ -111,7 +108,7 @@ export const FavouritesNav = ({
               {getUserLoading ? (
                 <DecorationsLoading />
               ) : filteredList && filteredList.length === 0 ? (
-                <div className="p-5 flex justify-center items-center text-center flex-col text-primary">
+                <div className="flex flex-col items-center justify-center p-5 text-center text-primary">
                   <Warning size={32} />
                   <span className="mt-3">
                     You haven't liked any decorations yet.
@@ -121,8 +118,8 @@ export const FavouritesNav = ({
                     favourites.
                   </span>
                 </div>
-              ) : !isAuthenticated && !currentUser ? (
-                <div className="p-5 flex justify-center items-center text-center flex-col text-primary">
+              ) : !isAuthenticated ? (
+                <div className="flex flex-col items-center justify-center p-5 text-center text-primary">
                   <Warning size={32} />
                   <span className="mt-3">
                     Create an account to like decorations.
@@ -155,10 +152,10 @@ export const FavouritesNav = ({
         </AnimatePresence>
       </div>
       {/* Desktop */}
-      <aside className="hidden sm:block fixed bottom-0 left-20 top-0 w-96 overflow-y-auto border-r dark:border-black">
+      <aside className="fixed top-0 bottom-0 hidden overflow-y-auto border-r sm:block left-20 w-96 dark:border-black">
         <div className="p-8 border-b dark:border-black">
           <h1 className="text-xl font-semibold">Favourites</h1>
-          <div className="flex items-center space-x-4 my-5">
+          <div className="flex items-center my-5 space-x-4">
             <Input
               type="text"
               placeholder="Search Favourites"
@@ -177,20 +174,20 @@ export const FavouritesNav = ({
         {getUserLoading ? (
           <DecorationsLoading />
         ) : filteredList && filteredList.length === 0 ? (
-          <div className="p-5 flex justify-center items-center text-center flex-col text-primary">
+          <div className="flex flex-col items-center justify-center p-5 text-center text-primary">
             <Warning size={32} />
             <span className="mt-3">You haven't liked any decorations yet.</span>
             <span className="text-sm">
               Clicking the heart icon will add decoratiosn to your favourites.
             </span>
           </div>
-        ) : !isAuthenticated && !currentUser ? (
-          <div className="p-5 flex justify-center items-center text-center flex-col text-primary">
+        ) : !isAuthenticated ? (
+          <div className="flex flex-col items-center justify-center p-5 text-center text-primary">
             <Warning size={32} />
             <span className="mt-3">Create an account to like decorations.</span>
           </div>
         ) : (
-          <div className="grid grid-cols-1 gap-y-5 p-5 overflow-y-auto">
+          <div className="grid grid-cols-1 p-5 overflow-y-auto gap-y-5">
             {filteredList?.map((decoration, index) => (
               <RouteDecorationCard
                 activeDecoration={activeDecoration}

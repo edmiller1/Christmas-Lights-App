@@ -15,7 +15,6 @@ import { RouteCard, RoutesLoading } from "..";
 import { convertDistance, convertTime } from "@/lib/helpers";
 import { DrawerNavigation } from "../DrawerNavigation";
 import { AnimatePresence, motion } from "framer-motion";
-import { Get_User } from "@/graphql/queries/getUser/types";
 
 interface Props {
   userRoutes: Route[] | undefined;
@@ -42,7 +41,6 @@ interface Props {
   selectedIcon: string;
   changeRoute: (icon: string) => void;
   setMobileMenuOpen?: (mobileMenuOpen: boolean) => void;
-  currentUser: Get_User | null;
 }
 
 export const RoutesNav = ({
@@ -70,13 +68,12 @@ export const RoutesNav = ({
   selectedIcon,
   changeRoute,
   setMobileMenuOpen,
-  currentUser,
 }: Props) => {
   const { toast } = useToast();
   const navigate = useNavigate();
 
   const addRoute = () => {
-    if (!isAuthenticated && !currentUser) {
+    if (!isAuthenticated) {
       toast({
         variant: "default",
         title: "Not currently signed in.",
@@ -123,9 +120,9 @@ export const RoutesNav = ({
               stiffness: 300,
             }}
           >
-            <div className="flex justify-center my-2 w-screen">
+            <div className="flex justify-center w-screen my-2">
               <button
-                className="w-1/4 bg-zinc-300 dark:bg-zinc-700 h-3 rounded-full"
+                className="w-1/4 h-3 rounded-full bg-zinc-300 dark:bg-zinc-700"
                 onClick={() => setMobileMenuOpen!(false)}
               ></button>
             </div>
@@ -134,7 +131,7 @@ export const RoutesNav = ({
                 selectedIcon={selectedIcon}
                 changeRoute={changeRoute}
               />
-              <div className="mt-5 flex items-center justify-between">
+              <div className="flex items-center justify-between mt-5">
                 <span className="text-sm font-semibold dark:text-zinc-500">
                   Routes
                 </span>
@@ -148,7 +145,7 @@ export const RoutesNav = ({
                   </Button>
                 )}
               </div>
-              <div className="grid grid-cols-4 gap-x-4 gap-y-5 my-5">
+              <div className="grid grid-cols-4 my-5 gap-x-4 gap-y-5">
                 {userRoutes &&
                   userRoutes.map((route) => (
                     <Button
@@ -179,7 +176,7 @@ export const RoutesNav = ({
                         <img
                           src={route.decorations[0].images[0].url}
                           alt="Cristmas Decoration"
-                          className="rounded-xl object-cover object-center w-8 h-8"
+                          className="object-cover object-center w-8 h-8 rounded-xl"
                         />
                       ) : (
                         <span className="flex items-center justify-center text-xl">
@@ -198,15 +195,15 @@ export const RoutesNav = ({
                   <span className="font-semibold text-white">New Route</span>
                 </Button>
               </div>
-              {!isAuthenticated && !currentUser ? (
-                <div className="p-5 flex justify-center items-center text-center flex-col text-primary">
+              {!isAuthenticated ? (
+                <div className="flex flex-col items-center justify-center p-5 text-center text-primary">
                   <span className="mt-3 text-lg">
                     You must have an account to create routes.
                   </span>
                   <span>Login or signup to continue</span>
                 </div>
               ) : selectedRoute && selectedRoute.decorations.length === 0 ? (
-                <div className="p-5 flex justify-center items-center text-center flex-col text-primary">
+                <div className="flex flex-col items-center justify-center p-5 text-center text-primary">
                   <span className="mt-3 text-lg">
                     This route has no decorations.
                   </span>
@@ -215,7 +212,7 @@ export const RoutesNav = ({
                   </span>
                 </div>
               ) : selectedRoute ? (
-                <div className="h-80 overflow-y-auto mt-5 mb-10">
+                <div className="mt-5 mb-10 overflow-y-auto h-80">
                   {routeDecorations &&
                     routeDecorations.map((decoration, index) => (
                       <div key={decoration.id} className="px-5 py-3">
@@ -230,13 +227,13 @@ export const RoutesNav = ({
                         />
                       </div>
                     ))}
-                  <div className="m-5 flex items-center justify-start space-x-3">
+                  <div className="flex items-center justify-start m-5 space-x-3">
                     <Path
                       size={24}
                       weight="bold"
                       className="text-gray-400 dark:text-zinc-300"
                     />
-                    <div className="flex items-centers space-x-2">
+                    <div className="flex space-x-2 items-centers">
                       <span className="text-sm dark:text-zinc-300">
                         Total travel distance:{" "}
                       </span>
@@ -247,13 +244,13 @@ export const RoutesNav = ({
                       </span>
                     </div>
                   </div>
-                  <div className="m-5 flex items-center justify-start space-x-3">
+                  <div className="flex items-center justify-start m-5 space-x-3">
                     <Car
                       size={24}
                       weight="bold"
                       className="text-gray-400 dark:text-zinc-300"
                     />
-                    <div className="flex items-centers space-x-2">
+                    <div className="flex space-x-2 items-centers">
                       <span className="text-sm dark:text-zinc-300">
                         Total travel time:{" "}
                       </span>
@@ -265,7 +262,7 @@ export const RoutesNav = ({
                     </div>
                   </div>
                   {routeDecorations && routeDecorations ? (
-                    <div className="m-5 flex items-center justify-between">
+                    <div className="flex items-center justify-between m-5">
                       <Button
                         variant="outline"
                         disabled={!currentlyOnRoute}
@@ -293,7 +290,7 @@ export const RoutesNav = ({
       </div>
 
       {/* Desktop */}
-      <aside className="hidden sm:block fixed bottom-0 left-20 top-0 w-96 overflow-y-auto border-r dark:border-black">
+      <aside className="fixed top-0 bottom-0 hidden overflow-y-auto border-r sm:block left-20 w-96 dark:border-black">
         <div className="p-8 border-b dark:border-black">
           <div className="flex items-center justify-between">
             <h1 className="text-xl font-semibold">Routes</h1>
@@ -310,7 +307,7 @@ export const RoutesNav = ({
               </Button>
             )}
           </div>
-          <div className="grid grid-cols-4 gap-x-4 gap-y-5 my-5">
+          <div className="grid grid-cols-4 my-5 gap-x-4 gap-y-5">
             {userRoutes &&
               userRoutes.map((route) => (
                 <TooltipProvider key={route.id}>
@@ -344,7 +341,7 @@ export const RoutesNav = ({
                           <img
                             src={route.decorations[0].images[0].url}
                             alt="Cristmas Decoration"
-                            className="rounded-xl object-cover object-center"
+                            className="object-cover object-center rounded-xl"
                           />
                         ) : (
                           <span className="flex items-center justify-center text-xl">
@@ -382,15 +379,15 @@ export const RoutesNav = ({
           </TooltipProvider>
         </div>
         <div>
-          {!isAuthenticated && !currentUser ? (
-            <div className="p-5 flex justify-center items-center text-center flex-col text-primary">
+          {!isAuthenticated ? (
+            <div className="flex flex-col items-center justify-center p-5 text-center text-primary">
               <span className="mt-3 text-lg">
                 You must have an account to create routes.
               </span>
               <span>Login or signup to continue</span>
             </div>
           ) : selectedRoute && selectedRoute.decorations.length === 0 ? (
-            <div className="p-5 flex justify-center items-center text-center flex-col text-primary">
+            <div className="flex flex-col items-center justify-center p-5 text-center text-primary">
               <span className="mt-3 text-lg">
                 This route has no decorations.
               </span>
@@ -414,13 +411,13 @@ export const RoutesNav = ({
                     />
                   </div>
                 ))}
-              <div className="m-5 flex items-center justify-start space-x-3">
+              <div className="flex items-center justify-start m-5 space-x-3">
                 <Path
                   size={24}
                   weight="bold"
                   className="text-gray-400 dark:text-zinc-300"
                 />
-                <div className="flex items-centers space-x-2">
+                <div className="flex space-x-2 items-centers">
                   <span className="text-sm dark:text-zinc-300">
                     Total travel distance:{" "}
                   </span>
@@ -431,13 +428,13 @@ export const RoutesNav = ({
                   </span>
                 </div>
               </div>
-              <div className="m-5 flex items-center justify-start space-x-3">
+              <div className="flex items-center justify-start m-5 space-x-3">
                 <Car
                   size={24}
                   weight="bold"
                   className="text-gray-400 dark:text-zinc-300"
                 />
-                <div className="flex items-centers space-x-2">
+                <div className="flex space-x-2 items-centers">
                   <span className="text-sm dark:text-zinc-300">
                     Total travel time:{" "}
                   </span>
@@ -449,7 +446,7 @@ export const RoutesNav = ({
                 </div>
               </div>
               {routeDecorations && routeDecorations ? (
-                <div className="m-5 flex items-center justify-between">
+                <div className="flex items-center justify-between m-5">
                   <Button
                     variant="outline"
                     disabled={!currentlyOnRoute}
@@ -468,7 +465,7 @@ export const RoutesNav = ({
               ) : null}
             </>
           ) : (
-            <div className="p-5 flex justify-center items-center text-center flex-col text-primary">
+            <div className="flex flex-col items-center justify-center p-5 text-center text-primary">
               <span className="mt-3 text-lg">No route selected.</span>
               <span>Select a route to get started.</span>
             </div>

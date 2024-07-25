@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import { useToast } from "@/components/ui/use-toast";
 import { useKindeAuth } from "@kinde-oss/kinde-auth-react";
 import {
   AlertDialog,

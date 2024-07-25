@@ -7,11 +7,9 @@ import {
 } from "@apollo/client";
 import { setContext } from "@apollo/client/link/context";
 import { useKinde } from "./useKinde";
-import { useKindeAuth } from "@kinde-oss/kinde-auth-react";
 
 const KindeApolloProvider = ({ children }: { children: React.ReactNode }) => {
   const { token } = useKinde();
-  const { getToken } = useKindeAuth();
   const httpLink = createHttpLink({
     uri: "http://localhost:9000/api",
   });

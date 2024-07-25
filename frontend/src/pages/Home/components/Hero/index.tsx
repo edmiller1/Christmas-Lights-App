@@ -1,6 +1,6 @@
 import { KindeUser } from "@/lib/types";
 import { Input } from "@/components/ui/input";
-import { AppHeader, Footer } from "@/components";
+import { AppHeader } from "@/components";
 import { Get_User } from "@/graphql/queries/getUser/types";
 
 interface Props {
@@ -60,7 +60,6 @@ export const Hero = ({ currentUser, isAuthenticated }: Props) => {
           />
         </div>
       </div>
-      <Footer />
     </div>
   );
 };

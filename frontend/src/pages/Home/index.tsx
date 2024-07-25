@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Hero } from "./components";
+import { Hero, HomeMap, MapToggle } from "./components";
 import { useKindeAuth } from "@kinde-oss/kinde-auth-react";
 import { SIGN_IN } from "@/graphql/mutations";
 import {
@@ -12,6 +12,8 @@ import {
 } from "@/graphql/queries/getUser/types";
 import { useMutation, useLazyQuery } from "@apollo/client";
 import { GET_USER } from "@/graphql/queries";
+import { RelativeDecorations } from "./components/RelativeDecorations";
+import { Footer } from "@/components";
 
 const mbApiKey = import.meta.env.VITE_MAPBOX_API_KEY;
 
@@ -19,12 +21,17 @@ export const Home = () => {
   const { isAuthenticated, login, logout, user } = useKindeAuth();
   const [currentUser, setCurrentUser] = useState<Get_User | null>(null);
   const [currentPlace, setCurrentPlace] = useState<string>("");
+  const [showMap, setShowMap] = useState<boolean>(false);
+  const [mapLoading, setMapLoading] = useState<boolean>(false);
 
-  const [getUser] = useLazyQuery<GetUserData>(GET_USER, {
-    onCompleted: (data) => {
-      setCurrentUser(data.getUser);
-    },
-  });
+  const [getUser, { refetch: getUserRefetch }] = useLazyQuery<GetUserData>(
+    GET_USER,
+    {
+      onCompleted: (data) => {
+        setCurrentUser(data.getUser);
+      },
+    }
+  );
 
   const [signIn] = useMutation<SignInData, SignInArgs>(SIGN_IN, {
     variables: {
@@ -67,12 +74,16 @@ export const Home = () => {
     }
   };
 
+  const refetchUserData = () => {
+    getUserRefetch();
+  };
+
   useEffect(() => {
     if (user) {
       signIn();
       getUser();
     }
-  }, [user]);
+  }, []);
 
   useEffect(() => {
     getCoords();
@@ -80,14 +91,36 @@ export const Home = () => {
 
   return (
     <>
-      <Hero
-        isAuthenticated={isAuthenticated}
-        user={user}
-        logout={logout}
-        login={login}
-        currentUser={currentUser}
-        currentPlace={currentPlace}
+      <MapToggle
+        showMap={showMap}
+        setShowMap={setShowMap}
+        mapLoading={mapLoading}
       />
+      {showMap ? (
+        <HomeMap
+          setMapLoading={setMapLoading}
+          userFavourites={currentUser?.favourites.map(
+            (favourite) => favourite.id
+          )}
+        />
+      ) : (
+        <>
+          <Hero
+            isAuthenticated={isAuthenticated}
+            user={user}
+            logout={logout}
+            login={login}
+            currentUser={currentUser}
+            currentPlace={currentPlace}
+          />
+          <RelativeDecorations
+            currentUser={currentUser}
+            isAuthenticated={isAuthenticated}
+            refetchUserData={refetchUserData}
+          />
+        </>
+      )}
+      <Footer />
     </>
   );
 };

@@ -15,14 +15,9 @@ const schema = createSchema({
 
 // Create a Yoga instance with a GraphQL schema.
 const yoga = createYoga({
-  //@ts-ignore
   schema,
   graphqlEndpoint: "/api",
-  // context: async ({ request }) => {
-  //   // get custom header value
-  //   const foo = request.headers.get("x-foo") ?? null;
-  //   return { foo };
-  // },
+  graphiql: true,
 });
 
 // Pass it into a server to hook into request handlers.

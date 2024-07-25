@@ -22,14 +22,6 @@ export const Admin = () => {
 
   console.log(user);
 
-  const hasSession = sessionStorage.getItem("token");
-
-  useEffect(() => {
-    if (!hasSession) {
-      logout();
-    }
-  }, []);
-
   useEffect(() => {
     if (user && user.email !== "admin@christmaslightsapp.com") {
       setNotAdmin(true);

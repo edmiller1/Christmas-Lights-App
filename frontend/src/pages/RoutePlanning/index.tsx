@@ -482,7 +482,6 @@ export const RoutePlanning = () => {
 
   const logUserOut = async () => {
     await logout();
-    sessionStorage.removeItem("token");
     toast({
       title: "Signed out successfully!",
     });
@@ -709,7 +708,7 @@ export const RoutePlanning = () => {
         type="Route Planning"
       />
       {/* Mobile */}
-      <div className="sm:hidden h-screen w-full">
+      <div className="w-full h-screen sm:hidden">
         <RoutePlanningNav
           changeRoute={changeRoute}
           selectedIcon={selectedIcon}
@@ -903,7 +902,7 @@ export const RoutePlanning = () => {
             />
           ) : null}
         </main>
-        <div className="absolute top-5 right-16 z-50 cursor-pointer">
+        <div className="absolute z-50 cursor-pointer top-5 right-16">
           {currentUser ? (
             <UserMenu logUserOut={logUserOut} currentUser={currentUser} />
           ) : (

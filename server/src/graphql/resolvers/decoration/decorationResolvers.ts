@@ -140,13 +140,13 @@ export const decorationResolvers = {
     getDecorationsByCity: async (
       _root: undefined,
       {},
-      { _, req, res }: { _: undefined; req: Request; res: Response }
+      context: any
     ): Promise<Decoration[]> => {
       try {
         let city: { text: string } | null = null;
         let decorations: Decoration[] | null = null;
-        const latitude = req.get("latitude");
-        const longitude = req.get("longitude");
+        const latitude = context.request.headers.get("latitude");
+        const longitude = context.request.headers.get("longitude");
 
         if (latitude && longitude) {
           const response = await fetch(
@@ -167,7 +167,7 @@ export const decorationResolvers = {
               images: true,
             },
             skip: 0,
-            take: 10,
+            take: 9,
           });
         } else {
           decorations = await prisma.decoration.findMany({
@@ -186,7 +186,28 @@ export const decorationResolvers = {
               images: true,
             },
             skip: 0,
-            take: 10,
+            take: 9,
+          });
+        }
+
+        if (decorations.length === 0) {
+          decorations = await prisma.decoration.findMany({
+            where: {
+              OR: [
+                {
+                  country: "New Zealand",
+                },
+                {
+                  country: "Australia",
+                },
+              ],
+              verified: true,
+            },
+            include: {
+              images: true,
+            },
+            skip: 0,
+            take: 9,
           });
         }
 

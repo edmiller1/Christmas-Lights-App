@@ -159,7 +159,7 @@ export const HomeMap = ({ setMapLoading, userFavourites }: Props) => {
 
   return (
     <>
-      <div className="sm:hidden min-h-screen -pb-24 absolute rounded-lg">
+      <div className="absolute min-h-screen rounded-lg sm:hidden -pb-24">
         <Map
           {...viewState}
           //@ts-ignore
@@ -174,8 +174,8 @@ export const HomeMap = ({ setMapLoading, userFavourites }: Props) => {
           {getDecorationsViaCountryLoading ||
           getDecorationsViaRegionLoading ||
           getDecorationsViaCityLoading ? (
-            <div className="absolute top-0 mt-5 w-16 h-8 rounded-lg bg-white z-40">
-              <div className="flex justify-center space-x-1 items-center h-full">
+            <div className="absolute top-0 z-40 w-16 h-8 mt-5 bg-white rounded-lg">
+              <div className="flex items-center justify-center h-full space-x-1">
                 <Circle
                   size={12}
                   color="#3b403d"
@@ -229,7 +229,7 @@ export const HomeMap = ({ setMapLoading, userFavourites }: Props) => {
               <div className="w-[40%] relative">
                 <div
                   role="button"
-                  className="absolute left-2 top-2 bg-black p-1 rounded-full opacity-80"
+                  className="absolute p-1 bg-black rounded-full left-2 top-2 opacity-80"
                   onClick={closePopup}
                 >
                   <X size={16} weight="bold" color="#FFFFFF" />
@@ -237,13 +237,13 @@ export const HomeMap = ({ setMapLoading, userFavourites }: Props) => {
                 <img
                   src={activeDecoration?.images[0].url}
                   alt="Christmas decoration"
-                  className="h-full w-full object-center object-cover rounded-tl-xl rounded-bl-xl"
+                  className="object-cover object-center w-full h-full rounded-tl-xl rounded-bl-xl"
                 />
               </div>
               <div className="w-[60%] p-2">
                 <div className="flex justify-between">
                   <div className="flex flex-col">
-                    <span className="font-semibold text-sm">
+                    <span className="text-sm font-semibold">
                       {activeDecoration.name}
                     </span>
                     <span className="text-xs text-gray-500">
@@ -256,7 +256,7 @@ export const HomeMap = ({ setMapLoading, userFavourites }: Props) => {
                     <Heart size={20} weight="bold" color="#000000" />
                   )}
                 </div>
-                <div className="absolute right-2 bottom-2 flex items-center space-x-1">
+                <div className="absolute flex items-center space-x-1 right-2 bottom-2">
                   <Star size={16} weight="fill" color="#000000" />
                   <span className="mt-[0.15rem] text-sm">
                     {activeDecoration.rating.toFixed(1)}
@@ -268,7 +268,7 @@ export const HomeMap = ({ setMapLoading, userFavourites }: Props) => {
         ) : null}
       </div>
 
-      <div className="absolute h-full w-full">
+      <div className="absolute w-full h-full">
         <Map
           {...viewState}
           //@ts-ignore
@@ -283,8 +283,8 @@ export const HomeMap = ({ setMapLoading, userFavourites }: Props) => {
           {getDecorationsViaCountryLoading ||
           getDecorationsViaRegionLoading ||
           getDecorationsViaCityLoading ? (
-            <div className="absolute top-0 left-1/2 mt-5 w-16 h-8 rounded-lg bg-white z-40">
-              <div className="flex justify-center space-x-1 items-center h-full">
+            <div className="absolute top-0 z-40 w-16 h-8 mt-5 bg-white rounded-lg left-1/2">
+              <div className="flex items-center justify-center h-full space-x-1">
                 <Circle
                   size={12}
                   color="#3b403d"

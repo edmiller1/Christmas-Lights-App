@@ -10,6 +10,6 @@ export interface Get_Decorations_By_Rating {
   images: DecorationImage[];
 }
 
-export interface GetDecorationByRating {
+export interface GetDecorationsByRating {
   getDecorationsByRating: Get_Decorations_By_Rating[];
 }

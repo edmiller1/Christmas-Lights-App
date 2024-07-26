@@ -26,7 +26,6 @@ import { Get_Decorations_By_Rating } from "@/graphql/queries/getDecorationsByRat
 import { Search_For_Decorations } from "@/graphql/queries/searchForDecorations/types";
 import { useToast } from "@/components/ui/use-toast";
 import { ToastAction } from "@/components/ui/toast";
-import { Get_User } from "@/graphql/queries/getUser/types";
 
 interface Props {
   index: number;
@@ -38,7 +37,6 @@ interface Props {
     | Search_For_Decorations[];
   userFavourites: string[] | undefined;
   refetchUserData: () => void;
-  currentUser: Get_User | null;
 }
 
 export const DecorationCard = ({
@@ -48,7 +46,6 @@ export const DecorationCard = ({
   decorations,
   userFavourites,
   refetchUserData,
-  currentUser,
 }: Props) => {
   const navigate = useNavigate();
   const { toast } = useToast();
@@ -107,7 +104,7 @@ export const DecorationCard = ({
     );
 
   const addDecorationToFavourites = (decorationId: string) => {
-    if (isAuthenticated && currentUser) {
+    if (isAuthenticated) {
       const decorationIndex = decorations.findIndex(
         (decoration) => decoration.id === decorationId
       );
@@ -176,17 +173,17 @@ export const DecorationCard = ({
   return (
     <>
       {/* Mobile */}
-      <div className="group block sm:hidden">
-        <div className="overflow-hidden rounded-xl relative">
+      <div className="block group sm:hidden">
+        <div className="relative overflow-hidden rounded-xl">
           <div
-            className="flex transition-transform ease-out duration-500"
+            className="flex transition-transform duration-500 ease-out"
             style={{ transform: `translateX(-${currentIndex * 100}%)` }}
           >
             {decoration.images.map((image) => (
               <img
                 key={image.id}
                 src={image.url}
-                className="decoration-card-image object-cover w-72 h-80"
+                className="object-cover decoration-card-image w-72 h-80"
               />
             ))}
           </div>
@@ -194,7 +191,7 @@ export const DecorationCard = ({
             <div className="absolute inset-0 flex items-start justify-end p-2"></div>
           </Link>
 
-          <div className="absolute top-2 right-2 z-10">
+          <div className="absolute z-10 top-2 right-2">
             {userFavourites?.includes(decoration.id) ? (
               <>
                 {unFavouriteDecorationLoading &&
@@ -245,7 +242,7 @@ export const DecorationCard = ({
             <div className="absolute left-5 top-[45%] z-10">
               <button
                 onClick={prevImage}
-                className="p-1 rounded-full shadow bg-white/80 text-gray-800 focus:outline-none hover:bg-white"
+                className="p-1 text-gray-800 rounded-full shadow bg-white/80 focus:outline-none hover:bg-white"
               >
                 <CaretLeft size={24} />
               </button>
@@ -255,7 +252,7 @@ export const DecorationCard = ({
             <div className="absolute right-5 top-[45%] z-10">
               <button
                 onClick={nextImage}
-                className="p-1 rounded-full shadow bg-white/80 text-gray-800 focus:outline-none hover:bg-white"
+                className="p-1 text-gray-800 rounded-full shadow bg-white/80 focus:outline-none hover:bg-white"
               >
                 <CaretRight size={24} />
               </button>
@@ -263,7 +260,7 @@ export const DecorationCard = ({
           ) : null}
 
           {decoration.images.length > 1 ? (
-            <div className="absolute bottom-4 right-0 left-0">
+            <div className="absolute left-0 right-0 bottom-4">
               <div className="flex items-center justify-center gap-2">
                 {decoration.images.map((_, i) => (
                   <div
@@ -280,7 +277,7 @@ export const DecorationCard = ({
         </div>
         <div className="flex items-center justify-between">
           <span className="mt-2 font-bold">{decoration.name}</span>
-          <div className="flex items-center space-x-1 mt-3">
+          <div className="flex items-center mt-3 space-x-1">
             <Star
               size={16}
               weight="fill"
@@ -297,28 +294,28 @@ export const DecorationCard = ({
       </div>
 
       {/* Desktop */}
-      <div className="hidden sm:group sm:block cursor-pointer">
+      <div className="hidden cursor-pointer sm:group sm:block">
         <div
-          className="overflow-hidden rounded-xl relative h-64 w-64"
+          className="relative w-64 h-64 overflow-hidden rounded-xl"
           onMouseOver={showArrows}
           onMouseLeave={hideArrows}
         >
           <div
-            className="flex transition-transform ease-out duration-500"
+            className="flex transition-transform duration-500 ease-out"
             style={{ transform: `translateX(-${currentIndex * 100}%)` }}
           >
             {decoration.images.map((image) => (
               <img
                 key={image.id}
                 src={image.url}
-                className="decoration-card-image object-cover h-80 w-80"
+                className="object-cover decoration-card-image h-80 w-80"
               />
             ))}
           </div>
           <Link to={`/decoration/${decoration.id}`}>
             <div className="absolute inset-0 flex items-start justify-end p-2"></div>
           </Link>
-          <div className="absolute top-2 right-2 z-10">
+          <div className="absolute z-10 top-2 right-2">
             {userFavourites?.includes(decoration.id) ? (
               <>
                 {unFavouriteDecorationLoading &&
@@ -369,7 +366,7 @@ export const DecorationCard = ({
             <div className="absolute left-5 top-[45%] z-10">
               <button
                 onClick={prevImage}
-                className="p-1 rounded-full shadow bg-white/80 text-gray-800 focus:outline-none hover:bg-white"
+                className="p-1 text-gray-800 rounded-full shadow bg-white/80 focus:outline-none hover:bg-white"
               >
                 <CaretLeft size={16} />
               </button>
@@ -380,7 +377,7 @@ export const DecorationCard = ({
             <div className="absolute right-5 top-[45%] z-10">
               <button
                 onClick={nextImage}
-                className="p-1 rounded-full shadow bg-white/80 text-gray-800 focus:outline-none hover:bg-white"
+                className="p-1 text-gray-800 rounded-full shadow bg-white/80 focus:outline-none hover:bg-white"
               >
                 <CaretRight size={16} />
               </button>
@@ -388,7 +385,7 @@ export const DecorationCard = ({
           ) : null}
 
           {decoration.images.length > 1 ? (
-            <div className="absolute bottom-2 right-0 left-0">
+            <div className="absolute left-0 right-0 bottom-2">
               <div className="flex items-center justify-center gap-2">
                 {decoration.images.map((_, i) => (
                   <div
@@ -405,7 +402,7 @@ export const DecorationCard = ({
         </div>
         <div className="flex items-center justify-between w-64">
           <span className="mt-2 font-semibold">{decoration.name}</span>
-          <div className="flex items-center space-x-1 mt-1">
+          <div className="flex items-center mt-1 space-x-1">
             <Star
               size={16}
               weight="fill"

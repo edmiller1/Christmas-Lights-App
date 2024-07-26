@@ -20,6 +20,7 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
 });
 
 const resend = new Resend(process.env.RESEND_API_KEY);
+const sendingEmail = process.env.RESEND_DOMAIN;
 
 export const userResolvers = {
   Query: {
@@ -504,8 +505,8 @@ export const userResolvers = {
           });
 
           await resend.emails.send({
-            from: "onboarding@resend.dev",
-            to: "edmiller.me@gmail.com", //TODO: Change to user email
+            from: sendingEmail!,
+            to: user.email, //TODO: Change to user email
             subject: "Welcome to Christmas Lights App",
             html: welcomeEmail,
           });
@@ -661,7 +662,7 @@ export const userResolvers = {
 
         //Send email to admin so they can delete user from Kinde
         await resend.emails.send({
-          from: "onboarding@resend.dev",
+          from: sendingEmail!,
           to: "edmiller.me@gmail.com", //TODO: Change to admin email
           subject: "Account Deletion",
           html: `<p>User ${user.name} wishes to have their account deleted.</p>

@@ -30,6 +30,7 @@ import { ratingEmail } from "../../../lib/emails/rating";
 import { newVerificationEmail } from "../../../lib/emails/newVerification";
 
 const resend = new Resend(process.env.RESEND_API_KEY);
+const sendingEmail = process.env.RESEND_DOMAIN;
 
 export const decorationResolvers = {
   Query: {
@@ -752,8 +753,8 @@ export const decorationResolvers = {
         if (owner.notifications_by_email_rating) {
           //send email to owner
           await resend.emails.send({
-            from: "onboarding@resend.dev",
-            to: "edmiller.me@gmail.com", //Change to owner email
+            from: sendingEmail!,
+            to: owner.email, //Change to owner email
             subject: "New Decoration Rating",
             html: ratingEmail(input.rating, owner, decoration.name),
           });
@@ -896,7 +897,7 @@ export const decorationResolvers = {
 
         //Send email to CLA admin
         await resend.emails.send({
-          from: "onboarding@resend.dev",
+          from: sendingEmail!,
           to: "edmiller.me@gmail.com", //Change to admin email when deploying to prod
           subject: "New Decoration Report",
           html: `<p>New Decoration Report</p>
@@ -1000,7 +1001,7 @@ export const decorationResolvers = {
 
         //email admin about new verification_submitted
         await resend.emails.send({
-          from: "onboarding@resend.dev",
+          from: sendingEmail!,
           to: "edmiller.me@gmail.com", //TODO: Change to admin email when deploying to prod
           subject: "New Verification Request",
           html: `<h1>New Verification Request<h1>
@@ -1026,8 +1027,8 @@ export const decorationResolvers = {
         if (user.notifications_by_email_verification) {
           //TODO: send email to user
           await resend.emails.send({
-            from: "onboarding@resend.dev",
-            to: "edmiller.me@gmail.com", //TODO: Change to user email
+            from: sendingEmail!,
+            to: user.email, //TODO: Change to user email
             subject: "Verification Request Sent",
             html: newVerificationEmail(user.name, updatedDecoration.name),
           });

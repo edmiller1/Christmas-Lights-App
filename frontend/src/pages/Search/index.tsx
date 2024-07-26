@@ -395,7 +395,6 @@ export const Search = () => {
                       userFavourites={currentUser?.favourites.map(
                         (item) => item.id
                       )}
-                      currentUser={currentUser}
                     />
                   ))}
                 </div>

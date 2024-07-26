@@ -43,7 +43,6 @@ export const RelativeDecorations = ({
             <div className="flex items-center space-x-6">
               <DecorationCard
                 key={decoration.id}
-                currentUser={currentUser}
                 decoration={decoration}
                 decorations={decorationsByCity}
                 index={index}

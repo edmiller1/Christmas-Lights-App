@@ -38,7 +38,6 @@ export const HighlyRatedDecorations = ({
             <>
               <DecorationCard
                 key={decoration.id}
-                currentUser={currentUser}
                 decoration={decoration}
                 decorations={decorationsByRating}
                 index={index}

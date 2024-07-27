@@ -18,7 +18,7 @@ import {
   GET_USER_NOTIFICATIONS,
 } from "@/graphql/queries";
 import { GetUserNotifications as GetUserNotificationsData } from "@/graphql/queries/getUserNotifications/types";
-import { useQuery } from "@apollo/client";
+import { useLazyQuery } from "@apollo/client";
 import { useKindeAuth } from "@kinde-oss/kinde-auth-react";
 import { Dialog, DialogPanel } from "@headlessui/react";
 import { Separator } from "../ui/separator";
@@ -60,15 +60,17 @@ export const AppHeader = ({
     navigate(`/search?query=${searchTerm}`);
   };
 
-  const { data: getUserNotificationsData, refetch: refetchUserNotifications } =
-    useQuery<GetUserNotificationsData>(GET_USER_NOTIFICATIONS, {
-      variables: { input: { userId: currentUser?.id } },
-    });
+  const [
+    getUserNotifications,
+    { data: getUserNotificationsData, refetch: refetchUserNotifications },
+  ] = useLazyQuery<GetUserNotificationsData>(GET_USER_NOTIFICATIONS, {
+    variables: { input: { userId: currentUser?.id } },
+  });
 
-  const {
-    data: getUnreadNotificationsData,
-    refetch: refetchUnreadNotifications,
-  } = useQuery(GET_UNREAD_NOTIFICATIONS);
+  const [
+    getUnreadNotifications,
+    { data: getUnreadNotificationsData, refetch: refetchUnreadNotifications },
+  ] = useLazyQuery(GET_UNREAD_NOTIFICATIONS);
 
   const userNotifications = getUserNotificationsData
     ? getUserNotificationsData.getUserNotifications
@@ -124,6 +126,13 @@ export const AppHeader = ({
   useEffect(() => {
     getCoords();
   }, []);
+
+  useEffect(() => {
+    if (isAuthenticated) {
+      getUserNotifications();
+      getUnreadNotifications();
+    }
+  }, [isAuthenticated]);
 
   return (
     <header className="absolute inset-x-0 top-0 z-50 h-16 border-b">

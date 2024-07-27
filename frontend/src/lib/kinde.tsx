@@ -11,7 +11,7 @@ import { useKinde } from "./useKinde";
 const KindeApolloProvider = ({ children }: { children: React.ReactNode }) => {
   const { token } = useKinde();
   const httpLink = createHttpLink({
-    uri: "http://localhost:9000/api",
+    uri: import.meta.env.VITE_SERVER_URL,
   });
 
   const authLink = setContext(async (_, { headers }) => {

@@ -14,7 +14,7 @@ const schema = createSchema({
 // Create a Yoga instance with a GraphQL schema.
 const yoga = createYoga({
   schema,
-  graphqlEndpoint: "/api",
+  graphqlEndpoint: "/graphql",
   graphiql: true,
 });
 

@@ -1,8 +1,6 @@
 require("dotenv").config();
 
-import { ApolloServer } from "@apollo/server";
 import { resolvers, typeDefs } from "./graphql";
-import { startStandaloneServer } from "@apollo/server/standalone";
 import { createSchema, createYoga } from "graphql-yoga";
 import { createServer } from "node:http";
 

@@ -1,50 +1,75 @@
+export const freeFeatures = [
+  {
+    title: "Create 1 decoration",
+    included: true,
+    flair: null,
+  },
+  {
+    title: "Upload 12 images per decoration 📸",
+    included: true,
+    flair: null,
+  },
+  {
+    title: "2MB maximum file size per image",
+    included: true,
+    flair: null,
+  },
+  {
+    title: "12 decorations saved in history",
+    included: true,
+    flair: null,
+  },
+  {
+    title: "12 decorations saved in favourites 💖",
+    included: true,
+    flair: null,
+  },
+  {
+    title: "Access to route planning 🚗",
+    included: false,
+    flair: null,
+  },
+  {
+    title: "Access to the dashboard",
+    included: false,
+    flair: "coming soon",
+  },
+];
+
 export const premiumFeatures = [
   {
-    title: "Maximum decorations you can create",
-    free: 1,
-    premium: 3,
+    title: "Create up to 3 decorations",
+    included: true,
     flair: null,
   },
   {
-    title: "Maximum images you can upload per decoration",
-    free: 12,
-    premium: 16,
+    title: "Upload 16 images per decoration 📸",
+    included: true,
     flair: null,
   },
   {
-    title: "Maximum file size per image",
-    free: "2MB",
-    premium: "4MB",
+    title: "4MB maximum file size per image",
+    included: true,
     flair: null,
   },
   {
-    title: "Maximum number of decorations saved in history",
-    free: 16,
-    premium: 24,
+    title: "24 decorations saved in history",
+    included: true,
     flair: null,
   },
   {
-    title: "Maximum number of decorations saved in favourites",
-    free: 12,
-    premium: 24,
+    title: "24 decorations saved in favourites 💖",
+    included: true,
     flair: null,
   },
   {
-    title: "Maximum routes you can create",
-    free: 1,
-    premium: 3,
+    title: "Access to route planning 🚗",
+    included: true,
     flair: null,
   },
   {
-    title: "Maximum decorations per route",
-    free: 8,
-    premium: 12,
-    flair: null,
-  },
-  {
-    title: "Access to the dashboard section",
-    free: false,
-    premium: true,
+    title: "Access to the dashboard",
+    included: true,
     flair: "coming soon",
   },
 ];

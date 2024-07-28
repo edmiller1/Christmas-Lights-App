@@ -367,7 +367,12 @@ export const AppHeader = ({
               ) : null}
               {!currentUser?.premium ? (
                 <div className="w-full py-6">
-                  <Button className="w-full rounded-full">Get Premium</Button>
+                  <Button
+                    className="w-full rounded-full"
+                    onClick={() => navigate("/premium")}
+                  >
+                    Get Premium
+                  </Button>
                 </div>
               ) : null}
             </div>

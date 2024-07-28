@@ -5,12 +5,10 @@ import { Badge } from "@/components/ui/badge";
 import { useKindeAuth } from "@kinde-oss/kinde-auth-react";
 import { useQuery, useLazyQuery } from "@apollo/client";
 import { Link, useNavigate } from "react-router-dom";
-import { useState } from "react";
 import { CREATE_SUBSCRIPTION_SESSION, GET_USER } from "@/graphql/queries";
 import {
   GetUser as GetUserData,
   GetUserArgs,
-  Get_User,
 } from "@/graphql/queries/getUser/types";
 import { CreateSubscriptionSession as CreateSubscriptionSessionData } from "@/graphql/queries/createSubscriptionSession/types";
 import { useToast } from "@/components/ui/use-toast";
@@ -18,18 +16,10 @@ import { Button } from "@/components/ui/button";
 
 export const Premium = () => {
   const { toast } = useToast();
-  const { isAuthenticated, user } = useKindeAuth();
+  const { isAuthenticated, register } = useKindeAuth();
   const navigate = useNavigate();
 
-  const [currentUser, setCurrentUser] = useState<Get_User | null>(null);
-
-  //@ts-ignore
-  const { data: getUserData } = useQuery<GetUserData, GetUserArgs>(GET_USER, {
-    variables: { input: { id: user?.id ? user.id : "" } },
-    onCompleted: (data) => {
-      setCurrentUser(data.getUser);
-    },
-  });
+  const { data: getUserData } = useQuery<GetUserData, GetUserArgs>(GET_USER);
 
   const [createSubscriptionSession] =
     useLazyQuery<CreateSubscriptionSessionData>(CREATE_SUBSCRIPTION_SESSION, {
@@ -45,12 +35,14 @@ export const Premium = () => {
       },
     });
 
+  const currentUser = getUserData?.getUser ? getUserData.getUser : null;
+
   if (currentUser?.premium) {
     navigate(-1);
   }
 
   return (
-    <div className="">
+    <div>
       <Link to="/">
         <img src={logo} alt="logo" className="h-16 m-5" />
       </Link>
@@ -141,6 +133,23 @@ export const Premium = () => {
                   ))}
                 </ul>
                 <div className="mt-8">
+                  {isAuthenticated ? (
+                    <Button
+                      onClick={() => createSubscriptionSession()}
+                      className="inline-block w-full h-16 px-4 py-4 text-sm font-semibold leading-5 text-center text-white bg-gray-900 rounded-lg shadow-md hover:bg-white hover:text-gray-900 hover:ring-gray-900 hover:ring"
+                      aria-describedby="tier-team"
+                    >
+                      Get premium
+                    </Button>
+                  ) : (
+                    <Button
+                      onClick={() => register()}
+                      className="inline-block w-full h-16 px-4 py-4 text-sm font-semibold leading-5 text-center text-white bg-gray-900 rounded-lg shadow-md hover:bg-white hover:text-gray-900 hover:ring-gray-900 hover:ring"
+                      aria-describedby="tier-team"
+                    >
+                      Get premium
+                    </Button>
+                  )}
                   <Button
                     onClick={() => createSubscriptionSession()}
                     className="inline-block w-full h-16 px-4 py-4 text-sm font-semibold leading-5 text-center text-white bg-gray-900 rounded-lg shadow-md hover:bg-white hover:text-gray-900 hover:ring-gray-900 hover:ring"

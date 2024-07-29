@@ -391,18 +391,21 @@ export const decorationResolvers = {
             where: {
               OR: [
                 {
+                  verified: true,
                   name: {
                     contains: input.searchTerm,
                     mode: "insensitive",
                   },
                 },
                 {
+                  verified: true,
                   city: {
                     contains: input.searchTerm,
                     mode: "insensitive",
                   },
                 },
                 {
+                  verified: true,
                   address: {
                     contains: input.searchTerm,
                     mode: "insensitive",
@@ -418,18 +421,21 @@ export const decorationResolvers = {
             where: {
               OR: [
                 {
+                  verified: true,
                   name: {
                     contains: input.searchTerm,
                     mode: "insensitive",
                   },
                 },
                 {
+                  verified: true,
                   city: {
                     contains: input.searchTerm,
                     mode: "insensitive",
                   },
                 },
                 {
+                  verified: true,
                   address: {
                     contains: input.searchTerm,
                     mode: "insensitive",

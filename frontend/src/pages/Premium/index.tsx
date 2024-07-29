@@ -150,13 +150,6 @@ export const Premium = () => {
                       Get premium
                     </Button>
                   )}
-                  <Button
-                    onClick={() => createSubscriptionSession()}
-                    className="inline-block w-full h-16 px-4 py-4 text-sm font-semibold leading-5 text-center text-white bg-gray-900 rounded-lg shadow-md hover:bg-white hover:text-gray-900 hover:ring-gray-900 hover:ring"
-                    aria-describedby="tier-team"
-                  >
-                    Get premium
-                  </Button>
                 </div>
               </div>
             </div>

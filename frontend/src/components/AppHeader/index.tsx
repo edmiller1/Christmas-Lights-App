@@ -37,7 +37,7 @@ export const AppHeader = ({
   searchQuery,
 }: Props) => {
   const { toast } = useToast();
-  const { login, logout } = useKindeAuth();
+  const { login, logout, user } = useKindeAuth();
   const navigate = useNavigate();
 
   const [isCreateOpen, setIsCreateOpen] = useState<boolean>(false);
@@ -252,7 +252,11 @@ export const AppHeader = ({
           {!isAuthenticated ? (
             <LoggedOutUserMenu />
           ) : (
-            <UserMenu currentUser={currentUser} logUserOut={logUserOut} />
+            <UserMenu
+              currentUser={currentUser}
+              logUserOut={logUserOut}
+              user={user}
+            />
           )}
         </div>
       </nav>

@@ -12,25 +12,29 @@ import {
 import { useNavigate } from "react-router-dom";
 import { ThemeToggle } from "..";
 import { Get_User } from "@/graphql/queries/getUser/types";
+import { KindeUser } from "@/lib/types";
 
 interface Props {
   logUserOut: () => void;
   currentUser: Get_User | null;
+  user: KindeUser | undefined;
 }
 
-export const UserMenu = ({ logUserOut, currentUser }: Props) => {
+export const UserMenu = ({ logUserOut, currentUser, user }: Props) => {
   const navigate = useNavigate();
 
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="ghost" className="relative h-8 w-8 rounded-full mt-1">
+        <Button variant="ghost" className="relative w-8 h-8 mt-1 rounded-full">
           <Avatar className="h-9 w-9">
             <AvatarImage
-              src={currentUser?.image ?? ""}
-              alt={currentUser?.name ?? ""}
+              src={currentUser?.image ?? user?.picture ?? ""}
+              alt={currentUser?.image ?? user?.picture ?? ""}
             />
-            <AvatarFallback>{currentUser?.name?.[0] ?? ""}</AvatarFallback>
+            <AvatarFallback>
+              {currentUser?.name?.[0] ?? user?.given_name?.[0] ?? ""}
+            </AvatarFallback>
           </Avatar>
         </Button>
       </DropdownMenuTrigger>
@@ -38,15 +42,19 @@ export const UserMenu = ({ logUserOut, currentUser }: Props) => {
         <DropdownMenuLabel className="font-normal">
           <div className="flex items-center space-x-3">
             <Avatar className="h-9 w-9">
-              <AvatarImage src={currentUser?.image ?? ""}></AvatarImage>
-              <AvatarFallback>{currentUser?.name?.[0] ?? ""}</AvatarFallback>
+              <AvatarImage
+                src={currentUser?.image ?? user?.picture ?? ""}
+              ></AvatarImage>
+              <AvatarFallback>
+                {currentUser?.name?.[0] ?? user?.given_name?.[0]}
+              </AvatarFallback>
             </Avatar>
             <div className="flex flex-col space-y-1">
               <p className="text-sm font-medium leading-none">
-                {currentUser?.name}
+                {currentUser?.name ?? user?.given_name}
               </p>
-              <p className="text-muted-foreground text-xs leading-none">
-                {currentUser?.email}
+              <p className="text-xs leading-none text-muted-foreground">
+                {currentUser?.email ?? user?.email}
               </p>
             </div>
           </div>

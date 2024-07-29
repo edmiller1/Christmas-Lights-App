@@ -8,5 +8,6 @@ export * from "./DecorationCardLoading";
 export * from "./Footer";
 export * from "./Paginate";
 export * from "./PopupCard";
+export * from "./PremiumDialog";
 export * from "./SEO";
 export * from "./UserMenuDrawer";

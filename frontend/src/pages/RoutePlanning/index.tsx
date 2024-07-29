@@ -81,7 +81,7 @@ import { MapRef } from "react-map-gl";
 import { ToastAction } from "@/components/ui/toast";
 import { MobileDecorationPopup } from "./components/MobileDecorationPopup";
 import { useKindeAuth } from "@kinde-oss/kinde-auth-react";
-import { SEO } from "@/components";
+import { PremiumDialog, SEO } from "@/components";
 
 const mbApiKey = import.meta.env.VITE_MAPBOX_API_KEY;
 
@@ -168,9 +168,9 @@ export const RoutePlanning = () => {
     data: getUserData,
     loading: getUserLoading,
     refetch: refetchUser,
-  } = useQuery<GetUserData, GetUserArgs>(GET_USER, {
-    variables: { input: { id: user?.id ? user.id : "" } },
-  });
+  } = useQuery<GetUserData, GetUserArgs>(GET_USER);
+
+  const currentUser = getUserData?.getUser ? getUserData.getUser : null;
 
   const [
     getDecorationsViaCountry,
@@ -697,7 +697,9 @@ export const RoutePlanning = () => {
     }
   }, [activeDecoration]);
 
-  const currentUser = getUserData?.getUser ? getUserData.getUser : null;
+  if (!currentUser?.premium) {
+    return <PremiumDialog />;
+  }
 
   return (
     <>
@@ -904,7 +906,11 @@ export const RoutePlanning = () => {
         </main>
         <div className="absolute z-50 cursor-pointer top-5 right-16">
           {isAuthenticated ? (
-            <UserMenu logUserOut={logUserOut} currentUser={currentUser} />
+            <UserMenu
+              logUserOut={logUserOut}
+              currentUser={currentUser}
+              user={user}
+            />
           ) : (
             <LoggedOutUserMenu />
           )}

@@ -83,7 +83,7 @@ export const Home = () => {
       signIn();
       getUser();
     }
-  }, []);
+  }, [user]);
 
   useEffect(() => {
     getCoords();
